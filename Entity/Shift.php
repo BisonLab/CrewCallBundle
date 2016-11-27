@@ -3,6 +3,7 @@
 namespace CrewCallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -260,8 +261,8 @@ class Shift
      */
     public function __construct()
     {
-        $this->interests = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->organizations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->interests     = new ArrayCollection();
+        $this->organizations = new ArrayCollection();
     }
 
     /**
