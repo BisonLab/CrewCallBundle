@@ -28,8 +28,11 @@ class Builder implements ContainerAwareInterface
         if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $menu->addChild('Admin Stuff', array('route' => ''));
             $menu['Admin Stuff']->addChild('Message Types', array('route' => 'messagetype'));
+            $menu['Admin Stuff']->addChild('User Admin', array('route' => 'user'));
         }
 
+        // Yeah, I'd call this a hack too.
+        $options['container'] = $this->container;
         // For local additions to the main menu.
         if ($this->local_builder
                 && method_exists($this->local_builder, "mainMenu"))

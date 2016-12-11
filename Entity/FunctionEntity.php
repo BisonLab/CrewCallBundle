@@ -8,6 +8,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use CrewCallBundle\Lib\ExternalEntityConfig;
 /**
  * FunctionEntity
  *
@@ -16,11 +17,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity()
  * @ORM\Table(name="crewcall_function")
+ * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\FunctionEntityRepository")
  * @UniqueEntity("name")
  * @Gedmo\Loggable
  */
 class FunctionEntity
 {
+    // Not sure if I need it, but they might be useful.
+    // (And i need it for migration for now.)
+    use \BisonLab\CommonBundle\Entity\AttributesTrait;
+
     /**
      * @var integer
      *
@@ -41,10 +47,19 @@ class FunctionEntity
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=255, nullable=false)
+     * @ORM\Column(name="description", type="text", nullable=true)
      * @Gedmo\Versioned
      */
     private $description;
+
+    /**
+     * @var string $state
+     *
+     * @ORM\Column(name="state", type="string", length=40, nullable=true)
+     * @Gedmo\Versioned
+     * @Assert\Choice(callback = "getStates")
+     */
+    private $state;
 
     /* 
      * This is for grouping the functions. Hopefully just one group and one
@@ -55,7 +70,7 @@ class FunctionEntity
      * do that if this ends up being too odd for the users or code.
      */
     /**
-     * @ORM\OneToMany(targetEntity="FunctionEntity", mappedBy="parent", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="FunctionEntity", mappedBy="parent", fetch="EXTRA_LAZY", cascade={"remove"})
      */
     private $children;
 
@@ -66,19 +81,23 @@ class FunctionEntity
      */
     private $parent;
 
+    /**
+     * This is for the non-connected functions.
+     * @ORM\OneToMany(targetEntity="PersonFunction", mappedBy="function",
+     * cascade={"remove"})
+     */
+    private $person_functions;
+
+    /**
+     * @ORM\OneToMany(targetEntity="PersonFunctionOrganization", mappedBy="function", cascade={"remove"})
+     */
+    private $person_function_organizations;
+
     public function __construct($options = array())
     {
         $this->children = new ArrayCollection();
     }
 
-    public function __toString()
-    {
-        return $this->getName();
-    }
-    
-    /*
-     * Automatically generated getters and setters below this
-     */
     /**
      * Get id
      *
@@ -132,6 +151,43 @@ class FunctionEntity
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set state
+     *
+     * @param string $state
+     * @return Person
+     */
+    public function setState($state)
+    {
+        if ($state == $this->state) return $this;
+        $state = strtoupper($state);
+        if (!isset(self::getStates()[$state])) {
+            throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
+        }
+        $this->state = $state;
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return string 
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Get states
+     *
+     * @return array 
+     */
+    public static function getStates()
+    {
+        return ExternalEntityConfig::getStatesFor('Function');
     }
 
     /**
@@ -189,5 +245,78 @@ class FunctionEntity
     public function getParent()
     {
         return $this->parent;
+    }
+
+    /**
+     * Add personFunction
+     *
+     * @param \CrewCallBundle\Entity\PersonFunction $personFunction
+     *
+     * @return Person
+     */
+    public function addPersonFunction(\CrewCallBundle\Entity\PersonFunction $personFunction)
+    {
+        $this->person_functions[] = $personFunction;
+
+        return $this;
+    }
+
+    /**
+     * Remove personFunction
+     *
+     * @param \CrewCallBundle\Entity\PersonFunction $personFunction
+     */
+    public function removePersonFunction(\CrewCallBundle\Entity\PersonFunction $personFunction)
+    {
+        $this->person_functions->removeElement($personFunction);
+    }
+
+    /**
+     * Get personFunctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPersonFunctions()
+    {
+        return $this->person_functions;
+    }
+
+    /**
+     * Add personFunctionOrganization
+     *
+     * @param \CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization
+     *
+     * @return Person
+     */
+    public function addPersonFunctionOrganization(\CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization)
+    {
+        $this->person_function_organizations[] = $personFunctionOrganization;
+
+        return $this;
+    }
+
+    /**
+     * Remove personFunctionOrganization
+     *
+     * @param \CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization
+     */
+    public function removePersonFunctionOrganization(\CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization)
+    {
+        $this->person_function_organizations->removeElement($personFunctionOrganization);
+    }
+
+    /**
+     * Get personFunctionOrganizations
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPersonFunctionOrganizations()
+    {
+        return $this->person_function_organizations;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 }

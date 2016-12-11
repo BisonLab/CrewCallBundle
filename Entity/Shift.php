@@ -9,9 +9,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use CrewCallBundle\Lib\ExternalEntityConfig;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="crewcall_shift")
+ * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\ShiftRepository")
  * @Gedmo\Loggable
  */
 class Shift
@@ -156,7 +159,7 @@ class Shift
         if ($state == $this->state) return $this;
         if (is_int($state)) { $state = self::getStates()[$state]; }
         $state = strtoupper($state);
-        if (!in_array($state, self::getStates())) {
+        if (!isset(self::getStates()[$state])) {
             throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
         }
 

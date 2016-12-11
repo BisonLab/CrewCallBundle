@@ -10,7 +10,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="crewcall_person_function")
+ * @ORM\Table(name="crewcall_person_function", uniqueConstraints={@ORM\UniqueConstraint(name="person_function_idx", columns={"person_id", "function_id"})})
+ * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\PersonFunctionOrganizationRepository")
  * @Gedmo\Loggable
  */
 class PersonFunction
@@ -23,13 +24,13 @@ class PersonFunction
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="functions")
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="functions", cascade={"persist"})
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=FALSE)
      */
     private $person;
 
     /**
-     * @ORM\ManyToOne(targetEntity="FunctionEntity", inversedBy="persons")
+     * @ORM\ManyToOne(targetEntity="FunctionEntity", inversedBy="persons", cascade={"persist"})
      * @ORM\JoinColumn(name="function_id", referencedColumnName="id", nullable=FALSE)
      */
     private $function;
@@ -51,6 +52,11 @@ class PersonFunction
      */
     private $to_date;
 
+    public function __construct()
+    {
+        $this->from_date = new \DateTime();
+    }
+
     public function getId()
     {
         return $this->id;
@@ -64,11 +70,11 @@ class PersonFunction
     public function setPerson(Person $person = null)
     {
         if ($this->person !== null) {
-            $this->person->removeFunction($this);
+            $this->person->removePersonFunction($this);
         }
 
         if ($person !== null) {
-            $person->addFunction($this);
+            $person->addPersonFunction($this);
         }
 
         $this->person = $person;
@@ -140,5 +146,10 @@ class PersonFunction
     public function getToDate()
     {
         return $this->to_date;
+    }
+
+    public function __toString()
+    {
+        return $this->getFunction()->getName();
     }
 }

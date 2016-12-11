@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(name="crewcall_shift_organization")
+ * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\ShiftOrganizationRepository")
  * @Gedmo\Loggable
  */
 class ShiftOrganization

@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity()
  * @ORM\Table(name="crewcall_location")
+ * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\LocationRepository")
  * @UniqueEntity("name")
  * @Gedmo\Loggable
  */
@@ -38,7 +39,7 @@ class Location
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=255, nullable=false)
+     * @ORM\Column(name="description", type="text", nullable=true)
      * @Gedmo\Versioned
      */
     private $description;

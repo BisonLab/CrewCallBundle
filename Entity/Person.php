@@ -9,9 +9,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use CrewCallBundle\Entity\PersonContext;
+use CrewCallBundle\Lib\ExternalEntityConfig;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="crewcall_person")
+ * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\PersonRepository")
  * @UniqueEntity("username")
  * @Gedmo\Loggable
  */
@@ -27,10 +31,28 @@ class Person extends BaseUser
     protected $id;
 
     /**
-     * The first of two phone numbers. I'll put mobile first since it's the
-     * most used one.  Two should be enough for a table, the rest should be
-     * added as attributes, same with Facebook/Google usw usernames/addresses 
-     *
+     * @var string
+     * @ORM\Column(name="first_name", type="string", length=255, nullable=true)
+     * @Gedmo\Versioned
+     */
+    private $first_name;
+
+    /**
+     * @var string
+     * @ORM\Column(name="lastt_name", type="string", length=255, nullable=true)
+     * @Gedmo\Versioned
+     */
+    private $last_name;
+
+    /**
+     * Looks odd, but age may be quite useful in many cases.
+     * @var string
+     * @ORM\Column(name="date_of_birth", type="date", length=255, nullable=true)
+     * @Gedmo\Versioned
+     */
+    private $date_of_birth;
+
+    /**
      * @var string
      * @ORM\Column(name="mobile_phone_number", type="string", length=255, nullable=true)
      * @Gedmo\Versioned
@@ -38,9 +60,9 @@ class Person extends BaseUser
     private $mobile_phone_number;
 
     /**
-     * The first of two phone numbers.
+     * The last of two phone numbers.
      * Two should be enough for a table, the rest should be added as 
-     * attributes, same with Facebook/Google usw usernames/addresses 
+     * attributes, same with Facebook/Google usernames/addresses 
      *
      * @var string
      * @ORM\Column(name="home_phone_number", type="string", length=255, nullable=true)
@@ -86,11 +108,89 @@ class Person extends BaseUser
      */
     private $person_function_organizations;
 
+    /**
+     * @ORM\OneToMany(targetEntity="PersonContext", mappedBy="owner", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     */
+    private $contexts;
+
     public function __construct()
     {
         parent::__construct();
         // your own logic
         $this->organizations = new ArrayCollection();
+        $this->contexts  = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Set first_name
+     *
+     * @param string $first_name
+     *
+     * @return Person
+     */
+    public function setFirstName($first_name)
+    {
+        $this->first_name = $first_name;
+
+        return $this;
+    }
+
+    /**
+     * Get first_name
+     *
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->first_name;
+    }
+
+    /**
+     * Set last_name
+     *
+     * @param string $last_name
+     *
+     * @return Person
+     */
+    public function setLastName($last_name)
+    {
+        $this->last_name = $last_name;
+
+        return $this;
+    }
+
+    /**
+     * Get last_name
+     *
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->last_name;
+    }
+
+    /**
+     * Set date_of_birth
+     *
+     * @param string $date_of_birth
+     *
+     * @return Person
+     */
+    public function setDateOfBirth($date_of_birth)
+    {
+        $this->date_of_birth = $date_of_birth;
+
+        return $this;
+    }
+
+    /**
+     * Get date_of_birth
+     *
+     * @return string
+     */
+    public function getDateOfBirth()
+    {
+        return $this->date_of_birth;
     }
 
     /**
@@ -198,14 +298,18 @@ class Person extends BaseUser
     public function setState($state)
     {
         if ($state == $this->state) return $this;
-        if (is_int($state)) { $state = self::getStates()[$state]; }
         $state = strtoupper($state);
-        if (!in_array($state, self::getStates())) {
+        if (!isset(self::getStates()[$state])) {
             throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
         }
-
+        // Handle login enabling.
+        // (Enabled in the fos user bundle takes care of that part.)
+        if (in_array($state, ExternalEntityConfig::getEnableLoginStatesFor('Person'))) {
+            $this->setEnabled(true);
+        } else {
+            $this->setEnabled(false);
+        }
         $this->state = $state;
-
         return $this;
     }
 
@@ -302,5 +406,46 @@ class Person extends BaseUser
     public function getPersonFunctionOrganizations()
     {
         return $this->person_function_organizations;
+    }
+
+    /**
+     * Get contexts
+     *
+     * @return objects 
+     */
+    public function getContexts()
+    {
+        return $this->contexts;
+    }
+
+    /**
+     * add context
+     *
+     * @return mixed 
+     */
+    public function addContext(PersonContext $context)
+    {
+        $this->contexts[] = $context;
+        $context->setOwner($this) ;
+    }
+
+    /**
+     * Remove contexts
+     *
+     * @param PersonContext $contexts
+     */
+    public function removeContext(PersonContext $contexts)
+    {
+        $this->contexts->removeElement($contexts);
+    }
+
+    public function getFullName()
+    {
+        return $this->getFirstName() . " " . $this->getLastName();
+    }
+
+    public function __toString()
+    {
+        return $this->getFullName();
     }
 }

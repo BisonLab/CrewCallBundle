@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(name="crewcall_person_function_organization")
+ * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\PersonFunctionOrganizationRepository")
  * @Gedmo\Loggable
  */
 class PersonFunctionOrganization
@@ -56,6 +57,11 @@ class PersonFunctionOrganization
      */
     private $to_date;
 
+    public function __construct()
+    {
+        $this->from_date = new \DateTime();
+    }
+
     public function getId()
     {
         return $this->id;
@@ -69,11 +75,11 @@ class PersonFunctionOrganization
     public function setPerson(Person $person = null)
     {
         if ($this->person !== null) {
-            $this->person->removeFunction($this);
+            $this->person->removeOrganizationFunction($this);
         }
 
         if ($person !== null) {
-            $person->addFunction($this);
+            $person->addPersonFunctionOrganization($this);
         }
 
         $this->person = $person;
@@ -88,11 +94,11 @@ class PersonFunctionOrganization
     public function setFunction(FunctionEntity $function = null)
     {
         if ($this->function !== null) {
-            $this->function->removePersonFunction($this);
+            $this->function->removePersonFunctionOrganization($this);
         }
 
         if ($function !== null) {
-            $function->addPersonFunction($this);
+            $function->addPersonFunctionOrganization($this);
         }
 
         $this->function = $function;
@@ -104,7 +110,7 @@ class PersonFunctionOrganization
      *
      * @param \DateTime $fromDate
      *
-     * @return PersonFunction
+     * @return PersonFunctionOrganization
      */
     public function setFromDate($fromDate)
     {
@@ -128,7 +134,7 @@ class PersonFunctionOrganization
      *
      * @param \DateTime $toDate
      *
-     * @return PersonFunction
+     * @return PersonFunctionOrganization
      */
     public function setToDate($toDate)
     {
@@ -169,5 +175,10 @@ class PersonFunctionOrganization
     public function getOrganization()
     {
         return $this->organization;
+    }
+
+    public function __toString()
+    {
+        return $this->getFunction()->getName();
     }
 }

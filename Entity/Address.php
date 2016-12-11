@@ -24,6 +24,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @ORM\Entity()
  * @ORM\Table(name="crewcall_address")
+ * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\AddressRepository")
  * @Gedmo\Loggable
  */
 class Address
@@ -41,7 +42,7 @@ class Address
      * The two-letter country code.
      *
      * @var string
-     * @ORM\Column(name="country_code", type="string", length=4, nullable=false)
+     * @ORM\Column(name="country_code", type="string", length=4, nullable=true)
      * @Gedmo\Versioned
      */
     private $countryCode;
@@ -81,6 +82,15 @@ class Address
      * @Gedmo\Versioned
      */
     private $postalCode;
+
+    /**
+     * The postal name. (Yes, it should probably be extracted from postalCode)
+     *
+     * @var string
+     * @ORM\Column(name="postal_name", type="string", length=255, nullable=true)
+     * @Gedmo\Versioned
+     */
+    private $postalName;
 
     /**
      * The sorting code.
@@ -253,6 +263,30 @@ class Address
     }
 
     /**
+     * Set postalName
+     *
+     * @param string $postalName
+     *
+     * @return Address
+     */
+    public function setPostalName($postalName)
+    {
+        $this->postalName = $postalName;
+
+        return $this;
+    }
+
+    /**
+     * Get postalName
+     *
+     * @return string
+     */
+    public function getPostalName()
+    {
+        return $this->postalName;
+    }
+
+    /**
      * Set sortingCode
      *
      * @param string $sortingCode
@@ -346,5 +380,10 @@ class Address
     public function getLocale()
     {
         return $this->locale;
+    }
+
+    public function __toString()
+    {
+        return $this->addressLine1;
     }
 }

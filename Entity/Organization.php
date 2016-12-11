@@ -8,9 +8,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use CrewCallBundle\Lib\ExternalEntityConfig;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="crewcall_organization")
+ * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\OrganizationRepository")
  * @UniqueEntity("name")
  * @Gedmo\Loggable
  */
@@ -24,6 +27,22 @@ class Organization
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255, nullable=false, unique=true)
+     * @Gedmo\Versioned
+     */
+    private $name;
+
+    /**
+     * Most countries has an organization number of some sort. This is for that.
+     * @var string
+     * @ORM\Column(name="organization_number", type="string", length=255, nullable=true)
+     * @Gedmo\Versioned
+     */
+    private $organization_number;
 
     /**
      * The only phone number here.
@@ -80,59 +99,143 @@ class Organization
      */
     private $functions;
 
+    /**
+     * @ORM\OneToMany(targetEntity="OrganizationContext", mappedBy="owner", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     */
+    private $contexts;
+
     public function __construct()
     {
-        parent::__construct();
-        // your own logic
         $this->functions = new ArrayCollection();
+        $this->contexts = new ArrayCollection();
     }
 
     /**
-     * Set mobilePhoneNumber
+     * Get id
      *
-     * @param string $mobilePhoneNumber
-     *
-     * @return Person
+     * @return integer
      */
-    public function setMobilePhoneNumber($mobilePhoneNumber)
+    public function getId()
     {
-        $this->mobile_phone_number = $mobilePhoneNumber;
+        return $this->id;
+    }
+
+    /**
+     *
+     * @param string $name
+     * @return Location
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * Get mobilePhoneNumber
+     * Get name
      *
-     * @return string
+     * @return string 
      */
-    public function getMobilePhoneNumber()
+    public function getName()
     {
-        return $this->mobile_phone_number;
+        return $this->name;
     }
 
     /**
-     * Set homePhoneNumber
+     * Set organizationNumber
      *
-     * @param string $homePhoneNumber
+     * @param string $organizationNumber
      *
-     * @return Person
+     * @return Organization
      */
-    public function setHomePhoneNumber($homePhoneNumber)
+    public function setOrganizationNumber($organizationNumber)
     {
-        $this->home_phone_number = $homePhoneNumber;
+        $this->organization_number = $organizationNumber;
 
         return $this;
     }
 
     /**
-     * Get homePhoneNumber
+     * Get organizationNumber
      *
      * @return string
      */
-    public function getHomePhoneNumber()
+    public function getOrganizationNumber()
     {
-        return $this->home_phone_number;
+        return $this->organization_number;
+    }
+
+    /**
+     * Set officePhoneNumber
+     *
+     * @param string $officePhoneNumber
+     *
+     * @return Organization
+     */
+    public function setOfficePhoneNumber($officePhoneNumber)
+    {
+        $this->office_phone_number = $officePhoneNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get officePhoneNumber
+     *
+     * @return string
+     */
+    public function getOfficePhoneNumber()
+    {
+        return $this->office_phone_number;
+    }
+
+    /**
+     * Set officeEmail
+     *
+     * @param string $officeEmail
+     *
+     * @return Organization
+     */
+    public function setOfficeEmail($officeEmail)
+    {
+        $this->office_email = $officeEmail;
+
+        return $this;
+    }
+
+    /**
+     * Get officeEmail
+     *
+     * @return string
+     */
+    public function getOfficeEmail()
+    {
+        return $this->office_email;
+    }
+
+    /**
+     * Set visitAddress
+     *
+     * @param \CrewCallBundle\Entity\Address $visitAddress
+     *
+     * @return Organization
+     */
+    public function setVisitAddress(\CrewCallBundle\Entity\Address $visitAddress = null)
+    {
+        $this->visit_address = $visitAddress;
+
+        return $this;
+    }
+
+    /**
+     * Get visitAddress
+     *
+     * @return \CrewCallBundle\Entity\Address
+     */
+    public function getVisitAddress()
+    {
+        return $this->visit_address;
     }
 
     /**
@@ -140,7 +243,7 @@ class Organization
      *
      * @param \CrewCallBundle\Entity\Address $address
      *
-     * @return Person
+     * @return Organization
      */
     public function setAddress(\CrewCallBundle\Entity\Address $address = null)
     {
@@ -164,7 +267,7 @@ class Organization
      *
      * @param \CrewCallBundle\Entity\Address $postalAddress
      *
-     * @return Person
+     * @return Organization
      */
     public function setPostalAddress(\CrewCallBundle\Entity\Address $postalAddress = null)
     {
@@ -194,7 +297,7 @@ class Organization
         if ($state == $this->state) return $this;
         if (is_int($state)) { $state = self::getStates()[$state]; }
         $state = strtoupper($state);
-        if (!in_array($state, self::getStates())) {
+        if (!isset(self::getStates()[$state])) {
             throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
         }
 
@@ -272,84 +375,38 @@ class Organization
     }
 
     /**
-     * Get id
+     * Get contexts
      *
-     * @return integer
+     * @return objects 
      */
-    public function getId()
+    public function getContexts()
     {
-        return $this->id;
+        return $this->contexts;
     }
 
     /**
-     * Set officePhoneNumber
+     * add context
      *
-     * @param string $officePhoneNumber
-     *
-     * @return Organization
+     * @return mixed 
      */
-    public function setOfficePhoneNumber($officePhoneNumber)
+    public function addContext(OrganizationContext $context)
     {
-        $this->office_phone_number = $officePhoneNumber;
-
-        return $this;
+        $this->contexts[] = $context;
+        $context->setOwner($this) ;
     }
 
     /**
-     * Get officePhoneNumber
+     * Remove contexts
      *
-     * @return string
+     * @param OrganizationContext $contexts
      */
-    public function getOfficePhoneNumber()
+    public function removeContext(OrganizationContext $contexts)
     {
-        return $this->office_phone_number;
+        $this->contexts->removeElement($contexts);
     }
 
-    /**
-     * Set officeEmail
-     *
-     * @param string $officeEmail
-     *
-     * @return Organization
-     */
-    public function setOfficeEmail($officeEmail)
+    public function __toString()
     {
-        $this->office_email = $officeEmail;
-
-        return $this;
-    }
-
-    /**
-     * Get officeEmail
-     *
-     * @return string
-     */
-    public function getOfficeEmail()
-    {
-        return $this->office_email;
-    }
-
-    /**
-     * Set visitAddress
-     *
-     * @param \CrewCallBundle\Entity\Address $visitAddress
-     *
-     * @return Organization
-     */
-    public function setVisitAddress(\CrewCallBundle\Entity\Address $visitAddress = null)
-    {
-        $this->visit_address = $visitAddress;
-
-        return $this;
-    }
-
-    /**
-     * Get visitAddress
-     *
-     * @return \CrewCallBundle\Entity\Address
-     */
-    public function getVisitAddress()
-    {
-        return $this->visit_address;
+        return $this->name;
     }
 }
