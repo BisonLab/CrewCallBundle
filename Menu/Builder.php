@@ -10,12 +10,14 @@ class Builder implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
-    private $local_builder = null;
+    private $custom_builder = null;
+    private $sakonnin_builder = null;
+    private $common_builder = null;
 
     public function __construct()
     {
-        if (class_exists('AppBundle\Menu\Builder')) {
-            $this->custom_builder = new \AppBundle\Menu\Builder();
+        if (class_exists('CustomBundle\Menu\Builder')) {
+            $this->custom_builder = new \CustomBundle\Menu\Builder();
         }
         if (class_exists('BisonLab\SakonninBundle\Menu\Builder')) {
             $this->sakonnin_builder = new \BisonLab\SakonninBundle\Menu\Builder();
