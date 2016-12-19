@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% macro function_row (functionEntity) %}
+    <tr>
+        <td><a href="{{ path('function_show', { 'id': functionEntity.id }) }}">{{ functionEntity.name }}</a></td>
+        {% if functionEntity.parent is null %}
+        <td>&nbsp;</td>
+        {% else %}
+        <td><a href="{{ path('function_show', { 'id': functionEntity.parent.id }) }}">{{ functionEntity.parent.name }}</a></td>
+        {% endif %}
+        <td>{{ functionEntity.description }}</td>
+        <td>{{ functionEntity.state }}</td>
+        <td>{{ functionEntity.personfunctions.count }}</td>
+        <td>
+            <ul>
+                <li>
+                    <a href="{{ path('function_show', { 'id': functionEntity.id }) }}">show</a>
+                </li>
+                <li>
+                    <a href="{{ path('function_edit', { 'id': functionEntity.id }) }}">edit</a>
+                </li>
+                <li>
+                    <a href="{{ path('person_function', { 'id': functionEntity.id }) }}">people</a>
+                </li>
+            </ul>
+        </td>
+    </tr>
+{% endmacro %}
+{% import _self as fmacros %}
+
+{% block body %}
+    <h1>Functions</h1>
+
+        <table id="sortable_table" class="table table-striped table-bordered table-sm">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Name</th>
+                <th>Group</th>
+                <th>Description</th>
+                <th>State</th>
+                <th>People</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {# This was an attempt at nesting, but it was thwarted by table sorting. Gonna keep it for now, in case of good ideas. #}
+        {% for functionEntity in functionEntities if functionEntity.parent is null %}
+            {{ fmacros.function_row(functionEntity) }}
+            {% for child in functionEntity.children  %}
+                {{ fmacros.function_row(child) }}
+            {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('function_new') }}">Create a new Function</a>
+        </li>
+    </ul>
+{% endblock %}

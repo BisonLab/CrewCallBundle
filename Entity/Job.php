@@ -10,13 +10,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 use CrewCallBundle\Lib\ExternalEntityConfig;
 
 /**
- * Interest
+ * Job
  *
- * @ORM\Table(name="crewcall_interest")
- * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\InterestRepository")
+ * @ORM\Table(name="crewcall_job")
+ * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\JobRepository")
  * @Gedmo\Loggable
  */
-class Interest
+class Job
 {
     /**
      * @var int
@@ -50,10 +50,10 @@ class Interest
     private $person;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Shift", inversedBy="interests")
-     * @ORM\JoinColumn(name="shift_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\ManyToOne(targetEntity="ShiftFunction", inversedBy="jobs")
+     * @ORM\JoinColumn(name="shift_function_id", referencedColumnName="id", nullable=FALSE)
      */
-    private $shift;
+    private $shift_function;
 
     /**
      * Get id
@@ -110,7 +110,7 @@ class Interest
      *
      * @param array $attributes
      *
-     * @return Interest
+     * @return Job
      */
     public function setAttributes($attributes)
     {

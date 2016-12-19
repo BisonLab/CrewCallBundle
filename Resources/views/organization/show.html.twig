@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ organization.name }}</h1>
+
+    <table class="showTable">
+        <tbody>
+            <tr>
+                <th scope="row">Id</th>
+                <td>{{ organization.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ organization.name }}</td>
+            </tr>
+            <tr>
+                <th>Organization number</th>
+                <td>{{ organization.organizationnumber }}</td>
+            </tr>
+            <tr>
+                <th>Office phone number</th>
+                <td>{{ organization.officephonenumber }}</td>
+            </tr>
+            <tr>
+                <th>Office email</th>
+                <td>{{ organization.officeemail }}</td>
+            </tr>
+            <tr>
+                <th>State</th>
+                <td>{{ organization.state }}</td>
+            </tr>
+            <tr>
+                <th>Attributes</th>
+                <td>{{ organization.attributes | prettyprint}}</td>
+            </tr>
+            <tr>
+                <th>Persons</th>
+                <td>
+                <ul>
+                {% for pfo in organization.personfunctionorganizations %}
+                <li>{{ pfo.person }} ({{ pfo.function }})</li>
+                {% endfor %}
+                </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('organization_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('organization_edit', { 'id': organization.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

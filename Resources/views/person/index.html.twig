@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% if functionEntity is defined %}
+    <h1>People with {{ functionEntity }}</h1>
+    {% else %}
+    <h1>People</h1>
+    {% endif %}
+
+        <table id="sortable_table" class="table table-striped table-bordered table-sm">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Date of birth</th>
+                <th>Mobile</th>
+                <th>State</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for person in people %}
+            <tr>
+                <td><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.username }}</a></td>
+                <td>{{ person.fullname }}</td>
+                <td>{% if person.dateofbirth %}{{ person.dateofbirth|date('Y-m-d') }}{% endif %}</td>
+                <td>{{ person.mobilephonenumber }}</td>
+                <td>{{ person.state }}</td>
+                <td>
+                  <a href="{{ path('person_show', { 'id': person.id }) }}">show</a></br>
+                  <a href="{{ path('person_edit', { 'id': person.id }) }}">edit</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('person_new') }}">Create a new person</a>
+        </li>
+    </ul>
+{% endblock %}

@@ -69,7 +69,7 @@ class Event
      *
      * @ORM\Column(name="state", type="string", length=40, nullable=true)
      * @Gedmo\Versioned
-     * @Assert\Choice(callback = "getStates")
+     * @Assert\Choice(callback = "getStatesList")
      */
     private $state;
 
@@ -86,10 +86,15 @@ class Event
     private $organization;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="admin_events")
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="manager_events")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=FALSE)
      */
-    private $admin;
+    private $manager;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Shift", mappedBy="shifts", cascade={"remove"})
+     */
+    private $shifts;
 
     /* 
      * If an event is a festival or tournament, it can be useful as a parent
@@ -113,17 +118,28 @@ class Event
 
     public function __construct($options = array())
     {
+        $this->from_date = new \DateTime();
         $this->children = new ArrayCollection();
+        $this->shifts   = new ArrayCollection();
     }
 
     public function __toString()
     {
         return $this->getName();
     }
+
+    public function getMainEvent()
+    {
+        if ($this->getParent())
+            return $this->getParent()->getMainEvent();
+        else
+            return $this->getName();
+    }
     
     /*
      * Automatically generated getters and setters below this
      */
+
     /**
      * Get id
      *
@@ -188,8 +204,8 @@ class Event
     public function setState($state)
     {
         if ($state == $this->state) return $this;
-        if (is_int($state)) { $state = self::getStates()[$state]; }
         $state = strtoupper($state);
+dump(self::getStates());
         if (!isset(self::getStates()[$state])) {
             throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
         }
@@ -217,6 +233,49 @@ class Event
     public static function getStates()
     {
         return ExternalEntityConfig::getStatesFor('Event');
+    }
+
+    /**
+     * Get states list
+     *
+     * @return array 
+     */
+    public static function getStatesList()
+    {
+        return array_keys(ExternalEntityConfig::getStatesFor('Event'));
+    }
+    /**
+     * Add shift
+     *
+     * @param \CrewCallBundle\Entity\Shift $shift
+     * @return Shift
+     */
+    public function addShift(\CrewCallBundle\Entity\Shift $shift)
+    {
+        $this->shifts[] = $shift;
+        $shift->setEvent($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove shifts
+     *
+     * @param \CrewCallBundle\Entity\Shift $shift
+     */
+    public function removeShift(\CrewCallBundle\Entity\Shift $shift)
+    {
+        $this->shifts->removeElement($shift);
+    }
+
+    /**
+     * Get shifts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getShifts()
+    {
+        return $this->shifts;
     }
 
     /**
@@ -373,26 +432,26 @@ class Event
     }
 
     /**
-     * Set admin
+     * Set manager
      *
-     * @param \CrewCallBundle\Entity\Person $admin
+     * @param \CrewCallBundle\Entity\Person $manager
      *
      * @return Event
      */
-    public function setAdmin(\CrewCallBundle\Entity\Person $admin)
+    public function setManager(\CrewCallBundle\Entity\Person $manager)
     {
-        $this->admin = $admin;
+        $this->manager = $manager;
 
         return $this;
     }
 
     /**
-     * Get admin
+     * Get manager
      *
      * @return \CrewCallBundle\Entity\Person
      */
-    public function getAdmin()
+    public function getManager()
     {
-        return $this->admin;
+        return $this->manager;
     }
 }

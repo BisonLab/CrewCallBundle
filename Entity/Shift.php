@@ -39,22 +39,6 @@ class Shift
     private $location;
 
     /**
-     * @ORM\ManyToOne(targetEntity="FunctionEntity", inversedBy="shifts")
-     * @ORM\JoinColumn(name="functionentity_id", referencedColumnName="id", nullable=false)
-     */
-    private $function;
-
-    /**
-     * How many people do we need? (And can I find a better name for this
-     * field?) 
-     * @var string
-     *
-     * @ORM\Column(name="amount", type="integer", nullable=false)
-     * @Gedmo\Versioned
-     */
-    private $amount;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="from_time", type="datetime", nullable=false)
@@ -80,20 +64,20 @@ class Shift
     private $state;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="admin_shifts")
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="manager_shifts")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=FALSE)
      */
-    private $admin;
+    private $manager;
 
     /**
-     * @ORM\OneToMany(targetEntity="Interest", mappedBy="shift", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="ShiftFunction", mappedBy="shift", cascade={"remove"})
      */
-    private $interests;
+    private $shift_functions;
 
-    /**
-     * @ORM\OneToMany(targetEntity="ShiftOrganization", mappedBy="shift", cascade={"remove"})
-     */
-    private $organizations;
+    public function __construct($options = array())
+    {
+        $this->shift_functions = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -259,128 +243,36 @@ class Shift
     {
         return $this->function;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->interests     = new ArrayCollection();
-        $this->organizations = new ArrayCollection();
-    }
 
     /**
-     * Set amount
+     * Set manager
      *
-     * @param integer $amount
+     * @param \CrewCallBundle\Entity\Person $manager
      *
      * @return Shift
      */
-    public function setAmount($amount)
+    public function setManager(\CrewCallBundle\Entity\Person $manager)
     {
-        $this->amount = $amount;
+        $this->manager = $manager;
 
         return $this;
     }
 
     /**
-     * Get amount
-     *
-     * @return integer
-     */
-    public function getAmount()
-    {
-        return $this->amount;
-    }
-
-    /**
-     * Set admin
-     *
-     * @param \CrewCallBundle\Entity\Person $admin
-     *
-     * @return Shift
-     */
-    public function setAdmin(\CrewCallBundle\Entity\Person $admin)
-    {
-        $this->admin = $admin;
-
-        return $this;
-    }
-
-    /**
-     * Get admin
+     * Get manager
      *
      * @return \CrewCallBundle\Entity\Person
      */
-    public function getAdmin()
+    public function getManager()
     {
-        return $this->admin;
+        return $this->manager;
     }
 
-    /**
-     * Add interest
-     *
-     * @param \CrewCallBundle\Entity\Interest $interest
-     *
-     * @return Shift
-     */
-    public function addInterest(\CrewCallBundle\Entity\Interest $interest)
+    public function __toString()
     {
-        $this->interests[] = $interest;
-
-        return $this;
-    }
-
-    /**
-     * Remove interest
-     *
-     * @param \CrewCallBundle\Entity\Interest $interest
-     */
-    public function removeInterest(\CrewCallBundle\Entity\Interest $interest)
-    {
-        $this->interests->removeElement($interest);
-    }
-
-    /**
-     * Get interests
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getInterests()
-    {
-        return $this->interests;
-    }
-
-    /**
-     * Add organization
-     *
-     * @param \CrewCallBundle\Entity\ShiftOrganization $organization
-     *
-     * @return Shift
-     */
-    public function addOrganization(\CrewCallBundle\Entity\ShiftOrganization $organization)
-    {
-        $this->organizations[] = $organization;
-
-        return $this;
-    }
-
-    /**
-     * Remove organization
-     *
-     * @param \CrewCallBundle\Entity\ShiftOrganization $organization
-     */
-    public function removeOrganization(\CrewCallBundle\Entity\ShiftOrganization $organization)
-    {
-        $this->organizations->removeElement($organization);
-    }
-
-    /**
-     * Get organizations
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getOrganizations()
-    {
-        return $this->organizations;
+        // This is just too little, but gotta look at it later and I guess
+        // adding date/time is the correct thing to do. And maybe get rid of
+        // the location.
+        return $this->getEvent() . " at " . $this->getLocation();
     }
 }

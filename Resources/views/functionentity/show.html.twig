@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ functionentity }}</h1>
+
+    <table class="showTable">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ functionEntity.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ functionEntity.name }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ functionEntity.description }}</td>
+            </tr>
+            <tr>
+                <th>State</th>
+                <td>{{ functionEntity.state }}</td>
+            </tr>
+            <tr>
+                <th>Attributes</th>
+                <td>{{ functionEntity.attributes | prettyprint }}</td>
+            </tr>
+            <tr>
+                <th>Persons</th>
+                <td>
+                <ul>
+                {% for pfo in functionEntity.personfunctions %}
+                <li>{{ pfo.person }}</li>
+                {% endfor %}
+                </ul>
+                </td>
+            </tr>
+{%  if functionEntity.personfunctionorganizations.count > 0 %}
+            <tr>
+                <th>Organizations</th>
+                <td>
+                <ul>
+                {% for pfo in functionEntity.personfunctionorganizations %}
+                <li>{{ pfo.person }} ({{ pfo.organization }})</li>
+                {% endfor %}
+                </ul>
+                </td>
+            </tr>
+{% endif %}
+{%  if functionEntity.shiftfunctions.count > 0 %}
+            <tr>
+                <th>Shifts</th>
+                <td>
+                <ul>
+                {% for sf in functionEntity.shiftfunctions %}
+                <li>{{ sf.shift.event }} ({{ sf.shift.location }})</li>
+                {% endfor %}
+                </ul>
+                </td>
+            </tr>
+{% endif %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('function_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('function_edit', { 'id': functionEntity.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

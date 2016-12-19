@@ -37,7 +37,7 @@ class PersonFunctionOrganization
 
     /**
      * @ORM\ManyToOne(targetEntity="Organization", inversedBy="person_functions")
-     * @ORM\JoinColumn(name="function_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", nullable=FALSE)
      */
     private $organization;
 

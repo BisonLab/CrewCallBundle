@@ -33,10 +33,19 @@ class Builder implements ContainerAwareInterface
 
         $menu->addChild('Home', array('route' => 'homepage'));
 
+        // Temporary, but have to be able to go to the existing CRUD.
+        $menu->addChild('Events', array('route' => 'event_index'));
+        $menu->addChild('Listings');
+        $menu['Listings']->addChild('People', array('route' => 'person_index'));
+        $menu['Listings']->addChild('Organizations', array('route' => 'organization_index'));
+        $menu['Listings']->addChild('Location', array('route' => 'location_index'));
+        $menu['Listings']->addChild('Functions', array('route' => 'function_index'));
+
         if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $menu->addChild('Admin Stuff', array('route' => ''));
             $menu['Admin Stuff']->addChild('Message Types', array('route' => 'messagetype'));
             $menu['Admin Stuff']->addChild('User Admin', array('route' => 'user'));
+            $menu['Admin Stuff']->addChild('Report generator', array('route' => 'reports'));
         }
 
         $options['menu']      = $menu;
@@ -45,6 +54,9 @@ class Builder implements ContainerAwareInterface
         if ($this->custom_builder
                 && method_exists($this->custom_builder, "mainMenu"))
             $menu = $this->custom_builder->mainMenu($factory, $options);
+
+        // Temporary, but have to be able to go to the existing CRUD.
+
         return $menu;
     }
 
@@ -61,7 +73,7 @@ class Builder implements ContainerAwareInterface
 
         if ($options['container']->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $menu['Messages']->addChild('Write PM and send SMS', array('uri' => '#'));
-            $menu['Messages']['Write PM and send SMS']->setLinkAttribute('onclick', 'createPmSmsMessage()');
+            $menu['Messages']['Write PM and send SMS']->setLinkAttribute('onclick', 'createPmMessage("PMSMS")');
             $menu['Messages']->addChild('Write Frontpage message', array('uri' => '#'));
             $menu['Messages']['Write Frontpage message']->setLinkAttribute('onclick', 'createMessage()');
 

@@ -97,7 +97,7 @@ class Organization
     /**
      * @ORM\OneToMany(targetEntity="PersonFunctionOrganization", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=TRUE)
      */
-    private $functions;
+    private $person_function_organizations;
 
     /**
      * @ORM\OneToMany(targetEntity="OrganizationContext", mappedBy="owner", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
@@ -106,7 +106,7 @@ class Organization
 
     public function __construct()
     {
-        $this->functions = new ArrayCollection();
+        $this->person_function_organizations = new ArrayCollection();
         $this->contexts = new ArrayCollection();
     }
 
@@ -331,45 +331,35 @@ class Organization
      * *all* functions. Alas also those in the person_* tables. I say "Yes", but
      * then it's not that easy to handle these functions in picker-forms.
      */
-    public function getFunctions()
+    public function getPersonFunctionOrganizations()
     {
-        return $this->functions->toArray();
+        return $this->person_function_organizations;
     }
 
-    public function addFunction(FunctionEntity $function)
+    public function addPersonFunctionOrganization(PersonFunctionOrganization $function)
     {
-        if (!$this->functions->contains($function)) {
-            $this->functions->add($function);
+        if (!$this->person_function_organizations->contains($function)) {
+            $this->person_function_organizations->add($function);
         }
         return $this;
     }
 
-    public function removeFunction(FunctionEntity $function)
+    public function removePersonFunctionOrganization(PersonFunctionOrganization $function)
     {
-        if ($this->functions->contains($function)) {
-            $this->functions->removeElement($function);
+        if ($this->person_function_organizations->contains($function)) {
+            $this->person_function_organizations->removeElement($function);
         }
         return $this;
     }
-
-    /**
-     * Then, the connection between Person and Organization. Inbetween you have
-     * a person_organization table with the function, 
-     */
 
     /*
-     * This does not really give us the organizations, but the table inbetween.
-     * 
-     * But we could try to make this return Persons, with the Functions
-     * attached to it somehow. Only the functions for that person of course.
-     *
-     * And it should have a simple filter on ACTIVE or not. (Within from/to
-     * date.
+     * The downside of this "helper" is that we don't see the function, aka
+     * what they do in the organization.
      */
     public function getPersons()
     {
         $persons = array();
-        foreach ($this->getFunctions() as $f) {
+        foreach ($this->getPersonFunctionOrganizations() as $f) {
             $persons += $f->getPersons();
         } 
     }

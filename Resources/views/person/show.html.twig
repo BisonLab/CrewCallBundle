@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ person.username }}</h1>
+
+    <table class="showTable">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ person.id }}</td>
+            </tr>
+            <tr>
+                <th>First name</th>
+                <td>{{ person.firstname }}</td>
+            </tr>
+            <tr>
+                <th>Last name</th>
+                <td>{{ person.lastname }}</td>
+            </tr>
+            <tr>
+                <th>Date of birth</th>
+                <td>{% if person.dateofbirth %}{{ person.dateofbirth|date('Y-m-d') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Mobile phone number</th>
+                <td>{{ person.mobilephonenumber }}</td>
+            </tr>
+            <tr>
+                <th>Home phone number</th>
+                <td>{{ person.homephonenumber }}</td>
+            </tr>
+            <tr>
+                <th>State</th>
+                <td>{{ person.state }}</td>
+            </tr>
+            <tr>
+                <th>Attributes</th>
+                <td>{{ person.attributes | prettyprint }}</td>
+            </tr>
+            <tr>
+                <th>Functions</th>
+                <td>
+                <ul>
+                {% for f in person.personfunctions %}
+                <li>{{ f }}</li>
+                {% endfor %}
+                </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Organizations</th>
+                <td>
+                <ul>
+                {% for pfo in person.personfunctionorganizations %}
+                <li>{{ pfo.organization }} ({{ pfo.function }})</li>
+                {% endfor %}
+                </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('person_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('person_edit', { 'id': person.id }) }}">Edit</a>
+        </li>
+        <li>
+            <a href="{{ path('person_change_password', { 'id': person.id }) }}">Change Password</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

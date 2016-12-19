@@ -93,9 +93,19 @@ class FunctionEntity
      */
     private $person_function_organizations;
 
+    /**
+     * This is for the non-connected functions.
+     * @ORM\OneToMany(targetEntity="ShiftFunction", mappedBy="function",
+     * cascade={"remove"})
+     */
+    private $shift_functions;
+
     public function __construct($options = array())
     {
         $this->children = new ArrayCollection();
+        $this->person_functions = new ArrayCollection();
+        $this->person_function_organizations = new ArrayCollection();
+        $this->shift_functions = new ArrayCollection();
     }
 
     /**
@@ -296,6 +306,20 @@ class FunctionEntity
     }
 
     /**
+     * Get People
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPeople()
+    {
+        $people = array();
+        foreach ($this->person_functions as $pf) {
+            $people[] = $pf->getPerson();
+        }
+        return $people;
+    }
+
+    /**
      * Remove personFunctionOrganization
      *
      * @param \CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization
@@ -313,6 +337,40 @@ class FunctionEntity
     public function getPersonFunctionOrganizations()
     {
         return $this->person_function_organizations;
+    }
+
+    /**
+     * Add shiftFunction
+     *
+     * @param \CrewCallBundle\Entity\ShiftFunction $shiftFunction
+     *
+     * @return Shift
+     */
+    public function addShiftFunction(\CrewCallBundle\Entity\ShiftFunction $shiftFunction)
+    {
+        $this->shift_functions[] = $shiftFunction;
+
+        return $this;
+    }
+
+    /**
+     * Remove shiftFunction
+     *
+     * @param \CrewCallBundle\Entity\ShiftFunction $shiftFunction
+     */
+    public function removeShiftFunction(\CrewCallBundle\Entity\ShiftFunction $shiftFunction)
+    {
+        $this->shift_functions->removeElement($shiftFunction);
+    }
+
+    /**
+     * Get shiftFunctions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getShiftFunctions()
+    {
+        return $this->shift_functions;
     }
 
     public function __toString()

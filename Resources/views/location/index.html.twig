@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Locations list</h1>
+
+        <table id="sortable_table" class="table table-striped table-bordered table-sm">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for location in locations %}
+            <tr>
+                <td><a href="{{ path('location_show', { 'id': location.id }) }}">{{ location.name }}</a></td>
+                <td>{{ location.description }}</td>
+                <td>
+                 <a href="{{ path('location_show', { 'id': location.id }) }}">show</a><br>
+                 <a href="{{ path('location_edit', { 'id': location.id }) }}">edit</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('location_new') }}">Create a new location</a>
+        </li>
+    </ul>
+{% endblock %}

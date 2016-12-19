@@ -117,7 +117,7 @@ class Person extends BaseUser
     {
         parent::__construct();
         // your own logic
-        $this->organizations = new ArrayCollection();
+        $this->person_function_organizations = new ArrayCollection();
         $this->contexts  = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -405,7 +405,22 @@ class Person extends BaseUser
      */
     public function getPersonFunctionOrganizations()
     {
+dump($this->person_function_organizations);
         return $this->person_function_organizations;
+    }
+
+    /**
+     * Get Organizations
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOrganizations($active = true)
+    {
+        $o = new ArrayCollection();
+        foreach ($this->getPersonFunctionOrganizations() as $pfo) {
+            $o[] = $pfo->getOrganization();
+        }
+        return $o;
     }
 
     /**

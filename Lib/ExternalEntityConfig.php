@@ -43,6 +43,6 @@ class ExternalEntityConfig
     public static function getStatesAsChoicesFor($thingie)
     {
         $states = self::getStatesFor($thingie);
-        return array_combine($states, $states);
+        return array_combine(array_keys($states), array_keys($states));
     }
 }

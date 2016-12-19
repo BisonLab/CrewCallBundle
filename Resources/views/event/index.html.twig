@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Events list</h1>
+
+    <table id="sortable_table" class="table table-striped table-bordered table-sm">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Main Event</th>
+                <th>Description</th>
+                <th>From</th>
+                <th>To</th>
+                <th>State</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for event in events if event.parent is null %}
+            <tr>
+                <td><a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.mainevent }}</a></td>
+                <td>{{ event.description }}</td>
+                <td>{% if event.fromtime %}{{ event.fromtime|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if event.totime %}{{ event.totime|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ event.state }}</td>
+                <td>
+                <a href="{{ path('event_show', { 'id': event.id }) }}">show</a><br>
+                <a href="{{ path('event_edit', { 'id': event.id }) }}">edit</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('event_new') }}">Create a new event</a>
+        </li>
+    </ul>
+{% endblock %}

@@ -48,13 +48,13 @@ class Address
     private $countryCode;
 
     /**
-     * The top-level administrative subdivision of the country.
+     * The top-level manageristrative subdivision of the country.
      *
      * @var string
-     * @ORM\Column(name="administrative_area", type="text", nullable=true)
+     * @ORM\Column(name="manageristrative_area", type="text", nullable=true)
      * @Gedmo\Versioned
      */
-    private $administrativeArea;
+    private $manageristrativeArea;
 
     /**
      * The locality (i.e. city).
@@ -167,27 +167,27 @@ class Address
     }
 
     /**
-     * Set administrativeArea
+     * Set manageristrativeArea
      *
-     * @param string $administrativeArea
+     * @param string $manageristrativeArea
      *
      * @return Address
      */
-    public function setAdministrativeArea($administrativeArea)
+    public function setManageristrativeArea($manageristrativeArea)
     {
-        $this->administrativeArea = $administrativeArea;
+        $this->manageristrativeArea = $manageristrativeArea;
 
         return $this;
     }
 
     /**
-     * Get administrativeArea
+     * Get manageristrativeArea
      *
      * @return string
      */
-    public function getAdministrativeArea()
+    public function getManageristrativeArea()
     {
-        return $this->administrativeArea;
+        return $this->manageristrativeArea;
     }
 
     /**
