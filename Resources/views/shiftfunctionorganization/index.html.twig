@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Shiftfunctionorganizations list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Amount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for shiftFunctionOrganization in shiftFunctionOrganizations %}
+            <tr>
+                <td><a href="{{ path('shiftfunctionorganization_show', { 'id': shiftFunctionOrganization.id }) }}">{{ shiftFunctionOrganization.id }}</a></td>
+                <td>{{ shiftFunctionOrganization.amount }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('shiftfunctionorganization_show', { 'id': shiftFunctionOrganization.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('shiftfunctionorganization_edit', { 'id': shiftFunctionOrganization.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('shiftfunctionorganization_new') }}">Create a new shiftFunctionOrganization</a>
+        </li>
+    </ul>
+{% endblock %}

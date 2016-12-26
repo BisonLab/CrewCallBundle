@@ -7,11 +7,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-
 use CrewCallBundle\Lib\ExternalEntityConfig;
 
-class EventType extends AbstractType
+class ShiftType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -19,16 +17,13 @@ class EventType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
-            ->add('description')
-            ->add('from_time', DateTimeType::class, array('required' => true))
-            ->add('to_time')
-            ->add('state', ChoiceType::class, array(
-                'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Event')))
-            ->add('location')
-            ->add('organization')
-            ->add('manager')
-            ->add('parent')
+           ->add('from_time')
+           ->add('to_time')
+           ->add('state', ChoiceType::class, array(
+              'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift')))
+           ->add('event')
+           ->add('location')
+           ->add('manager')
            ;
     }
     
@@ -38,7 +33,7 @@ class EventType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CrewCallBundle\Entity\Event'
+            'data_class' => 'CrewCallBundle\Entity\Shift'
         ));
     }
 
@@ -47,6 +42,8 @@ class EventType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'crewcallbundle_event';
+        return 'crewcallbundle_shift';
     }
+
+
 }

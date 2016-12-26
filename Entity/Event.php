@@ -92,7 +92,7 @@ class Event
     private $manager;
 
     /**
-     * @ORM\OneToMany(targetEntity="Shift", mappedBy="shifts", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="Shift", mappedBy="event", cascade={"remove"})
      */
     private $shifts;
 
@@ -125,6 +125,8 @@ class Event
 
     public function __toString()
     {
+        if ($this->getParent())
+            return $this->getParent()->getMainEvent() . " - " . $this->name;
         return $this->getName();
     }
 
@@ -205,7 +207,6 @@ class Event
     {
         if ($state == $this->state) return $this;
         $state = strtoupper($state);
-dump(self::getStates());
         if (!isset(self::getStates()[$state])) {
             throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
         }
@@ -244,6 +245,7 @@ dump(self::getStates());
     {
         return array_keys(ExternalEntityConfig::getStatesFor('Event'));
     }
+
     /**
      * Add shift
      *

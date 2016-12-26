@@ -33,8 +33,8 @@ class Shift
     private $event;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Location", inversedBy="Shifts")
-     * @ORM\JoinColumn(name="locvation_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Location", inversedBy="shifts")
+     * @ORM\JoinColumn(name="location_id", referencedColumnName="id", nullable=true)
      */
     private $location;
 
@@ -59,7 +59,7 @@ class Shift
      *
      * @ORM\Column(name="state", type="string", length=40, nullable=true)
      * @Gedmo\Versioned
-     * @Assert\Choice(callback = "getStates")
+     * @Assert\Choice(callback = "getStatesList")
      */
     private $state;
 
@@ -173,6 +173,16 @@ class Shift
     }
 
     /**
+     * Get states list
+     *
+     * @return array 
+     */
+    public static function getStatesList()
+    {
+        return array_keys(ExternalEntityConfig::getStatesFor('Shift'));
+    }
+
+    /**
      * Set event
      *
      * @param \CrewCallBundle\Entity\Event $event
@@ -268,11 +278,49 @@ class Shift
         return $this->manager;
     }
 
+    /**
+     * Get shift_functions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getShiftFunctions()
+    {
+        return $this->shift_functions;
+    }
+
     public function __toString()
     {
         // This is just too little, but gotta look at it later and I guess
         // adding date/time is the correct thing to do. And maybe get rid of
         // the location.
         return $this->getEvent() . " at " . $this->getLocation();
+    }
+
+    /**
+     * Get the total amount of persons needed
+     *
+     * @return int
+     */
+    public function getTotalNeeded()
+    {
+        $total = 0;
+        foreach ($this->getShiftFunctions() as $sf) {
+            $total += $sf->getAmount();
+        }
+        return $total;
+    }
+
+    /**
+     * Get the total amount of persons Booked
+     *
+     * @return int
+     */
+    public function getTotalBooked()
+    {
+        $total = 0;
+        foreach ($this->getShiftFunctions() as $sf) {
+            $total += $sf->getBooked();
+        }
+        return $total;
     }
 }

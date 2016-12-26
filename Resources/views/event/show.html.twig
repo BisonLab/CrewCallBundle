@@ -1,14 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+<div class="col-sm-5">
     <h1>{{ event }}</h1>
 
     <table class="showTable">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ event.id }}</td>
-            </tr>
             <tr>
                 <th>Name</th>
                 <td>{{ event.name }}</td>
@@ -18,21 +16,36 @@
                 <td>{{ event.description }}</td>
             </tr>
             <tr>
-                <th>From_time</th>
+                <th>From time</th>
                 <td>{% if event.fromtime %}{{ event.fromtime|date('Y-m-d H:i:s') }}{% endif %}</td>
             </tr>
             <tr>
-                <th>To_time</th>
+                <th>To time</th>
                 <td>{% if event.totime %}{{ event.totime|date('Y-m-d H:i:s') }}{% endif %}</td>
             </tr>
             <tr>
                 <th>State</th>
                 <td>{{ event.state }}</td>
             </tr>
+{% if event.children.count > 0 %}
+            <tr>
+                <th>Sub events</th>
+                <td>
+{% for child in event.children %}
+                    <a href="{{ path('event_show', { 'id': child.id }) }}">{{ child.name }}</a><br>
+{% endfor %}
+                </td>
+            </tr>
+{% endif %}
         </tbody>
     </table>
 
     <ul>
+{% if event.parent %}
+        <li>
+          <a href="{{ path('event_show', { 'id': event.parent.id }) }}">Back to {{ event.parent.name }}</a><br>
+        </li>
+{% endif %}
         <li>
             <a href="{{ path('event_index') }}">Back to the list</a>
         </li>
@@ -40,9 +53,17 @@
             <a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a>
         </li>
         <li>
+            <a href="{{ path('event_new', {'parent': event.id}) }}">Create a sub event</a>
+        </li>
+        <li>
             {{ form_start(delete_form) }}
                 <input type="submit" value="Delete">
             {{ form_end(delete_form) }}
         </li>
     </ul>
+</div>
+<div class="col-sm-7">
+<h3>Shifts</h3>
+{% include 'CrewCallBundle:shift:shift_handling.html.twig' with { 'event': event}  %}
+</div>
 {% endblock %}

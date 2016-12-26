@@ -405,7 +405,6 @@ class Person extends BaseUser
      */
     public function getPersonFunctionOrganizations()
     {
-dump($this->person_function_organizations);
         return $this->person_function_organizations;
     }
 

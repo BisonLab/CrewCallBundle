@@ -40,6 +40,7 @@ class EventController extends Controller
     public function newAction(Request $request)
     {
         $event = new Event();
+
         $form = $this->createForm('CrewCallBundle\Form\EventType', $event);
         $form->handleRequest($request);
 
@@ -51,6 +52,24 @@ class EventController extends Controller
             return $this->redirectToRoute('event_show', array('id' => $event->getId()));
         }
 
+        // If this has a parent set here, it's not an invalid create attempt.
+        if ($parent_id = $request->get('parent')) {
+            $em = $this->getDoctrine()->getManager();
+            if ($parent = $em->getRepository('CrewCallBundle:Event')->find($parent_id)) {
+                $event->setParent($parent);
+                $event->setFromTime($parent->getFromTime());
+                $event->setToTime($parent->getToTime());
+                $event->setOrganization($parent->getOrganization());
+                // TODO: Consider setting manager, location and organization
+                // aswell. But not befire I've decided on wether I want to
+                // inherit from the parent or not. And on which properties.
+                $form->setData($event);
+            }
+        } elseif (!$form->isSubmitted()) {
+            // Can't be in the past, not usually anyway.
+            $event->setFromTime(new \DateTime());
+            $form->setData($event);
+        }
         return $this->render('event/new.html.twig', array(
             'event' => $event,
             'form' => $form->createView(),

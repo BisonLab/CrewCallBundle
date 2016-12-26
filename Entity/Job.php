@@ -44,7 +44,7 @@ class Job
     private $attributes;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="interests")
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="jobs")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=FALSE)
      */
     private $person;

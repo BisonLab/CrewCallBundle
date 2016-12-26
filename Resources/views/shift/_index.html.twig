@@ -1,0 +1,42 @@
+{% include 'CrewCallBundle:shiftfunction:handling.html.twig' %}
+<table id="shiftTable" class="table table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>From</th>
+            <th>To</th>
+            <th>Amount</th>
+            <th>State</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for shift in shifts %}
+        <tr>
+            <td data-order="{{ shift.fromtime | date('U')}}" >{% if shift.fromtime %}{{ shift.fromtime|date('d M H:i') }}{% endif %}</td>
+            <td data-order="{{ shift.totime | date('U')}}" >{% if shift.totime %}{{ shift.totime|date('d M H:i') }}{% endif %}</td>
+            <td>
+            {{ shift.totalbooked }} of {{ shift.totalneeded }} <a href="#" onClick="grabShiftFunctionList({{ shift.id }});">Show</a>
+            </td>
+            <td>
+            {{ shift.state }}
+            </td>
+            <td>
+                <a href="{{ path('shift_show', { 'id': shift.id }) }}">Show</a>
+                <a href="{{ path('shift_edit', { 'id': shift.id }) }}">Edit</a>
+            </td>
+        </tr>
+        <tr class="sfList">
+        <td colspan="5">
+        <div id="sfList_{{ shift.id }}">
+        </div>
+            <div id="newShiftFunction">
+            <a href="#" onClick="grabNewShiftFunctionForm({{shift.id}});">Add Function</a>
+            </div>
+
+            <div id="editShiftFunction">
+            </div>
+        </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

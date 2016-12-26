@@ -1,0 +1,7 @@
+<h4>New shift</h4>
+{# Don't like to add the access like this, but these templates are for ajax, alas I can just as well admit it. #}
+{{ form_start(form, {action:path('shift_new', {'access': 'ajax'}), 'attr': {'id':'newShiftForm'}}) }}
+    {{ form_widget(form) }}
+    <input id="submitNewShift" type="submit" value="Create" />
+{{ form_end(form) }}
+

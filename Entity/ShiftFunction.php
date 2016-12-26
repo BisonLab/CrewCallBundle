@@ -24,7 +24,7 @@ class ShiftFunction
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Shift", inversedBy="functions")
+     * @ORM\ManyToOne(targetEntity="Shift", inversedBy="shift_functions")
      * @ORM\JoinColumn(name="shift_id", referencedColumnName="id", nullable=FALSE)
      */
     private $shift;
@@ -44,7 +44,7 @@ class ShiftFunction
     private $amount;
 
     /**
-     * @ORM\OneToMany(targetEntity="Job", mappedBy="shift", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="Job", mappedBy="shift_function", cascade={"remove"})
      */
     private $jobs;
 
@@ -173,7 +173,7 @@ class ShiftFunction
      */
     public function addShiftFunctionOrganization(\CrewCallBundle\Entity\ShiftFunctionOrganization $shift_function_organizations)
     {
-        $this->shift_function_organizationss[] = $shift_function_organizations;
+        $this->shift_function_organizations[] = $shift_function_organizations;
 
         return $this;
     }
@@ -185,16 +185,28 @@ class ShiftFunction
      */
     public function removeOrganization(\CrewCallBundle\Entity\ShiftFunctionOrganization $shift_function_organizations)
     {
-        $this->shift_function_organizationss->removeElement($shift_function_organizations);
+        $this->shift_function_organizations->removeElement($shift_function_organizations);
     }
 
     /**
-     * Get shift_function_organizationss
+     * Get shift_function_organizations
      *
      * @return \Doctrine\Common\Collections\Collection
      */
     public function getShiftFunctionOrganizations()
     {
-        return $this->shift_function_organizationss;
+        return $this->shift_function_organizations;
+    }
+
+    public function getBooked()
+    {
+        $booked = 0;
+        foreach ($this->getJobs() as $j) {
+            if ($j->isBooked()) $booked++;
+        }
+        foreach ($this->getShiftFunctionOrganizations() as $sfo) {
+            $booked += $this->getShiftFunctionOrganizations()->getBookedAmount();
+        }
+        return $booked;
     }
 }

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Shift</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ shift.id }}</td>
+            </tr>
+            <tr>
+                <th>From_time</th>
+                <td>{% if shift.fromtime %}{{ shift.fromtime|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>To_time</th>
+                <td>{% if shift.totime %}{{ shift.totime|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>State</th>
+                <td>{{ shift.state }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('shift_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('shift_edit', { 'id': shift.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

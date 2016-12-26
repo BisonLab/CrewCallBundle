@@ -1,0 +1,56 @@
+<script>
+var old_html = '';
+
+function grabShiftFunctionList(shift_id) {
+    url = "{{ path('shiftfunction_index', {'access': 'ajax' }) }}" 
+        + "?shift=" + shift_id;
+    $.get(url, function( data ) {
+        $( "#sfList_" + shift_id ).html(data);
+    });
+    return false;
+}
+
+function submitNewShiftFunctionForm(shift_id) {
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('shiftfunction_new', { 'access': 'ajax' }) }}",
+        data: $( "#newShiftFunctionForm" ).serialize(),
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 201) {
+                $( "#newShiftFunction" ).html(old_html);
+                grabShiftFunctionList(shift_id);
+            } else {
+                $( "#newShiftFunction" ).html(xhr.responseText);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function grabNewShiftFunctionForm(shift_id) {
+    old_html = $( "#newShiftFunction" ).html();
+    url = "{{ path('shiftfunction_new', { 'access': 'ajax' }) }}";
+    if (shift_id) {
+        url = url + "?shift=" + shift_id;
+    }
+    $.get(url, function( data ) {
+        $( "#newShiftFunction" ).html(data);
+        $( "#crewcallbundle_shiftfunction_shift" ).prev().hide();
+        $( "#crewcallbundle_shiftfunction_shift" ).hide();
+        $( "#newShiftFunction" ).submit(function( event ) {
+            event.preventDefault();
+            submitNewShiftFunctionForm(shift_id);
+        });
+    });
+    return false;
+}
+
+</script>
