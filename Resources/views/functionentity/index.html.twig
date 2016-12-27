@@ -3,11 +3,6 @@
 {% macro function_row (functionEntity) %}
     <tr>
         <td><a href="{{ path('function_show', { 'id': functionEntity.id }) }}">{{ functionEntity.name }}</a></td>
-        {% if functionEntity.parent is null %}
-        <td>&nbsp;</td>
-        {% else %}
-        <td><a href="{{ path('function_show', { 'id': functionEntity.parent.id }) }}">{{ functionEntity.parent.name }}</a></td>
-        {% endif %}
         <td>{{ functionEntity.description }}</td>
         <td>{{ functionEntity.state }}</td>
         <td>{{ functionEntity.personfunctions.count }}</td>
@@ -31,11 +26,11 @@
 {% block body %}
     <h1>Functions</h1>
 
-        <table id="sortable_table" class="table table-striped table-bordered table-sm">
+        {# already sorted #}
+        <table class="table table-striped table-bordered table-sm">
         <thead class="thead-inverse">
             <tr>
                 <th>Name</th>
-                <th>Group</th>
                 <th>Description</th>
                 <th>State</th>
                 <th>People</th>
@@ -45,10 +40,20 @@
         <tbody>
         {# This was an attempt at nesting, but it was thwarted by table sorting. Gonna keep it for now, in case of good ideas. #}
         {% for functionEntity in functionEntities if functionEntity.parent is null %}
-            {{ fmacros.function_row(functionEntity) }}
-            {% for child in functionEntity.children  %}
-                {{ fmacros.function_row(child) }}
-            {% endfor %}
+            {# I'll take it for granted that a group has children #}
+            {% if functionEntity.children.count > 0 %}
+                <tr>
+                <td><strong>{{ functionEntity.name }}</strong></td>
+                <td>{{ functionEntity.description }}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                </tr>
+                {% for child in functionEntity.children  %}
+                    {{ fmacros.function_row(child) }}
+                {% endfor %}
+            {% else %}
+                {{ fmacros.function_row(functionEntity) }}
+            {% endif %}
         {% endfor %}
         </tbody>
     </table>
