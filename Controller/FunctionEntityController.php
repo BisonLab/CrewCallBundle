@@ -5,14 +5,16 @@ namespace CrewCallBundle\Controller;
 use CrewCallBundle\Entity\FunctionEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 /**
  * Functionentity controller.
  *
- * @Route("function")
+ * @Route("/admin/{access}/function", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
  */
-class FunctionEntityController extends Controller
+class FunctionEntityController extends CommonController
 {
     /**
      * Lists all functionEntity entities.
@@ -27,6 +29,28 @@ class FunctionEntityController extends Controller
         $functionEntities = $em->getRepository('CrewCallBundle:FunctionEntity')->findAll();
 
         return $this->render('functionentity/index.html.twig', array(
+            'functionEntities' => $functionEntities,
+        ));
+    }
+
+    /**
+     * Lists all functionEntity entities in a pickable fasion
+     *
+     * @Route("/picker", name="function_picker")
+     * @Method("GET")
+     */
+    public function pickerAction(Request $request, $access)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $functionEntities = $em->getRepository('CrewCallBundle:FunctionEntity')->findAll();
+
+        if ($this->isRest($access)) {
+            return $this->render('functionentity/_picker.html.twig', array(
+                'functionEntities' => $functionEntities,
+            ));
+        }
+        return $this->render('functionentity/picker.html.twig', array(
             'functionEntities' => $functionEntities,
         ));
     }

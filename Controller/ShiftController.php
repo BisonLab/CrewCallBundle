@@ -9,13 +9,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 /**
  * Shift controller.
  *
- * @Route("/{access}/shift", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
+ * @Route("/admin/{access}/shift", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
  */
 class ShiftController extends CommonController
 {

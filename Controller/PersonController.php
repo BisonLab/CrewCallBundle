@@ -4,21 +4,24 @@ namespace CrewCallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
 use FOS\UserBundle\Event\GetResponseUserEvent;
+use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 use CrewCallBundle\Entity\Person;
 use CrewCallBundle\Entity\FunctionEntity;
+
 /**
  * Person controller.
  *
- * @Route("person")
+ * @Route("/admin/{access}/person", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
  */
-class PersonController extends Controller
+class PersonController extends CommonController
 {
     /**
      * Lists all person entities.

@@ -5,14 +5,16 @@ namespace CrewCallBundle\Controller;
 use CrewCallBundle\Entity\Organization;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 /**
  * Organization controller.
  *
- * @Route("organization")
+ * @Route("/admin/{access}/organization", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
  */
-class OrganizationController extends Controller
+class OrganizationController extends CommonController
 {
     /**
      * Lists all organization entities.

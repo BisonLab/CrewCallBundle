@@ -5,14 +5,16 @@ namespace CrewCallBundle\Controller;
 use CrewCallBundle\Entity\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 /**
  * Event controller.
  *
- * @Route("event")
+ * @Route("/admin/{access}/event", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
  */
-class EventController extends Controller
+class EventController extends CommonController
 {
     /**
      * Lists all event entities.

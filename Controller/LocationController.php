@@ -5,14 +5,16 @@ namespace CrewCallBundle\Controller;
 use CrewCallBundle\Entity\Location;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 /**
  * Location controller.
  *
- * @Route("location")
+ * @Route("/admin/{access}/location", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
  */
-class LocationController extends Controller
+class LocationController extends CommonController
 {
     /**
      * Lists all location entities.
