@@ -27,14 +27,14 @@
         </tr>
         <tr class="sfList">
         <td colspan="5">
+        <div id="newShiftFunction">
+        <a href="#" onClick="grabNewShiftFunctionForm({{shift.id}});">Add Function</a>
+        </div>
+
+        <div id="editShiftFunction">
+        </div>
         <div id="sfList_{{ shift.id }}">
         </div>
-            <div id="newShiftFunction">
-            <a href="#" onClick="grabNewShiftFunctionForm({{shift.id}});">Add Function</a>
-            </div>
-
-            <div id="editShiftFunction">
-            </div>
         </td>
         </tr>
     {% endfor %}
