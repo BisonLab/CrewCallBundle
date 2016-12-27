@@ -109,6 +109,13 @@ class Person extends BaseUser
     private $person_function_organizations;
 
     /**
+     * This is for the non-connected functions.
+     * @ORM\OneToMany(targetEntity="Job", mappedBy="person",
+     * cascade={"remove"})
+     */
+    private $jobs;
+
+    /**
      * @ORM\OneToMany(targetEntity="PersonContext", mappedBy="owner", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     private $contexts;
@@ -420,6 +427,44 @@ class Person extends BaseUser
             $o[] = $pfo->getOrganization();
         }
         return $o;
+    }
+
+    /**
+     * Add job
+     *
+     * @param \CrewCallBundle\Entity\Job $job
+     *
+     * @return Person
+     */
+    public function addJob(\CrewCallBundle\Entity\Job $job)
+    {
+        if (!$this->jobs->contains($job)) {
+            $this->jobs->add($job);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove job
+     *
+     * @param \CrewCallBundle\Entity\Job $job
+     */
+    public function removeJob(\CrewCallBundle\Entity\Job $job)
+    {
+        if ($this->jobs->contains($job)) {
+            $this->jobs->removeElement($job);
+        }
+    }
+
+    /**
+     * Get jobs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getJobs()
+    {
+        return $this->jobs;
     }
 
     /**

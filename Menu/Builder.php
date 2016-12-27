@@ -32,16 +32,16 @@ class Builder implements ContainerAwareInterface
         $menu = $factory->createItem('root');
 
         $menu->addChild('Home', array('route' => 'homepage'));
-
-        // Temporary, but have to be able to go to the existing CRUD.
-        $menu->addChild('Events', array('route' => 'event_index'));
-        $menu->addChild('Listings');
-        $menu['Listings']->addChild('People', array('route' => 'person_index'));
-        $menu['Listings']->addChild('Organizations', array('route' => 'organization_index'));
-        $menu['Listings']->addChild('Location', array('route' => 'location_index'));
-        $menu['Listings']->addChild('Functions', array('route' => 'function_index'));
+        $menu->addChild('Jobs', array('route' => 'user_me'));
 
         if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $menu->addChild('Events', array('route' => 'event_index'));
+            $menu->addChild('Listings');
+            $menu['Listings']->addChild('People', array('route' => 'person_index'));
+            $menu['Listings']->addChild('Organizations', array('route' => 'organization_index'));
+            $menu['Listings']->addChild('Location', array('route' => 'location_index'));
+            $menu['Listings']->addChild('Functions', array('route' => 'function_index'));
+
             $menu->addChild('Admin Stuff', array('route' => ''));
             $menu['Admin Stuff']->addChild('Message Types', array('route' => 'messagetype'));
             $menu['Admin Stuff']->addChild('User Admin', array('route' => 'user'));
