@@ -9,6 +9,11 @@ use Doctrine\ORM\Query\ResultSetMapping;
  */
 class FunctionEntityRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findAll()
+    {
+        return $this->findBy(array(), array('name' => 'ASC'));
+    }
+
     public function searchByField($field, $value, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
     {
         if ($field == 'attributes') {

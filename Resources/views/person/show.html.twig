@@ -1,6 +1,77 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
+
+<script>
+
+function grabFunctionPicker() {
+    url = "{{ path('function_picker', {'access': 'ajax' }) }}";
+    $.get(url, function( data ) {
+        $( "#personRight" ).html(data);
+    }).done(function() {
+        $( "#functionTable" ).dataTable({
+            "order": [[ 1, "asc" ]],
+            "paging": false,
+            "searching": false
+            });
+        $( ".sfList" ).hide();
+    });
+    return false;
+}
+
+function pickedFunction(function_id) {
+    var person_function = {};
+    person_function.person_id   = {{ person.id }};
+    person_function.function_id = function_id;
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('personfunction_new', { 'access': 'ajax' }) }}",
+        /*
+        data: $.param(person_function),
+        dataType: "json",
+        */
+        data: person_function,
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 201) {
+                parent.location.reload();
+            } else {
+                alert("Something successfully didn't happen." + textStatus);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function grabPersonFunctionForm() {
+    old_html = $( "#newShift" ).html();
+    url = "{{ path('shift_new', { 'access': 'ajax' }) }}";
+    if (event_id) {
+        url = url + "?event=" + event_id;
+    }
+    $.get(url, function( data ) {
+        $( "#newShift" ).html(data);
+        /* My JS-fu is bad. I'm quite sure I should be able to set the
+         * submitNewShiftForm function directly, but then it woule be called
+         * immediately.  Aka, I have to read up on this..
+         */
+        $( "#newShiftForm" ).submit(function( event ) {
+            event.preventDefault();
+            submitNewShiftForm(event_id);
+        });
+    });
+    return false;
+}
+
+</script>
+
+<div class="col-sm-5" id="personLeft">
     <h1>{{ person.username }}</h1>
 
     <table class="showTable">
@@ -45,6 +116,7 @@
                 <li>{{ f }}</li>
                 {% endfor %}
                 </ul>
+                <a href="#" onClick="grabFunctionPicker();">Add function
                 </td>
             </tr>
             <tr>
@@ -76,4 +148,7 @@
             {{ form_end(delete_form) }}
         </li>
     </ul>
+</div>
+<div class="col-sm-7" id="personRight">
+</div>
 {% endblock %}
