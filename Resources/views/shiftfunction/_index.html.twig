@@ -3,6 +3,7 @@
         <tr>
             <th>Function</th>
             <th>Amount Needed</th>
+            <th>Amount Registered</th>
             <th>Amount Booked</th>
             <th>Actions</th>
         </tr>
@@ -12,6 +13,7 @@
         <tr>
             <td><a href="{{ path('function_show', { 'id': shiftFunction.function.id }) }}">{{ shiftFunction.function.name }}</a></td>
             <td>{{ shiftFunction.amount }}</td>
+            <td>{{ shiftFunction.jobs.count }}</td>
             <td>{{ shiftFunction.booked }}</td>
             <td>
               <a href="{{ path('shiftfunction_show', { 'id': shiftFunction.id }) }}">show</a>

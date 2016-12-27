@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Pick functions</h1>
+{% include 'CrewCallBundle:functionentity:_picker.html.twig' with { 'functionEntities': functionEntities}  %}
+
+{% endblock %}

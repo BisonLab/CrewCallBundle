@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 use CrewCallBundle\Entity\Person;
+use CrewCallBundle\Entity\ShiftFunction;
+use CrewCallBundle\Entity\Job;
 
 /**
  * User controller.
@@ -45,5 +47,28 @@ class UserController extends CommonController
         return $this->render('user/me.html.twig', array(
             'user' => $user,
         ));
+    }
+
+    /**
+     *
+     * @Route("/register_interest/{id}", name="user_register_interest")
+     * @Method("POST")
+     */
+    public function registerInterestAction(Request $request, ShiftFunction $shiftFunction, $access)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
+
+        $job = new Job();
+        $job->setShiftFunction($shiftFunction);
+        $job->setPerson($user);
+        // I guess it's just too much work finding whatever state you'd rather
+        // use for this. Like "REGISTERED" instead.
+        // They want it, alas they show interest.
+        $job->setState('INTERESTED');
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($job);
+        $em->flush($job);
+        return $this->redirectToRoute('user_me');
     }
 }

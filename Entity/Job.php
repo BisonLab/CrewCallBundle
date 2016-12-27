@@ -32,7 +32,7 @@ class Job
      *
      * @ORM\Column(name="state", type="string", length=40, nullable=true)
      * @Gedmo\Versioned
-     * @Assert\Choice(callback = "getStates")
+     * @Assert\Choice(callback = "getStatesList")
      */
     private $state;
 
@@ -41,7 +41,7 @@ class Job
      *
      * @ORM\Column(name="attributes", type="json_array")
      */
-    private $attributes;
+    private $attributes = array();
 
     /**
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="jobs")
@@ -74,7 +74,6 @@ class Job
     public function setState($state)
     {
         if ($state == $this->state) return $this;
-        if (is_int($state)) { $state = self::getStates()[$state]; }
         $state = strtoupper($state);
         if (!isset(self::getStates()[$state])) {
             throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
@@ -102,7 +101,17 @@ class Job
      */
     public static function getStates()
     {
-        return ExternalEntityConfig::getStatesFor('Event');
+        return ExternalEntityConfig::getStatesFor('Job');
+    }
+
+    /**
+     * Get states list
+     *
+     * @return array 
+     */
+    public static function getStatesList()
+    {
+        return array_keys(ExternalEntityConfig::getStatesFor('Job'));
     }
 
     /**
@@ -128,5 +137,47 @@ class Job
     {
         return $this->attributes;
     }
-}
 
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    public function setPerson(Person $person = null)
+    {
+        if ($this->person !== null) {
+            $this->person->removeJob($this);
+        }
+
+        if ($person !== null) {
+            $person->addJob($this);
+        }
+
+        $this->person = $person;
+        return $this;
+    }
+
+    public function getShiftFunction()
+    {
+        return $this->shift_function;
+    }
+
+    public function setShiftFunction(ShiftFunction $shift_function = null)
+    {
+        if ($this->shift_function !== null) {
+            $this->shift_function->removeJob($this);
+        }
+
+        if ($shift_function !== null) {
+            $shift_function->addJob($this);
+        }
+
+        $this->shift_function = $shift_function;
+        return $this;
+    }
+
+    public function isBooked()
+    {
+        return in_array($this->getState(), ExternalEntityConfig::getBookedStatesFor('Job'));
+    }
+}
