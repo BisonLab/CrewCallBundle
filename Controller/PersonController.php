@@ -115,7 +115,7 @@ class PersonController extends CommonController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('person_edit', array('id' => $person->getId()));
+            return $this->redirectToRoute('person_show', array('id' => $person->getId()));
         }
 
         return $this->render('person/edit.html.twig', array(
