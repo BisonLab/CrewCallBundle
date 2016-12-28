@@ -1,6 +1,6 @@
-{{ form_start(edit_form) }}
+{{ form_start(edit_form, {action:path('shift_edit', {'access': 'ajax'}), 'attr': {'id':'editShiftForm'}}) }}
     {{ form_widget(edit_form) }}
-    <input type="submit" value="Edit" />
+    <input type="submit" value="Save" />
 {{ form_end(edit_form) }}
 
 {{ form_start(delete_form) }}
