@@ -15,25 +15,25 @@
             <td data-order="{{ shift.fromtime | date('U')}}" >{% if shift.fromtime %}{{ shift.fromtime|date('d M H:i') }}{% endif %}</td>
             <td data-order="{{ shift.totime | date('U')}}" >{% if shift.totime %}{{ shift.totime|date('d M H:i') }}{% endif %}</td>
             <td>
-            {{ shift.totalbooked }} of {{ shift.totalneeded }} <a href="#" onClick="grabShiftFunctionList({{ shift.id }});">Show</a>
+            {{ shift.totalbooked }} of {{ shift.totalneeded }} <a href="#" onClick="grabShiftFunctionList({{ shift.id }});">List</a>
             </td>
             <td>
             {{ shift.state }}
             </td>
             <td>
                 <a href="{{ path('shift_show', { 'id': shift.id }) }}">Show</a>
-                <a href="{{ path('shift_edit', { 'id': shift.id }) }}">Edit</a>
+                <a href="#" onClick="grabEditShiftForm({{ shift.id }});">Edit</a>
+                <a href="#" onClick="grabShiftFunctionList({{ shift.id }});">Functions</a>
             </td>
         </tr>
-        <tr class="sfList">
+        <tr class="sfList" id="sfList_{{ shift.id }}">
         <td colspan="5">
         <div id="newShiftFunction">
         <a href="#" onClick="grabNewShiftFunctionForm({{shift.id}});">Add Function</a>
         </div>
-
         <div id="editShiftFunction">
         </div>
-        <div id="sfList_{{ shift.id }}">
+        <div id="sfTable_{{ shift.id }}">
         </div>
         </td>
         </tr>
