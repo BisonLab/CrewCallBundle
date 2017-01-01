@@ -50,7 +50,6 @@ class JobController extends CommonController
     }
 
     /**
-     * Displays a form to edit an existing shiftFunction entity.
      *
      * @Route("/{id}/state/{state}", name="job_state")
      * @Method({"GET", "POST"})
