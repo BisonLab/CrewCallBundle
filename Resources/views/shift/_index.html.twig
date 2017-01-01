@@ -23,7 +23,8 @@
             <td>
                 <a href="{{ path('shift_show', { 'id': shift.id }) }}">Show</a>
                 <a href="#" onClick="grabEditShiftForm({{ shift.id }});">Edit</a>
-                <a href="#" onClick="grabShiftFunctionList({{ shift.id }});">Functions</a>
+                <a href="#" onClick="grabShiftFunctionList({{ shift.id }});">Functions</a><br>
+                <a href="#" onClick="grabShiftFunctionList({{ shift.id }}); grabNewShiftFunctionForm({{shift.id}});">Add Function</a>
             </td>
         </tr>
         <tr class="sfList" id="sfList_{{ shift.id }}">
@@ -31,9 +32,9 @@
         <div id="newShiftFunction">
         <a href="#" onClick="grabNewShiftFunctionForm({{shift.id}});">Add Function</a>
         </div>
-        <div id="editShiftFunction">
-        </div>
         <div id="sfTable_{{ shift.id }}">
+        </div>
+        <div id="editShiftFunction">
         </div>
         </td>
         </tr>

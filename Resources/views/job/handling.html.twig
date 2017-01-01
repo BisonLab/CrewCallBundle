@@ -1,0 +1,37 @@
+<script>
+
+function grabJobList(shiftfunction_id) {
+    url = "{{ path('job_index', {'access': 'ajax' }) }}" 
+        + "?shiftfunction=" + shiftfunction_id;
+    $.get(url, function( data ) {
+        $( "#jobTable_" + shiftfunction_id ).html(data);
+        $( "#jobList_" + shiftfunction_id ).show();
+    });
+    return false;
+}
+
+function hideJobList(shiftfunction_id) {
+    $( "#jobList_" + shiftfunction_id ).hide();
+}
+
+function setStateOnJob(job_id, state, shiftfunction_id) {
+    cheat_url = "{{ path('job_state', { 'id': 0, 'state': 'NONE', 'access': 'ajax' }) }}";
+    c_url = cheat_url.replace("0", job_id);
+    url = c_url.replace("NONE", state);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "POST",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            grabJobList(shiftfunction_id);
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+</script>

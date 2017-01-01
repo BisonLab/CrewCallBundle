@@ -143,10 +143,10 @@ class ShiftController extends CommonController
     /**
      * Displays a form to edit an existing shift entity.
      *
-     * @Route("/{id}/edit", name="shift_edit")
+     * @Route("/{id}/edit", name="shift_edit", defaults={"id" = 0})
      * @Method({"GET", "POST"})
      */
-    public function editAction(Request $request, Shift $shift)
+    public function editAction(Request $request, Shift $shift, $access)
     {
         $deleteForm = $this->createDeleteForm($shift);
         $editForm = $this->createForm('CrewCallBundle\Form\ShiftType', $shift);
@@ -155,7 +155,7 @@ class ShiftController extends CommonController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('shift_edit', array('id' => $shift->getId()));
+            return $this->redirectToRoute('shift_show', array('id' => $shift->getId()));
         }
 
         if ($this->isRest($access)) {

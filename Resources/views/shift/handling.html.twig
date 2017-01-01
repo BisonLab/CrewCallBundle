@@ -1,6 +1,26 @@
 <script>
 var old_html = '';
 
+
+function grabShiftList(event_id) {
+    url = "{{ path('shift_index', {'access': 'ajax' }) }}" 
+        + "?event=" + event_id;
+    $.get(url, function( data ) {
+        $( "#shiftList" ).html(data);
+    }).done(function() {
+        $( ".sfList" ).each(function() {
+            $(this).hide();
+        });
+/* Not really working. Having odd TRs in the table 
+        $( "#shiftTable" ).dataTable({
+            "order": [[ 1, "asc" ]],
+            "paging": false,
+            "searching": false
+            });
+*/
+    });
+    return false;
+}
 function submitNewShiftForm(event_id) {
     $.ajax({
         beforeSend: function(req) {
@@ -46,21 +66,46 @@ function grabNewShiftForm(event_id = false) {
     return false;
 }
 
-function grabShiftList(event_id) {
-    url = "{{ path('shift_index', {'access': 'ajax' }) }}" 
-        + "?event=" + event_id;
-    $.get(url, function( data ) {
-        $( "#shiftList" ).html(data);
-    }).done(function() {
-        $( "#shiftTable" ).dataTable({
-            "order": [[ 1, "asc" ]],
-            "paging": false,
-            "searching": false
-            });
-        $( ".sfList" ).hide();
+function submitEditShiftForm(shift_id) {
+    /* Looks odd?
+     * The option is to make the controller action not use the ID in
+     * the URL. I may change to that later. */
+    orgurl = "{{ path('shift_edit', { 'access': 'ajax' }) }}";
+    url = orgurl.replace("0", shift_id);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: url,
+        data: $( "#editShiftForm" ).serialize(),
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+        $( "#editShift" ).html("");
+        // Cheating with twig.
+        grabShiftList({{ event.id }});
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
     });
     return false;
 }
+
+function grabEditShiftForm(shift_id) {
+    orgurl = "{{ path('shift_edit', { 'access': 'ajax' }) }}";
+    url = orgurl.replace("0", shift_id);
+    $.get(url, function( data ) {
+        $( "#editShift" ).html(data);
+        $( "#editShiftForm" ).submit(function( event ) {
+            event.preventDefault();
+            submitEditShiftForm(shift_id);
+        });
+    });
+    return false;
+}
+
 jQuery(document).ready(function() {
     grabShiftList({{ event.id }});
     return false;

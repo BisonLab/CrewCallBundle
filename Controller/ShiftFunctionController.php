@@ -28,7 +28,6 @@ class ShiftFunctionController extends CommonController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $shiftFunctions = $em->getRepository('CrewCallBundle:ShiftFunction')->findAll();
         $shiftFunctions = array();
         if ($shift_id = $request->get('shift')) {
             $em = $this->getDoctrine()->getManager();
@@ -115,10 +114,10 @@ class ShiftFunctionController extends CommonController
     /**
      * Displays a form to edit an existing shiftFunction entity.
      *
-     * @Route("/{id}/edit", name="shiftfunction_edit")
+     * @Route("/{id}/edit", name="shiftfunction_edit", defaults={"id" = 0})
      * @Method({"GET", "POST"})
      */
-    public function editAction(Request $request, ShiftFunction $shiftFunction)
+    public function editAction(Request $request, ShiftFunction $shiftFunction, $access)
     {
         $deleteForm = $this->createDeleteForm($shiftFunction);
         $editForm = $this->createForm('CrewCallBundle\Form\ShiftFunctionType', $shiftFunction);
@@ -127,7 +126,15 @@ class ShiftFunctionController extends CommonController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('shiftfunction_edit', array('id' => $shiftFunction->getId()));
+            return $this->redirectToRoute('shiftfunction_show', array('id' => $shiftFunction->getId()));
+        }
+
+        if ($this->isRest($access)) {
+            return $this->render('shiftfunction/_edit.html.twig', array(
+                'shiftFunction' => $shiftFunction,
+                'edit_form' => $editForm->createView(),
+                'delete_form' => $deleteForm->createView(),
+            ));
         }
 
         return $this->render('shiftfunction/edit.html.twig', array(

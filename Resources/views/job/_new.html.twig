@@ -1,0 +1,4 @@
+{{ form_start(form, {action:path('job_new', {'access': 'ajax'}), 'attr': {'id':'newJobForm'}}) }}
+    {{ form_widget(form) }}
+    <input id="submitNewJob" type="submit" value="Create" />
+{{ form_end(form) }}

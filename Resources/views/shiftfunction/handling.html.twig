@@ -1,11 +1,16 @@
 <script>
-var old_html = '';
+var old_sf_html = '';
 
 function grabShiftFunctionList(shift_id) {
     url = "{{ path('shiftfunction_index', {'access': 'ajax' }) }}" 
         + "?shift=" + shift_id;
     $.get(url, function( data ) {
-        $( "#sfList_" + shift_id ).html(data);
+        $( "#sfTable_" + shift_id ).html(data);
+        $( "#sfList_" + shift_id ).show();
+    }).done(function() {
+        $( ".jobList" ).each(function() {
+            $(this).hide();
+        });
     });
     return false;
 }
@@ -22,7 +27,7 @@ function submitNewShiftFunctionForm(shift_id) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             if (xhr.status == 201) {
-                $( "#newShiftFunction" ).html(old_html);
+                $( "#newShiftFunction" ).html(old_sf_html);
                 grabShiftFunctionList(shift_id);
             } else {
                 $( "#newShiftFunction" ).html(xhr.responseText);
@@ -36,7 +41,7 @@ function submitNewShiftFunctionForm(shift_id) {
 }
 
 function grabNewShiftFunctionForm(shift_id) {
-    old_html = $( "#newShiftFunction" ).html();
+    old_sf_html = $( "#newShiftFunction" ).html();
     url = "{{ path('shiftfunction_new', { 'access': 'ajax' }) }}";
     if (shift_id) {
         url = url + "?shift=" + shift_id;
@@ -48,6 +53,42 @@ function grabNewShiftFunctionForm(shift_id) {
         $( "#newShiftFunction" ).submit(function( event ) {
             event.preventDefault();
             submitNewShiftFunctionForm(shift_id);
+        });
+    });
+    return false;
+}
+
+function submitEditShiftFunctionForm(shiftfunction_id) {
+    orgurl = "{{ path('shiftfunction_edit', { 'access': 'ajax' }) }}";
+    url = orgurl.replace("0", shiftfunction_id);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: url,
+        data: $( "#editShiftFunctionForm" ).serialize(),
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+        $( "#editShiftFunction" ).html("");
+        grabShiftFunctionList(shiftfunction_id);
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function grabEditShiftFunctionForm(shiftfunction_id) {
+    orgurl = "{{ path('shiftfunction_edit', { 'access': 'ajax' }) }}";
+    url = orgurl.replace("0", shiftfunction_id);
+    $.get(url, function( data ) {
+        $( "#editShiftFunction" ).html(data);
+        $( "#editShiftFunctionForm" ).submit(function( event ) {
+            event.preventDefault();
+            submitEditShiftFunctionForm(shiftfunction_id);
         });
     });
     return false;
