@@ -122,7 +122,12 @@ class ShiftFunctionOrganizationController extends CommonController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('shiftfunctionorganization_show', array('id' => $shiftFunctionOrganization->getId()));
+            if ($this->isRest($access)) {
+                // No content, well, sortof.
+                return new JsonResponse(array("status" => "OK"), Response::HTTP_NO_CONTENT);
+            } else {
+                return $this->redirectToRoute('shiftfunctionorganization_show', array('id' => $shiftFunctionOrganization->getId()));
+            }
         }
 
         if ($this->isRest($access)) {
@@ -145,8 +150,16 @@ class ShiftFunctionOrganizationController extends CommonController
      * @Route("/{id}", name="shiftfunctionorganization_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, ShiftFunctionOrganization $shiftFunctionOrganization)
+    public function deleteAction(Request $request, ShiftFunctionOrganization $shiftFunctionOrganization, $access)
     {
+        // If rest, no form.
+        if ($this->isRest($access)) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($shiftFunctionOrganization);
+            $em->flush($shiftFunctionOrganization);
+            return new JsonResponse(array("status" => "OK"), Response::HTTP_NO_CONTENT);
+        }
+
         $form = $this->createDeleteForm($shiftFunctionOrganization);
         $form->handleRequest($request);
 

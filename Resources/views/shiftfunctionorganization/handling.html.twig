@@ -92,4 +92,26 @@ function grabEditShiftFunctionOrganizationForm(shiftfunction_id) {
     return false;
 }
 
+function deleteShiftFunctionOrganization(sfo_id) {
+    cheat_url = "{{ path('shiftfunctionorganization_delete', { 'id': 0, 'access': 'ajax' }) }}";
+    url = cheat_url.replace("0", sfo_id);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "DELETE",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 204) {
+                parent.location.reload();
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
 </script>
