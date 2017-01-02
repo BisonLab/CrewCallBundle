@@ -29,23 +29,29 @@ class JobController extends CommonController
     {
         $em = $this->getDoctrine()->getManager();
 
+        $with_orgs = $request->get('with_orgs') ?: false;
+
         $jobs = array();
+        $sfos = array();
         if ($shiftfunction_id = $request->get('shiftfunction')) {
             $em = $this->getDoctrine()->getManager();
             if ($shiftfunction = $em->getRepository('CrewCallBundle:ShiftFunction')->find($shiftfunction_id)) {
                 $jobs = $shiftfunction->getJobs();
+                $sfos = $shiftfunction->getShiftFunctionOrganizations();
             }
         } else {
             $jobs = $em->getRepository('CrewCallBundle:Job')->findAll();
         }
         if ($this->isRest($access)) {
             return $this->render('job/_index.html.twig', array(
-                'jobs' => $jobs
+                'jobs' => $jobs,
+                'sfos' => $sfos
             ));
         }
 
         return $this->render('job/index.html.twig', array(
             'jobs' => $jobs,
+            'sfos' => $sfos
         ));
     }
 

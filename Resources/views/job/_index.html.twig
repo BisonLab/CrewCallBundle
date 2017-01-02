@@ -17,5 +17,25 @@
             </td>
         </tr>
     {% endfor %}
+    {% if sfos.count > 0 %}
+        </tbody>
+        <thead>
+            <tr>
+                <th>Organization</th>
+                <th>Amounk</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sfo in sfos %}
+          <tr>
+            <td>{{ sfo.organization }}</td>
+            <td>{{ sfo.amount }}</td>
+            <td>
+                &nbsp;
+            </td>
+          </tr>
+        {% endfor %}
+    {% endif %}
     </tbody>
 </table>

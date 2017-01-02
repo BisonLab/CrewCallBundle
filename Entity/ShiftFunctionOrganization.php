@@ -162,7 +162,7 @@ class ShiftFunctionOrganization
      *
      * @return ShiftFunctionOrganization
      */
-    public function setShift(\CrewCallBundle\Entity\ShiftFunction $shift_function)
+    public function setShiftFunction(\CrewCallBundle\Entity\ShiftFunction $shift_function)
     {
         $this->shift_function = $shift_function;
 
@@ -201,5 +201,11 @@ class ShiftFunctionOrganization
     public function getOrganization()
     {
         return $this->organization;
+    }
+
+    public function __toString()
+    {
+        // TODO: Guess. (Yeah, translation).
+        return $this->amount . " from " . (string)$this->organization;
     }
 }

@@ -205,8 +205,15 @@ class ShiftFunction
             if ($j->isBooked()) $booked++;
         }
         foreach ($this->getShiftFunctionOrganizations() as $sfo) {
-            $booked += $this->getShiftFunctionOrganizations()->getBookedAmount();
+            // If they are mentioned, they are booked. Aka amount is by
+            // definition booked.
+            $booked += $sfo->getAmount();
         }
         return $booked;
+    }
+
+    public function __toString()
+    {
+        return (string)$this->getFunction();
     }
 }

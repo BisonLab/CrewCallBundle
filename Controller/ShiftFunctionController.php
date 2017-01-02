@@ -83,6 +83,7 @@ class ShiftFunctionController extends CommonController
                 $form->setData($shiftFunction);
             }
         }
+
         if ($this->isRest($access)) {
             return $this->render('shiftfunction/_new.html.twig', array(
                 'shiftFunction' => $shiftFunction,

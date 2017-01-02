@@ -1,4 +1,5 @@
 {% include 'CrewCallBundle:job:handling.html.twig' %}
+{% include 'CrewCallBundle:shiftfunctionorganization:handling.html.twig' %}
 <table id="shiftFunctionTable" class="table table-bordered table-sm">
     <thead>
         <tr>
@@ -22,12 +23,18 @@
             <td>
               <a href="{{ path('shiftfunction_show', { 'id': shiftFunction.id }) }}">Show</a>
                 <a href="#" onClick="grabEditShiftFunctionForm({{ shiftFunction.id }});">Edit</a>
-                <a href="#" onClick="grabJobList({{ shiftFunction.id }});">Jobs</a>
+                <a href="#" onClick="grabJobList({{ shiftFunction.id }});">Jobs</a><br>
+                <a href="#" onClick="grabJobList({{ shiftFunction.id }}); grabNewShiftFunctionOrganizationForm({{shiftFunction.id}});">Add crew from an organization</a>
             </td>
         </tr>
         <tr class="jobList" id="jobList_{{ shiftFunction.id }}">
         <td colspan="5">
+        <div id="newShiftFunctionOrganization_{{ shiftFunction.id }}">
+        <a href="#" onClick="grabNewShiftFunctionOrganizationForm({{shiftFunction.id}});">Add crew from an organization</a>
+        </div>
         <div id="jobTable_{{ shiftFunction.id }}">
+        </div>
+        <div id="editShiftFunctionOrganization_{{ shiftFunction.id }}">
         </div>
         </td>
         </tr>

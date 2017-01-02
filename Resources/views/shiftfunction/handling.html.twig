@@ -1,6 +1,4 @@
 <script>
-var old_sf_html = '';
-
 function grabShiftFunctionList(shift_id) {
     url = "{{ path('shiftfunction_index', {'access': 'ajax' }) }}" 
         + "?shift=" + shift_id;
@@ -27,10 +25,9 @@ function submitNewShiftFunctionForm(shift_id) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             if (xhr.status == 201) {
-                $( "#newShiftFunction" ).html(old_sf_html);
-                grabShiftFunctionList(shift_id);
+                parent.location.reload();
             } else {
-                $( "#newShiftFunction" ).html(xhr.responseText);
+                $( "#newShiftFunction_"+shift_id ).html(xhr.responseText);
             }
       }).fail(function(xhr, status, error) {
             errmsg = "Message sending failed\n";
@@ -41,16 +38,15 @@ function submitNewShiftFunctionForm(shift_id) {
 }
 
 function grabNewShiftFunctionForm(shift_id) {
-    old_sf_html = $( "#newShiftFunction" ).html();
     url = "{{ path('shiftfunction_new', { 'access': 'ajax' }) }}";
     if (shift_id) {
         url = url + "?shift=" + shift_id;
     }
     $.get(url, function( data ) {
-        $( "#newShiftFunction" ).html(data);
+        $( "#newShiftFunction_"+shift_id ).html(data);
         $( "#crewcallbundle_shiftfunction_shift" ).prev().hide();
         $( "#crewcallbundle_shiftfunction_shift" ).hide();
-        $( "#newShiftFunction" ).submit(function( event ) {
+        $( "#newShiftFunction_"+shift_id ).submit(function( event ) {
             event.preventDefault();
             submitNewShiftFunctionForm(shift_id);
         });
@@ -71,7 +67,7 @@ function submitEditShiftFunctionForm(shiftfunction_id) {
         dataType: "text",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-        $( "#editShiftFunction" ).html("");
+        $( "#editShiftFunction_"+shiftfunction_id ).html("");
         grabShiftFunctionList(shiftfunction_id);
       }).fail(function(xhr, status, error) {
             errmsg = "Message sending failed\n";
@@ -85,7 +81,7 @@ function grabEditShiftFunctionForm(shiftfunction_id) {
     orgurl = "{{ path('shiftfunction_edit', { 'access': 'ajax' }) }}";
     url = orgurl.replace("0", shiftfunction_id);
     $.get(url, function( data ) {
-        $( "#editShiftFunction" ).html(data);
+        $( "#editShiftFunction_"+shiftfunction_id ).html(data);
         $( "#editShiftFunctionForm" ).submit(function( event ) {
             event.preventDefault();
             submitEditShiftFunctionForm(shiftfunction_id);

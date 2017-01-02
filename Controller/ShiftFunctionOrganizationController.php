@@ -7,12 +7,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 /**
  * Shiftfunctionorganization controller.
  *
- * @Route("shiftfunctionorganization")
+ * @Route("/admin/{access}/shiftfunctionorganization", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
  */
 class ShiftFunctionOrganizationController extends CommonController
 {
@@ -22,12 +24,24 @@ class ShiftFunctionOrganizationController extends CommonController
      * @Route("/", name="shiftfunctionorganization_index")
      * @Method("GET")
      */
-    public function indexAction()
+    public function indexAction(Request $request, $access)
     {
         $em = $this->getDoctrine()->getManager();
+        if ($shiftfunction_id = $request->get('shiftfunction')) {
+            $em = $this->getDoctrine()->getManager();
+            if ($shiftFunction = $em->getRepository('CrewCallBundle:ShiftFunction')->find($shiftfunction_id)) {
+                $shiftFunctionOrganizations = $shift->getShiftFunctions();
+            }
+        } else {
+            $shiftFunctionOrganizations = $em->getRepository('CrewCallBundle:ShiftFunctionOrganization')->findAll();
+        }
 
-        $shiftFunctionOrganizations = $em->getRepository('CrewCallBundle:ShiftFunctionOrganization')->findAll();
-
+        // Again, ajax-centric.
+        if ($this->isRest($access)) {
+            return $this->render('shiftfunctionorganization/_index.html.twig', array(
+                'shiftFunctionOrganizations' => $shiftFunctionOrganizations,
+            ));
+        }
         return $this->render('shiftfunctionorganization/index.html.twig', array(
             'shiftFunctionOrganizations' => $shiftFunctionOrganizations,
         ));
@@ -39,7 +53,7 @@ class ShiftFunctionOrganizationController extends CommonController
      * @Route("/new", name="shiftfunctionorganization_new")
      * @Method({"GET", "POST"})
      */
-    public function newAction(Request $request)
+    public function newAction(Request $request, $access)
     {
         $shiftFunctionOrganization = new Shiftfunctionorganization();
         $form = $this->createForm('CrewCallBundle\Form\ShiftFunctionOrganizationType', $shiftFunctionOrganization);
@@ -50,9 +64,27 @@ class ShiftFunctionOrganizationController extends CommonController
             $em->persist($shiftFunctionOrganization);
             $em->flush($shiftFunctionOrganization);
 
-            return $this->redirectToRoute('shiftfunctionorganization_show', array('id' => $shiftFunctionOrganization->getId()));
+            if ($this->isRest($access)) {
+                return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
+            } else { 
+                return $this->redirectToRoute('shiftfunctionorganization_show', array('id' => $shiftFunctionOrganization->getId()));
+            }
         }
 
+        // If this has a shift set here, it's not an invalid create attempt.
+        if ($shiftfunction_id = $request->get('shiftfunction')) {
+            $em = $this->getDoctrine()->getManager();
+            if ($shiftFunction = $em->getRepository('CrewCallBundle:ShiftFunction')->find($shiftfunction_id)) {
+                $shiftFunctionOrganization->setShiftFunction($shiftFunction);
+                $form->setData($shiftFunctionOrganization);
+            }
+        }
+        if ($this->isRest($access)) {
+            return $this->render('shiftfunctionorganization/_new.html.twig', array(
+                'shiftFunctionOrganization' => $shiftFunctionOrganization,
+                'form' => $form->createView(),
+            ));
+        }
         return $this->render('shiftfunctionorganization/new.html.twig', array(
             'shiftFunctionOrganization' => $shiftFunctionOrganization,
             'form' => $form->createView(),
@@ -78,10 +110,10 @@ class ShiftFunctionOrganizationController extends CommonController
     /**
      * Displays a form to edit an existing shiftFunctionOrganization entity.
      *
-     * @Route("/{id}/edit", name="shiftfunctionorganization_edit")
+     * @Route("/{id}/edit", name="shiftfunctionorganization_edit", defaults={"id" = 0})
      * @Method({"GET", "POST"})
      */
-    public function editAction(Request $request, ShiftFunctionOrganization $shiftFunctionOrganization)
+    public function editAction(Request $request, ShiftFunctionOrganization $shiftFunctionOrganization, $access)
     {
         $deleteForm = $this->createDeleteForm($shiftFunctionOrganization);
         $editForm = $this->createForm('CrewCallBundle\Form\ShiftFunctionOrganizationType', $shiftFunctionOrganization);
@@ -90,9 +122,16 @@ class ShiftFunctionOrganizationController extends CommonController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('shiftfunctionorganization_edit', array('id' => $shiftFunctionOrganization->getId()));
+            return $this->redirectToRoute('shiftfunctionorganization_show', array('id' => $shiftFunctionOrganization->getId()));
         }
 
+        if ($this->isRest($access)) {
+            return $this->render('shiftfunctionorganization/_edit.html.twig', array(
+            'shiftFunctionOrganization' => $shiftFunctionOrganization,
+                'edit_form' => $editForm->createView(),
+                'delete_form' => $deleteForm->createView(),
+            ));
+        }
         return $this->render('shiftfunctionorganization/edit.html.twig', array(
             'shiftFunctionOrganization' => $shiftFunctionOrganization,
             'edit_form' => $editForm->createView(),

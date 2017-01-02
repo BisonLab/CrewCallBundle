@@ -2,11 +2,7 @@
 
 {% block body %}
     <h1>Shiftfunctionorganization creation</h1>
-
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <input type="submit" value="Create" />
-    {{ form_end(form) }}
+{% include 'CrewCallBundle:shiftfunctionorganization:_new.html.twig' with { 'form': form}  %}
 
     <ul>
         <li>
