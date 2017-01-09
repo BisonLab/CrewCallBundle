@@ -32,7 +32,7 @@ class Builder implements ContainerAwareInterface
         $menu = $factory->createItem('root');
 
         $menu->addChild('Home', array('route' => 'homepage'));
-        $menu->addChild('Jobs', array('route' => 'user_me'));
+        $menu->addChild('My Jobs', array('route' => 'user_me'));
 
         if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $menu->addChild('Events', array('route' => 'event_index'));
