@@ -27,8 +27,17 @@
                 <td>{{ person.mobilephonenumber }}</td>
                 <td>{{ person.state }}</td>
                 <td>
-                  <a href="{{ path('person_show', { 'id': person.id }) }}">show</a></br>
-                  <a href="{{ path('person_edit', { 'id': person.id }) }}">edit</a>
+                  <a href="{{ path('person_show', { 'id': person.id }) }}">Show</a></br>
+                  <a href="{{ path('person_edit', { 'id': person.id }) }}">Edit</a>
+            {% set mlogcontext = {
+                        'system': 'crewcall',
+                        'object_name': 'person',
+                        'external_id': person.id
+                }
+            %}
+{% if sakonnin.contexthasmessages(mlogcontext) %}
+            <br><a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>
+{% endif %}
                 </td>
             </tr>
         {% endfor %}

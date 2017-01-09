@@ -134,6 +134,34 @@ function grabPersonFunctionForm() {
 
     <ul>
         <li>
+            {% set mconf = {'mconfig': {
+                    'subject': "",
+                    'to_field': false,
+                    'from_field': false,
+                    'message_type': 'Note',
+                    'context': {
+                        'system': 'crewcall',
+                        'object_name': 'person',
+                        'external_id': person.id
+                        }
+                    }
+                }
+            %}
+            {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+            <a href="#" onClick="createMessage()">Add a note</a><br />
+        </li>
+            {% set mlogcontext = {
+                        'system': 'crewcall',
+                        'object_name': 'person',
+                        'external_id': person.id
+                }
+            %}
+{% if sakonnin.contexthasmessages(mlogcontext) %}
+        <li>
+            <a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>
+        </li>
+{% endif %}
+        <li>
             <a href="{{ path('person_index') }}">Back to the list</a>
         </li>
         <li>
