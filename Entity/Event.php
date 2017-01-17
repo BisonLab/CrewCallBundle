@@ -81,15 +81,9 @@ class Event
 
     /**
      * @ORM\ManyToOne(targetEntity="Organization", inversedBy="events")
-     * @ORM\JoinColumn(name="organization_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", nullable=true)
      */
     private $organization;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="manager_events")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=FALSE)
-     */
-    private $manager;
 
     /**
      * @ORM\OneToMany(targetEntity="Shift", mappedBy="event", cascade={"remove"})
@@ -431,29 +425,5 @@ class Event
     public function getOrganization()
     {
         return $this->organization;
-    }
-
-    /**
-     * Set manager
-     *
-     * @param \CrewCallBundle\Entity\Person $manager
-     *
-     * @return Event
-     */
-    public function setManager(\CrewCallBundle\Entity\Person $manager)
-    {
-        $this->manager = $manager;
-
-        return $this;
-    }
-
-    /**
-     * Get manager
-     *
-     * @return \CrewCallBundle\Entity\Person
-     */
-    public function getManager()
-    {
-        return $this->manager;
     }
 }

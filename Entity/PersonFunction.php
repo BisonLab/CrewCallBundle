@@ -24,14 +24,14 @@ class PersonFunction
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="functions", cascade={"persist"})
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="person_functions", cascade={"persist"})
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=false)
      */
     private $person;
 
     /**
-     * @ORM\ManyToOne(targetEntity="FunctionEntity", inversedBy="persons", cascade={"persist"})
-     * @ORM\JoinColumn(name="function_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\ManyToOne(targetEntity="FunctionEntity", inversedBy="person_functions", cascade={"persist"})
+     * @ORM\JoinColumn(name="function_id", referencedColumnName="id", nullable=false)
      */
     private $function;
 

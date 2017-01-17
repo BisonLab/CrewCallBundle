@@ -45,13 +45,13 @@ class Job
 
     /**
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="jobs")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=false)
      */
     private $person;
 
     /**
      * @ORM\ManyToOne(targetEntity="ShiftFunction", inversedBy="jobs")
-     * @ORM\JoinColumn(name="shift_function_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\JoinColumn(name="shift_function_id", referencedColumnName="id", nullable=false)
      */
     private $shift_function;
 

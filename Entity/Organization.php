@@ -95,9 +95,19 @@ class Organization
     private $state;
 
     /**
-     * @ORM\OneToMany(targetEntity="PersonFunctionOrganization", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=TRUE)
+     * @ORM\OneToMany(targetEntity="PersonFunctionOrganization", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $person_function_organizations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ShiftFunctionOrganization", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $shift_function_organizations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Event", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $events;
 
     /**
      * @ORM\OneToMany(targetEntity="OrganizationContext", mappedBy="owner", cascade={"persist", "remove", "merge"}, orphanRemoval=true)

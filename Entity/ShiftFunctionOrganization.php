@@ -27,14 +27,14 @@ class ShiftFunctionOrganization
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ShiftFunction", inversedBy="organizations")
-     * @ORM\JoinColumn(name="shift_function_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\ManyToOne(targetEntity="ShiftFunction", inversedBy="shift_function_organizations")
+     * @ORM\JoinColumn(name="shift_function_id", referencedColumnName="id", nullable=false)
      */
     private $shift_function;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Organization", inversedBy="shift_functions")
-     * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\ManyToOne(targetEntity="Organization", inversedBy="shift_function_organizations")
+     * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", nullable=false)
      */
     private $organization;
 

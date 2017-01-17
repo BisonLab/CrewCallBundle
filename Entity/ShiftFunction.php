@@ -25,13 +25,13 @@ class ShiftFunction
 
     /**
      * @ORM\ManyToOne(targetEntity="Shift", inversedBy="shift_functions")
-     * @ORM\JoinColumn(name="shift_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\JoinColumn(name="shift_id", referencedColumnName="id", nullable=false)
      */
     private $shift;
 
     /**
-     * @ORM\ManyToOne(targetEntity="FunctionEntity", inversedBy="shifts")
-     * @ORM\JoinColumn(name="function_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\ManyToOne(targetEntity="FunctionEntity", inversedBy="shift_functions")
+     * @ORM\JoinColumn(name="function_id", referencedColumnName="id", nullable=false)
      */
     private $function;
 

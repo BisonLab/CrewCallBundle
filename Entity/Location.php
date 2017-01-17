@@ -70,6 +70,16 @@ class Location
      */
     private $parent;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Shift", mappedBy="location")
+     */
+    private $shifts;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Event", mappedBy="location")
+     */
+    private $events;
+
     public function __construct($options = array())
     {
         $this->children = new ArrayCollection();

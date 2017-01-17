@@ -24,20 +24,20 @@ class PersonFunctionOrganization
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="functions")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="person_function_organizations")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=false)
      */
     private $person;
 
     /**
-     * @ORM\ManyToOne(targetEntity="FunctionEntity", inversedBy="persons")
-     * @ORM\JoinColumn(name="function_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\ManyToOne(targetEntity="FunctionEntity", inversedBy="person_function_organizations")
+     * @ORM\JoinColumn(name="function_id", referencedColumnName="id", nullable=false)
      */
     private $function;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Organization", inversedBy="person_functions")
-     * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", nullable=FALSE)
+     * @ORM\ManyToOne(targetEntity="Organization", inversedBy="person_function_organizations")
+     * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", nullable=false)
      */
     private $organization;
 

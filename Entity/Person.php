@@ -104,7 +104,7 @@ class Person extends BaseUser
      * This is really functions, but since we have three (four) ways for a function to
      * be connected to this Person object we have to define each by the other
      * end of the person_function_ connection.
-     * @ORM\OneToMany(targetEntity="PersonFunctionOrganization", mappedBy="person", cascade={"persist", "remove"}, orphanRemoval=TRUE)
+     * @ORM\OneToMany(targetEntity="PersonFunctionOrganization", mappedBy="person", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $person_function_organizations;
 

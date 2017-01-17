@@ -64,12 +64,6 @@ class Shift
     private $state;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="manager_shifts")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=FALSE)
-     */
-    private $manager;
-
-    /**
      * @ORM\OneToMany(targetEntity="ShiftFunction", mappedBy="shift", cascade={"remove"})
      */
     private $shift_functions;
@@ -252,30 +246,6 @@ class Shift
     public function getFunction()
     {
         return $this->function;
-    }
-
-    /**
-     * Set manager
-     *
-     * @param \CrewCallBundle\Entity\Person $manager
-     *
-     * @return Shift
-     */
-    public function setManager(\CrewCallBundle\Entity\Person $manager)
-    {
-        $this->manager = $manager;
-
-        return $this;
-    }
-
-    /**
-     * Get manager
-     *
-     * @return \CrewCallBundle\Entity\Person
-     */
-    public function getManager()
-    {
-        return $this->manager;
     }
 
     /**
