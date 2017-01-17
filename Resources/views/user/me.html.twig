@@ -42,7 +42,7 @@
                 <th>From</th>
                 <th>To</th>
                 <th>What</th>
-                <th>Response</th>
+                <th>&nbsp;</th>
             </tr>
         </thead>
         <tbody>
@@ -54,7 +54,11 @@
                 <td data-order="{{ shift.fromtime | date('U')}}" >{% if shift.fromtime %}{{ shift.fromtime|date('d M H:i') }}{% endif %}</td>
                 <td data-order="{{ shift.totime | date('U')}}" >{% if shift.totime %}{{ shift.totime|date('d M H:i') }}{% endif %}</td>
                 <td>{{ function }}</td>
-                <td>{{ job.state }}</td>
+                <td>
+                    <form method="POST" action="{{ path('user_delete_interest', {'id': job.id }) }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
             </tr>
         {% endfor %}
         </tbody>

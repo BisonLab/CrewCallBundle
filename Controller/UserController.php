@@ -56,7 +56,6 @@ class UserController extends CommonController
      */
     public function registerInterestAction(Request $request, ShiftFunction $shiftFunction, $access)
     {
-        $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
 
         $job = new Job();
@@ -68,6 +67,29 @@ class UserController extends CommonController
         $job->setState('INTERESTED');
         $em = $this->getDoctrine()->getManager();
         $em->persist($job);
+        $em->flush($job);
+        return $this->redirectToRoute('user_me');
+    }
+
+    /**
+     *
+     * @Route("/delete_interest/{id}", name="user_delete_interest")
+     * @Method("POST")
+     */
+    public function deleteInterestAction(Request $request, Job $job, $access)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
+        /*
+         * In case of someone trying..
+         * TODO: Decide on wether to add an isDeleteable() on Job and other
+         * entities or do something else if it's smarter.
+         * The reason is that it's not allowed to delete a confirmed job.
+         */
+        if ($job->getPerson() !== $user) {
+            throw new \InvalidArgumentException('Nice try');
+        }
+        $em->remove($job);
         $em->flush($job);
         return $this->redirectToRoute('user_me');
     }
