@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h2>Jobs</h2>
+{% set upcoming = cc_jobs.jobsforperson(user, {'upcoming': true}) %}
+{% if upcoming|length > 0 %}
+    <h2>Upcoming Jobs</h2>
 
         <table class="table table-striped table-bordered table-sm">
         <thead class="thead-inverse">
@@ -14,7 +16,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for job in user.jobs %}
+        {% for job in upcoming %}
             {% set shift = job.shiftfunction.shift %}
             {% set function = job.shiftfunction.function %}
             <tr>
@@ -27,6 +29,40 @@
         {% endfor %}
         </tbody>
     </table>
+{% endif %}
+
+{% set wishlist = cc_jobs.jobsforperson(user, {'wishlist': true}) %}
+{% if wishlist|length > 0 %}
+    <h2>Wishlist</h2>
+
+        <table class="table table-striped table-bordered table-sm">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Event</th>
+                <th>From</th>
+                <th>To</th>
+                <th>What</th>
+                <th>Response</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for job in wishlist %}
+            {% set shift = job.shiftfunction.shift %}
+            {% set function = job.shiftfunction.function %}
+            <tr>
+                <td>{{ shift.event }}</td>
+                <td data-order="{{ shift.fromtime | date('U')}}" >{% if shift.fromtime %}{{ shift.fromtime|date('d M H:i') }}{% endif %}</td>
+                <td data-order="{{ shift.totime | date('U')}}" >{% if shift.totime %}{{ shift.totime|date('d M H:i') }}{% endif %}</td>
+                <td>{{ function }}</td>
+                <td>{{ job.state }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% set opportunities = cc_jobs.opportunitiesforperson(user) %}
+{% if opportunities|length > 0 %}
     <h2>Opportunities</h2>
 
 <script>
@@ -51,23 +87,23 @@ jQuery(document).ready(function() {
         </thead>
         <tbody>
         {# Better make this a service function or something, for listing opportunities with already registerted interest filtered out #}
-        {% for pf in user.personfunctions %}
-            {% for shiftfunction in pf.function.shiftfunctions %}
-                {% set shift = shiftfunction.shift %}
-                {% set function = shiftfunction.function %}
-                <tr>
-                    <td>{{ shift.event }}</td>
-                    <td data-order="{{ shift.fromtime | date('U')}}" >{% if shift.fromtime %}{{ shift.fromtime|date('d M H:i') }}{% endif %}</td>
-                    <td data-order="{{ shift.totime | date('U')}}" >{% if shift.totime %}{{ shift.totime|date('d M H:i') }}{% endif %}</td>
-                    <td>{{ function }}</td>
-                    <td>
-                        <form method="POST" action="{{ path('user_register_interest', {'id': shiftfunction.id }) }}">
-                        <button type="submit" class="btn btn-success">I want it!</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
+        {% for shiftfunction in opportunities %}
+            {% set shift = shiftfunction.shift %}
+            {% set function = shiftfunction.function %}
+            <tr>
+                <td>{{ shift.event }}</td>
+                <td data-order="{{ shift.fromtime | date('U')}}" >{% if shift.fromtime %}{{ shift.fromtime|date('d M H:i') }}{% endif %}</td>
+                <td data-order="{{ shift.totime | date('U')}}" >{% if shift.totime %}{{ shift.totime|date('d M H:i') }}{% endif %}</td>
+                <td>{{ function }}</td>
+                <td>
+                    <form method="POST" action="{{ path('user_register_interest', {'id': shiftfunction.id }) }}">
+                    <button type="submit" class="btn btn-success">I want it!</button>
+                    </form>
+                </td>
+            </tr>
         {% endfor %}
         </tbody>
     </table>
+{% endif %}
+
 {% endblock %}
