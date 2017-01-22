@@ -176,6 +176,16 @@ class Job
         return $this;
     }
 
+    public function getShift()
+    {
+        return $this->getShiftFunction()->getShift();
+    }
+
+    public function getFunction()
+    {
+        return $this->getShiftFunction()->getFunction();
+    }
+
     public function isBooked()
     {
         return in_array($this->getState(), ExternalEntityConfig::getBookedStatesFor('Job'));
