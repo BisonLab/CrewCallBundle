@@ -5,6 +5,7 @@ namespace CrewCallBundle\Service;
 use Doctrine\Common\Collections\ArrayCollection;
 use CrewCallBundle\Entity\Job;
 use CrewCallBundle\Entity\Person;
+use CrewCallBundle\Entity\Shift;
 
 class Jobs
 {
@@ -45,9 +46,25 @@ class Jobs
         $shift_functions = $this->em->getRepository('CrewCallBundle:ShiftFunction')->findUpcomingForFunctions($functions);
 
         foreach ($shift_functions as $sf) {
-            if (!$jobshiftfunctions->contains($sf))
+            // Already in jobs?
+            if (!$jobshiftfunctions->contains($sf)) {
+                // Check if we have time overlap between already booked job and
+                // the opportunities.
+                foreach ($jobshiftfunctions as $jsf) {
+                    if ($this->overlap($jsf->getShift(), $sf->getShift()))
+                        continue 2;
+                }
+                // And it's still here.
                 $opportunities->add($sf);
+            }
         }
         return $opportunities;
+    }
+
+    public function overlap(Shift $one, Shift $two)
+    {
+        // Why bother checking if it's the same? :=)
+        if ($one === $two) return true;
+        return (($one->getFromTime() <= $two->getToTime()) && ($one->getToTime() >= $two->getFromTime()));
     }
 }
