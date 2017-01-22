@@ -1,3 +1,36 @@
+<script>
+$(document).ready(function()
+    {
+    $("#crewcallbundle_shift_from_time_date input").each(function(){
+        $(this).attr("readonly","readonly");
+    });
+    $('#crewcallbundle_shift_from_time_date').datetimepicker({
+        format: "Y-m-d",
+        timepicker: false,
+        datepicker: true,
+    });
+    $('#crewcallbundle_shift_from_time_time').datetimepicker({
+        format: "H:i",
+        timepicker: true,
+        datepicker: false,
+        step:5
+    });
+    $("#crewcallbundle_shift_to_time_date input").each(function(){
+        $(this).attr("readonly","readonly");
+    });
+    $('#crewcallbundle_shift_to_time_date').datetimepicker({
+        format: "Y-m-d",
+        timepicker: false,
+        datepicker: true,
+    });
+    $('#crewcallbundle_shift_to_time_time').datetimepicker({
+        format: "H:i",
+        timepicker: true,
+        datepicker: false,
+        step:5
+    });
+});
+</script>
 <h4>New shift</h4>
 {# Don't like to add the access like this, but these templates are for ajax, alas I can just as well admit it. #}
 {{ form_start(form, {action:path('shift_new', {'access': 'ajax'}), 'attr': {'id':'newShiftForm'}}) }}

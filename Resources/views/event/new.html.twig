@@ -1,6 +1,39 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+<script>
+$(document).ready(function()
+    {
+    $("#crewcallbundle_event_from_time_date input").each(function(){
+        $(this).attr("readonly","readonly");
+    });
+    $('#crewcallbundle_event_from_time_date').datetimepicker({
+        format: "Y-m-d",
+        timepicker: false,
+        datepicker: true,
+    });
+    $('#crewcallbundle_event_from_time_time').datetimepicker({
+        format: "H:i",
+        timepicker: true,
+        datepicker: false,
+        step:5
+    });
+    $("#crewcallbundle_event_to_time_date input").each(function(){
+        $(this).attr("readonly","readonly");
+    });
+    $('#crewcallbundle_event_to_time_date').datetimepicker({
+        format: "Y-m-d",
+        timepicker: false,
+        datepicker: true,
+    });
+    $('#crewcallbundle_event_to_time_time').datetimepicker({
+        format: "H:i",
+        timepicker: true,
+        datepicker: false,
+        step:5
+    });
+});
+</script>
     <h1>Event creation</h1>
 
     {{ form_start(form) }}

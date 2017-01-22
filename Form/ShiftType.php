@@ -7,6 +7,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+
 use CrewCallBundle\Lib\ExternalEntityConfig;
 
 class ShiftType extends AbstractType
@@ -17,8 +19,8 @@ class ShiftType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-           ->add('from_time')
-           ->add('to_time')
+           ->add('from_time', DateTimeType::class, array('date_widget' => "single_text", 'time_widget' => "single_text"))
+           ->add('to_time', DateTimeType::class, array('date_widget' => "single_text", 'time_widget' => "single_text"))
            ->add('state', ChoiceType::class, array(
               'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift')))
            ->add('event')

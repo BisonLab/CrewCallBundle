@@ -1,3 +1,36 @@
+<script>
+$(document).ready(function()
+    {
+    $("#crewcallbundle_shift_from_time_date input").each(function(){
+        $(this).attr("readonly","readonly");
+    });
+    $('#crewcallbundle_shift_from_time_date').datetimepicker({
+        format: "Y-m-d",
+        timepicker: false,
+        datepicker: true,
+    });
+    $('#crewcallbundle_shift_from_time_time').datetimepicker({
+        format: "H:i",
+        timepicker: true,
+        datepicker: false,
+        step:5
+    });
+    $("#crewcallbundle_shift_to_time_date input").each(function(){
+        $(this).attr("readonly","readonly");
+    });
+    $('#crewcallbundle_shift_to_time_date').datetimepicker({
+        format: "Y-m-d",
+        timepicker: false,
+        datepicker: true,
+    });
+    $('#crewcallbundle_shift_to_time_time').datetimepicker({
+        format: "H:i",
+        timepicker: true,
+        datepicker: false,
+        step:5
+    });
+});
+</script>
 {{ form_start(edit_form, {action:path('shift_edit', {'access': 'ajax'}), 'attr': {'id':'editShiftForm'}}) }}
     {{ form_widget(edit_form) }}
     <input type="submit" value="Save" />
