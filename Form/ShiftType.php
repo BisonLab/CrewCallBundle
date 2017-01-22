@@ -23,7 +23,6 @@ class ShiftType extends AbstractType
               'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift')))
            ->add('event')
            ->add('location')
-           ->add('manager')
            ;
     }
     

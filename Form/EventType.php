@@ -27,7 +27,6 @@ class EventType extends AbstractType
                 'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Event')))
             ->add('location')
             ->add('organization')
-            ->add('manager')
             ->add('parent')
            ;
     }
