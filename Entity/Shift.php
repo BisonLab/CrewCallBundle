@@ -8,6 +8,8 @@ use FOS\UserBundle\Model\User as BaseUser;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 use CrewCallBundle\Lib\ExternalEntityConfig;
 
@@ -292,5 +294,17 @@ class Shift
             $total += $sf->getBooked();
         }
         return $total;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context)
+    {
+        if ($this->to_time && ($this->from_time >= $this->to_time)) {
+            $context->buildViolation('You can not set from time to after to time.')
+                ->atPath('from_time')
+                ->addViolation();
+        }
     }
 }

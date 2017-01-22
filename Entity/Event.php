@@ -4,9 +4,11 @@ namespace CrewCallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Validator\Constraints as Assert;
 
 use CrewCallBundle\Lib\ExternalEntityConfig;
 
@@ -425,5 +427,17 @@ class Event
     public function getOrganization()
     {
         return $this->organization;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context)
+    {
+        if ($this->to_time && ($this->from_time >= $this->to_time)) {
+            $context->buildViolation('You can not set from time to after to time.')
+                ->atPath('from_time')
+                ->addViolation();
+        }
     }
 }
