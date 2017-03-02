@@ -2,3 +2,10 @@ services:
     crewcall.jobs:
         class: CrewCallBundle\Service\Jobs
         arguments: ["@doctrine.orm.entity_manager"]
+
+    crewcall.retriever:
+        class: CrewCallBundle\Service\CrewCallRetriever
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    crewcall_retriever:
+        alias: crewcall.retriever
