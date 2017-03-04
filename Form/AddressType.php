@@ -6,9 +6,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use CrewCallBundle\Form\AddressType;
+use CrewCallBundle\Entity\EmbeddableAddress;
 
-class LocationType extends AbstractType
+class AddressType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -16,10 +16,17 @@ class LocationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
-            ->add('description')
-            ->add('address', AddressType::class)
-            ->add('parent')
+            ->add('countryCode')
+            ->add('addressLine1')
+            ->add('addressLine2')
+            ->add('postalCode')
+            ->add('postalName')
+            ->add('locality')
+            ->add('dependentLocality')
+            ->add('sortingCode')
+            ->add('administrativeArea')
+            ->add('locale')
+            ;
     }
     
     /**
@@ -28,17 +35,7 @@ class LocationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CrewCallBundle\Entity\Location'
+            'data_class' => EmbeddableAddress::class
         ));
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBlockPrefix()
-    {
-        return 'crewcallbundle_location';
-    }
-
-
 }

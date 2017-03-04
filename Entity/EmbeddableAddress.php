@@ -5,6 +5,8 @@ namespace CrewCallBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
+use CommerceGuys\Addressing\Address as CGAddress;
+
 /**
  * Address
  *
@@ -22,22 +24,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * from CommerceGuys anyway. It is for Drupal and we'll find out how useful it
  * is quite soon. Have time to replace it all later anyway.
  *
- * @ORM\Entity()
- * @ORM\Table(name="crewcall_address")
- * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\AddressRepository")
- * @Gedmo\Loggable
+ * @ORM\Embeddable()
  */
-class Address
+class EmbeddableAddress
 {
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
-
     /**
      * The two-letter country code.
      *
@@ -45,16 +35,16 @@ class Address
      * @ORM\Column(name="country_code", type="string", length=4, nullable=true)
      * @Gedmo\Versioned
      */
-    private $countryCode;
+    protected $countryCode;
 
     /**
-     * The top-level manageristrative subdivision of the country.
+     * The top-level administrative subdivision of the country.
      *
      * @var string
-     * @ORM\Column(name="manageristrative_area", type="text", nullable=true)
+     * @ORM\Column(name="administrative_area", type="text", nullable=true)
      * @Gedmo\Versioned
      */
-    private $manageristrativeArea;
+    protected $administrativeArea;
 
     /**
      * The locality (i.e. city).
@@ -63,7 +53,7 @@ class Address
      * @ORM\Column(name="locality", type="text", nullable=true)
      * @Gedmo\Versioned
      */
-    private $locality;
+    protected $locality;
 
     /**
      * The dependent locality (i.e. neighbourhood).
@@ -72,7 +62,7 @@ class Address
      * @ORM\Column(name="dependent_locality", type="text", nullable=true)
      * @Gedmo\Versioned
      */
-    private $dependentLocality;
+    protected $dependentLocality;
 
     /**
      * The postal code.
@@ -81,7 +71,7 @@ class Address
      * @ORM\Column(name="postal_code", type="string", length=255, nullable=true)
      * @Gedmo\Versioned
      */
-    private $postalCode;
+    protected $postalCode;
 
     /**
      * The postal name. (Yes, it should probably be extracted from postalCode)
@@ -90,7 +80,7 @@ class Address
      * @ORM\Column(name="postal_name", type="string", length=255, nullable=true)
      * @Gedmo\Versioned
      */
-    private $postalName;
+    protected $postalName;
 
     /**
      * The sorting code.
@@ -99,7 +89,7 @@ class Address
      * @ORM\Column(name="sorting_code", type="string", length=255, nullable=true)
      * @Gedmo\Versioned
      */
-    private $sortingCode;
+    protected $sortingCode;
 
     /**
      * The first line of the address block.
@@ -108,7 +98,7 @@ class Address
      * @ORM\Column(name="address_line_1", type="text", nullable=true)
      * @Gedmo\Versioned
      */
-    private $addressLine1;
+    protected $addressLine1;
 
     /**
      * The second line of the address block.
@@ -117,7 +107,7 @@ class Address
      * @ORM\Column(name="address_line_2", type="text", nullable=true)
      * @Gedmo\Versioned
      */
-    private $addressLine2;
+    protected $addressLine2;
 
     /**
      * The locale.
@@ -126,21 +116,7 @@ class Address
      * @ORM\Column(name="locale", type="string", length=255, nullable=true)
      * @Gedmo\Versioned
      */
-    private $locale;
-
-    public function __construct($options = array())
-    {
-    }
-
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+    protected $locale;
 
     /**
      * Set countryCode
@@ -167,27 +143,27 @@ class Address
     }
 
     /**
-     * Set manageristrativeArea
+     * Set administrativeArea
      *
-     * @param string $manageristrativeArea
+     * @param string $administrativeArea
      *
      * @return Address
      */
-    public function setManageristrativeArea($manageristrativeArea)
+    public function setAdministrativeArea($administrativeArea)
     {
-        $this->manageristrativeArea = $manageristrativeArea;
+        $this->administrativeArea = $administrativeArea;
 
         return $this;
     }
 
     /**
-     * Get manageristrativeArea
+     * Get administrativeArea
      *
      * @return string
      */
-    public function getManageristrativeArea()
+    public function getAdministrativeArea()
     {
-        return $this->manageristrativeArea;
+        return $this->administrativeArea;
     }
 
     /**
@@ -384,6 +360,28 @@ class Address
 
     public function __toString()
     {
-        return $this->addressLine1;
+        return (string)$this->addressLine1;
     }
+
+    // Should I add the name stuff from person/location/organization?
+    // That would give me a complete form.
+    public function getCGAddress()
+    {
+        return new CGAddress(
+            $this->countryCode,
+            $this->administrativeArea,
+            $this->locality,
+            $this->dependentLocality,
+            $this->postalCode,
+            $this->sortingCode,
+            $this->addressLine1,
+            $this->addressLine2,
+            $this->organization,
+            '',
+            '',
+            '',
+            $this->locale
+        );
+    }
+
 }

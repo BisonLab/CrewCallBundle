@@ -8,6 +8,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use CrewCallBundle\Entity\EmbeddableAddress;
+use CrewCallBundle\Lib\ExternalEntityConfig;
+
 /**
  * Location
  *
@@ -45,8 +48,7 @@ class Location
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Address")
-     * @ORM\JoinColumn(name="address_id", referencedColumnName="id")
+     * @ORM\Embedded(class="EmbeddableAddress")
      */
     private $address;
 
@@ -83,6 +85,9 @@ class Location
     public function __construct($options = array())
     {
         $this->children = new ArrayCollection();
+        $this->address = new EmbeddableAddress();
+        $this->shifts  = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->events  = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function __toString()
@@ -212,7 +217,7 @@ class Location
      *
      * @return Location
      */
-    public function setAddress(\CrewCallBundle\Entity\Address $address = null)
+    public function setAddress(EmbeddableAddress $Address)
     {
         $this->address = $address;
 
@@ -222,7 +227,7 @@ class Location
     /**
      * Get address
      *
-     * @return \CrewCallBundle\Entity\Address
+     * @return \CrewCallBundle\Entity\EmbeddableAddress
      */
     public function getAddress()
     {

@@ -9,6 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 use CrewCallBundle\Lib\ExternalEntityConfig;
+use CrewCallBundle\Entity\EmbeddableAddress;
 
 /**
  * @ORM\Entity
@@ -72,16 +73,12 @@ class Organization
     private $office_email;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Address")
-     * @ORM\JoinColumn(name="visit_address_id", referencedColumnName="id")
-     * @Gedmo\Versioned
+     * @ORM\Embedded(class="EmbeddableAddress")
      **/
     private $visit_address;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Address")
-     * @ORM\JoinColumn(name="postal_address_id", referencedColumnName="id")
-     * @Gedmo\Versioned
+     * @ORM\Embedded(class="EmbeddableAddress")
      **/
     private $postal_address;
 
@@ -118,6 +115,8 @@ class Organization
     {
         $this->person_function_organizations = new ArrayCollection();
         $this->contexts = new ArrayCollection();
+        $this->visit_address = new EmbeddableAddress();
+        $this->postal_address = new EmbeddableAddress();
     }
 
     /**
@@ -227,11 +226,11 @@ class Organization
     /**
      * Set visitAddress
      *
-     * @param \CrewCallBundle\Entity\Address $visitAddress
+     * @param \CrewCallBundle\Entity\EmbeddableAddress $visitAddress
      *
      * @return Organization
      */
-    public function setVisitAddress(\CrewCallBundle\Entity\Address $visitAddress = null)
+    public function setVisitAddress(EmbeddableAddress $VisitAddress)
     {
         $this->visit_address = $visitAddress;
 
@@ -241,7 +240,7 @@ class Organization
     /**
      * Get visitAddress
      *
-     * @return \CrewCallBundle\Entity\Address
+     * @return \CrewCallBundle\Entity\EmbeddableAddress
      */
     public function getVisitAddress()
     {
@@ -251,45 +250,21 @@ class Organization
     /**
      * Set address
      *
-     * @param \CrewCallBundle\Entity\Address $address
+     * @param \CrewCallBundle\Entity\EmbeddableAddress $address
      *
      * @return Organization
      */
-    public function setAddress(\CrewCallBundle\Entity\Address $address = null)
+    public function setPostalAddress(EmbeddableAddress $PostalAddress)
     {
-        $this->address = $address;
+        $this->postal_address = $PostalAddress;
 
         return $this;
     }
 
     /**
-     * Get address
+     * Get postal_address
      *
-     * @return \CrewCallBundle\Entity\Address
-     */
-    public function getAddress()
-    {
-        return $this->address;
-    }
-
-    /**
-     * Set postalAddress
-     *
-     * @param \CrewCallBundle\Entity\Address $postalAddress
-     *
-     * @return Organization
-     */
-    public function setPostalAddress(\CrewCallBundle\Entity\Address $postalAddress = null)
-    {
-        $this->postal_address = $postalAddress;
-
-        return $this;
-    }
-
-    /**
-     * Get postalAddress
-     *
-     * @return \CrewCallBundle\Entity\Address
+     * @return \CrewCallBundle\Entity\EmbeddableAddress
      */
     public function getPostalAddress()
     {

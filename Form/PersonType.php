@@ -5,6 +5,10 @@ namespace CrewCallBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
+use CrewCallBundle\Lib\ExternalEntityConfig;
+use CrewCallBundle\Form\AddressType;
 
 class PersonType extends AbstractType
 {
@@ -19,10 +23,10 @@ class PersonType extends AbstractType
             ->add('date_of_birth')
             ->add('mobile_phone_number')
             ->add('home_phone_number')
-            ->add('state')
+            ->add('state', ChoiceType::class, array('choices' => ExternalEntityConfig::getStatesAsChoicesFor('Person')))
             // ->add('attributes')
-            ->add('address')
-            ->add('postal_address')
+            ->add('address', AddressType::class)
+            ->add('postal_address', AddressType::class)
             ;
     }
     
@@ -51,6 +55,4 @@ class PersonType extends AbstractType
     {
         return 'crewcallbundle_person';
     }
-
-
 }

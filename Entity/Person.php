@@ -10,6 +10,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 use CrewCallBundle\Entity\PersonContext;
+use CrewCallBundle\Entity\EmbeddableAddress;
 use CrewCallBundle\Lib\ExternalEntityConfig;
 
 /**
@@ -71,16 +72,12 @@ class Person extends BaseUser
     private $home_phone_number;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Address")
-     * @ORM\JoinColumn(name="address_id", referencedColumnName="id")
-     * @Gedmo\Versioned
+     * @ORM\Embedded(class="EmbeddableAddress")
      **/
     private $address;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Address")
-     * @ORM\JoinColumn(name="postal_address_id", referencedColumnName="id")
-     * @Gedmo\Versioned
+     * @ORM\Embedded(class="EmbeddableAddress")
      **/
     private $postal_address;
 
@@ -89,7 +86,7 @@ class Person extends BaseUser
      *
      * @ORM\Column(name="state", type="string", length=40, nullable=true)
      * @Gedmo\Versioned
-     * @Assert\Choice(callback = "getStates")
+     * @Assert\Choice(callback = "getStatesList")
      */
     private $state;
 
@@ -126,6 +123,8 @@ class Person extends BaseUser
         // your own logic
         $this->person_function_organizations = new ArrayCollection();
         $this->contexts  = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->address = new EmbeddableAddress();
+        $this->postal_address = new EmbeddableAddress();
     }
 
     /**
@@ -249,23 +248,23 @@ class Person extends BaseUser
     }
 
     /**
-     * Set address
+     * Set Address
      *
-     * @param \CrewCallBundle\Entity\Address $address
+     * @param string $Address
      *
      * @return Person
      */
-    public function setAddress(\CrewCallBundle\Entity\Address $address = null)
+    public function setAddress(EmbeddableAddress $Address)
     {
-        $this->address = $address;
+        $this->address = $Address;
 
         return $this;
     }
 
     /**
-     * Get address
+     * Get Address
      *
-     * @return \CrewCallBundle\Entity\Address
+     * @return \CrewCallBundle\Entity\EmbeddableAddress
      */
     public function getAddress()
     {
@@ -275,11 +274,11 @@ class Person extends BaseUser
     /**
      * Set postalAddress
      *
-     * @param \CrewCallBundle\Entity\Address $postalAddress
+     * @param string $postalAddress
      *
      * @return Person
      */
-    public function setPostalAddress(\CrewCallBundle\Entity\Address $postalAddress = null)
+    public function setPostalAddress(EmbeddableAddress $postalAddress)
     {
         $this->postal_address = $postalAddress;
 
@@ -289,7 +288,7 @@ class Person extends BaseUser
     /**
      * Get postalAddress
      *
-     * @return \CrewCallBundle\Entity\Address
+     * @return string
      */
     public function getPostalAddress()
     {
@@ -333,11 +332,15 @@ class Person extends BaseUser
     /**
      * Get states
      *
-     * @return array 
+     * @return hash
      */
     public static function getStates()
     {
         return ExternalEntityConfig::getStatesFor('Person');
+    }
+    public static function getStatesList()
+    {
+        return array_keys(ExternalEntityConfig::getStatesFor('Person'));
     }
 
     /*

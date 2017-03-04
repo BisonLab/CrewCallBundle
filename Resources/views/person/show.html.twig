@@ -101,6 +101,18 @@ function grabPersonFunctionForm() {
                 <td>{{ person.homephonenumber }}</td>
             </tr>
             <tr>
+                <th>Address</th>
+                <td>
+                    {{ person.address }}
+                </td>
+            </tr>
+            <tr>
+                <th>Postal Address</th>
+                <td>
+                    {{ person.postaladdress }}
+                </td>
+            </tr>
+            <tr>
                 <th>State</th>
                 <td>{{ person.state }}</td>
             </tr>
@@ -153,6 +165,7 @@ function grabPersonFunctionForm() {
             {% set mlogcontext = {
                         'system': 'crewcall',
                         'object_name': 'person',
+                        'message_type': 'Note',
                         'external_id': person.id
                 }
             %}
