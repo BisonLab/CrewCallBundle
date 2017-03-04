@@ -14,6 +14,12 @@ class FunctionEntityRepository extends \Doctrine\ORM\EntityRepository
         return $this->findBy(array(), array('name' => 'ASC'));
     }
 
+    public function findNamesWithPeopleCount()
+    {
+        $query = $this->_em->createQuery('SELECT fe.id, fe.name, count(pf.id) as people FROM ' . $this->_entityName . ' fe JOIN fe.person_functions pf GROUP BY fe.id');
+        return $result = $query->getResult();
+    }
+
     public function searchByField($field, $value, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
     {
         if ($field == 'attributes') {
