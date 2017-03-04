@@ -110,6 +110,7 @@ class PersonController extends CommonController
     {
         $deleteForm = $this->createDeleteForm($person);
         $editForm = $this->createForm('CrewCallBundle\Form\PersonType', $person);
+        $editForm->remove('plainPassword');
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
