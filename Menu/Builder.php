@@ -36,7 +36,21 @@ class Builder implements ContainerAwareInterface
 
         if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $menu->addChild('Events', array('route' => 'event_index'));
-            $menu->addChild('People', array('route' => 'person_index'));
+
+            $menu->addChild('People');
+            $menu['People']->addChild('All', array('route' => 'person_index'));
+            $menu['People']->addChild('By Function', ['uri' => '#']);
+            $menu['People']['By Function']->setAttribute('dropdown', true)->setAttribute('class', 'has-dropdown');
+
+            $router = $this->container->get('router');
+            $em = $this->container->get('doctrine')->getManager();
+            foreach ($em->getRepository('CrewCallBundle:FunctionEntity')->findNamesWithPeopleCount() as $np) {
+                if ($np['people'] > 0) {
+                    $route = $router->generate('person_function', array('id' => $np['id']));
+                    $menu['People']['By Function']->addChild($np['name'] . " (".$np['people'].")", array('uri' => $route));
+                }
+            }
+
             $menu->addChild('Organizations', array('route' => 'organization_index'));
             $menu->addChild('Locations', array('route' => 'location_index'));
             $menu->addChild('Admin Stuff', array('route' => ''));
@@ -44,8 +58,11 @@ class Builder implements ContainerAwareInterface
             $menu['Admin Stuff']->addChild('Message Types', array('route' => 'messagetype'));
             $menu['Admin Stuff']->addChild('User Admin', array('route' => 'user'));
             $menu['Admin Stuff']->addChild('Report generator', array('route' => 'reports'));
+            $sakonnin = $this->container->get('sakonnin.messages');
+            $amt = $sakonnin->getMessageType('Announcements');
+            $Announcements_route = $router->generate('message_messagetype', array('id' => $amt->getId()));
+            $menu['Admin Stuff']->addChild('Announcements', array('uri' => $Announcements_route));
         }
-
         $options['menu']      = $menu;
         $options['container'] = $this->container;
         // For local additions to the main menu.
@@ -54,7 +71,6 @@ class Builder implements ContainerAwareInterface
             $menu = $this->custom_builder->mainMenu($factory, $options);
 
         // Temporary, but have to be able to go to the existing CRUD.
-
         return $menu;
     }
 
@@ -72,9 +88,6 @@ class Builder implements ContainerAwareInterface
         if ($options['container']->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $menu['Messages']->addChild('Write PM and send SMS', array('uri' => '#'));
             $menu['Messages']['Write PM and send SMS']->setLinkAttribute('onclick', 'createPmMessage("PMSMS")');
-            $menu['Messages']->addChild('Write Frontpage message', array('uri' => '#'));
-            $menu['Messages']['Write Frontpage message']->setLinkAttribute('onclick', 'createMessage()');
-
         }
 
         // For local customized additions to the main menu.
