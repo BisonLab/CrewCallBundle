@@ -59,6 +59,22 @@ class PersonController extends CommonController
     }
 
     /**
+     * Lists all persons without a state, aka newly registered and ready to be
+     * accepted or denied.
+     *
+     * @Route("/applicants", name="person_applicants")
+     * @Method("GET")
+     */
+    public function listApplicantsAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $people = $em->getRepository('CrewCallBundle:Person')->findBy(array('state' => null));
+
+        return $this->render('person/applicants.html.twig', array(
+            'applicants' => $people));
+    }
+
+    /**
      * Creates a new person entity.
      *
      * @Route("/new", name="person_new")
@@ -202,5 +218,24 @@ class PersonController extends CommonController
             ->setMethod('POST')
             ->getForm()
         ;
+    }
+
+    /**
+     * Displays a form to edit an existing person entity.
+     *
+     * @Route("/{id}/state", name="person_state")
+     * @Method({"POST"})
+     */
+    public function stateAction(Request $request, Person $person)
+    {
+        // Security? This is the admin area, they can mess it all up anyway.
+        $state = $request->request->get('state');
+        $person->setState($state);
+        $this->getDoctrine()->getManager()->flush();
+        $applicant = $request->request->get('applicant');
+        if ($applicant)
+            return $this->redirectToRoute('person_applicants');
+        else
+            return $this->redirectToRoute('person_show', array('id' => $person->getId()));
     }
 }

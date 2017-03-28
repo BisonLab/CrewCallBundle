@@ -41,6 +41,7 @@ class Builder implements ContainerAwareInterface
             $menu['People']->addChild('All', array('route' => 'person_index'));
             $menu['People']->addChild('By Function', ['uri' => '#']);
             $menu['People']['By Function']->setAttribute('dropdown', true)->setAttribute('class', 'has-dropdown');
+            $menu['People']->addChild('Applicants', array('route' => 'person_applicants'));
 
             $router = $this->container->get('router');
             $em = $this->container->get('doctrine')->getManager();

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+{% if applicants|length > 0 %}
+<h2>Applicants</h2>
+
+<script>
+jQuery(document).ready(function() {
+    $( "#applicantsTable" ).dataTable({
+        "order": [[ 2, "asc" ]],
+        "paging": false,
+        "searching": false
+        });
+    return false;
+});
+</script>
+        <table id="applicantsTable" class="table table-striped table-bordered table-sm">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for person in applicants %}
+            <tr>
+                <td>{{ person.fullname }}</td>
+                <td>{{ person.email }}</td>
+                <td>
+                    <form method="POST" action="{{ path('person_state', {'id': person.id }) }}">
+                    <input type="hidden" name="applicant" value="true">
+                    <button name="state" value="ACTIVE" type="submit" class="btn btn-success">OK</button>
+                    <button name="state" value="DENIED" type="submit" class="btn btn-error">Deny</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% endblock %}
