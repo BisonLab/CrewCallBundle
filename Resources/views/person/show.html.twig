@@ -121,6 +121,10 @@ function grabPersonFunctionForm() {
                 <td>{{ person.attributes | prettyprint }}</td>
             </tr>
             <tr>
+                <th>Login Enabled</th>
+                <td>{% if  person.enabled %}Yes{%else%}No{%endif%}</td>
+            </tr>
+            <tr>
                 <th>Functions</th>
                 <td>
                 <ul>

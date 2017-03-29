@@ -343,6 +343,24 @@ class Person extends BaseUser
         return array_keys(ExternalEntityConfig::getStatesFor('Person'));
     }
 
+    /**
+     * Get enabled, the override.
+     *
+     * @return bool 
+     */
+    public function getEnabled()
+    {
+        if (in_array($this->getState(), ExternalEntityConfig::getEnableLoginStatesFor('Person'))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function isEnabled()
+    {
+        return $this->getEnabled();
+    }
+
     /*
      * The big "Does this work or not" is wether this getter should include
      * *all* functions. Alas also those in the person_* tables. I say "Yes",
