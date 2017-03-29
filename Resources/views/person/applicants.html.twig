@@ -1,8 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-{% if applicants|length > 0 %}
 <h2>Applicants</h2>
-
+{% if applicants|length > 0 %}
 <script>
 jQuery(document).ready(function() {
     $( "#applicantsTable" ).dataTable({
@@ -36,6 +35,8 @@ jQuery(document).ready(function() {
         {% endfor %}
         </tbody>
     </table>
+{% else %}
+<p>No applicants found.</p>
 {% endif %}
 
 {% endblock %}
