@@ -56,7 +56,6 @@ class Builder implements ContainerAwareInterface
             $menu->addChild('Locations', array('route' => 'location_index'));
             $menu->addChild('Admin Stuff', array('route' => ''));
             $menu['Admin Stuff']->addChild('Functions', array('route' => 'function_index'));
-            $menu['Admin Stuff']->addChild('Message Types', array('route' => 'messagetype'));
             $menu['Admin Stuff']->addChild('User Admin', array('route' => 'user'));
             $menu['Admin Stuff']->addChild('Report generator', array('route' => 'reports'));
             $sakonnin = $this->container->get('sakonnin.messages');
