@@ -143,7 +143,7 @@ class PersonController extends CommonController
     }
 
     /**
-     * Deletes a person entity.
+     * Change password on a Person.
      *
      * @Route("/{id}/change_password", name="person_change_password")
      */
@@ -221,7 +221,7 @@ class PersonController extends CommonController
     }
 
     /**
-     * Displays a form to edit an existing person entity.
+     * Set state on a person.
      *
      * @Route("/{id}/state", name="person_state")
      * @Method({"POST"})
