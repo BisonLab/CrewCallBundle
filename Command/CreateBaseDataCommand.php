@@ -12,8 +12,19 @@ use BisonLab\SakonninBundle\Entity\MessageType;
 class CreateBaseDataCommand extends ContainerAwareCommand
 {
     private $message_types = array(
-        'Note' => array('description' => 'Notes'),
-             'Plain' => array('parent' => 'Note', 'description' => "Just an ordinary note about something"),
+        'PersonNote' => array(
+            'parent' => 'Notes',
+            'security_model' => 'ADMIN_ONLY',
+            'description' => "Note about a person"),
+        'OrganizationNote' => array(
+            'parent' => 'Notes',
+            'security_model' => 'ADMIN_ONLY',
+            'description' => "Note about an organization"),
+        'PMSMS' => array(
+            'parent' => 'Messages',
+            'security_model' => 'PRIVATE',
+            'forward_function' => 'smscopy',
+            'description' => "PM with SMS copy"),
     );
 
     protected function configure()
@@ -57,8 +68,8 @@ class CreateBaseDataCommand extends ContainerAwareCommand
                 $mt->setCallbackType($type['callback_type']);
             if (isset($type['forward_function']))
                 $mt->setForwardFunction($type['forward_function']);
-            if (isset($type['forward_type']))
-                $mt->setForwardType($type['forward_type']);
+            if (isset($type['security_model']))
+                $mt->setSecurityModel($type['security_model']);
             $this->sakonnin_em->persist($mt);
             if ($parent) {
                 $output->writeln("Setting parent " 

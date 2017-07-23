@@ -154,7 +154,7 @@ function grabPersonFunctionForm() {
                     'subject': "",
                     'to_field': false,
                     'from_field': false,
-                    'message_type': 'Note',
+                    'message_type': 'PersonNote',
                     'context': {
                         'system': 'crewcall',
                         'object_name': 'person',
@@ -169,7 +169,7 @@ function grabPersonFunctionForm() {
             {% set mlogcontext = {
                         'system': 'crewcall',
                         'object_name': 'person',
-                        'message_type': 'Note',
+                        'message_type': 'PersonNote',
                         'external_id': person.id
                 }
             %}
