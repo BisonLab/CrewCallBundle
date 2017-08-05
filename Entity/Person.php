@@ -358,6 +358,9 @@ class Person extends BaseUser
     }
     public function isEnabled()
     {
+        /* Fallback, if no state. Which should only occure if you create the
+         * users the wrong way. Or in the CLI, when starting the project. */
+        if (!$this->getState()) return $this->enabled;
         return $this->getEnabled();
     }
 
