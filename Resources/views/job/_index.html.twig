@@ -17,7 +17,7 @@
             'external_id': job.person.id
     }
 %}
-{% if sakonnin.contexthasmessages(mlogcontext) %}
+{% if sakonnin_messages.contexthasmessages(mlogcontext) %}
             &nbsp;(<a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>)
 {% endif %}
             </td>

@@ -173,7 +173,7 @@ function grabPersonFunctionForm() {
                         'external_id': person.id
                 }
             %}
-{% if sakonnin.contexthasmessages(mlogcontext) %}
+{% if sakonnin_messages.contexthasmessages(mlogcontext) %}
         <li>
             <a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>
         </li>
