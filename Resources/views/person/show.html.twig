@@ -145,6 +145,13 @@ function grabPersonFunctionForm() {
                 </ul>
                 </td>
             </tr>
+{% set filecontext = {
+            'system': 'crewcall',
+            'object_name': 'person',
+            'external_id': person.id
+    }
+%}
+{% include 'CrewCallBundle::_files.html.twig' with filecontext %}
         </tbody>
     </table>
 
@@ -178,6 +185,19 @@ function grabPersonFunctionForm() {
             <a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>
         </li>
 {% endif %}
+{% set sfconf = {'sfconfig': {
+        'context': { 
+            'system': 'crewcall',
+            'object_name': 'person',
+            'external_id': person.id
+            }
+        }
+    } 
+%}
+{% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
+        <li>
+          <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
+        </li>
         <li>
             <a href="{{ path('person_index') }}">Back to the list</a>
         </li>

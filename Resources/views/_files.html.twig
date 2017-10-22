@@ -1,0 +1,38 @@
+{% if sakonnin_files.contexthasfiles(filecontext) %}
+<tr>
+<th>Files</th>
+<td>
+    <table class="record_properties">
+    <thead>
+       <tr>
+           <th>Name</th>
+           <th>Type</th>
+           <th>Uploaded</th>
+           <th>Actions</th>
+       </tr>
+   </thead>
+    <tbody>
+{% for sfile in sakonnin_files.getFilesForContext(filecontext) %}
+       <tr>
+        <td>
+        {{ sfile.name }}
+{% if sfile.filetype == "IMAGE" %}
+<img id="img_{{sfile.id}}" data-zoom-image="{{ path('file_view', { 'id': sfile.id }) }}" src="{{ path('file_thumbnail', { 'id': sfile.id, 'x': 30, 'y': 30 }) }}">
+<script>
+$("#img_{{sfile.id}}").ezPlus({
+    zoomWindowPosition: 16
+});
+</script>
+{% endif %}
+        </td>
+        <td>{{ sfile.filetype }}</td>
+        <td>{{ sfile.createdat|date('Y-m-d H:i:s') }}</td>
+        <td><a href="{{ path('file_download', { 'id': sfile.id }) }}">download</a>
+        <a href="{{ path('file_show', { 'id': sfile.id }) }}">metadata</a></td>
+       </tr>
+{% endfor %}
+   </tbody>
+   </table>
+</td>
+</tr>
+{% endif %}
