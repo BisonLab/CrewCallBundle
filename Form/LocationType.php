@@ -20,6 +20,7 @@ class LocationType extends AbstractType
             ->add('description')
             ->add('address', AddressType::class)
             ->add('parent')
+        ;
     }
     
     /**
