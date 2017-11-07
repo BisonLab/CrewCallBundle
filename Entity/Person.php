@@ -40,10 +40,19 @@ class Person extends BaseUser
 
     /**
      * @var string
-     * @ORM\Column(name="lastt_name", type="string", length=255, nullable=true)
+     * @ORM\Column(name="last_name", type="string", length=255, nullable=true)
      * @Gedmo\Versioned
      */
     private $last_name;
+
+    /**
+     * @var string
+     * @ORM\Column(name="full_name", type="string", length=255, nullable=true)
+     * @Gedmo\Versioned
+     *
+     * This one is not to be set by anything else than this Entity.
+     */
+    private $full_name;
 
     /**
      * Looks odd, but age may be quite useful in many cases.
@@ -137,6 +146,7 @@ class Person extends BaseUser
     public function setFirstName($first_name)
     {
         $this->first_name = $first_name;
+        $this->setFullName();
 
         return $this;
     }
@@ -161,6 +171,7 @@ class Person extends BaseUser
     public function setLastName($last_name)
     {
         $this->last_name = $last_name;
+        $this->setFullName();
 
         return $this;
     }
@@ -173,6 +184,17 @@ class Person extends BaseUser
     public function getLastName()
     {
         return $this->last_name;
+    }
+
+    // Concatenate the two above.
+    private function setFullName()
+    {
+        $this->full_name =  $this->getFirstName() . " " . $this->getLastName();
+    }
+
+    public function getFullName()
+    {
+        return $this->full_name;
     }
 
     /**
@@ -520,11 +542,6 @@ class Person extends BaseUser
     public function removeContext(PersonContext $contexts)
     {
         $this->contexts->removeElement($contexts);
-    }
-
-    public function getFullName()
-    {
-        return $this->getFirstName() . " " . $this->getLastName();
     }
 
     public function __toString()
