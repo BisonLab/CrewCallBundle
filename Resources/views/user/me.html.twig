@@ -56,7 +56,7 @@
                 <td>{{ function }}</td>
                 <td>
                     <form method="POST" action="{{ path('user_delete_interest', {'id': job.id }) }}">
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-danger">Cancel</button>
                     </form>
                 </td>
             </tr>
@@ -109,5 +109,8 @@ jQuery(document).ready(function() {
         </tbody>
     </table>
 {% endif %}
+
+{% set calendar_load_url = path('user_me_calendar') %}
+{% include 'CrewCallBundle::_calendar.html.twig' with { 'calendar_load_url': calendar_load_url}  %}
 
 {% endblock %}

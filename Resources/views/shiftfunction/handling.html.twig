@@ -13,6 +13,39 @@ function grabShiftFunctionList(shift_id) {
     return false;
 }
 
+function hideShiftFunctionList(shift_id) {
+    $( "#sfList_" + shift_id ).hide();
+    return false;
+}
+
+function deleteShiftFunction(shiftfunction_id, shift_id) {
+    url = "{{ path('shiftfunction_delete', { 'access': 'ajax', 'id': 'XXX' }) }}";
+    url = url.replace("XXX", shiftfunction_id);
+    data = { _method: "delete"};
+    data = data.serialize;
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "DELETE",
+        data: data,
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 200) {
+                grabShiftFunctionList(shift_id);
+            } else {
+                $( "#newShiftFunction_"+shift_id ).html(xhr.responseText);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
 function submitNewShiftFunctionForm(shift_id) {
     $.ajax({
         beforeSend: function(req) {
@@ -25,7 +58,8 @@ function submitNewShiftFunctionForm(shift_id) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             if (xhr.status == 201) {
-                parent.location.reload();
+                $( "#newShiftFunction_"+shift_id ).html('');
+                grabShiftFunctionList(shift_id);
             } else {
                 $( "#newShiftFunction_"+shift_id ).html(xhr.responseText);
             }
@@ -44,6 +78,7 @@ function grabNewShiftFunctionForm(shift_id) {
     }
     $.get(url, function( data ) {
         $( "#newShiftFunction_"+shift_id ).html(data);
+        $('label[for="crewcallbundle_shiftfunction_shift"]').hide();
         $( "#crewcallbundle_shiftfunction_shift" ).prev().hide();
         $( "#crewcallbundle_shiftfunction_shift" ).hide();
         $( "#newShiftFunction_"+shift_id ).submit(function( event ) {

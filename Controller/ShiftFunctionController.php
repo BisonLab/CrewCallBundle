@@ -148,11 +148,19 @@ class ShiftFunctionController extends CommonController
     /**
      * Deletes a shiftFunction entity.
      *
-     * @Route("/{id}", name="shiftfunction_delete")
-     * @Method("DELETE")
+     * @Route("/{id}/delete", name="shiftfunction_delete")
+     * @Method({"POST", "DELETE"})
      */
-    public function deleteAction(Request $request, ShiftFunction $shiftFunction)
+    public function deleteAction(Request $request, $access, ShiftFunction $shiftFunction)
     {
+        // Bloody good question here, because CSRF. This should add some sort of protection.
+        if ($this->isRest($access)) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($shiftFunction);
+            $em->flush($shiftFunction);
+            return new JsonResponse(array("status" => "OK"), Response::HTTP_OK);
+        }
+
         $form = $this->createDeleteForm($shiftFunction);
         $form->handleRequest($request);
 

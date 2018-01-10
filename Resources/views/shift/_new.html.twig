@@ -35,6 +35,6 @@ $(document).ready(function()
 {# Don't like to add the access like this, but these templates are for ajax, alas I can just as well admit it. #}
 {{ form_start(form, {action:path('shift_new', {'access': 'ajax'}), 'attr': {'id':'newShiftForm'}}) }}
     {{ form_widget(form) }}
-    <input id="submitNewShift" type="submit" value="Create" />
+    <input id="submitNewShift" type="submit" value="Add"  onclick="this.value='Adding';this.disabled=true" />
 {{ form_end(form) }}
 

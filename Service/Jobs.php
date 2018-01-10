@@ -37,6 +37,13 @@ class Jobs
         foreach ($jobs as $job) {
             $jobshiftfunctions->add($job->getShiftFunction());
         }
+        // And The Wiuhlist, so we don't have doubles.
+        // (I may just get all non-done jobs in one go and filter by state?)
+        $wishlist = $this->em->getRepository('CrewCallBundle:Job')->findWishlistForPerson($person);
+        foreach ($wishlist as $job) {
+            $jobshiftfunctions->add($job->getShiftFunction());
+        }
+
         // I'd better have a "getFunctions" on Person, but I don't like
         // that name, so I'll wait until I've found one I like.
         $functions = array();

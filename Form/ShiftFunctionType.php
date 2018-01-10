@@ -13,7 +13,11 @@ class ShiftFunctionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('amount')->add('shift')->add('function')        ;
+        $builder
+            ->add('shift')
+            ->add('amount')
+            ->add('function')
+        ;
     }
     
     /**

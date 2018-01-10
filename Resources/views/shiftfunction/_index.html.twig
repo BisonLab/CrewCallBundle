@@ -22,15 +22,19 @@
             <td>{{ shiftFunction.booked }}</td>
             <td>
               <a href="{{ path('shiftfunction_show', { 'id': shiftFunction.id }) }}">Show</a>
-                <a href="#" onClick="grabEditShiftFunctionForm({{ shiftFunction.id }});">Edit</a>
-                <a href="#" onClick="grabJobList({{ shiftFunction.id }});">Jobs</a><br>
-                <a href="#" onClick="grabJobList({{ shiftFunction.id }}); grabNewShiftFunctionOrganizationForm({{shiftFunction.id}});">Add crew from an organization</a>
+              <a href="#" onClick="grabEditShiftFunctionForm({{ shiftFunction.id }});">Edit</a>
+              <a href="#" onClick="grabJobList({{ shiftFunction.id }});">Jobs</a><br>
+              <a href="#" onClick="grabJobList({{ shiftFunction.id }}); grabNewShiftFunctionOrganizationForm({{shiftFunction.id}});">Add crew from an organization</a><br>
+              <a href="#" onClick="deleteShiftFunction({{ shiftFunction.id }}, {{ shiftFunction.shift.id }});">Delete</a><br>
             </td>
         </tr>
         <tr class="jobList" id="jobList_{{ shiftFunction.id }}">
         <td colspan="5">
-        <div id="newShiftFunctionOrganization_{{ shiftFunction.id }}">
-        <a href="#" onClick="grabNewShiftFunctionOrganizationForm({{shiftFunction.id}});">Add crew from an organization</a>
+        <div id="newShiftFunctionOrganization_{{ shiftFunction.id }}" style="float: left">
+        <a href="#" onClick="grabNewShiftFunctionOrganizationForm({{ shiftFunction.id }});">Add crew from an organization</a>
+        </div>
+        <div style="float: right">
+        <a href="#" onClick="hideJobList({{ shiftFunction.id }});">X</a>
         </div>
         <div id="jobTable_{{ shiftFunction.id }}">
         </div>

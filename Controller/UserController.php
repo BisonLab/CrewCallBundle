@@ -14,6 +14,8 @@ use CrewCallBundle\Entity\Person;
 use CrewCallBundle\Entity\ShiftFunction;
 use CrewCallBundle\Entity\Job;
 
+use CrewCallBundle\Model\FullCalendarEvent;
+
 /**
  * User controller.
  * This is the controller for the front end par of the application.
@@ -47,6 +49,32 @@ class UserController extends CommonController
         return $this->render('user/me.html.twig', array(
             'user' => $user,
         ));
+    }
+
+    /**
+     * Lists all shiftFunction entities as calendar events.
+     *
+     * @Route("/me_calendar", name="user_me_calendar")
+     */
+    public function meCalendarAction(Request $request, $access)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
+
+        // Gotta get the time scope.
+        $from = $request->get('start');
+        $to = $request->get('end');
+error_log($from . " " . $to);
+        
+        $events = array();
+        $e = new FullCalendarEvent();
+        $e['start'] = new \DateTime('2018-01-12 12:30');
+        $e['end'] = new \DateTime('2018-01-12 18:30');
+        $events[] = $e;
+error_log(json_encode($e, true));
+error_log(json_encode($e));
+
+        return new JsonResponse($events, Response::HTTP_OK);
     }
 
     /**

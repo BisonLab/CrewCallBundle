@@ -29,8 +29,11 @@
         </tr>
         <tr class="sfList" id="sfList_{{ shift.id }}">
         <td colspan="5">
-        <div id="newShiftFunction_{{ shift.id }}">
+        <div id="newShiftFunction_{{ shift.id }}" style="float: left">
         <a href="#" onClick="grabNewShiftFunctionForm({{shift.id}});">Add Function</a>
+        </div>
+        <div style="float: right">
+        <a href="#" onClick="hideShiftFunctionList({{shift.id}});">X</a>
         </div>
         <div id="sfTable_{{ shift.id }}">
         </div>
