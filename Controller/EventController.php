@@ -59,8 +59,8 @@ class EventController extends CommonController
             $em = $this->getDoctrine()->getManager();
             if ($parent = $em->getRepository('CrewCallBundle:Event')->find($parent_id)) {
                 $event->setParent($parent);
-                $event->setFromTime($parent->getFromTime());
-                $event->setToTime($parent->getToTime());
+                $event->setStart($parent->getStart());
+                $event->setEnd($parent->getEnd());
                 $event->setOrganization($parent->getOrganization());
                 // TODO: Consider setting manager, location and organization
                 // aswell. But not befire I've decided on wether I want to
@@ -69,7 +69,7 @@ class EventController extends CommonController
             }
         } elseif (!$form->isSubmitted()) {
             // Can't be in the past, not usually anyway.
-            $event->setFromTime(new \DateTime());
+            $event->setStart(new \DateTime());
             $form->setData($event);
         }
         return $this->render('event/new.html.twig', array(

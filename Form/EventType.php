@@ -21,8 +21,8 @@ class EventType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('from_time', DateTimeType::class, array('label' => "From",'date_widget' => "single_text", 'time_widget' => "single_text"))
-            ->add('to_time', DateTimeType::class, array('label' => "To",'date_widget' => "single_text", 'time_widget' => "single_text"))
+            ->add('start', DateTimeType::class, array('label' => "Start",'date_widget' => "single_text", 'time_widget' => "single_text"))
+            ->add('end', DateTimeType::class, array('label' => "End",'date_widget' => "single_text", 'time_widget' => "single_text"))
             ->add('state', ChoiceType::class, array(
                 'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Event')))
             ->add('location')

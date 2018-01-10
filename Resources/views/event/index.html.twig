@@ -8,8 +8,8 @@
             <tr>
                 <th>Main Event</th>
                 <th>Description</th>
-                <th>From</th>
-                <th>To</th>
+                <th>Start</th>
+                <th>End</th>
                 <th>State</th>
                 <th>Actions</th>
             </tr>
@@ -19,8 +19,8 @@
             <tr>
                 <td><a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.mainevent }}</a></td>
                 <td>{{ event.description }}</td>
-                <td>{% if event.fromtime %}{{ event.fromtime|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if event.totime %}{{ event.totime|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if event.start %}{{ event.start|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if event.end %}{{ event.end|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>{{ event.state }}</td>
                 <td>
                 <a href="{{ path('event_show', { 'id': event.id }) }}">show</a><br>

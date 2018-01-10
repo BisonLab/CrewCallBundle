@@ -9,8 +9,8 @@
         <thead class="thead-inverse">
             <tr>
                 <th>Event</th>
-                <th>From</th>
-                <th>To</th>
+                <th>Start</th>
+                <th>End</th>
                 <th>What</th>
                 <th>Response</th>
             </tr>
@@ -21,8 +21,8 @@
             {% set function = job.shiftfunction.function %}
             <tr>
                 <td>{{ shift.event }}</td>
-                <td data-order="{{ shift.fromtime | date('U')}}" >{% if shift.fromtime %}{{ shift.fromtime|date('d M H:i') }}{% endif %}</td>
-                <td data-order="{{ shift.totime | date('U')}}" >{% if shift.totime %}{{ shift.totime|date('d M H:i') }}{% endif %}</td>
+                <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
+                <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
                 <td>{{ function }}</td>
                 <td>{{ job.state }}</td>
             </tr>
@@ -39,8 +39,8 @@
         <thead class="thead-inverse">
             <tr>
                 <th>Event</th>
-                <th>From</th>
-                <th>To</th>
+                <th>Start</th>
+                <th>End</th>
                 <th>What</th>
                 <th>&nbsp;</th>
             </tr>
@@ -51,8 +51,8 @@
             {% set function = job.shiftfunction.function %}
             <tr>
                 <td>{{ shift.event }}</td>
-                <td data-order="{{ shift.fromtime | date('U')}}" >{% if shift.fromtime %}{{ shift.fromtime|date('d M H:i') }}{% endif %}</td>
-                <td data-order="{{ shift.totime | date('U')}}" >{% if shift.totime %}{{ shift.totime|date('d M H:i') }}{% endif %}</td>
+                <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
+                <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
                 <td>{{ function }}</td>
                 <td>
                     <form method="POST" action="{{ path('user_delete_interest', {'id': job.id }) }}">
@@ -83,8 +83,8 @@ jQuery(document).ready(function() {
         <thead class="thead-inverse">
             <tr>
                 <th>Event</th>
-                <th>From</th>
-                <th>To</th>
+                <th>Start</th>
+                <th>End</th>
                 <th>What</th>
                 <th>&nbsp;</th>
             </tr>
@@ -96,8 +96,8 @@ jQuery(document).ready(function() {
             {% set function = shiftfunction.function %}
             <tr>
                 <td>{{ shift.event }}</td>
-                <td data-order="{{ shift.fromtime | date('U')}}" >{% if shift.fromtime %}{{ shift.fromtime|date('d M H:i') }}{% endif %}</td>
-                <td data-order="{{ shift.totime | date('U')}}" >{% if shift.totime %}{{ shift.totime|date('d M H:i') }}{% endif %}</td>
+                <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
+                <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
                 <td>{{ function }}</td>
                 <td>
                     <form method="POST" action="{{ path('user_register_interest', {'id': shiftfunction.id }) }}">

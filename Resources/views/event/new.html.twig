@@ -4,29 +4,29 @@
 <script>
 $(document).ready(function()
     {
-    $("#crewcallbundle_event_from_time_date input").each(function(){
+    $("#crewcallbundle_event_start_date input").each(function(){
         $(this).attr("readonly","readonly");
     });
-    $('#crewcallbundle_event_from_time_date').datetimepicker({
+    $('#crewcallbundle_event_start_date').datetimepicker({
         format: "Y-m-d",
         timepicker: false,
         datepicker: true,
     });
-    $('#crewcallbundle_event_from_time_time').datetimepicker({
+    $('#crewcallbundle_event_start').datetimepicker({
         format: "H:i",
         timepicker: true,
         datepicker: false,
         step:5
     });
-    $("#crewcallbundle_event_to_time_date input").each(function(){
+    $("#crewcallbundle_event_end_date input").each(function(){
         $(this).attr("readonly","readonly");
     });
-    $('#crewcallbundle_event_to_time_date').datetimepicker({
+    $('#crewcallbundle_event_end_date').datetimepicker({
         format: "Y-m-d",
         timepicker: false,
         datepicker: true,
     });
-    $('#crewcallbundle_event_to_time_time').datetimepicker({
+    $('#crewcallbundle_event_end').datetimepicker({
         format: "H:i",
         timepicker: true,
         datepicker: false,
@@ -38,7 +38,7 @@ $(document).ready(function()
 
     {{ form_start(form) }}
         {{ form_widget(form) }}
-        <input type="submit" value="Create" onclick="this.value='Creating';this.disabled=true"  />
+        <input type="submit" value="Create" onSubmit="this.value='Creating';this.disabled=true"  />
     {{ form_end(form) }}
 
     <ul>

@@ -51,18 +51,18 @@ class Event
     /**
      * @var string
      *
-     * @ORM\Column(name="from_time", type="datetime", nullable=false)
+     * @ORM\Column(name="starttime", type="datetime", nullable=false)
      * @Gedmo\Versioned
      */
-    private $from_time;
+    private $start;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="to_time", type="datetime", nullable=true)
+     * @ORM\Column(name="endtime", type="datetime", nullable=true)
      * @Gedmo\Versioned
      */
-    private $to_time;
+    private $end;
 
     /**
      * I've written that I had to have states here, but can't remember why
@@ -114,7 +114,6 @@ class Event
 
     public function __construct($options = array())
     {
-        $this->from_date = new \DateTime();
         $this->children = new ArrayCollection();
         $this->shifts   = new ArrayCollection();
     }
@@ -334,51 +333,51 @@ class Event
     }
 
     /**
-     * Set fromTime
+     * Set start
      *
-     * @param \DateTime $fromTime
+     * @param \DateTime $start
      *
      * @return Event
      */
-    public function setFromTime($fromTime)
+    public function setStart($start)
     {
-        $this->from_time = $fromTime;
+        $this->start = $start;
 
         return $this;
     }
 
     /**
-     * Get fromTime
+     * Get start
      *
      * @return \DateTime
      */
-    public function getFromTime()
+    public function getStart()
     {
-        return $this->from_time;
+        return $this->start;
     }
 
     /**
-     * Set toTime
+     * Set end
      *
-     * @param \DateTime $toTime
+     * @param \DateTime $end
      *
      * @return Event
      */
-    public function setToTime($toTime)
+    public function setEnd($end)
     {
-        $this->to_time = $toTime;
+        $this->end = $end;
 
         return $this;
     }
 
     /**
-     * Get toTime
+     * Get end
      *
      * @return \DateTime
      */
-    public function getToTime()
+    public function getEnd()
     {
-        return $this->to_time;
+        return $this->end;
     }
 
     /**
@@ -434,9 +433,9 @@ class Event
      */
     public function validate(ExecutionContextInterface $context)
     {
-        if ($this->to_time && ($this->from_time >= $this->to_time)) {
-            $context->buildViolation('You can not set from time to after to time.')
-                ->atPath('from_time')
+        if ($this->end && ($this->start >= $this->end)) {
+            $context->buildViolation('You can not set start time to after end time.')
+                ->atPath('start')
                 ->addViolation();
         }
     }

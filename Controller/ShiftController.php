@@ -98,8 +98,8 @@ class ShiftController extends CommonController
             if ($event = $em->getRepository('CrewCallBundle:Event')->find($event_id)) {
                 $shift->setEvent($event);
                 // Better have something to start with.
-                $shift->setFromTime($event->getFromTime());
-                $shift->setToTime($event->getToTime());
+                $shift->setStart($event->getStart());
+                $shift->setEnd($event->getEnd());
                 $shift->setLocation($event->getLocation());
                 // There are no Manager. Neither in shift, nor event.
                 // $shift->setManager($event->getManager());

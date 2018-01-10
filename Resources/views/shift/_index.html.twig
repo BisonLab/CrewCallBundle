@@ -2,8 +2,8 @@
 <table id="shiftTable" class="table table-bordered table-sm">
     <thead>
         <tr>
-            <th>From</th>
-            <th>To</th>
+            <th>Start</th>
+            <th>End</th>
             <th>Amount</th>
             <th>State</th>
             <th>Actions</th>
@@ -12,8 +12,8 @@
     <tbody>
     {% for shift in shifts %}
         <tr>
-            <td data-order="{{ shift.fromtime | date('U')}}" >{% if shift.fromtime %}{{ shift.fromtime|date('d M H:i') }}{% endif %}</td>
-            <td data-order="{{ shift.totime | date('U')}}" >{% if shift.totime %}{{ shift.totime|date('d M H:i') }}{% endif %}</td>
+            <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
+            <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
             <td>
             {{ shift.totalbooked }} of {{ shift.totalneeded }} <a href="#" onClick="grabShiftFunctionList({{ shift.id }});">List</a>
             </td>

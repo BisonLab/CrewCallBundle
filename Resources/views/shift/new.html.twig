@@ -4,29 +4,29 @@
 <script>
 $(document).ready(function()
     {
-    $("#crewcallbundle_shift_from_time_date input").each(function(){
+    $("#crewcallbundle_shift_start_date input").each(function(){
         $(this).attr("readonly","readonly");
     });
-    $('#crewcallbundle_shift_from_time_date').datetimepicker({
+    $('#crewcallbundle_shift_start_date').datetimepicker({
         format: "Y-m-d",
         timepicker: false,
         datepicker: true,
     });
-    $('#crewcallbundle_shift_from_time_time').datetimepicker({
+    $('#crewcallbundle_shift_start').datetimepicker({
         format: "H:i",
         timepicker: true,
         datepicker: false,
         step:5
     });
-    $("#crewcallbundle_shift_to_time_date input").each(function(){
+    $("#crewcallbundle_shift_end_date input").each(function(){
         $(this).attr("readonly","readonly");
     });
-    $('#crewcallbundle_shift_to_time_date').datetimepicker({
+    $('#crewcallbundle_shift_end_date').datetimepicker({
         format: "Y-m-d",
         timepicker: false,
         datepicker: true,
     });
-    $('#crewcallbundle_shift_to_time_time').datetimepicker({
+    $('#crewcallbundle_shift_end').datetimepicker({
         format: "H:i",
         timepicker: true,
         datepicker: false,

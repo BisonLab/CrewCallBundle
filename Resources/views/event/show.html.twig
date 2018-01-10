@@ -16,12 +16,12 @@
                 <td>{{ event.description }}</td>
             </tr>
             <tr>
-                <th>From time</th>
-                <td>{% if event.fromtime %}{{ event.fromtime|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <th>Start</th>
+                <td>{% if event.start %}{{ event.start|date('Y-m-d H:i:s') }}{% endif %}</td>
             </tr>
             <tr>
-                <th>To time</th>
-                <td>{% if event.totime %}{{ event.totime|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <th>End</th>
+                <td>{% if event.end %}{{ event.end|date('Y-m-d H:i:s') }}{% endif %}</td>
             </tr>
             <tr>
                 <th>State</th>

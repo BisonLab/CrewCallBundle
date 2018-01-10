@@ -72,6 +72,6 @@ class Jobs
     {
         // Why bother checking if it's the same? :=)
         if ($one === $two) return true;
-        return (($one->getFromTime() <= $two->getToTime()) && ($one->getToTime() >= $two->getFromTime()));
+        return (($one->getStart() <= $two->getEnd()) && ($one->getEnd() >= $two->getStart()));
     }
 }
