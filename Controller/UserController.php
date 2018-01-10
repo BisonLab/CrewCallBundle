@@ -55,26 +55,23 @@ class UserController extends CommonController
      * Lists all shiftFunction entities as calendar events.
      *
      * @Route("/me_calendar", name="user_me_calendar")
+     * @Method("POST")
      */
     public function meCalendarAction(Request $request, $access)
     {
-        $em = $this->getDoctrine()->getManager();
+        $calendar = $this->container->get('crewcall.calendar');
+        $jobs = $this->container->get('crewcall.jobs');
         $user = $this->getUser();
 
         // Gotta get the time scope.
         $from = $request->get('start');
         $to = $request->get('end');
-error_log($from . " " . $to);
+        $upcoming = $jobs->jobsForPerson($user,
+            array('upcoming' => true, 'from' => $from, 'to' => $to));
         
-        $events = array();
-        $e = new FullCalendarEvent();
-        $e['start'] = new \DateTime('2018-01-12 12:30');
-        $e['end'] = new \DateTime('2018-01-12 18:30');
-        $events[] = $e;
-error_log(json_encode($e, true));
-error_log(json_encode($e));
-
-        return new JsonResponse($events, Response::HTTP_OK);
+        $calitems = $calendar->toFullCalendarArray($upcoming);
+        // Not liked by OWASP since we just return an array.
+        return new JsonResponse($calitems, Response::HTTP_OK);
     }
 
     /**

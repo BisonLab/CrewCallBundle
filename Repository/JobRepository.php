@@ -10,7 +10,10 @@ use CrewCallBundle\Lib\ExternalEntityConfig;
  */
 class JobRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function findUpcomingForPerson(Person $person, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
+    /*
+     * TODO: Add timeframe and default with from now
+     */
+    public function findBookedUpcomingForPerson(Person $person, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
     {
         $states = ExternalEntityConfig::getBookedStatesFor('Job');
         $qb = $this->_em->createQueryBuilder();
@@ -32,6 +35,20 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->where('j.state in (:states)')
             ->andWhere("j.person = :person")
             ->setParameter('states', $states)
+            ->setParameter('person', $person);
+        return $qb->getQuery()->getResult();
+    }
+
+    /*
+     * TODO: Add timeframe and default with from now
+     */
+    public function findUpcomingForPerson(Person $person, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
+    {
+        $states = ExternalEntityConfig::getBookedStatesFor('Job');
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('j')
+            ->from($this->_entityName, 'j')
+            ->where("j.person = :person")
             ->setParameter('person', $person);
         return $qb->getQuery()->getResult();
     }

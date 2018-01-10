@@ -1,0 +1,85 @@
+<link rel="stylesheet" href="{{ asset('public/fullcalendar/dist/fullcalendar.min.css') }}" type="text/css" media="all" />
+<script src="{{ asset('public/moment/min/moment.min.js') }}"></script>
+<script src="{{ asset('public/fullcalendar/dist/fullcalendar.js') }}"></script>
+<script src="{{ asset('public/fullcalendar/dist/locale/en-gb.js') }}"></script>
+
+<script>
+$(function () {
+    $('#calendar').fullCalendar({
+        selectable: false,
+        editable: false,
+        fixedWeekCount: false,
+        eventDurationEditable: false,
+        weekNumbers: true,
+        defaultView: 'month',
+        firstDay: 1,
+        navLinks: true,
+        timeFormat: 'H(:mm)',
+        allDaySlot: false,
+
+        header: {
+            left: 'prev, next',
+            center: 'title',
+            right: 'month, agendaWeek, agendaDay, listWeek'
+        },
+        lazyFetching: true,
+        eventSources: [
+            {
+                url: '{{ calendar_load_url }}',
+                type: 'POST',
+                data: {},
+                error: function () {}
+            }
+        ]
+    });
+});
+</script>
+{#
+<script>
+$(function () {
+    $('#calendar').fullCalendar({
+        header: {
+            left: 'prev, next',
+            center: 'title',
+            right: 'month, agendaWeek, agendaDay'
+        },
+        weekNumbers: true,
+        timezone: ('Europe/London'),
+        businessHours: {
+            start: '09:00',
+            end: '17:30',
+            dow: [1, 2, 3, 4, 5]
+        },
+        defaultView: 'agendaWeek',
+        lazyFetching: true,
+        firstDay: 1,
+        selectable: true,
+        timeFormat: {
+            agenda: 'h:mmt',
+            '': 'h:mmt'
+        },
+        columnFormat:{
+            month: 'ddd',
+            week: 'ddd D/M',
+            day: 'dddd'
+        },
+        editable: false,
+        eventDurationEditable: false,
+        eventSources: [
+            {
+                url: '{{ calendar_load_url }}',
+                type: 'POST',
+                data: {
+//                    filters: { param: foo }
+                },
+                error: function() {
+                   //alert()
+                }
+            }
+        ]
+    });
+});
+
+</script>
+#}
+<div id="calendar"></div>

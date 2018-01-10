@@ -22,6 +22,8 @@ class Jobs
             return $person->getJobs();
         } elseif (isset($options['upcoming'])) {
             return $this->em->getRepository('CrewCallBundle:Job')->findUpcomingForPerson($person);
+        } elseif (isset($options['booked_upcoming'])) {
+            return $this->em->getRepository('CrewCallBundle:Job')->findBookedUpcomingForPerson($person);
         } elseif (isset($options['wishlist'])) {
             return $this->em->getRepository('CrewCallBundle:Job')->findWishlistForPerson($person);
         }

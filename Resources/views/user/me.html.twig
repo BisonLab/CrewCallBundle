@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{% set upcoming = cc_jobs.jobsforperson(user, {'upcoming': true}) %}
+{% set upcoming = cc_jobs.jobsforperson(user, {'booked_upcoming': true}) %}
 {% if upcoming|length > 0 %}
     <h2>Upcoming Jobs</h2>
 
@@ -110,7 +110,7 @@ jQuery(document).ready(function() {
     </table>
 {% endif %}
 
-{% set calendar_load_url = path('user_me_calendar') %}
+{% set calendar_load_url = path('user_me_calendar', {'access': 'ajax'}) %}
 {% include 'CrewCallBundle::_calendar.html.twig' with { 'calendar_load_url': calendar_load_url}  %}
 
 {% endblock %}
