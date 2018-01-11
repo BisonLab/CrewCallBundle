@@ -19,21 +19,6 @@ function grabFunctionPicker() {
     return false;
 }
 
-function removePersonFunction(pfid) {
-    url = "{{ path('personfunction_delete', {'id': " + pfid + ", 'access': 'ajax' }) }}";
-    $.delete(url, function( data ) {
-        $( "#personRight" ).html(data);
-    }).done(function() {
-        $( "#functionTable" ).dataTable({
-            "order": [[ 1, "asc" ]],
-            "paging": false,
-            "searching": true
-            });
-        $( ".sfList" ).hide();
-    });
-    return false;
-}
-
 function pickedFunction(function_id) {
     var person_function = {};
     person_function.person_id   = {{ person.id }};
