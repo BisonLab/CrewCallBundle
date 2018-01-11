@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 /**
- * Shiftfunction controller.
+ * PersonFunction controller.
  *
  * @Route("/admin/{access}/personfunction", defaults={"access" = "web"}, requirements={"web|rest|ajax"})
  */
@@ -106,14 +106,13 @@ class PersonFunctionController extends CommonController
     {
         $form = $this->createDeleteForm($personFunction);
         $form->handleRequest($request);
-
+        $person = $personFunction->getPerson();
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($personFunction);
             $em->flush($personFunction);
         }
-
-        return $this->redirectToRoute('personfunction_index');
+        return $this->redirectToRoute('person_show', array('id' => $person->getId()));
     }
 
     /**
@@ -123,8 +122,9 @@ class PersonFunctionController extends CommonController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm(PersonFunction $personFunction)
+    public function createDeleteForm(PersonFunction $personFunction)
     {
+dump($this);
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('personfunction_delete', array('id' => $personFunction->getId())))
             ->setMethod('DELETE')

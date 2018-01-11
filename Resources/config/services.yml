@@ -10,5 +10,9 @@ services:
     crewcall.calendar:
         class: CrewCallBundle\Service\Calendar
 
+    crewcall.formcreator:
+        class: CrewCallBundle\Service\FormCreator
+        arguments: ["@service_container"]
+
     crewcall_retriever:
         alias: crewcall.retriever

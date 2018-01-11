@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% block title %}{{ person.fullname }}{% endblock %}
 {% block body %}
 
 <script>
@@ -11,7 +12,22 @@ function grabFunctionPicker() {
         $( "#functionTable" ).dataTable({
             "order": [[ 1, "asc" ]],
             "paging": false,
-            "searching": false
+            "searching": true
+            });
+        $( ".sfList" ).hide();
+    });
+    return false;
+}
+
+function removePersonFunction(pfid) {
+    url = "{{ path('personfunction_delete', {'id': " + pfid + ", 'access': 'ajax' }) }}";
+    $.delete(url, function( data ) {
+        $( "#personRight" ).html(data);
+    }).done(function() {
+        $( "#functionTable" ).dataTable({
+            "order": [[ 1, "asc" ]],
+            "paging": false,
+            "searching": true
             });
         $( ".sfList" ).hide();
     });
@@ -129,7 +145,12 @@ function grabPersonFunctionForm() {
                 <td>
                 <ul>
                 {% for f in person.personfunctions %}
-                <li>{{ f }}</li>
+                <li>
+                {% set dform = cc_formcreator.createdeleteform(f) %}
+                {{ form_start(dform) }}
+                {{ f }} <input type="submit" value="Remove">
+                {{ form_end(dform) }}
+                </li>
                 {% endfor %}
                 </ul>
                 <a href="#" onClick="grabFunctionPicker();">Add function
