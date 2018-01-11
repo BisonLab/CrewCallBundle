@@ -83,8 +83,6 @@ class Calendar
         $fc['startEditable'] = false;
         $fc['durationEditable'] = false;
         $fc['resourceEditable'] = false;
-dump($fc);
-
         return $fc;
     }
 

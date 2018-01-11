@@ -124,7 +124,6 @@ class PersonFunctionController extends CommonController
      */
     public function createDeleteForm(PersonFunction $personFunction)
     {
-dump($this);
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('personfunction_delete', array('id' => $personFunction->getId())))
             ->setMethod('DELETE')
