@@ -186,7 +186,8 @@ class Person extends BaseUser
         return $this->last_name;
     }
 
-    // Concatenate the two above.
+    // Concatenate the two above. Looks odd, but we do store the full name in
+    // the database so we gotta do it like this.
     private function setFullName()
     {
         $this->full_name =  $this->getFirstName() . " " . $this->getLastName();
