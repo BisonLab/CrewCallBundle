@@ -35,14 +35,8 @@ class Jobs
         // Hopefully Doctrine does the job just as good, so I won't for now.
         $opportunities = new ArrayCollection();
         $jobshiftfunctions = new ArrayCollection();
-        $jobs = $this->em->getRepository('CrewCallBundle:Job')->findUpcomingForPerson($person);
+        $jobs = $this->jobsForPerson($person, array('upcoming' => true));
         foreach ($jobs as $job) {
-            $jobshiftfunctions->add($job->getShiftFunction());
-        }
-        // And The Wiuhlist, so we don't have doubles.
-        // (I may just get all non-done jobs in one go and filter by state?)
-        $wishlist = $this->em->getRepository('CrewCallBundle:Job')->findWishlistForPerson($person);
-        foreach ($wishlist as $job) {
             $jobshiftfunctions->add($job->getShiftFunction());
         }
 
@@ -59,10 +53,15 @@ class Jobs
             if (!$jobshiftfunctions->contains($sf)) {
                 // Check if we have time overlap between already booked job and
                 // the opportunities.
+                /*
+                 * Gotta decide if I want to do this or not. Not for now since
+                 * it ends up removing opportunities also when the existing job
+                 * is just in the wishlist.
                 foreach ($jobshiftfunctions as $jsf) {
                     if ($this->overlap($jsf->getShift(), $sf->getShift()))
                         continue 2;
                 }
+                 */
                 // And it's still here.
                 $opportunities->add($sf);
             }
