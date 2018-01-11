@@ -67,17 +67,25 @@ class Calendar
         else
             $fc['end'] = null;
         /*
-        $fc['url'] = $cal[''];
         $fc['className'] = $cal[''];
         $fc['rendering'] = $cal[''];
         $fc['constraint'] = $cal[''];
         $fc['source'] = $cal[''];
-        $fc['color'] = $cal[''];
-        $fc['backgroundColor'] = $cal[''];
-        $fc['borderColor'] = $cal[''];
-        $fc['textColor'] = $cal[''];
         */
-        $fc['allDay'] = false;
+        if (isset($cal['url']))
+            $fc['url'] = $cal['url'];
+        if (isset($cal['color']))
+            $fc['color'] = $cal['color'];
+        if (isset($cal['backgroundColor']))
+            $fc['backgroundColor'] = $cal['backgroundColor'];
+        if (isset($cal['borderColor']))
+            $fc['borderColor'] = $cal['borderColor'];
+        if (isset($cal['textColor']))
+            $fc['textColor'] = $cal['textColor'];
+        if (isset($cal['allDay']))
+            $fc['allDay'] = $cal['allDay'];
+        else
+            $fc['allDay'] = false;
         $fc['overlap'] = false;
         $fc['editable'] = false;
         $fc['startEditable'] = false;
@@ -107,6 +115,13 @@ class Calendar
     {
         $c = $this->shiftToCal($job->getShift());
         $c['title'] = $job->getFunction()->getName();
+        if ($job->isBooked()) {
+            $c['color'] = "green";
+            $c['textColor'] = "white";
+        } else {
+            $c['color'] = "orange";
+            $c['textColor'] = "black";
+        }
         return $c;
     }
 
