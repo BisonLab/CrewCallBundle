@@ -90,7 +90,7 @@ class OrganizationController extends CommonController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('organization_edit', array('id' => $organization->getId()));
+            return $this->redirectToRoute('organization_show', array('id' => $organization->getId()));
         }
 
         return $this->render('organization/edit.html.twig', array(

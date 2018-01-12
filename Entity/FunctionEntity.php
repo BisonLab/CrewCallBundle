@@ -57,7 +57,7 @@ class FunctionEntity
      *
      * @ORM\Column(name="state", type="string", length=40, nullable=true)
      * @Gedmo\Versioned
-     * @Assert\Choice(callback = "getStates")
+     * @Assert\Choice(callback = "getStatesList")
      */
     private $state;
 
@@ -173,7 +173,7 @@ class FunctionEntity
     {
         if ($state == $this->state) return $this;
         $state = strtoupper($state);
-        if (!isset(self::getStates()[$state])) {
+        if (!in_array($state, self::getStates())) {
             throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
         }
         $this->state = $state;
@@ -191,13 +191,17 @@ class FunctionEntity
     }
 
     /**
-     * Get states
+     * Get states and a list of them.
      *
      * @return array 
      */
     public static function getStates()
     {
         return ExternalEntityConfig::getStatesFor('Function');
+    }
+    public static function getStatesList()
+    {
+        return array_keys(ExternalEntityConfig::getStatesFor('Function'));
     }
 
     /**

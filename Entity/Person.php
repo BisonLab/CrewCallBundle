@@ -353,7 +353,7 @@ class Person extends BaseUser
     }
 
     /**
-     * Get states
+     * Get states and a list of them.
      *
      * @return hash
      */

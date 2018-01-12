@@ -87,7 +87,7 @@ class Organization
      *
      * @ORM\Column(name="state", type="string", length=40, nullable=true)
      * @Gedmo\Versioned
-     * @Assert\Choice(callback = "getStates")
+     * @Assert\Choice(callback = "getStatesList")
      */
     private $state;
 
@@ -309,6 +309,10 @@ class Organization
     public static function getStates()
     {
         return ExternalEntityConfig::getStatesFor('Organization');
+    }
+    public static function getStatesList()
+    {
+        return array_keys(ExternalEntityConfig::getStatesFor('Organization'));
     }
 
     /*

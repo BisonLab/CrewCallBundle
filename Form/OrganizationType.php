@@ -6,7 +6,10 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
 use CrewCallBundle\Form\AddressType;
+use CrewCallBundle\Lib\ExternalEntityConfig;
 
 class OrganizationType extends AbstractType
 {
@@ -20,8 +23,9 @@ class OrganizationType extends AbstractType
             ->add('organization_number')
             ->add('office_phone_number')
             ->add('office_email')
-            ->add('state')
-            ->add('attributes')
+            ->add('state', ChoiceType::class, array(
+              'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Organization')))
+            // ->add('attributes')
             ->add('visit_address', AddressType::class)
             ->add('postal_address', AddressType::class)
            ;

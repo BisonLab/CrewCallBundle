@@ -90,7 +90,7 @@ class LocationController extends CommonController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('location_edit', array('id' => $location->getId()));
+            return $this->redirectToRoute('location_show', array('id' => $location->getId()));
         }
 
         return $this->render('location/edit.html.twig', array(

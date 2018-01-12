@@ -222,7 +222,7 @@ class Event
     }
 
     /**
-     * Get states
+     * Get states and a list of them.
      *
      * @return array 
      */
@@ -230,12 +230,6 @@ class Event
     {
         return ExternalEntityConfig::getStatesFor('Event');
     }
-
-    /**
-     * Get states list
-     *
-     * @return array 
-     */
     public static function getStatesList()
     {
         return array_keys(ExternalEntityConfig::getStatesFor('Event'));

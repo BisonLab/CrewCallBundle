@@ -6,6 +6,10 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
+use CrewCallBundle\Lib\ExternalEntityConfig;
+
 class FunctionEntityType extends AbstractType
 {
     /**
@@ -13,7 +17,15 @@ class FunctionEntityType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name')->add('description')->add('state')->add('attributes')->add('parent')        ;
+        $builder
+            ->add('name')
+            ->add('description')
+            ->add('state', ChoiceType::class, array(
+              'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Function')))
+            // I wonder if having these here is a good idea as long as it's json.
+            // ->add('attributes')
+            ->add('parent')
+        ;
     }
     
     /**

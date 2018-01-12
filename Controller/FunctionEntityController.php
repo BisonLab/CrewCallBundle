@@ -112,7 +112,7 @@ class FunctionEntityController extends CommonController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('function_edit', array('id' => $functionEntity->getId()));
+            return $this->redirectToRoute('function_show', array('id' => $functionEntity->getId()));
         }
 
         return $this->render('functionentity/edit.html.twig', array(
