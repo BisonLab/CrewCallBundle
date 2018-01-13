@@ -9,6 +9,7 @@ services:
 
     crewcall.calendar:
         class: CrewCallBundle\Service\Calendar
+        arguments: ["@router"]
 
     crewcall.formcreator:
         class: CrewCallBundle\Service\FormCreator

@@ -16,10 +16,37 @@ use CrewCallBundle\Entity\Event;
 
 class Calendar
 {
-    private $em;
+    private $router;
 
-    public function __construct()
+    public function __construct($router)
     {
+        $this->router = $router;
+    }
+
+    public function toIcal($frog)
+    {
+        if ($frog instanceof Event) {
+            $cal = $this->eventToCal($frog);
+        } elseif ($frog instanceof Shift) {
+            $cal = $this->shiftToCal($frog);
+        } elseif ($frog instanceof ShiftFunction) {
+            $cal = $this->shiftFunctionToCal($frog);
+        } elseif ($frog instanceof Job) {
+            $cal = $this->jobToCal($frog);
+        } else {
+            throw new \InvalidArgumentException("Could not do anything useful with "
+                . get_class($frog));
+        }
+        // TODO: Configurable domain.
+        $vCalendar = new \Eluceo\iCal\Component\Calendar('CrewCall');
+        $vEvent = new \Eluceo\iCal\Component\Event();
+        $vEvent->setSummary($cal['title']);
+        $vEvent->setDtStart($cal['start']);
+        if ($cal['end'])
+            $vEvent->setDtEnd($cal['end']);
+
+        $vCalendar->addComponent($vEvent);
+        return $vCalendar->render();
     }
 
     public function toFullCalendarArray($frogs)
@@ -122,6 +149,7 @@ class Calendar
             $c['color'] = "orange";
             $c['textColor'] = "black";
         }
+        $c['url'] =  $this->router->generate('user_job_calendar_item', array('id' => $job->getId()));
         return $c;
     }
 

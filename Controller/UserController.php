@@ -98,8 +98,29 @@ class UserController extends CommonController
 
     /**
      *
+     * @Route("/job_calendaritem/{id}", name="user_job_calendar_item")
+     * @Method("GET")
+     */
+    public function jobCaledarItemAction(Request $request, Job $job, $access)
+    {
+        $user = $this->getUser();
+        // Better find the right exception later.
+        if ($user->getId() != $job->getPerson()->getId())
+            throw new \InvalidArgumentException("You are not the one to grab this.");
+
+        $calendar = $this->container->get('crewcall.calendar');
+        $ical = $calendar->toIcal($job);
+
+        $response = new Response($ical, Response::HTTP_OK);
+        $response->headers->set('Content-Type', 'text/calendar; charset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="cal.ics"');
+        return $response;
+    }
+
+    /**
+     *
      * @Route("/delete_interest/{id}", name="user_delete_interest")
-     * @Method("POST")
+     * @Method({"DELETE", "POST"})
      */
     public function deleteInterestAction(Request $request, Job $job, $access)
     {
