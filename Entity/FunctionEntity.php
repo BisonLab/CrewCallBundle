@@ -173,7 +173,7 @@ class FunctionEntity
     {
         if ($state == $this->state) return $this;
         $state = strtoupper($state);
-        if (!in_array($state, self::getStates())) {
+        if (!in_array($state, self::getStatesList())) {
             throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
         }
         $this->state = $state;
