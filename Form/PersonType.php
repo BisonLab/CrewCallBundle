@@ -24,6 +24,16 @@ class PersonType extends AbstractType
             ->add('mobile_phone_number')
             ->add('home_phone_number')
             ->add('state', ChoiceType::class, array('choices' => ExternalEntityConfig::getStatesAsChoicesFor('Person')))
+            ->add('roles', ChoiceType::class,
+                array(
+                    'multiple' =>  true,
+                    'choices' =>
+                        array(
+                            'Ordinary user' => 'ROLE_USER',
+                            'Admin' => 'ROLE_ADMIN'
+                            )
+                )
+            )
             // ->add('attributes')
             ->add('address', AddressType::class)
             ->add('postal_address', AddressType::class)
