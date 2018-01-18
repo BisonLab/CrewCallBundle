@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="{{ asset('public/fullcalendar/dist/fullcalendar.min.css') }}" type="text/css" media="all" />
 <script src="{{ asset('public/moment/min/moment.min.js') }}"></script>
 <script src="{{ asset('public/fullcalendar/dist/fullcalendar.js') }}"></script>
+<script src="{{ asset('public/fullcalendar/dist/gcal.js') }}"></script>
 <script src="{{ asset('public/fullcalendar/dist/locale/en-gb.js') }}"></script>
 
 <script>
@@ -24,7 +25,15 @@ $(function () {
             right: 'month, agendaWeek, agendaDay, listWeek'
         },
         lazyFetching: true,
+        googleCalendarApiKey: '{{ googlecalendarapikey }}',
+
         eventSources: [
+/* Not yet.
+            {
+            googleCalendarId: 'en.usa#holiday@group.v.calendar.google.com',
+            className: 'gcal-event' // an option!
+            },
+*/
             {
                 url: '{{ calendar_load_url }}',
                 type: 'POST',
