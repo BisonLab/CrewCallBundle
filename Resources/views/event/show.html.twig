@@ -15,6 +15,12 @@
                 <th>Description</th>
                 <td>{{ event.description }}</td>
             </tr>
+{% if event.location is not null %}
+            <tr>
+                <th>Location</th>
+                <td>{{ event.location.name }}</td>
+            </tr>
+{% endif %}
             <tr>
                 <th>Start</th>
                 <td>{% if event.start %}{{ event.start|date('Y-m-d H:i:s') }}{% endif %}</td>
