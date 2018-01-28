@@ -17,13 +17,12 @@
         </thead>
         <tbody>
         {% for job in upcoming %}
-            {% set shift = job.shiftfunction.shift %}
-            {% set function = job.shiftfunction.function %}
+            {% set shift = job.shift %}
             <tr>
                 <td>{{ shift.event }}</td>
                 <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
                 <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
-                <td>{{ function }}</td>
+                <td>{{ shift.function }}</td>
                 <td>{{ job.state }}</td>
             </tr>
         {% endfor %}
@@ -47,13 +46,12 @@
         </thead>
         <tbody>
         {% for job in wishlist %}
-            {% set shift = job.shiftfunction.shift %}
-            {% set function = job.shiftfunction.function %}
+            {% set shift = job.shift %}
             <tr>
                 <td>{{ shift.event }}</td>
                 <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
                 <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
-                <td>{{ function }}</td>
+                <td>{{ shift.function }}</td>
                 <td>
                     <form method="POST" action="{{ path('user_delete_interest', {'id': job.id }) }}">
                     <button type="submit" class="btn btn-danger">Cancel</button>
@@ -91,16 +89,14 @@ jQuery(document).ready(function() {
         </thead>
         <tbody>
         {# Better make this a service function or something, for listing opportunities with already registerted interest filtered out #}
-        {% for shiftfunction in opportunities %}
-            {% set shift = shiftfunction.shift %}
-            {% set function = shiftfunction.function %}
+        {% for shift in opportunities %}
             <tr>
                 <td>{{ shift.event }}</td>
                 <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
                 <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
-                <td>{{ function }}</td>
+                <td>{{ shift.function }}</td>
                 <td>
-                    <form method="POST" action="{{ path('user_register_interest', {'id': shiftfunction.id }) }}">
+                    <form method="POST" action="{{ path('user_register_interest', {'id': shift.id }) }}">
                     <button type="submit" class="btn btn-success">I want it!</button>
                     </form>
                 </td>

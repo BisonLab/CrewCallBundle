@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 use CrewCallBundle\Entity\Person;
-use CrewCallBundle\Entity\ShiftFunction;
+use CrewCallBundle\Entity\Shift;
 use CrewCallBundle\Entity\Job;
 
 use CrewCallBundle\Model\FullCalendarEvent;
@@ -29,7 +29,7 @@ use CrewCallBundle\Model\FullCalendarEvent;
 class UserController extends CommonController
 {
     /**
-     * Lists all shiftFunction entities.
+     * Lists all Jobs for a user.
      *
      * @Route("/me", name="user_me")
      * @Method("GET")
@@ -52,7 +52,7 @@ class UserController extends CommonController
     }
 
     /**
-     * Lists all shiftFunction entities as calendar events.
+     * Lists all the users jobs as calendar events.
      *
      * @Route("/me_calendar", name="user_me_calendar")
      * @Method("POST")
@@ -79,12 +79,12 @@ class UserController extends CommonController
      * @Route("/register_interest/{id}", name="user_register_interest")
      * @Method("POST")
      */
-    public function registerInterestAction(Request $request, ShiftFunction $shiftFunction, $access)
+    public function registerInterestAction(Request $request, Shift $shift, $access)
     {
         $user = $this->getUser();
 
         $job = new Job();
-        $job->setShiftFunction($shiftFunction);
+        $job->setShift($shift);
         $job->setPerson($user);
         // I guess it's just too much work finding whatever state you'd rather
         // use for this. Like "REGISTERED" instead.

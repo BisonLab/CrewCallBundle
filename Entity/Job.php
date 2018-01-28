@@ -50,10 +50,10 @@ class Job
     private $person;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ShiftFunction", inversedBy="jobs")
-     * @ORM\JoinColumn(name="shift_function_id", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Shift", inversedBy="jobs")
+     * @ORM\JoinColumn(name="shift_id", referencedColumnName="id", nullable=false)
      */
-    private $shift_function;
+    private $shift;
 
     /**
      * Get id
@@ -157,33 +157,28 @@ class Job
         return $this;
     }
 
-    public function getShiftFunction()
-    {
-        return $this->shift_function;
-    }
-
-    public function setShiftFunction(ShiftFunction $shift_function = null)
-    {
-        if ($this->shift_function !== null) {
-            $this->shift_function->removeJob($this);
-        }
-
-        if ($shift_function !== null) {
-            $shift_function->addJob($this);
-        }
-
-        $this->shift_function = $shift_function;
-        return $this;
-    }
-
     public function getShift()
     {
-        return $this->getShiftFunction()->getShift();
+        return $this->shift;
+    }
+
+    public function setShift(Shift $shift = null)
+    {
+        if ($this->shift !== null) {
+            $this->shift->removeJob($this);
+        }
+
+        if ($shift !== null) {
+            $shift->addJob($this);
+        }
+
+        $this->shift = $shift;
+        return $this;
     }
 
     public function getFunction()
     {
-        return $this->getShiftFunction()->getFunction();
+        return $this->getShift()->getFunction();
     }
 
     public function isBooked()

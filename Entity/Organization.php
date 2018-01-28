@@ -97,9 +97,9 @@ class Organization
     private $person_function_organizations;
 
     /**
-     * @ORM\OneToMany(targetEntity="ShiftFunctionOrganization", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="ShiftOrganization", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=true)
      */
-    private $shift_function_organizations;
+    private $shift_organizations;
 
     /**
      * @ORM\OneToMany(targetEntity="Event", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=true)

@@ -66,13 +66,31 @@ class Shift
     private $state;
 
     /**
-     * @ORM\OneToMany(targetEntity="ShiftFunction", mappedBy="shift", cascade={"remove"})
+     * @ORM\ManyToOne(targetEntity="FunctionEntity", inversedBy="shifts")
+     * @ORM\JoinColumn(name="function_id", referencedColumnName="id", nullable=false)
      */
-    private $shift_functions;
+    private $function;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="amount", type="integer", nullable=false)
+     * @Gedmo\Versioned
+     */
+    private $amount;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Job", mappedBy="shift", cascade={"remove"})
+     */
+    private $jobs;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ShiftOrganization", mappedBy="shift", cascade={"remove"})
+     */
+    private $shift_organizations;
 
     public function __construct($options = array())
     {
-        $this->shift_functions = new ArrayCollection();
     }
 
     public function getId()
@@ -251,13 +269,95 @@ class Shift
     }
 
     /**
-     * Get shift_functions
+     * Set amount
+     *
+     * @param integer $amount
+     *
+     * @return Shift
+     */
+    public function setAmount($amount)
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    /**
+     * Get amount
+     *
+     * @return integer
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    /**
+     * Add job
+     *
+     * @param \CrewCallBundle\Entity\Job $job
+     *
+     * @return Shift
+     */
+    public function addJob(\CrewCallBundle\Entity\Job $job)
+    {
+        $this->jobs[] = $job;
+
+        return $this;
+    }
+
+    /**
+     * Remove job
+     *
+     * @param \CrewCallBundle\Entity\Job $job
+     */
+    public function removeJob(\CrewCallBundle\Entity\Job $job)
+    {
+        $this->jobs->removeElement($job);
+    }
+
+    /**
+     * Get jobs
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getShiftFunctions()
+    public function getJobs()
     {
-        return $this->shift_functions;
+        return $this->jobs;
+    }
+
+    /**
+     * Add shift_organizations
+     *
+     * @param \CrewCallBundle\Entity\ShiftOrganization $shift_organizations
+     *
+     * @return Shift
+     */
+    public function addShiftOrganization(\CrewCallBundle\Entity\ShiftOrganization $shift_organizations)
+    {
+        $this->shift_organizations[] = $shift_organizations;
+
+        return $this;
+    }
+
+    /**
+     * Remove shift_organizations
+     *
+     * @param \CrewCallBundle\Entity\ShiftOrganization $shift_organizations
+     */
+    public function removeOrganization(\CrewCallBundle\Entity\ShiftOrganization $shift_organizations)
+    {
+        $this->shift_organizations->removeElement($shift_organizations);
+    }
+
+    /**
+     * Get shift_organizations
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getShiftOrganizations()
+    {
+        return $this->shift_organizations;
     }
 
     public function __toString()
@@ -269,31 +369,38 @@ class Shift
     }
 
     /**
-     * Get the total amount of persons needed
+     * Get the amount of persons Booked, including organization
      *
      * @return int
      */
-    public function getTotalNeeded()
+    public function getBookedAmount()
     {
-        $total = 0;
-        foreach ($this->getShiftFunctions() as $sf) {
-            $total += $sf->getAmount();
+        $booked = 0;
+        foreach ($this->getJobs() as $j) {
+            if ($j->isBooked()) $booked++;
         }
-        return $total;
+        foreach ($this->getShiftOrganizations() as $so) {
+            // If they are mentioned, they are booked. Aka amount is by
+            // definition booked.
+            $booked += $so->getAmount();
+        }
+        return $booked;
     }
 
     /**
-     * Get the total amount of persons Booked
+     * Get the amount of persons registered, including organization
      *
      * @return int
      */
-    public function getTotalBooked()
+    public function getRegisteredAmount()
     {
-        $total = 0;
-        foreach ($this->getShiftFunctions() as $sf) {
-            $total += $sf->getBooked();
+        $booked = $this->getJobs()->count();
+        foreach ($this->getShiftOrganizations() as $so) {
+            // If they are mentioned, they are booked. Aka amount is by
+            // definition booked.
+            $booked += $so->getAmount();
         }
-        return $total;
+        return $booked;
     }
 
     /**

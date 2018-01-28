@@ -1,0 +1,116 @@
+<script>
+
+function grabShiftOrganizationList(shift_id) {
+    url = "{{ path('shiftorganization_index', {'access': 'ajax' }) }}" 
+        + "?shift=" + shift_id;
+    $.get(url, function( data ) {
+        $( "#soTable_" + shift_id ).html(data);
+        $( "#soList_" + shift_id ).show();
+    }).done(function() {
+        $( ".soList" ).each(function() {
+            $(this).hide();
+        });
+    });
+    return false;
+}
+
+function submitNewShiftOrganizationForm(shift_id) {
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('shiftorganization_new', { 'access': 'ajax' }) }}",
+        data: $( "#newShiftOrganizationForm" ).serialize(),
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 201) {
+                // Gotta reload. Easiest way to recount everything.
+                parent.location.reload();
+            } else {
+                $( "#newShiftOrganization_"+shift_id ).html(xhr.responseText);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function grabNewShiftOrganizationForm(shift_id) {
+    url = "{{ path('shiftorganization_new', { 'access': 'ajax' }) }}";
+    if (shift_id) {
+        url = url + "?shift=" + shift_id;
+    }
+    $.get(url, function( data ) {
+        $( "#newShiftOrganization_"+shift_id ).html(data);
+        $( "#crewcallbundle_shiftorganization_shift").hide();
+        $( "#newShiftOrganization_"+shift_id ).submit(function( event ) {
+            event.preventDefault();
+            submitNewShiftOrganizationForm(shift_id);
+        });
+    });
+    return false;
+}
+
+function submitEditShiftOrganizationForm(shift_id) {
+    orgurl = "{{ path('shiftorganization_edit', { 'access': 'ajax' }) }}";
+    url = orgurl.replace("0", shift_id);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: url,
+        data: $( "#editShiftOrganizationForm" ).serialize(),
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+        $( "#editShiftOrganization_"+shift_id ).html("");
+        grabShiftOrganizationList(shift_id);
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function grabEditShiftOrganizationForm(shift_id) {
+    orgurl = "{{ path('shiftorganization_edit', { 'access': 'ajax' }) }}";
+    url = orgurl.replace("0", shift_id);
+    $.get(url, function( data ) {
+        $( "#editShiftOrganization_"+shift_id ).html(data);
+        $( "#editShiftOrganizationForm" ).submit(function( event ) {
+            event.preventDefault();
+            submitEditShiftOrganizationForm(shift_id);
+        });
+    });
+    return false;
+}
+
+function deleteShiftOrganization(so_id) {
+    cheat_url = "{{ path('shiftorganization_delete', { 'id': 0, 'access': 'ajax' }) }}";
+    url = cheat_url.replace("0", so_id);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "DELETE",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 204) {
+                parent.location.reload();
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+</script>

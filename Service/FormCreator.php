@@ -6,8 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use CrewCallBundle\Entity\PersonFunction;
 use CrewCallBundle\Entity\Job;
 use CrewCallBundle\Entity\Shift;
-use CrewCallBundle\Entity\ShiftFunction;
-use CrewCallBundle\Entity\ShiftFunctionOrganization;
+use CrewCallBundle\Entity\ShiftOrganization;
 use CrewCallBundle\Entity\Event;
 
 /*

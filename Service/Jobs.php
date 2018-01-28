@@ -34,10 +34,10 @@ class Jobs
         // Should I cache or should I not?
         // Hopefully Doctrine does the job just as good, so I won't for now.
         $opportunities = new ArrayCollection();
-        $jobshiftfunctions = new ArrayCollection();
+        $jobshift = new ArrayCollection();
         $jobs = $this->jobsForPerson($person, array('upcoming' => true));
         foreach ($jobs as $job) {
-            $jobshiftfunctions->add($job->getShiftFunction());
+            $jobshift->add($job->getShift());
         }
 
         // I'd better have a "getFunctions" on Person, but I don't like
@@ -46,18 +46,18 @@ class Jobs
         foreach ($person->getPersonFunctions() as $pf) {
             $functions[] = $pf->getFunction();
         }
-        $shift_functions = $this->em->getRepository('CrewCallBundle:ShiftFunction')->findUpcomingForFunctions($functions);
+        $shifts = $this->em->getRepository('CrewCallBundle:Shift')->findUpcomingForFunctions($functions);
 
-        foreach ($shift_functions as $sf) {
+        foreach ($shifts as $sf) {
             // Already in jobs?
-            if (!$jobshiftfunctions->contains($sf)) {
+            if (!$jobshift->contains($sf)) {
                 // Check if we have time overlap between already booked job and
                 // the opportunities.
                 /*
                  * Gotta decide if I want to do this or not. Not for now since
                  * it ends up removing opportunities also when the existing job
                  * is just in the wishlist.
-                foreach ($jobshiftfunctions as $jsf) {
+                foreach ($jobshift as $jsf) {
                     if ($this->overlap($jsf->getShift(), $sf->getShift()))
                         continue 2;
                 }

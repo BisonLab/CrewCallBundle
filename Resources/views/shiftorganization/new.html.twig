@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Shiftorganization creation</h1>
+{% include 'CrewCallBundle:shiftorganization:_new.html.twig' with { 'form': form}  %}
+
+    <ul>
+        <li>
+            <a href="{{ path('shiftorganization_index') }}">Back to the list</a>
+        </li>
+    </ul>
+{% endblock %}

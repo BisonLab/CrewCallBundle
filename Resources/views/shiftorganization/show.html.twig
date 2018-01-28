@@ -1,27 +1,27 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Shiftfunctionorganization</h1>
+    <h1>Shiftorganization</h1>
 
     <table>
         <tbody>
             <tr>
                 <th>Id</th>
-                <td>{{ shiftFunctionOrganization.id }}</td>
+                <td>{{ shiftOrganization.id }}</td>
             </tr>
             <tr>
                 <th>Amount</th>
-                <td>{{ shiftFunctionOrganization.amount }}</td>
+                <td>{{ shiftOrganization.amount }}</td>
             </tr>
         </tbody>
     </table>
 
     <ul>
         <li>
-            <a href="{{ path('shiftfunctionorganization_index') }}">Back to the list</a>
+            <a href="{{ path('shiftorganization_index') }}">Back to the list</a>
         </li>
         <li>
-            <a href="{{ path('shiftfunctionorganization_edit', { 'id': shiftFunctionOrganization.id }) }}">Edit</a>
+            <a href="{{ path('shiftorganization_edit', { 'id': shiftOrganization.id }) }}">Edit</a>
         </li>
         <li>
             {{ form_start(delete_form) }}

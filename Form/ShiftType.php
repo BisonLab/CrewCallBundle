@@ -23,6 +23,8 @@ class ShiftType extends AbstractType
            ->add('end', DateTimeType::class, array('label' => "End",'date_widget' => "single_text", 'time_widget' => "single_text"))
            ->add('state', ChoiceType::class, array(
               'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift')))
+           ->add('amount')
+           ->add('function')
            ->add('event')
            ->add('location')
            ;

@@ -8,7 +8,7 @@ function grabShiftList(event_id) {
     $.get(url, function( data ) {
         $( "#shiftList" ).html(data);
     }).done(function() {
-        $( ".sfList" ).each(function() {
+        $( ".jobList" ).each(function() {
             $(this).hide();
         });
 /* Not really working. Having odd TRs in the table 

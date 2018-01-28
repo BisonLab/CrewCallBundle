@@ -95,17 +95,17 @@ class FunctionEntity
 
     /**
      * This is for the non-connected functions.
-     * @ORM\OneToMany(targetEntity="ShiftFunction", mappedBy="function",
+     * @ORM\OneToMany(targetEntity="Shift", mappedBy="function",
      * cascade={"remove"})
      */
-    private $shift_functions;
+    private $shifts;
 
     public function __construct($options = array())
     {
         $this->children = new ArrayCollection();
         $this->person_functions = new ArrayCollection();
         $this->person_function_organizations = new ArrayCollection();
-        $this->shift_functions = new ArrayCollection();
+        $this->shifts = new ArrayCollection();
     }
 
     /**
@@ -344,37 +344,37 @@ class FunctionEntity
     }
 
     /**
-     * Add shiftFunction
+     * Add Shift
      *
-     * @param \CrewCallBundle\Entity\ShiftFunction $shiftFunction
+     * @param \CrewCallBundle\Entity\Shift $shift
      *
      * @return Shift
      */
-    public function addShiftFunction(\CrewCallBundle\Entity\ShiftFunction $shiftFunction)
+    public function addShift(\CrewCallBundle\Entity\Shift $shift)
     {
-        $this->shift_functions[] = $shiftFunction;
+        $this->shifts[] = $shift;
 
         return $this;
     }
 
     /**
-     * Remove shiftFunction
+     * Remove Shift
      *
-     * @param \CrewCallBundle\Entity\ShiftFunction $shiftFunction
+     * @param \CrewCallBundle\Entity\Shift $shift
      */
-    public function removeShiftFunction(\CrewCallBundle\Entity\ShiftFunction $shiftFunction)
+    public function removeShift(\CrewCallBundle\Entity\Shift $shift)
     {
-        $this->shift_functions->removeElement($shiftFunction);
+        $this->shifts->removeElement($shift);
     }
 
     /**
-     * Get shiftFunctions
+     * Get Shifts
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getShiftFunctions()
+    public function getShifts()
     {
-        return $this->shift_functions;
+        return $this->shifts;
     }
 
     public function __toString()

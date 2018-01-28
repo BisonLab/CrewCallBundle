@@ -6,14 +6,14 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ShiftFunctionOrganizationType extends AbstractType
+class ShiftOrganizationType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('amount')->add('shift_function')->add('organization')        ;
+        $builder->add('amount')->add('shift')->add('organization')        ;
     }
     
     /**
@@ -22,7 +22,7 @@ class ShiftFunctionOrganizationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CrewCallBundle\Entity\ShiftFunctionOrganization'
+            'data_class' => 'CrewCallBundle\Entity\ShiftOrganization'
         ));
     }
 
@@ -31,7 +31,7 @@ class ShiftFunctionOrganizationType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'crewcallbundle_shiftfunctionorganization';
+        return 'crewcallbundle_shiftorganization';
     }
 
 

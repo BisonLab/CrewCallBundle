@@ -1,0 +1,27 @@
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Amount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for shiftOrganization in shiftOrganizations %}
+            <tr>
+                <td><a href="{{ path('shiftorganization_show', { 'id': shiftOrganization.id }) }}">{{ shiftOrganization.id }}</a></td>
+                <td>{{ shiftOrganization.amount }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('shiftorganization_show', { 'id': shiftOrganization.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="#" onClick="grabEditShiftOrganizationForm({{ shiftOrganization.id }});">Edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>

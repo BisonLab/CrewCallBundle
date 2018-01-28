@@ -13,11 +13,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * is the connection between one individual and a function in a shift.
  * 
  * @ORM\Entity
- * @ORM\Table(name="crewcall_shift_function_organization")
- * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\ShiftFunctionOrganizationRepository")
+ * @ORM\Table(name="crewcall_shift_organization")
+ * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\ShiftOrganizationRepository")
  * @Gedmo\Loggable
  */
-class ShiftFunctionOrganization
+class ShiftOrganization
 {
     /**
      * @ORM\Column(type="integer")
@@ -27,13 +27,13 @@ class ShiftFunctionOrganization
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ShiftFunction", inversedBy="shift_function_organizations")
-     * @ORM\JoinColumn(name="shift_function_id", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Shift", inversedBy="shift_organizations")
+     * @ORM\JoinColumn(name="shift_id", referencedColumnName="id", nullable=false)
      */
-    private $shift_function;
+    private $shift;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Organization", inversedBy="shift_function_organizations")
+     * @ORM\ManyToOne(targetEntity="Organization", inversedBy="shift_organizations")
      * @ORM\JoinColumn(name="organization_id", referencedColumnName="id", nullable=false)
      */
     private $organization;
@@ -65,7 +65,7 @@ class ShiftFunctionOrganization
      *
      * @param integer $amount
      *
-     * @return ShiftFunctionOrganization
+     * @return ShiftOrganization
      */
     public function setAmount($amount)
     {
@@ -142,7 +142,7 @@ class ShiftFunctionOrganization
      */
     public static function getStates()
     {
-        return ExternalEntityConfig::getStatesFor('ShiftFunctionOrganization');
+        return ExternalEntityConfig::getStatesFor('ShiftOrganization');
     }
 
     /**
@@ -152,31 +152,31 @@ class ShiftFunctionOrganization
      */
     public static function getStatesList()
     {
-        return array_keys(ExternalEntityConfig::getStatesFor('ShiftFunctionOrganization'));
+        return array_keys(ExternalEntityConfig::getStatesFor('ShiftOrganization'));
     }
 
     /**
-     * Set shift_function
+     * Set shift
      *
-     * @param \CrewCallBundle\Entity\ShiftFunction $shift_function
+     * @param \CrewCallBundle\Entity\Shift $shift
      *
-     * @return ShiftFunctionOrganization
+     * @return ShiftOrganization
      */
-    public function setShiftFunction(\CrewCallBundle\Entity\ShiftFunction $shift_function)
+    public function setShift(\CrewCallBundle\Entity\Shift $shift)
     {
-        $this->shift_function = $shift_function;
+        $this->shift = $shift;
 
         return $this;
     }
 
     /**
-     * Get shift_function
+     * Get shift
      *
      * @return \CrewCallBundle\Entity\Shift
      */
-    public function getShiftFunction()
+    public function getShift()
     {
-        return $this->shift_function;
+        return $this->shift;
     }
 
     /**
@@ -184,7 +184,7 @@ class ShiftFunctionOrganization
      *
      * @param \CrewCallBundle\Entity\Organization $organization
      *
-     * @return ShiftFunctionOrganization
+     * @return ShiftOrganization
      */
     public function setOrganization(\CrewCallBundle\Entity\Organization $organization)
     {

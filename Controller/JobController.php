@@ -32,12 +32,12 @@ class JobController extends CommonController
         $with_orgs = $request->get('with_orgs') ?: false;
 
         $jobs = array();
-        $sfos = array();
-        if ($shiftfunction_id = $request->get('shiftfunction')) {
+        $sos = array();
+        if ($shift_id = $request->get('shift')) {
             $em = $this->getDoctrine()->getManager();
-            if ($shiftfunction = $em->getRepository('CrewCallBundle:ShiftFunction')->find($shiftfunction_id)) {
-                $jobs = $shiftfunction->getJobs();
-                $sfos = $shiftfunction->getShiftFunctionOrganizations();
+            if ($shift = $em->getRepository('CrewCallBundle:Shift')->find($shift_id)) {
+                $jobs = $shift->getJobs();
+                $sos = $shift->getShiftOrganizations();
             }
         } else {
             $jobs = $em->getRepository('CrewCallBundle:Job')->findAll();
@@ -45,13 +45,13 @@ class JobController extends CommonController
         if ($this->isRest($access)) {
             return $this->render('job/_index.html.twig', array(
                 'jobs' => $jobs,
-                'sfos' => $sfos
+                'sos' => $sos
             ));
         }
 
         return $this->render('job/index.html.twig', array(
             'jobs' => $jobs,
-            'sfos' => $sfos
+            'sos' => $sos
         ));
     }
 
@@ -70,7 +70,7 @@ class JobController extends CommonController
         if ($this->isRest($access)) {
             return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
         } else { 
-            return $this->redirectToRoute('shiftfunction_show', array('id' => $job->getShiftFunction()->getId()));
+            return $this->redirectToRoute('shift_show', array('id' => $job->getShift()->getId()));
         }
     }
 }

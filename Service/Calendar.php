@@ -5,12 +5,11 @@ namespace CrewCallBundle\Service;
 use Doctrine\Common\Collections\ArrayCollection;
 use CrewCallBundle\Entity\Job;
 use CrewCallBundle\Entity\Shift;
-use CrewCallBundle\Entity\ShiftFunction;
-use CrewCallBundle\Entity\ShiftFunctionOrganization;
+use CrewCallBundle\Entity\ShiftOrganization;
 use CrewCallBundle\Entity\Event;
 
 /*
- * This thignie will convert events, shiftfunctions, and more with start and
+ * This thignie will convert events, shiftfs, and more with start and
  * end to FullCalendar - json and ical objects.
  */
 
@@ -29,8 +28,6 @@ class Calendar
             $cal = $this->eventToCal($frog);
         } elseif ($frog instanceof Shift) {
             $cal = $this->shiftToCal($frog);
-        } elseif ($frog instanceof ShiftFunction) {
-            $cal = $this->shiftFunctionToCal($frog);
         } elseif ($frog instanceof Job) {
             $cal = $this->jobToCal($frog);
         } else {
@@ -78,8 +75,6 @@ class Calendar
             $cal = $this->eventToCal($frog);
         } elseif ($frog instanceof Shift) {
             $cal = $this->shiftToCal($frog);
-        } elseif ($frog instanceof ShiftFunction) {
-            $cal = $this->shiftFunctionToCal($frog);
         } elseif ($frog instanceof Job) {
             $cal = $this->jobToCal($frog);
         } else {
@@ -131,13 +126,6 @@ class Calendar
         return $c;
     }
 
-    public function shiftFunctionToCal(ShiftFunction $shiftfunction)
-    {
-        $c = $this->shiftToCal($shiftfunction->getShift());
-        $c['title'] = $shiftfunction->getFunction()->getName();
-        return $c;
-    }
-
     public function jobToCal(Job $job)
     {
         $c = $this->shiftToCal($job->getShift());
@@ -160,6 +148,7 @@ class Calendar
         $c['title'] = "Shift";
         $c['start'] = $shift->getStart();
         $c['end'] = $shift->getEnd();
+        $c['title'] = $shift->getFunction()->getName();
         return $c;
     }
 }

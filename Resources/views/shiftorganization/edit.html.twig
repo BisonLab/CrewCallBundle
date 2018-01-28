@@ -1,11 +1,16 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Shiftfunction edit</h1>
-{% include 'CrewCallBundle:shiftfunction:_edit.html.twig' with { 'edit_form': edit_form}  %}
+    <h1>Shiftorganization edit</h1>
+
+    {{ form_start(edit_form) }}
+        {{ form_widget(edit_form) }}
+        <input type="submit" value="Save" />
+    {{ form_end(edit_form) }}
+
     <ul>
         <li>
-            <a href="{{ path('shiftfunction_index') }}">Back to the list</a>
+            <a href="{{ path('shiftorganization_index') }}">Back to the list</a>
         </li>
         <li>
             {{ form_start(delete_form) }}

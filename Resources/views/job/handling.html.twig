@@ -1,23 +1,23 @@
 <script>
 
-function grabJobList(shiftfunction_id, with_orgs = true) {
+function grabJobList(shift_id, with_orgs = true) {
     url = "{{ path('job_index', {'access': 'ajax' }) }}" 
-        + "?shiftfunction=" + shiftfunction_id;
+        + "?shift=" + shift_id;
     if (with_orgs == true) {
         url += "&with_orgs=true";
     }
     $.get(url, function( data ) {
-        $( "#jobTable_" + shiftfunction_id ).html(data);
-        $( "#jobList_" + shiftfunction_id ).show();
+        $( "#jobTable_" + shift_id ).html(data);
+        $( "#jobList_" + shift_id ).show();
     });
     return false;
 }
 
-function hideJobList(shiftfunction_id) {
-    $( "#jobList_" + shiftfunction_id ).hide();
+function hideJobList(shift_id) {
+    $( "#jobList_" + shift_id ).hide();
 }
 
-function setStateOnJob(job_id, state, shiftfunction_id) {
+function setStateOnJob(job_id, state, shift_id) {
     cheat_url = "{{ path('job_state', { 'id': 0, 'state': 'NONE', 'access': 'ajax' }) }}";
     c_url = cheat_url.replace("0", job_id);
     url = c_url.replace("NONE", state);
@@ -29,7 +29,7 @@ function setStateOnJob(job_id, state, shiftfunction_id) {
         type: "POST",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            grabJobList(shiftfunction_id);
+            grabJobList(shift_id);
       }).fail(function(xhr, status, error) {
             errmsg = "Message sending failed\n";
             errmsg = errmsg + xhr.responseText + "\n";

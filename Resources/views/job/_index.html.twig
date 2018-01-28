@@ -24,15 +24,15 @@
             <td>{{ job.state }}</td>
             <td>
             {% if not job.booked %}
-              <a role="button" class="btn btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shiftfunction.id }});">Confirm</a>
-              <a role="button" class="btn btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'DENIED', {{ job.shiftfunction.id }});">Deny</a>
+              <a role="button" class="btn btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
+              <a role="button" class="btn btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'DENIED', {{ job.shift.id }});">Deny</a>
             {% else %}
-              <a role="button" class="btn btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shiftfunction.id }});">Release</a>
+              <a role="button" class="btn btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Release</a>
             {% endif %}
             </td>
         </tr>
     {% endfor %}
-    {% if sfos.count > 0 %}
+    {% if sos.count > 0 %}
         </tbody>
         <thead>
             <tr>
@@ -42,12 +42,12 @@
             </tr>
         </thead>
         <tbody>
-        {% for sfo in sfos %}
+        {% for so in sos %}
           <tr>
-            <td>{{ sfo.organization }}</td>
-            <td>{{ sfo.amount }}</td>
+            <td>{{ so.organization }}</td>
+            <td>{{ so.amount }}</td>
             <td>
-              <a role="button" class="btn btn-danger" href="#" onClick="deleteShiftFunctionOrganization({{sfo.id}});">Delete</a>
+              <a role="button" class="btn btn-danger" href="#" onClick="deleteShiftOrganization({{so.id}});">Delete</a>
             </td>
           </tr>
         {% endfor %}

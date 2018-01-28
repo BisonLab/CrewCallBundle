@@ -40,7 +40,7 @@ class ShiftController extends CommonController
             // something somehow.
             $shifts = $em->getRepository('CrewCallBundle:Shift')->findAll();
         }
-        // Again, ajax-centric.
+        // Again, ajax-centric. But maybe return json later.
         if ($this->isRest($access)) {
             return $this->render('shift/_index.html.twig', array(
                 'shifts' => $shifts
@@ -180,8 +180,16 @@ class ShiftController extends CommonController
      * @Route("/{id}", name="shift_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, Shift $shift)
+    public function deleteAction(Request $request, $access, Shift $shift)
     {
+        // Bloody good question here, because CSRF. This should add some sort of protection.
+        if ($this->isRest($access)) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($shiftFunction);
+            $em->flush($shiftFunction);
+            return new JsonResponse(array("status" => "OK"), Response::HTTP_OK);
+        }
+
         $form = $this->createDeleteForm($shift);
         $form->handleRequest($request);
 
