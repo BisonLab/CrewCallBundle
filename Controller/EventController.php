@@ -140,6 +140,16 @@ class EventController extends CommonController
     }
 
     /**
+     * Finds and displays the gedmo loggable history
+     *
+     * @Route("/{id}/log", name="event_log")
+     */
+    public function showLogAction(Request $request, $access, $id)
+    {
+        return  $this->showLogPage($request,$access, "CrewCallBundle:Event", $id);
+    }
+
+    /**
      * Creates a form to delete a event entity.
      *
      * @param Event $event The event entity

@@ -188,6 +188,16 @@ class PersonController extends CommonController
     }
 
     /**
+     * Finds and displays the gedmo loggable history
+     *
+     * @Route("/{id}/log", name="person_log")
+     */
+    public function showLogAction(Request $request, $access, $id)
+    {
+        return  $this->showLogPage($request,$access, "CrewCallBundle:Person", $id);
+    }
+
+    /**
      * Creates a form to delete a person entity.
      *
      * @param Person $person The person entity

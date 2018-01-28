@@ -121,6 +121,16 @@ class LocationController extends CommonController
     }
 
     /**
+     * Finds and displays the gedmo loggable history
+     *
+     * @Route("/{id}/log", name="location_log")
+     */
+    public function showLogAction(Request $request, $access, $id)
+    {
+        return  $this->showLogPage($request,$access, "CrewCallBundle:Location", $id);
+    }
+
+    /**
      * Creates a form to delete a location entity.
      *
      * @param Location $location The location entity

@@ -203,6 +203,16 @@ class ShiftController extends CommonController
     }
 
     /**
+     * Finds and displays the gedmo loggable history
+     *
+     * @Route("/{id}/log", name="shift_log")
+     */
+    public function showLogAction(Request $request, $access, $id)
+    {
+        return  $this->showLogPage($request,$access, "CrewCallBundle:Shift", $id);
+    }
+
+    /**
      * Creates a form to delete a shift entity.
      *
      * @param Shift $shift The shift entity

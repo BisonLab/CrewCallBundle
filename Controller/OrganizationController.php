@@ -121,6 +121,16 @@ class OrganizationController extends CommonController
     }
 
     /**
+     * Finds and displays the gedmo loggable history
+     *
+     * @Route("/{id}/log", name="organization_log")
+     */
+    public function showLogAction(Request $request, $access, $id)
+    {
+        return  $this->showLogPage($request,$access, "CrewCallBundle:Organization", $id);
+    }
+
+    /**
      * Creates a form to delete a organization entity.
      *
      * @param Organization $organization The organization entity

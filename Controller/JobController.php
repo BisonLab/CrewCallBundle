@@ -73,4 +73,14 @@ class JobController extends CommonController
             return $this->redirectToRoute('shift_show', array('id' => $job->getShift()->getId()));
         }
     }
+
+    /**
+     * Finds and displays the gedmo loggable history
+     *
+     * @Route("/{id}/log", name="job_log")
+     */
+    public function showLogAction(Request $request, $access, $id)
+    {
+        return  $this->showLogPage($request,$access, "CrewCallBundle:Job", $id);
+    }
 }
