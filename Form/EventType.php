@@ -8,6 +8,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use CrewCallBundle\Lib\ExternalEntityConfig;
 
@@ -25,8 +27,20 @@ class EventType extends AbstractType
             ->add('end', DateTimeType::class, array('label' => "End",'date_widget' => "single_text", 'time_widget' => "single_text"))
             ->add('state', ChoiceType::class, array(
                 'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Event')))
-            ->add('location')
-            ->add('organization')
+            ->add('location', EntityType::class,
+                array('class' => 'CrewCallBundle:Location',
+                    'query_builder' => function(EntityRepository $er) {
+                    return $er->createQueryBuilder('o')
+                     ->orderBy('o.name', 'ASC');
+                    },
+                ))
+            ->add('organization', EntityType::class,
+                array('class' => 'CrewCallBundle:Organization',
+                    'query_builder' => function(EntityRepository $er) {
+                    return $er->createQueryBuilder('o')
+                     ->orderBy('o.name', 'ASC');
+                    },
+                ))
             ->add('parent')
            ;
     }
