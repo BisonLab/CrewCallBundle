@@ -195,7 +195,7 @@ class Person extends BaseUser
 
     public function getFullName()
     {
-        return $this->full_name;
+        return $this->full_name ?: "";
     }
 
     /**
