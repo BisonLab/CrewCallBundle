@@ -47,13 +47,13 @@
                 </td>
             </tr>
 {% endif %}
-{%  if functionEntity.shiftfunctions.count > 0 %}
+{%  if functionEntity.shifts.count > 0 %}
             <tr>
                 <th>Shifts</th>
                 <td>
                 <ul>
-                {% for sf in functionEntity.shiftfunctions %}
-                <li>{{ sf.shift.event }} ({{ sf.shift.location }})</li>
+                {% for shift in functionEntity.shifts %}
+                <li>{{ shift.event }} ({{ shift.event.location }})</li>
                 {% endfor %}
                 </ul>
                 </td>

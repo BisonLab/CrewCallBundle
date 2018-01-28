@@ -26,7 +26,6 @@ class ShiftType extends AbstractType
            ->add('amount')
            ->add('function')
            ->add('event')
-           ->add('location')
            ;
     }
     

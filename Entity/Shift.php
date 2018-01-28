@@ -35,12 +35,6 @@ class Shift
     private $event;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Location", inversedBy="shifts")
-     * @ORM\JoinColumn(name="location_id", referencedColumnName="id", nullable=true)
-     */
-    private $location;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="starttime", type="datetime", nullable=false)
@@ -221,30 +215,6 @@ class Shift
     }
 
     /**
-     * Set location
-     *
-     * @param \CrewCallBundle\Entity\Location $location
-     *
-     * @return Shift
-     */
-    public function setLocation(\CrewCallBundle\Entity\Location $location = null)
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
-    /**
-     * Get location
-     *
-     * @return \CrewCallBundle\Entity\Location
-     */
-    public function getLocation()
-    {
-        return $this->location;
-    }
-
-    /**
      * Set function
      *
      * @param \CrewCallBundle\Entity\FunctionEntity $function
@@ -365,7 +335,7 @@ class Shift
         // This is just too little, but gotta look at it later and I guess
         // adding date/time is the correct thing to do. And maybe get rid of
         // the location.
-        return $this->getEvent() . " at " . $this->getLocation();
+        return $this->getFunction() . " at " . $this->getEvent();
     }
 
     /**
