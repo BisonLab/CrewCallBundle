@@ -151,13 +151,6 @@ function grabPersonFunctionForm() {
                 </ul>
                 </td>
             </tr>
-{% set filecontext = {
-            'system': 'crewcall',
-            'object_name': 'person',
-            'external_id': person.id
-    }
-%}
-{% include 'CrewCallBundle::_files.html.twig' with filecontext %}
         </tbody>
     </table>
 
@@ -167,7 +160,7 @@ function grabPersonFunctionForm() {
                     'subject': "",
                     'to_field': false,
                     'from_field': false,
-                    'message_type': 'PersonNote',
+                    'message_type': 'Notes',
                     'context': {
                         'system': 'crewcall',
                         'object_name': 'person',
@@ -179,33 +172,24 @@ function grabPersonFunctionForm() {
             {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
             <a href="#" onClick="createMessage()">Add a note</a><br />
         </li>
-            {% set mlogcontext = {
-                        'system': 'crewcall',
-                        'object_name': 'person',
-                        'message_type': 'PersonNote',
-                        'external_id': person.id
-                }
-            %}
-{% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-        <li>
-            <a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>
-        </li>
-{% endif %}
 {% set sfconf = {'sfconfig': {
-        'context': { 
+        'context': {
             'system': 'crewcall',
             'object_name': 'person',
             'external_id': person.id
             }
         }
-    } 
+    }
 %}
 {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
         <li>
           <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
         </li>
         <li>
-            <a href="{{ path('person_index') }}">Back to the list</a>
+            <a href="{{ path('person_log', { 'id': person.id }) }}">History</a>
+        </li>
+        <li>
+            <a href="{{ path('person_index') }}">Back to the people list</a>
         </li>
         <li>
             <a href="{{ path('person_edit', { 'id': person.id }) }}">Edit</a>
@@ -221,5 +205,24 @@ function grabPersonFunctionForm() {
     </ul>
 </div>
 <div class="col-sm-7" id="personRight">
+{% set mlogcontext = {
+            'system': 'crewcall',
+            'object_name': 'person',
+            'message_type': 'PersonNote',
+            'external_id': person.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+    <strong>{{ note.subject }}</strong><br>
+    <pre>{{ note.body }}</pre>
+    <br>
+{% endfor %}
+{% set filecontext = {
+            'system': 'crewcall',
+            'object_name': 'person',
+            'external_id': person.id
+    }
+%}
+{% include 'CrewCallBundle::_files.html.twig' with filecontext %}
 </div>
 {% endblock %}

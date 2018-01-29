@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+<div class="col-sm-5">
     <h1>{{ location }}</h1>
 
     <table class="showTable">
@@ -22,7 +23,40 @@
 
     <ul>
         <li>
-            <a href="{{ path('location_index') }}">Back to the list</a>
+            {% set mconf = {'mconfig': {
+                    'subject': "",
+                    'to_field': false,
+                    'from_field': false,
+                    'message_type': 'AdminNote',
+                    'context': {
+                        'system': 'crewcall',
+                        'object_name': 'location',
+                        'external_id': location.id
+                        }
+                    }
+                }
+            %}
+            {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+            <a href="#" onClick="createMessage()">Add a note</a><br />
+        </li>
+{% set sfconf = {'sfconfig': {
+        'context': {
+            'system': 'crewcall',
+            'object_name': 'location',
+            'external_id': location.id
+            }
+        }
+    }
+%}
+{% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
+        <li>
+          <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
+        </li>
+        <li>
+            <a href="{{ path('location_log', { 'id': location.id }) }}">History</a>
+        </li>
+        <li>
+            <a href="{{ path('location_index') }}">Back to Locations</a>
         </li>
         <li>
             <a href="{{ path('location_edit', { 'id': location.id }) }}">Edit</a>
@@ -33,4 +67,26 @@
             {{ form_end(delete_form) }}
         </li>
     </ul>
+</div>
+<div class="col-sm-7">
+{% set mlogcontext = {
+            'system': 'crewcall',
+            'object_name': 'location',
+            'message_type': 'Notes',
+            'external_id': location.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+    <strong>{{ note.subject }}</strong><br>
+    <pre>{{ note.body }}</pre>
+    <br>
+{% endfor %}
+{% set filecontext = {
+            'system': 'crewcall',
+            'object_name': 'location',
+            'external_id': location.id
+    }
+%}
+{% include 'CrewCallBundle::_files.html.twig' with filecontext %}
+</div>
 {% endblock %}

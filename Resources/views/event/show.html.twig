@@ -53,7 +53,10 @@
         </li>
 {% endif %}
         <li>
-            <a href="{{ path('event_index') }}">Back to the list</a>
+            <a href="{{ path('event_log', { 'id': event.id }) }}">History</a>
+        </li>
+        <li>
+            <a href="{{ path('event_index') }}">Back to Events</a>
         </li>
         <li>
             <a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a>
@@ -66,7 +69,56 @@
                 <input type="submit" value="Delete">
             {{ form_end(delete_form) }}
         </li>
+        <li>
+            {% set mconf = {'mconfig': {
+                    'subject': "",
+                    'to_field': false,
+                    'from_field': false,
+                    'message_type': 'AdminNote',
+                    'context': {
+                        'system': 'crewcall',
+                        'object_name': 'event',
+                        'external_id': event.id
+                        }
+                    }
+                }
+            %}
+            {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+            <a href="#" onClick="createMessage()">Add a note</a><br />
+        </li>
+{% set sfconf = {'sfconfig': {
+        'context': {
+            'system': 'crewcall',
+            'object_name': 'event',
+            'external_id': event.id
+            }
+        }
+    }
+%}
+{% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
+        <li>
+          <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
+        </li>
     </ul>
+{% set mlogcontext = {
+            'system': 'crewcall',
+            'object_name': 'event',
+            'message_type': 'Notes',
+            'external_id': event.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+    <strong>{{ note.subject }}</strong><br>
+    <pre>{{ note.body }}</pre>
+    <br>
+{% endfor %}
+{% set filecontext = {
+            'system': 'crewcall',
+            'object_name': 'event',
+            'external_id': event.id
+    }
+%}
+{% include 'CrewCallBundle::_files.html.twig' with filecontext %}
 </div>
 <div class="col-sm-7">
 <h3>Shifts</h3>
