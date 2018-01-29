@@ -58,6 +58,8 @@ function grabNewShiftForm(event_id = false) {
          * submitNewShiftForm function directly, but then it woule be called
          * immediately.  Aka, I have to read up on this..
          */
+        $( "#crewcallbundle_shift_event").prev().hide();
+        $( "#crewcallbundle_shift_event").hide();
         $( "#newShiftForm" ).submit(function( event ) {
             event.preventDefault();
             submitNewShiftForm(event_id);
