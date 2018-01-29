@@ -35,6 +35,7 @@ class Person extends BaseUser
      * @var string
      * @ORM\Column(name="first_name", type="string", length=255, nullable=true)
      * @Gedmo\Versioned
+     * @Assert\NotBlank
      */
     private $first_name;
 
@@ -42,13 +43,13 @@ class Person extends BaseUser
      * @var string
      * @ORM\Column(name="last_name", type="string", length=255, nullable=true)
      * @Gedmo\Versioned
+     * @Assert\NotBlank
      */
     private $last_name;
 
     /**
      * @var string
      * @ORM\Column(name="full_name", type="string", length=255, nullable=true)
-     * @Gedmo\Versioned
      *
      * This one is not to be set by anything else than this Entity.
      */
