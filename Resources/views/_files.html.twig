@@ -1,5 +1,5 @@
 {% if sakonnin_files.contexthasfiles(filecontext) %}
-    <table class="record_properties">
+    <table class="table">
     <thead>
        <tr>
            <th>Name</th>
@@ -12,7 +12,6 @@
 {% for sfile in sakonnin_files.getFilesForContext(filecontext) %}
        <tr>
         <td>
-        {{ sfile.name }}
 {% if sfile.filetype == "IMAGE" %}
 <img id="img_{{sfile.id}}" data-zoom-image="{{ path('file_view', { 'id': sfile.id }) }}" src="{{ path('file_thumbnail', { 'id': sfile.id, 'x': 30, 'y': 30 }) }}">
 <script>
@@ -20,6 +19,7 @@ $("#img_{{sfile.id}}").ezPlus({
     zoomWindowPosition: 16
 });
 </script>
+        {{ sfile.name }}
 {% endif %}
         </td>
         <td>{{ sfile.filetype }}</td>
