@@ -73,11 +73,6 @@ class Location
     private $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity="Shift", mappedBy="location")
-     */
-    private $shifts;
-
-    /**
      * @ORM\OneToMany(targetEntity="Event", mappedBy="location")
      */
     private $events;
@@ -86,7 +81,6 @@ class Location
     {
         $this->children = new ArrayCollection();
         $this->address = new EmbeddableAddress();
-        $this->shifts  = new \Doctrine\Common\Collections\ArrayCollection();
         $this->events  = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
