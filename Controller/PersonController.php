@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
@@ -114,6 +116,28 @@ class PersonController extends CommonController
             'person' => $person,
             'delete_form' => $deleteForm->createView(),
         ));
+    }
+
+    /**
+     * Calendar for person
+     *
+     * @Route("/{id}/calendar", name="person_calendar")
+     * @Method("POST")
+     */
+    public function personCalendarAction(Request $request, $access, Person $person)
+    {
+        $calendar = $this->container->get('crewcall.calendar');
+        $jobservice = $this->container->get('crewcall.jobs');
+
+        // Gotta get the time scope.
+        $from = $request->get('start');
+        $to = $request->get('end');
+        $jobs = $jobservice->jobsForPerson($person,
+            array('all' => true, 'from' => $from, 'to' => $to));
+        
+        $calitems = $calendar->toFullCalendarArray($jobs);
+        // Not liked by OWASP since we just return an array.
+        return new JsonResponse($calitems, Response::HTTP_OK);
     }
 
     /**
