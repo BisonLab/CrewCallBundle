@@ -11,15 +11,19 @@ use BisonLab\SakonninBundle\Entity\MessageType;
 
 class CreateBaseDataCommand extends ContainerAwareCommand
 {
+    /*
+     * Mainly notes here.
+     * Some other message types are inserted from Sakonnin itself.
+     */
     private $message_types = array(
         'PersonNote' => array(
             'parent' => 'Notes',
-            'security_model' => 'ADMIN_ONLY',
-            'description' => "Note about a person"),
-        'OrganizationNote' => array(
+            'security_model' => 'ADMIN_RW_USER_R',
+            'description' => "Note about a person the person and admins can read."),
+        'AdminNote' => array(
             'parent' => 'Notes',
             'security_model' => 'ADMIN_ONLY',
-            'description' => "Note about an organization"),
+            'description' => "Note only admins can read"),
         'PMSMS' => array(
             'parent' => 'Messages',
             'security_model' => 'PRIVATE',
