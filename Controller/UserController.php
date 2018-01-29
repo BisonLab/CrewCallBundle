@@ -60,16 +60,16 @@ class UserController extends CommonController
     public function meCalendarAction(Request $request, $access)
     {
         $calendar = $this->container->get('crewcall.calendar');
-        $jobs = $this->container->get('crewcall.jobs');
+        $jobservice = $this->container->get('crewcall.jobs');
         $user = $this->getUser();
 
         // Gotta get the time scope.
         $from = $request->get('start');
         $to = $request->get('end');
-        $upcoming = $jobs->jobsForPerson($user,
-            array('upcoming' => true, 'from' => $from, 'to' => $to));
+        $jobs = $jobservice->jobsForPerson($user,
+            array('all' => true, 'from' => $from, 'to' => $to));
         
-        $calitems = $calendar->toFullCalendarArray($upcoming);
+        $calitems = $calendar->toFullCalendarArray($jobs);
         // Not liked by OWASP since we just return an array.
         return new JsonResponse($calitems, Response::HTTP_OK);
     }
