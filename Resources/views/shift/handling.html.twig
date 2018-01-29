@@ -100,6 +100,8 @@ function grabEditShiftForm(shift_id) {
     url = orgurl.replace("0", shift_id);
     $.get(url, function( data ) {
         $( "#editShift" ).html(data);
+        $( "#crewcallbundle_shift_event").prev().hide();
+        $( "#crewcallbundle_shift_event").hide();
         $( "#editShiftForm" ).submit(function( event ) {
             event.preventDefault();
             submitEditShiftForm(shift_id);
