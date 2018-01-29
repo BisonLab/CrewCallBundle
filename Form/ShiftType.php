@@ -8,6 +8,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use CrewCallBundle\Lib\ExternalEntityConfig;
 
@@ -24,8 +27,14 @@ class ShiftType extends AbstractType
            ->add('state', ChoiceType::class, array(
               'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift')))
            ->add('amount')
-           ->add('function')
-           ->add('event')
+           ->add('function', EntityType::class,
+               array('class' => 'CrewCallBundle:FunctionEntity',
+                   'query_builder' => function(EntityRepository $er) {
+                   return $er->createQueryBuilder('f')
+                    ->orderBy('f.name', 'ASC');
+                   },
+               ))
+            ->add('event')
            ;
     }
     
