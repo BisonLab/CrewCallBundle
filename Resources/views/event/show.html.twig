@@ -53,23 +53,6 @@
         </li>
 {% endif %}
         <li>
-            <a href="{{ path('event_log', { 'id': event.id }) }}">History</a>
-        </li>
-        <li>
-            <a href="{{ path('event_index') }}">Back to Events</a>
-        </li>
-        <li>
-            <a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a>
-        </li>
-        <li>
-            <a href="{{ path('event_new', {'parent': event.id}) }}">Create a sub event</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-        <li>
             {% set mconf = {'mconfig': {
                     'subject': "",
                     'to_field': false,
@@ -98,6 +81,23 @@
 {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
         <li>
           <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
+        </li>
+        <li>
+            <a href="{{ path('event_log', { 'id': event.id }) }}">History</a>
+        </li>
+        <li>
+            <a href="{{ path('event_index') }}">Back to Events</a>
+        </li>
+        <li>
+            <a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a>
+        </li>
+        <li>
+            <a href="{{ path('event_new', {'parent': event.id}) }}">Create a sub event</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
         </li>
     </ul>
 {% set mlogcontext = {
