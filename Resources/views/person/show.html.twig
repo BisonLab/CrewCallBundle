@@ -72,7 +72,7 @@ function grabPersonFunctionForm() {
 
 </script>
 
-<div class="col-sm-5" id="personLeft">
+<div class="col-sm-4" id="personLeft">
     <h1>{{ person.fullname }}</h1>
 
     <table class="showTable">
@@ -204,7 +204,51 @@ function grabPersonFunctionForm() {
         </li>
     </ul>
 </div>
-<div class="col-sm-7" id="personRight">
+<div class="col-sm-8" id="personRight">
+
+<div id="rightTabMenu">
+<ul class="nav nav-tabs">
+<li class="active">
+<a href="#ptab1" data-toggle="tab">Jobs</a>
+</li>
+<li>
+<a href="#ptab2" data-toggle="tab">Notes</a>
+</li>
+<li>
+<a  href="#ptab3" data-toggle="tab">Files</a>
+</li>
+</ul>
+
+<div class="tab-content ">
+  <div class="tab-pane active" id="ptab1">
+{% set jobs = cc_jobs.jobsforperson(person, {'all': true}) %}
+    <table class="table table-striped table-bordered table-sm">
+    <thead class="thead-inverse">
+        <tr>
+            <th>Event</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>What</th>
+            <th>Response</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for job in jobs %}
+        {% set shift = job.shift %}
+        <tr>
+            <td>{{ shift.event }}</td>
+            <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
+            <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
+            <td>{{ shift.function }}</td>
+            <td>{{ job.state }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+  <p<Jobs</p>
+  </div>
+
+  <div class="tab-pane" id="ptab2">
 {% set mlogcontext = {
             'system': 'crewcall',
             'object_name': 'person',
@@ -217,6 +261,9 @@ function grabPersonFunctionForm() {
     <pre>{{ note.body }}</pre>
     <br>
 {% endfor %}
+  </div>
+
+  <div class="tab-pane" id="ptab3">
 {% set filecontext = {
             'system': 'crewcall',
             'object_name': 'person',
@@ -224,5 +271,6 @@ function grabPersonFunctionForm() {
     }
 %}
 {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
+  </div>
 </div>
 {% endblock %}
