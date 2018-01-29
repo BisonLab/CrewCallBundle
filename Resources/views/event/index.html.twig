@@ -7,7 +7,7 @@
         <thead class="thead-inverse">
             <tr>
                 <th>Main Event</th>
-                <th>Description</th>
+                <th>Location</th>
                 <th>Start</th>
                 <th>End</th>
                 <th>State</th>
@@ -18,7 +18,7 @@
         {% for event in events if event.parent is null %}
             <tr>
                 <td><a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.mainevent }}</a></td>
-                <td>{{ event.description }}</td>
+                <td>{{ event.location }}</td>
                 <td>{% if event.start %}{{ event.start|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>{% if event.end %}{{ event.end|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>{{ event.state }}</td>
