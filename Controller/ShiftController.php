@@ -100,7 +100,6 @@ class ShiftController extends CommonController
                 // Better have something to start with.
                 $shift->setStart($event->getStart());
                 $shift->setEnd($event->getEnd());
-                $shift->setLocation($event->getLocation());
                 // There are no Manager. Neither in shift, nor event.
                 // $shift->setManager($event->getManager());
                 $form->setData($shift);
