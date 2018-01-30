@@ -36,15 +36,15 @@
 #}
               <a href="#" onClick="grabJobList({{ shift.id }});">Jobs</a><br>
               <a href="#" onClick="grabEditShiftForm({{ shift.id }});">Edit</a><br>
-              <a href="#" onClick="grabJobList({{ shift.id }}); graAddPersonForm({{shift.id}});">Add Person</a><br>
+              <a href="#" onClick="grabJobList({{ shift.id }}); grabNewJobForm({{shift.id}});">Add Person</a><br>
               <a href="#" onClick="grabJobList({{ shift.id }}); grabNewShiftOrganizationForm({{shift.id}});">Add crew from an organization</a><br>
               <a href="#" onClick="deleteShift({{ shift.id }});">Delete</a><br>
             </td>
         </tr>
         <tr class="jobList" id="jobList_{{ shift.id }}">
         <td colspan="6">
-        <div id="addPerson_{{ shift.id }}" style="float: left">
-        <a href="#" onClick="graAddPersonForm({{shift.id}});">Add Person</a>
+        <div id="newJob{{ shift.id }}" style="float: left">
+        <a href="#" onClick="grabNewJobForm({{shift.id}});">Add Person</a>
         </div>
         <div style="float: right">
         <a href="#" onClick="hideJobList({{ shift.id }});">X</a>

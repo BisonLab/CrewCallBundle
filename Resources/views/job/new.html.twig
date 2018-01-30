@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Shift creation</h1>
+    <h1>Add Job</h1>
 
     {{ form_start(form) }}
         {{ form_widget(form) }}
-        <input type="submit" value="Create"  onclick="this.value='Creating';this.disabled=true" />
+        <input type="submit" value="Add"  onclick="this.value='Creating';this.disabled=true" />
     {{ form_end(form) }}
 
     <ul>

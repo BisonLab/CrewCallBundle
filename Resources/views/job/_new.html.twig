@@ -1,4 +1,5 @@
 {{ form_start(form, {action:path('job_new', {'access': 'ajax'}), 'attr': {'id':'newJobForm'}}) }}
     {{ form_widget(form) }}
-    <input id="submitNewJob" type="submit" value="Create"  onclick="this.value='Creating';this.disabled=true" />
+    <input type="hidden" name="username" id="username">
+    <input id="submitNewJob" type="submit" value="Add"  onclick="this.value='Adding';this.disabled=true" />
 {{ form_end(form) }}

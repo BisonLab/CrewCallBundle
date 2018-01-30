@@ -24,6 +24,9 @@
             <td>{{ job.state }}</td>
             <td>
             {% if not job.booked %}
+                {% if job.state != "ASSIGNED" %}
+              <a role="button" class="btn btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
+                {% endif %}
               <a role="button" class="btn btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
               <a role="button" class="btn btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'DENIED', {{ job.shift.id }});">Deny</a>
             {% else %}

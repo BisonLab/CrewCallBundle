@@ -75,6 +75,50 @@ class JobController extends CommonController
     }
 
     /**
+     * Creates a new Job
+     *
+     * @Route("/new", name="job_new")
+     * @Method({"GET", "POST"})
+     */
+    public function newAction(Request $request, $access)
+    {
+        $job = new Job();
+        $form = $this->createForm('CrewCallBundle\Form\JobType', $job);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($job);
+            $em->flush($job);
+
+            if ($this->isRest($access)) {
+                return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
+            } else { 
+                return $this->redirectToRoute('job_show', array('id' => $job->getId()));
+            }
+        }
+
+        // If this has a shift set here, it's not an invalid create attempt.
+        if ($shift_id = $request->get('shift')) {
+            $em = $this->getDoctrine()->getManager();
+            if ($shift = $em->getRepository('CrewCallBundle:Shift')->find($shift_id)) {
+                $job->setShift($shift);
+                $form->setData($job);
+            }
+        }
+        if ($this->isRest($access)) {
+            return $this->render('job/_new.html.twig', array(
+                'job' => $job,
+                'form' => $form->createView(),
+            ));
+        }
+        return $this->render('job/new.html.twig', array(
+            'job' => $job,
+            'form' => $form->createView(),
+        ));
+    }
+
+    /**
      * Finds and displays the gedmo loggable history
      *
      * @Route("/{id}/log", name="job_log")

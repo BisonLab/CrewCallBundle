@@ -37,4 +37,58 @@ function setStateOnJob(job_id, state, shift_id) {
     });
     return false;
 }
+
+function grabNewJobForm(shift_id) {
+    url = "{{ path('job_new', { 'access': 'ajax' }) }}";
+    if (shift_id) {
+        url = url + "?shift=" + shift_id;
+    }
+    $.get(url, function( data ) {
+        $( "#newJob"+shift_id ).html(data);
+        $( "#newShiftOrganization_"+shift_id).hide();
+        $( "#crewcallbundle_job_shift").prev().hide();
+        $( "#crewcallbundle_job_shift").hide();
+        $( "#newJob"+shift_id ).submit(function( event ) {
+            event.preventDefault();
+            submitNewJobForm(shift_id);
+        });
+        $( "#crewcallbundle_job_person" ).autocomplete({
+          source: "{{ path('user_search', {'access': 'ajax'}) }}",
+          minLength: 2,
+          select: function( event, ui ) {
+            $( "#newJobForm #crewcallbundle_job_person" ).val(ui.item.value);
+            $( "#newJobForm #username" ).val(ui.item.username);
+          }
+         });
+    });
+    return false;
+}
+
+function submitNewJobForm(shift_id) {
+    username = $( "#newJobForm #username" ).val();
+    $( "#newJobForm #crewcallbundle_job_person" ).val(username);
+    newJobFormData = $( "#newJobForm" ).serialize();
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('job_new', { 'access': 'ajax' }) }}",
+        data: newJobFormData,
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 201) {
+                // Gotta reload. Easiest way to recount everything.
+                parent.location.reload();
+            } else {
+                $( "#newJob"+shift_id ).html(xhr.responseText);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
 </script>
