@@ -8,7 +8,7 @@ namespace CrewCallBundle\Repository;
 class EventRepository extends \Doctrine\ORM\EntityRepository
 {
     /* This is very common for all repos. Could be in a trait aswell. */
-    public function searchByField($field, $value, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
+    public function searchByField($field, $value)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('p')

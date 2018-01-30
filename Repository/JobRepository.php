@@ -13,7 +13,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     /*
      * TODO: Add timeframe and default with from now
      */
-    public function findBookedUpcomingForPerson(Person $person, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
+    public function findBookedUpcomingForPerson(Person $person)
     {
         $states = ExternalEntityConfig::getBookedStatesFor('Job');
         $qb = $this->_em->createQueryBuilder();
@@ -26,7 +26,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findWishlistForPerson(Person $person, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
+    public function findWishlistForPerson(Person $person)
     {
         $states = ExternalEntityConfig::getWishlistStatesFor('Job');
         $qb = $this->_em->createQueryBuilder();
@@ -42,7 +42,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     /*
      * TODO: Add timeframe and default with from now
      */
-    public function findUpcomingForPerson(Person $person, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
+    public function findUpcomingForPerson(Person $person)
     {
         $states = ExternalEntityConfig::getBookedStatesFor('Job');
         $qb = $this->_em->createQueryBuilder();

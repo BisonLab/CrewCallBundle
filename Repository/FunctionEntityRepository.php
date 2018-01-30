@@ -20,7 +20,7 @@ class FunctionEntityRepository extends \Doctrine\ORM\EntityRepository
         return $result = $query->getResult();
     }
 
-    public function searchByField($field, $value, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
+    public function searchByField($field, $value)
     {
         if ($field == 'attributes') {
             if (is_array($value)) {

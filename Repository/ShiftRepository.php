@@ -9,7 +9,7 @@ use CrewCallBundle\Lib\ExternalEntityConfig;
  */
 class ShiftRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function findUpcomingForFunctions(array $functions, $hydrationMode = \Doctrine\ORM\Query::HYDRATE_OBJECT)
+    public function findUpcomingForFunctions(array $functions);
     {
         $states = ExternalEntityConfig::getActiveStatesFor('Shift');
         $qb = $this->_em->createQueryBuilder();
