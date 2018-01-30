@@ -105,8 +105,4 @@ jQuery(document).ready(function() {
         </tbody>
     </table>
 {% endif %}
-
-{% set calendar_load_url = path('user_me_calendar', {'access': 'ajax'}) %}
-{% include 'CrewCallBundle::_calendar.html.twig' with { 'calendar_load_url': calendar_load_url}  %}
-
 {% endblock %}

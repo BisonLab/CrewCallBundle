@@ -55,23 +55,27 @@ class UserController extends CommonController
      * Lists all the users jobs as calendar events.
      *
      * @Route("/me_calendar", name="user_me_calendar")
-     * @Method("POST")
      */
     public function meCalendarAction(Request $request, $access)
     {
-        $calendar = $this->container->get('crewcall.calendar');
-        $jobservice = $this->container->get('crewcall.jobs');
         $user = $this->getUser();
+        if ($this->isRest($access)) {
+            $calendar = $this->container->get('crewcall.calendar');
+            $jobservice = $this->container->get('crewcall.jobs');
 
-        // Gotta get the time scope.
-        $from = $request->get('start');
-        $to = $request->get('end');
-        $jobs = $jobservice->jobsForPerson($user,
-            array('all' => true, 'from' => $from, 'to' => $to));
-        
-        $calitems = $calendar->toFullCalendarArray($jobs);
-        // Not liked by OWASP since we just return an array.
-        return new JsonResponse($calitems, Response::HTTP_OK);
+            // Gotta get the time scope.
+            $from = $request->get('start');
+            $to = $request->get('end');
+            $jobs = $jobservice->jobsForPerson($user,
+                array('all' => true, 'from' => $from, 'to' => $to));
+            
+            $calitems = $calendar->toFullCalendarArray($jobs);
+            // Not liked by OWASP since we just return an array.
+            return new JsonResponse($calitems, Response::HTTP_OK);
+        }
+        return $this->render('user/calendar.html.twig', array(
+            'user' => $user,
+        ));
     }
 
     /**

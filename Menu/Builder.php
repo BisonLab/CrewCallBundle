@@ -33,6 +33,7 @@ class Builder implements ContainerAwareInterface
 
         $menu->addChild('Home', array('route' => 'homepage'));
         $menu->addChild('My Jobs', array('route' => 'user_me'));
+        $menu->addChild('My Calendar', array('route' => 'user_me_calendar'));
 
         if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $menu->addChild('Events', array('route' => 'event_index'));
@@ -87,6 +88,8 @@ class Builder implements ContainerAwareInterface
         if ($options['container']->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $menu['Messages']->addChild('Write PM and send SMS', array('uri' => '#'));
             $menu['Messages']['Write PM and send SMS']->setLinkAttribute('onclick', 'createPmMessage("PMSMS")');
+        } else {
+            $menu['Messages']->removeChild('Message History');
         }
 
         // For local customized additions to the main menu.
