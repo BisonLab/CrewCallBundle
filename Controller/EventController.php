@@ -87,10 +87,14 @@ class EventController extends CommonController
     public function showAction(Event $event)
     {
         $deleteForm = $this->createDeleteForm($event);
+        $confirmForm = null;
+        if ($event->isActive())
+            $confirmForm = $this->createConfirmForm($event)->createView();
 
         return $this->render('event/show.html.twig', array(
             'event' => $event,
             'delete_form' => $deleteForm->createView(),
+            'confirm_form' => $confirmForm
         ));
     }
 
@@ -140,6 +144,24 @@ class EventController extends CommonController
     }
 
     /**
+     * Sets "CONFIRMED" on the event and all shifts underneith.
+     *
+     * @Route("/{id}", name="event_confirm")
+     * @Method("POST")
+     */
+    public function confirmAction(Request $request, Event $event)
+    {
+        $form = $this->createConfirmForm($event);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $event->setConfirmed();
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+        }
+        return $this->redirectToRoute('event_show', array('id' => $event->getId()));
+    }
+
+    /**
      * Finds and displays the gedmo loggable history
      *
      * @Route("/{id}/log", name="event_log")
@@ -161,6 +183,22 @@ class EventController extends CommonController
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('event_delete', array('id' => $event->getId())))
             ->setMethod('DELETE')
+            ->getForm()
+        ;
+    }
+
+    /**
+     * Creates a form to confirm
+     *
+     * @param Event $event The event entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createConfirmForm(Event $event)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('event_confirm', array('id' => $event->getId())))
+            ->setMethod('POST')
             ->getForm()
         ;
     }

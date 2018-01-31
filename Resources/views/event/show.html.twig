@@ -52,6 +52,17 @@
           <a href="{{ path('event_show', { 'id': event.parent.id }) }}">Back to {{ event.parent.name }}</a><br>
         </li>
 {% endif %}
+{% if confirm_form is not null %}
+        <li>
+            {{ form_start(confirm_form) }}
+{% if event.booked  %}
+                <input class="btn btn-success" type="submit" value="Confirm all shifts">
+{% else %}
+                <input class="btn btn-success" type="submit" value="Confirm event and shifts">
+{% endif %}
+            {{ form_end(confirm_form) }}
+        </li>
+{% endif %}
         <li>
             {% set mconf = {'mconfig': {
                     'subject': "",
@@ -96,7 +107,7 @@
         </li>
         <li>
             {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
+                <input class="btn btn-danger" type="submit" value="Delete">
             {{ form_end(delete_form) }}
         </li>
     </ul>

@@ -88,7 +88,7 @@ class Event
     private $organization;
 
     /**
-     * @ORM\OneToMany(targetEntity="Shift", mappedBy="event", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="Shift", mappedBy="event", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     private $shifts;
 
@@ -420,6 +420,37 @@ class Event
     public function getOrganization()
     {
         return $this->organization;
+    }
+
+    public function setConfirmed()
+    {
+        if (!$this->isBooked())
+            $this->setState('CONFIRMED');
+        foreach ($this->getChildren() as $child) {
+            $child->setConfirmed();
+        }
+        foreach ($this->getShifts() as $shift) {
+            if ($shift->getState() == "REGISTERED")
+                $shift->setState('CONFIRMED');
+        }
+    }
+
+    public function isFuture()
+    {
+        if ($this->getEnd())
+            return $this->getEnd()->getTimestamp() > time();
+        // Well, no end, then it's in the future.
+        return true;
+    }
+    public function isBooked()
+    {
+        return in_array($this->getState(), ExternalEntityConfig::getBookedStatesFor('Event'));
+    }
+    public function isActive()
+    {
+        if (!$this->isFuture())
+            return false;
+        return in_array($this->getState(), ExternalEntityConfig::getActiveStatesFor('Event'));
     }
 
     /**
