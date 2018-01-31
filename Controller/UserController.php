@@ -80,6 +80,25 @@ class UserController extends CommonController
 
     /**
      *
+     * @Route("/confirm/{id}", name="user_confirm_job")
+     * @Method("POST")
+     */
+    public function confirmJobAction(Request $request, Job $job, $access)
+    {
+        $user = $this->getUser();
+        // TODO: Move to a service.
+        $job->setState('CONFIRMED');
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($job);
+        $em->flush($job);
+        if ($this->isRest($access)) {
+            return new JsonResponse("OK", Response::HTTP_OK);
+        }
+        return $this->redirectToRoute('user_me');
+    }
+
+    /**
+     *
      * @Route("/register_interest/{id}", name="user_register_interest")
      * @Method("POST")
      */
@@ -90,9 +109,6 @@ class UserController extends CommonController
         $job = new Job();
         $job->setShift($shift);
         $job->setPerson($user);
-        // I guess it's just too much work finding whatever state you'd rather
-        // use for this. Like "REGISTERED" instead.
-        // They want it, alas they show interest.
         $job->setState('INTERESTED');
         $em = $this->getDoctrine()->getManager();
         $em->persist($job);

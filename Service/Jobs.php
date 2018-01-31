@@ -20,6 +20,8 @@ class Jobs
     {
         if (isset($options['all'])) {
             return $person->getJobs();
+        } elseif (isset($options['state'])) {
+            return $this->em->getRepository('CrewCallBundle:Job')->findByStateForPerson($person, $options);
         } elseif (isset($options['upcoming'])) {
             return $this->em->getRepository('CrewCallBundle:Job')->findUpcomingForPerson($person);
         } elseif (isset($options['booked_upcoming'])) {

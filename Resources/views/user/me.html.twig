@@ -1,14 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{% set upcoming = cc_jobs.jobsforperson(user, {'booked_upcoming': true}) %}
-{% if upcoming|length > 0 %}
-    <h2>Upcoming Jobs</h2>
+{% set confirmable = cc_jobs.jobsforperson(user, {'state': 'ASSIGNED'}) %}
+{% if confirmable|length > 0 %}
+    <h2>Jobs you need to confirm</h2>
 
         <table class="table table-striped table-bordered table-sm">
         <thead class="thead-inverse">
             <tr>
                 <th>Event</th>
+                <th>Where</th>
                 <th>Start</th>
                 <th>End</th>
                 <th>What</th>
@@ -16,21 +17,58 @@
             </tr>
         </thead>
         <tbody>
-        {% for job in upcoming %}
+        {% for job in confirmable %}
             {% set shift = job.shift %}
             <tr>
                 <td>{{ shift.event }}</td>
+                <td>{{ shift.event.location }}</td>
                 <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
                 <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
                 <td>{{ shift.function }}</td>
-                <td>{{ job.state }}</td>
+                <td>
+                <form method="POST" action="{{ path('user_confirm_job', {'id': job.id }) }}">
+                <button type="submit" class="btn btn-success">Confirm</button>
+                </form>
+                <form method="POST" action="{{ path('user_delete_interest', {'id': job.id }) }}">
+                <button type="submit" class="btn btn-danger">Cancel</button>
+                </form>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 {% endif %}
 
-{% set wishlist = cc_jobs.jobsforperson(user, {'wishlist': true}) %}
+{% set upcoming = cc_jobs.jobsforperson(user, {'state': 'CONFIRMED'}) %}
+{% if upcoming|length > 0 %}
+    <h2>Upcoming Jobs</h2>
+
+        <table class="table table-striped table-bordered table-sm">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Event</th>
+                <th>Where</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>What</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for job in upcoming %}
+            {% set shift = job.shift %}
+            <tr>
+                <td>{{ shift.event }}</td>
+                <td>{{ shift.event.location }}</td>
+                <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
+                <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
+                <td>{{ shift.function }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% set wishlist = cc_jobs.jobsforperson(user, {'state': 'INTERESTED'}) %}
 {% if wishlist|length > 0 %}
     <h2>Wishlist</h2>
 
@@ -38,6 +76,7 @@
         <thead class="thead-inverse">
             <tr>
                 <th>Event</th>
+                <th>Where</th>
                 <th>Start</th>
                 <th>End</th>
                 <th>What</th>
@@ -49,6 +88,7 @@
             {% set shift = job.shift %}
             <tr>
                 <td>{{ shift.event }}</td>
+                <td>{{ shift.event.location }}</td>
                 <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
                 <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
                 <td>{{ shift.function }}</td>
@@ -81,6 +121,7 @@ jQuery(document).ready(function() {
         <thead class="thead-inverse">
             <tr>
                 <th>Event</th>
+                <th>Where</th>
                 <th>Start</th>
                 <th>End</th>
                 <th>What</th>
@@ -92,6 +133,7 @@ jQuery(document).ready(function() {
         {% for shift in opportunities %}
             <tr>
                 <td>{{ shift.event }}</td>
+                <td>{{ shift.event.location }}</td>
                 <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
                 <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
                 <td>{{ shift.function }}</td>
