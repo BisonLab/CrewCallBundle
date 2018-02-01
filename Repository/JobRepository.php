@@ -23,22 +23,29 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->andWhere("j.person = :person")
             ->setParameter('state', $state)
             ->setParameter('person', $person);
-        if (isset($options['from']) || isset($options['to'])) {
-            // Do that TODO:
-        }
-        return $qb->getQuery()->getResult();
-    }
 
-    public function findBookedUpcomingForPerson(Person $person)
-    {
-        $states = ExternalEntityConfig::getBookedStatesFor('Job');
-        $qb = $this->_em->createQueryBuilder();
-        $qb->select('j')
-            ->from($this->_entityName, 'j')
-            ->where('j.state in (:states)')
-            ->andWhere("j.person = :person")
-            ->setParameter('states', $states)
-            ->setParameter('person', $person);
+        if (isset($options['from']) || isset($options['to'])) {
+            $qb->innerJoin('j.shift', 's');
+            // Unless there are a set timeframe, use "from now".
+            $from = new \DateTime();
+            if (isset($options['from'])) {
+                if ($options['from'] instanceof \DateTime )
+                    $from = $options['from'];
+                else
+                    $from = new \DateTime($options['from']);
+            }
+            $qb->andWhere('s.start >= :from')
+               ->setParameter('from', $from);
+
+            if (isset($options['to'])) {
+                if ($options['to'] instanceof \DateTime )
+                    $to = $options['to'];
+                else
+                    $to = new \DateTime($options['to']);
+                $qb->andWhere('s.end <= :to')
+                   ->setParameter('to', $to);
+            }
+        }
         return $qb->getQuery()->getResult();
     }
 
@@ -58,9 +65,14 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     /*
      * TODO: Add timeframe and default with from now
      */
-    public function findUpcomingForPerson(Person $person)
+    public function findUpcomingForPerson(Person $person, $options = array())
     {
-        $states = ExternalEntityConfig::getBookedStatesFor('Job');
+
+        if (isset($options['state'])) {
+            if (!isset($options['from']))
+                $options['from'] = new \DateTime();
+            return $this->findByStateForPerson($person, $options);
+        }
         $qb = $this->_em->createQueryBuilder();
         $qb->select('j')
             ->from($this->_entityName, 'j')
