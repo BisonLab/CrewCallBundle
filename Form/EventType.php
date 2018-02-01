@@ -31,6 +31,7 @@ class EventType extends AbstractType
                 array('class' => 'CrewCallBundle:Location',
                     'query_builder' => function(EntityRepository $er) {
                     return $er->createQueryBuilder('o')
+                    ->where("f.state = 'VISIBLE'")
                      ->orderBy('o.name', 'ASC');
                     },
                 ))

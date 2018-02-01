@@ -31,6 +31,7 @@ class ShiftType extends AbstractType
                array('class' => 'CrewCallBundle:FunctionEntity',
                    'query_builder' => function(EntityRepository $er) {
                    return $er->createQueryBuilder('f')
+                    ->where("f.state = 'VISIBLE'")
                     ->orderBy('f.name', 'ASC');
                    },
                ))
