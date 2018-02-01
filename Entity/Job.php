@@ -69,7 +69,7 @@ class Job
      * Set state
      *
      * @param string $state
-     * @return Event
+     * @return Job
      */
     public function setState($state)
     {
@@ -179,6 +179,16 @@ class Job
     public function getFunction()
     {
         return $this->getShift()->getFunction();
+    }
+
+    public function getEvent()
+    {
+        return $this->getShift()->getEvent();
+    }
+
+    public function getLocation()
+    {
+        return $this->getEvent()->getLocation();
     }
 
     public function isBooked()
