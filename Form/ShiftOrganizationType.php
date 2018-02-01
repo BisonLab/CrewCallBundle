@@ -5,6 +5,8 @@ namespace CrewCallBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class ShiftOrganizationType extends AbstractType
 {
@@ -13,7 +15,18 @@ class ShiftOrganizationType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('amount')->add('shift')->add('organization')        ;
+        $builder
+            ->add('amount')
+            ->add('shift')
+            ->add('organization', EntityType::class,
+                array('class' => 'CrewCallBundle:Organization',
+                    'query_builder' => function(EntityRepository $er) {
+                    return $er->createQueryBuilder('o')
+                     ->where("o.state = 'ACTIVE'")
+                     ->orderBy('o.name', 'ASC');
+                    },
+                ))
+           ;
     }
     
     /**
