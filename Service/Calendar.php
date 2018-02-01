@@ -83,6 +83,9 @@ class Calendar
         }
         $fc['id'] = $cal['id'];
         $fc['title'] = $cal['title'];
+        $fc['content'] = $cal['content'];
+        $fc['popup_title'] = $cal['popup_title'];
+        $fc['popup_content'] = $cal['popup_content'];
         $fc['start'] = $cal['start']->format("Y-m-d\TH:i:sP");
         if ($cal['end'])
             $fc['end'] = $cal['end']->format("Y-m-d\TH:i:sP");
@@ -129,7 +132,7 @@ class Calendar
     public function jobToCal(Job $job)
     {
         $c = $this->shiftToCal($job->getShift());
-        $c['title'] = $job->getFunction()->getName();
+        $c['title'] = (string)$job->getFunction();
         if ($job->isBooked()) {
             $c['color'] = "green";
             $c['textColor'] = "white";
@@ -137,7 +140,28 @@ class Calendar
             $c['color'] = "orange";
             $c['textColor'] = "black";
         }
-        $c['url'] =  $this->router->generate('user_job_calendar_item', array('id' => $job->getId()));
+        // For the text in the ical calendar thingie.
+        $c['content'] = 
+              'What: ' . (string)$job->getEvent() . "\n"
+            . 'Work: ' . (string)$job->getFunction() . "\n"
+            . 'Where: ' . (string)$job->getLocation() . "\n";
+
+        $url =  $this->router->generate('user_job_calendar_item', 
+            array('id' => $job->getId()));
+        $c['ical_url'] = $url;
+        // For a popover in the internal calendar.
+        $c['popup_title'] = (string)$job->getFunction() . " at "
+            . (string)$job->getLocation();
+
+        /*
+         *  I should somehow find out if the user looking at the calendar is
+         *  the person "owning" it or an admin using it in person view. No need
+         *  to "Put in my calendar" if the latter.
+         *  And we may even want a completely different text.
+         */
+        $c['popup_content'] = preg_replace("/\n/", "<br />"
+            , $c['content']) . '<br><a href="'
+            . $url  . '">Put in my calendar</a>';
         return $c;
     }
 
@@ -145,10 +169,9 @@ class Calendar
     {
         $c = array();
         $c['id'] = $shift->getId();
-        $c['title'] = "Shift";
         $c['start'] = $shift->getStart();
         $c['end'] = $shift->getEnd();
-        $c['title'] = $shift->getFunction()->getName();
+        $c['title'] = (string)$shift->getFunction();
         return $c;
     }
 }

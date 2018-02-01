@@ -12,19 +12,22 @@ $(function () {
         fixedWeekCount: false,
         eventDurationEditable: false,
         weekNumbers: true,
-        defaultView: 'month',
         firstDay: 1,
         navLinks: true,
         timeFormat: 'H(:mm)',
         allDaySlot: false,
         displayEventEnd: true,
-
         header: {
             left: 'prev, next',
             center: 'title',
             right: 'month, agendaWeek, agendaDay, listWeek'
         },
         lazyFetching: true,
+{% if defaultView is defined %}
+        defaultView: '{{ defaultview }}',
+{% else %}
+        defaultView: 'month',
+{% endif %}
         /* Not entirely useable. Does not show a whole year, not months.
         views: {
             basicYear: {
@@ -48,56 +51,18 @@ $(function () {
                 data: {},
                 error: function () {}
             }
-        ]
+        ],
+        eventRender: function(event, element) {
+console.log(event.popup_title);
+console.log(event.popup_content);
+            $( element ).popover({
+                html: true,
+                placement: 'bottom',
+                title: event.popup_title,
+                content: event.popup_content
+            });
+        }
     });
 });
 </script>
-{#
-<script>
-$(function () {
-    $('#calendar').fullCalendar({
-        header: {
-            left: 'prev, next',
-            center: 'title',
-            right: 'month, agendaWeek, agendaDay'
-        },
-        weekNumbers: true,
-        timezone: ('Europe/London'),
-        businessHours: {
-            start: '09:00',
-            end: '17:30',
-            dow: [1, 2, 3, 4, 5]
-        },
-        defaultView: 'agendaWeek',
-        lazyFetching: true,
-        firstDay: 1,
-        selectable: true,
-        timeFormat: {
-            agenda: 'h:mmt',
-            '': 'h:mmt'
-        },
-        columnFormat:{
-            month: 'ddd',
-            week: 'ddd D/M',
-            day: 'dddd'
-        },
-        editable: false,
-        eventDurationEditable: false,
-        eventSources: [
-            {
-                url: '{{ calendar_load_url }}',
-                type: 'POST',
-                data: {
-//                    filters: { param: foo }
-                },
-                error: function() {
-                   //alert()
-                }
-            }
-        ]
-    });
-});
-
-</script>
-#}
 <div id="calendar"></div>
