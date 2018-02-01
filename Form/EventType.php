@@ -30,15 +30,16 @@ class EventType extends AbstractType
             ->add('location', EntityType::class,
                 array('class' => 'CrewCallBundle:Location',
                     'query_builder' => function(EntityRepository $er) {
-                    return $er->createQueryBuilder('o')
-                    ->where("f.state = 'VISIBLE'")
-                     ->orderBy('o.name', 'ASC');
+                    return $er->createQueryBuilder('l')
+                     ->where("l.state = 'OPEN'")
+                     ->orderBy('l.name', 'ASC');
                     },
                 ))
             ->add('organization', EntityType::class,
                 array('class' => 'CrewCallBundle:Organization',
                     'query_builder' => function(EntityRepository $er) {
                     return $er->createQueryBuilder('o')
+                     ->where("o.state = 'ACTIVE'")
                      ->orderBy('o.name', 'ASC');
                     },
                 ))
