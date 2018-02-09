@@ -45,6 +45,11 @@ class ExternalEntityConfig
         return isset(self::$states[$thingie]) ? self::$states[$thingie]['booked_states'] : self::$states['default']['booked_states'];
     }
 
+    public static function getDoneStatesFor($thingie)
+    {
+        return isset(self::$states[$thingie]) ? self::$states[$thingie]['done_states'] : self::$states['default']['done_states'];
+    }
+
     public static function getEnableLoginStatesFor($thingie)
     {
         return isset(self::$states[$thingie]) ? self::$states[$thingie]['enable_login'] : self::$states['default']['enable_login'];
