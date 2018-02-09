@@ -48,6 +48,15 @@ class Location
     private $description;
 
     /**
+     * @var string $state
+     *
+     * @ORM\Column(name="state", type="string", length=40, nullable=true)
+     * @Gedmo\Versioned
+     * @Assert\Choice(callback = "getStatesList")
+     */
+    private $state = "OPEN";
+
+    /**
      * @ORM\Embedded(class="EmbeddableAddress")
      */
     private $address;
@@ -145,6 +154,50 @@ class Location
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set state
+     *
+     * @param string $state
+     * @return Organization
+     */
+    public function setState($state)
+    {
+        if ($state == $this->state) return $this;
+        if (is_int($state)) { $state = self::getStates()[$state]; }
+        $state = strtoupper($state);
+        if (!isset(self::getStates()[$state])) {
+            throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
+        }
+
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return string 
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Get states
+     *
+     * @return array 
+     */
+    public static function getStates()
+    {
+        return ExternalEntityConfig::getStatesFor('Organization');
+    }
+    public static function getStatesList()
+    {
+        return array_keys(ExternalEntityConfig::getStatesFor('Organization'));
     }
 
     /**
