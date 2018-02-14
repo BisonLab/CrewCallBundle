@@ -55,7 +55,14 @@ $(function () {
         eventRender: function(event, element) {
             $( element ).popover({
                 html: true,
-                placement: 'bottom',
+                /* This one ends up with "Error in parsing value for ‘left’.
+ * Declaration dropped." And the only reference I found was an 11 yeqars old
+ * jQuery bug.
+                Neither of these worked.
+                container: 'fc-widget-content',
+                container: 'calendar',
+                */
+                placement: 'auto',
                 title: event.popup_title,
                 content: event.popup_content
             });
