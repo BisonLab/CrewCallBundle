@@ -1,8 +1,25 @@
+{% include 'CrewCallBundle:joblog:handling.html.twig' %}
+{% macro list_joblogs(jobloglist) %}
+    <table class="table table-bordered table-sm">
+    <th>In</th><th>Out</th>
+    {% for elem in jobloglist %}
+    <tr>
+    <td>{{ elem.in | date("Y-m-d H:i") }}</td>
+    <td>{{ elem.out | date("Y-m-d H:i") }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+{% endmacro %}
+{% import _self as jlmacros %}
+
 <table id="jobTable" class="table table-bordered table-sm">
     <thead>
         <tr>
             <th>Person</th>
             <th>State</th>
+            {% if shift.end < date() %}
+                <th>Time Sheet</th>
+            {% endif %}
             <th>Actions</th>
         </tr>
     </thead>
@@ -22,6 +39,16 @@
 {% endif %}
             </td>
             <td>{{ job.state }}</td>
+            {% if job.shift.end < date() %}
+                <td id="jobLogTable_{{ job.id }}">
+                {% if job.joblogs | length > 0  %}
+                     {{ jlmacros.list_joblogs(job.joblogs) }}
+                {% else %}
+                    &nbsp;
+                {% endif %}
+                    <a href="#" id="addJobLog_{{ job.id }}" data-html="true" onClick="grabNewJobLogForm({{ job.id }}, {{ job.shift.id }});">Add</a><br>
+                </td>
+            {% endif %}
             <td>
             {% if not job.booked %}
                 {% if job.state != "ASSIGNED" %}

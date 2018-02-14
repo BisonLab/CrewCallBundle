@@ -56,6 +56,11 @@ class Job
     private $shift;
 
     /**
+     * @ORM\OneToMany(targetEntity="JobLog", mappedBy="job", cascade={"remove", "persist"})
+     */
+    private $joblogs;
+
+    /**
      * Get id
      *
      * @return int
@@ -176,6 +181,40 @@ class Job
         return $this;
     }
 
+    /**
+     * Add joblog
+     *
+     * @param \CrewCallBundle\Entity\JobLog $joblog
+     *
+     * @return Shift
+     */
+    public function addJobLog(\CrewCallBundle\Entity\JobLog $joblog)
+    {
+        $this->joblogs[] = $joblog;
+
+        return $this;
+    }
+
+    /**
+     * Remove job
+     *
+     * @param \CrewCallBundle\Entity\JobLog $joblog
+     */
+    public function removeJobLog(\CrewCallBundle\Entity\JobLog $joblog)
+    {
+        $this->joblogs->removeElement($joblog);
+    }
+
+    /**
+     * Get joblogs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getJobLogs()
+    {
+        return $this->joblogs;
+    }
+
     public function getFunction()
     {
         return $this->getShift()->getFunction();
@@ -194,5 +233,10 @@ class Job
     public function isBooked()
     {
         return in_array($this->getState(), ExternalEntityConfig::getBookedStatesFor('Job'));
+    }
+
+    public function __toString()
+    {
+        return (string)$this->getFunction();
     }
 }

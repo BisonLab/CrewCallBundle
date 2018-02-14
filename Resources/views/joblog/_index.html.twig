@@ -1,0 +1,11 @@
+{% macro list_joblogs(list) %}
+    <table>
+    <th>In</th><th>Out</th>
+    {% for elem in list %}
+    <tr>
+    <td>{{ elem.in }}</td>
+    <td>{{ elem.out }}</td>
+    </tr>
+    {% endfor %}
+{% endmacro %}
+{{ _self.list_joblogs(joblogs) }}

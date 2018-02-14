@@ -8,9 +8,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 use CrewCallBundle\Entity\Job;
+use CrewCallBundle\Entity\JobLog;
 
 /**
  * Job controller.
@@ -29,29 +31,27 @@ class JobController extends CommonController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $with_orgs = $request->get('with_orgs') ?: false;
-
-        $jobs = array();
-        $sos = array();
+        $shift = null;
         if ($shift_id = $request->get('shift')) {
             $em = $this->getDoctrine()->getManager();
-            if ($shift = $em->getRepository('CrewCallBundle:Shift')->find($shift_id)) {
-                $jobs = $shift->getJobs();
-                $sos = $shift->getShiftOrganizations();
-            }
-        } else {
-            $jobs = $em->getRepository('CrewCallBundle:Job')->findAll();
+            $shift = $em->getRepository('CrewCallBundle:Shift')->find($shift_id);
         }
+        if (!$shift)
+            return $this->returnNotFound($request, 'No shift to tie the jobs to');
+
+        $jobs = $shift->getJobs();
+        $sos = $shift->getShiftOrganizations();
         if ($this->isRest($access)) {
             return $this->render('job/_index.html.twig', array(
-                'jobs' => $jobs,
-                'sos' => $sos
+                'shift' => $shift,
+                'jobs'  => $jobs,
+                'sos'   => $sos
             ));
         }
 
         return $this->render('job/index.html.twig', array(
             'jobs' => $jobs,
-            'sos' => $sos
+            'sos'  => $sos
         ));
     }
 

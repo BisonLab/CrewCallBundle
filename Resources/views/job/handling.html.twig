@@ -1,11 +1,8 @@
 <script>
 
-function grabJobList(shift_id, with_orgs = true) {
+function grabJobList(shift_id) {
     url = "{{ path('job_index', {'access': 'ajax' }) }}" 
         + "?shift=" + shift_id;
-    if (with_orgs == true) {
-        url += "&with_orgs=true";
-    }
     $.get(url, function( data ) {
         $( "#jobTable_" + shift_id ).html(data);
         $( "#jobList_" + shift_id ).show();

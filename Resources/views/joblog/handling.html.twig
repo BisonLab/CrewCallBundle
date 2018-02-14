@@ -1,0 +1,59 @@
+<script>
+
+function grabJobLogList(job_id) {
+    url = "{{ path('job_index', {'access': 'ajax' }) }}" 
+        + "?job=" + job_id;
+    $.get(url, function( data ) {
+        $( "#jobLogTable_" + job_id ).html(data);
+    });
+    return false;
+}
+
+function grabNewJobLogForm(job_id, shift_id) {
+    url = "{{ path('joblog_new', { 'access': 'ajax' }) }}?job=" + job_id;
+    $.get(url, function( content ) {
+        $( "#addJobLog_"+job_id ).popover({
+            html: true,
+            placement: 'left',
+            title: 'Add Work <a href="#" class="close" data-dismiss="alert">&times;</a>',
+            content: content
+        });
+        $( "#addJobLog_"+job_id ).popover("show");
+        $( "#crewcallbundle_joblog_job").hide();
+        $( "#crewcallbundle_joblog_job").prev().hide();
+        $( "#newJobLogForm" ).submit(function( event ) {
+            event.preventDefault();
+            submitNewJobLogForm(shift_id);
+        });
+        $(document).on("click", ".popover .close" , function(){
+            $(this).parents(".popover").popover('hide');
+        });
+    });
+    return false;
+}
+
+function submitNewJobLogForm(shift_id) {
+    newJobLogFormData = $( "#newJobLogForm" ).serialize();
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('joblog_new', { 'access': 'ajax' }) }}",
+        data: newJobLogFormData,
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 201) {
+                grabJobList(shift_id)
+            } else {
+                alert(xhr.responseText);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+</script>

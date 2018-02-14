@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Shift list</h1>
+{% include 'CrewCallBundle:job:_index.html.twig' with { 'jobs': jobs}  %}
+    <ul>
+        <li>
+            <a href="{{ path('job_new') }}">Create a new job</a>
+        </li>
+    </ul>
+{% endblock %}
