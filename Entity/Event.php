@@ -452,6 +452,10 @@ class Event
             return false;
         return in_array($this->getState(), ExternalEntityConfig::getActiveStatesFor('Event'));
     }
+    public function isDone()
+    {
+        return in_array($this->getState(), ExternalEntityConfig::getDoneStatesFor('Event'));
+    }
 
     /**
      * @Assert\Callback

@@ -88,7 +88,7 @@ class EventController extends CommonController
     {
         $deleteForm = $this->createDeleteForm($event);
         $confirmForm = null;
-        if ($event->isActive())
+        if (!$event->isDone())
             $confirmForm = $this->createConfirmForm($event)->createView();
 
         return $this->render('event/show.html.twig', array(
