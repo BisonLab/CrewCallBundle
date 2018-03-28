@@ -2,12 +2,16 @@
 
 namespace CrewCallBundle\Controller;
 
-use CrewCallBundle\Entity\FunctionEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
+
+use CrewCallBundle\Entity\FunctionEntity;
+use CrewCallBundle\Entity\PersonFunction;
 
 /**
  * Functionentity controller.
@@ -45,14 +49,75 @@ class FunctionEntityController extends CommonController
 
         $functionEntities = $em->getRepository('CrewCallBundle:FunctionEntity')->findAll();
 
+        $has_functions = $has_f_ids = array();
+        $add_to = null;
+        if ($person_id = $request->get('person_id')) {
+            $person = $em->getRepository('CrewCallBundle:Person')->find($person_id);
+            foreach ($person->getPersonFunctions() as $hf) {
+                $has_functions[] = $hf->getFunction();
+                $has_f_ids[] = $hf->getFunction()->getId();
+                $update = "PersonFunction";
+                $update_id = $person_id;
+            }
+        }
+
+        $update_form = $this->createFormBuilder()
+            ->setAction($this->generateUrl('picked_functions_updater',
+                array('update' => $update, 'update_id' => $update_id)))
+            ->setMethod('POST')
+            ->getForm()
+        ;
+
+        $pickerparams = array(
+            'functionEntities' => $functionEntities,
+            'has_functions' => $has_functions,
+            'has_f_ids' => $has_f_ids,
+            'add_to' => $add_to,
+            'update_form' => $update_form->createView(),
+        );
+
         if ($this->isRest($access)) {
-            return $this->render('functionentity/_picker.html.twig', array(
-                'functionEntities' => $functionEntities,
-            ));
+            return $this->render('functionentity/_picker.html.twig', $pickerparams);
         }
         return $this->render('functionentity/picker.html.twig', array(
-            'functionEntities' => $functionEntities,
-        ));
+            'pickerparams' => $pickerparams));
+    }
+
+    /**
+     * Update the functions list on entities having them.
+     *
+     * @Route("/update_picked/{update}/{update_id}", name="picked_functions_updater")
+     * @Method("POST")
+     */
+    public function updatePickedAction(Request $request, $update, $update_id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        // So, let's handle these based on what to update.
+        if ($update == "PersonFunction") {
+            $person = $em->getRepository('CrewCallBundle:Person')->find($update_id);
+            $has_functions = $request->request->get('has_functions');
+            $pfs = array();
+            foreach ($person->getPersonFunctions() as $pf) { 
+                if (!in_array($pf->getFunctionId(), $has_functions)) {
+                    $em->remove($pf);
+                }
+                $pfs[] = $pf->getFunctionId();
+            }
+            foreach ($has_functions as $hf) {
+                if (!in_array($hf, $pfs)) {
+                    $function = $em->getRepository('CrewCallBundle:FunctionEntity')->find($hf);
+                    $pf = new PersonFunction();
+                    $pf->setPerson($person);
+                    $pf->setFunction($function);
+                    $pf->setFromDate(new \DateTime());
+                    $em->persist($pf);
+                }
+            }
+            $em->flush();
+            return $this->redirectToRoute('person_show', array('id' => $update_id));
+        }
+        // Let the submitter decide what to do.
+        return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
     }
 
     /**

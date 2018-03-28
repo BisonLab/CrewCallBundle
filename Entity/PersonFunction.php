@@ -148,6 +148,16 @@ class PersonFunction
         return $this->to_date;
     }
 
+    public function getFunctionId()
+    {
+        return $this->getFunction()->getId();
+    }
+
+    public function getFunctionName()
+    {
+        return $this->getFunction()->getName();
+    }
+
     public function __toString()
     {
         return $this->getFunction()->getName();

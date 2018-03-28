@@ -18,6 +18,8 @@ use CrewCallBundle\Lib\ExternalEntityConfig;
  */
 class Job
 {
+    use \BisonLab\CommonBundle\Entity\AttributesTrait;
+
     /**
      * @var int
      *
@@ -35,13 +37,6 @@ class Job
      * @Assert\Choice(callback = "getStatesList")
      */
     private $state;
-
-    /**
-     * @var array
-     *
-     * @ORM\Column(name="attributes", type="json_array")
-     */
-    private $attributes = array();
 
     /**
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="jobs")
@@ -117,30 +112,6 @@ class Job
     public static function getStatesList()
     {
         return array_keys(ExternalEntityConfig::getStatesFor('Job'));
-    }
-
-    /**
-     * Set attributes
-     *
-     * @param array $attributes
-     *
-     * @return Job
-     */
-    public function setAttributes($attributes)
-    {
-        $this->attributes = $attributes;
-
-        return $this;
-    }
-
-    /**
-     * Get attributes
-     *
-     * @return array
-     */
-    public function getAttributes()
-    {
-        return $this->attributes;
     }
 
     public function getPerson()

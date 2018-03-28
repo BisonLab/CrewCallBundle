@@ -1,38 +1,44 @@
-{% macro frow (func) %}
-<tr>
-{% if func.parent %}
-<td>&nbsp;<a href="#" onclick="pickedFunction({{ func.id }});">{{ func.name }}</a></td>
-{% else %}
-<td><a href="#" onclick="pickedFunction({{ func.id }});">{{ func.name }}</a></td>
-{% endif %}
-<td>
-{{ func.description }}
-</td>
-</tr>
-{% endmacro %}
-{% import _self as fmacros %}
+<div id="functionPicker">
+    {{ form_start(update_form) }}
+    <div class="col-xs-4">
+        <h3>Picked</h3>
+        <select name="has_functions[]" id="undo_redo" class="form-control" size="40" multiple="multiple">
+        {% for has in has_functions  %}
+            <option value="{{ has.id }}">{{ has.name }}</option>
+        {% endfor %}
+        </select>
+    </div>
+    <div class="col-xs-3">
+        <h3>&nbsp;</h3>
+        <button type="button" id="undo_redo_undo" class="btn btn-primary btn-block">Undo</button>
+        <button type="button" id="undo_redo_rightAll" class="btn btn-default btn-block"><i class="glyphicon glyphicon-forward"></i></button>
+        <button type="button" id="undo_redo_rightSelected" class="btn btn-default btn-block"><i class="glyphicon glyphicon-chevron-right"></i></button>
+        <button type="button" id="undo_redo_leftSelected" class="btn btn-default btn-block"><i class="glyphicon glyphicon-chevron-left"></i></button>
+        <button type="button" id="undo_redo_leftAll" class="btn btn-default btn-block"><i class="glyphicon glyphicon-backward"></i></button>
+        <button type="button" id="undo_redo_redo" class="btn btn-warning btn-block">Redo</button>
+        <button type="submit" id="submit_update_form" class="btn btn-success btn-block">Submit</button>
+    </div>
+    <div class="col-xs-4">
+        <h3>Available</h3>
+        <select name="functions[]" id="undo_redo_to" class="form-control" size="40" multiple="multiple">
+        {% for f in functionEntities if f.parent is null and f.id not in has_f_ids %}
+            {% if f.children.count > 0 %}
+                <optgroup label="{{ f.name }}">
+                {% for c in f.children if f.id not in has_f_ids %}
+                    <option value="{{ c.id }}">{{ c.name }}</option>
+                {% endfor %}
+                </optgroup>
+            {% else %}
+                <option value="{{ f.id }}">{{ f.name }}</option>
+            {% endif %}
+        {% endfor %}
+        </select>
+        {{ form_rest(update_form) }}
+    </div>
+</div>
 
-<table id="functionTable">
-<thead>
-    <th>Name</th>
-    <th>Description</th>
-</thead>
-    
-<tbody>
-{% for f in functionEntities if f.parent is null %}
-{% if f.children.count > 0 %}
-    <tr>
-    <td><strong>{{ f.name }}</strong></td>
-    <td>
-    &nbsp;
-    </td>
-    </tr>
-    {% for c in f.children  %}
-    {{ fmacros.frow(c) }}
-    {% endfor %}
-{% else %}
-    {{ fmacros.frow(f) }}
-{% endif %}
-{% endfor %}
-</tbody>
-</table>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $('#undo_redo').multiselect();
+});
+</script>

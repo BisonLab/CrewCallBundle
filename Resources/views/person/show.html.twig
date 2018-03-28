@@ -4,16 +4,14 @@
 
 <script>
 
-function grabFunctionPicker() {
-    url = "{{ path('function_picker', {'access': 'ajax' }) }}";
+function grabFunctionPickerTab() {
+    if ($( "#functab div" ).length > 1) {
+        return false;
+    }
+    url = "{{ path('function_picker', {'access': 'ajax' }) }}?person_id={{ person.id }}";
     $.get(url, function( data ) {
-        $( "#personRight" ).html(data);
+        $( "#functab" ).html(data);
     }).done(function() {
-        $( "#functionTable" ).dataTable({
-            "order": [[ 1, "asc" ]],
-            "paging": false,
-            "searching": true
-            });
         $( ".sfList" ).hide();
     });
     return false;
@@ -46,26 +44,6 @@ function pickedFunction(function_id) {
             errmsg = "Message sending failed\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
-    });
-    return false;
-}
-
-function grabPersonFunctionForm() {
-    old_html = $( "#newShift" ).html();
-    url = "{{ path('shift_new', { 'access': 'ajax' }) }}";
-    if (event_id) {
-        url = url + "?event=" + event_id;
-    }
-    $.get(url, function( data ) {
-        $( "#newShift" ).html(data);
-        /* My JS-fu is bad. I'm quite sure I should be able to set the
-         * submitNewShiftForm function directly, but then it woule be called
-         * immediately.  Aka, I have to read up on this..
-         */
-        $( "#newShiftForm" ).submit(function( event ) {
-            event.preventDefault();
-            submitNewShiftForm(event_id);
-        });
     });
     return false;
 }
@@ -135,14 +113,9 @@ function grabPersonFunctionForm() {
                 <ul>
                 {% for f in person.personfunctions %}
                 <li>
-                {% set dform = cc_formcreator.createdeleteform(f) %}
-                {{ form_start(dform) }}
-                {{ f }} <input type="submit" value="Remove">
-                {{ form_end(dform) }}
+                {{ f }}
                 </li>
                 {% endfor %}
-                </ul>
-                <a href="#" onClick="grabFunctionPicker();">Add function
                 </td>
             </tr>
             <tr>
@@ -222,7 +195,10 @@ function grabPersonFunctionForm() {
 <a href="#notestab" data-toggle="tab">Notes</a>
 </li>
 <li>
-<a  href="#filestab" data-toggle="tab">Files</a>
+<a href="#filestab" data-toggle="tab">Files</a>
+</li>
+<li>
+<a href="#functab" data-toggle="tab" onClick="grabFunctionPickerTab();">Manage functions</a>
 </li>
 </ul>
 
@@ -254,6 +230,7 @@ function grabPersonFunctionForm() {
     </table>
   </div>
 
+  <!-- TODO: Make this click-loadable as with the functab -->
   <div class="tab-pane" id="caltab">
     <br>
 {% set calendar_load_url = path('person_calendar', {'id': person.id, 'access': 'ajax'}) %}
@@ -282,6 +259,8 @@ function grabPersonFunctionForm() {
     }
 %}
 {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
+  </div>
+  <div class="tab-pane" id="functab">
   </div>
 </div>
 {% endblock %}
