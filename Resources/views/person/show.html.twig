@@ -132,16 +132,6 @@ function pickedFunction(function_id) {
     </table>
 
     <ul>
-{% set sfconf = {'sfconfig': {
-        'context': {
-            'system': 'crewcall',
-            'object_name': 'person',
-            'external_id': person.id
-            }
-        }
-    }
-%}
-{% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
         <li>
             <a href="{{ path('person_log', { 'id': person.id }) }}">History</a>
         </li>
@@ -164,23 +154,23 @@ function pickedFunction(function_id) {
 <div class="col-sm-8" id="personRight">
 
 <div id="rightTabMenu">
-<ul class="nav nav-tabs">
-<li class="active">
-<a href="#jobstab" data-toggle="tab">Jobs</a>
-</li>
-<li>
-<a href="#caltab" data-toggle="tab">Calendar</a>
-</li>
-<li>
-<a href="#notestab" data-toggle="tab">Notes</a>
-</li>
-<li>
-<a href="#filestab" data-toggle="tab">Files</a>
-</li>
-<li>
-<a href="#functab" data-toggle="tab" onClick="grabFunctionPickerTab();">Manage functions</a>
-</li>
-</ul>
+    <ul class="nav nav-tabs">
+    <li class="active">
+    <a href="#jobstab" data-toggle="tab">Jobs</a>
+    </li>
+    <li>
+    <a href="#caltab" data-toggle="tab">Calendar</a>
+    </li>
+    <li>
+    <a href="#notestab" data-toggle="tab">Notes</a>
+    </li>
+    <li>
+    <a href="#filestab" data-toggle="tab">Files</a>
+    </li>
+    <li>
+    <a href="#functab" data-toggle="tab" onClick="grabFunctionPickerTab();">Manage functions</a>
+    </li>
+    </ul>
 
 <div class="tab-content ">
   <div class="tab-pane active" id="jobstab">
@@ -253,6 +243,16 @@ function pickedFunction(function_id) {
   <div class="tab-pane" id="filestab">
     <p>
     <br/>
+{% set sfconf = {'sfconfig': {
+        'context': {
+            'system': 'crewcall',
+            'object_name': 'person',
+            'external_id': person.id
+            }
+        }
+    }
+%}
+{% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
       <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
     </p>
 {% set filecontext = {
