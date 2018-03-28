@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div class="col-sm-5">
+<div class="col-sm-5" id="orgLeft">
     <h1>{{ organization.name }}</h1>
 
     <table class="showTable">
@@ -49,36 +49,6 @@
 
     <ul>
         <li>
-            {% set mconf = {'mconfig': {
-                    'subject': "",
-                    'to_field': false,
-                    'from_field': false,
-                    'message_type': 'AdminNote',
-                    'context': {
-                        'system': 'crewcall',
-                        'object_name': 'organization',
-                        'external_id': organization.id
-                        }
-                    }
-                }
-            %}
-            {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-            <a href="#" onClick="createMessage()">Add a note</a><br />
-        </li>
-{% set sfconf = {'sfconfig': {
-        'context': {
-            'system': 'crewcall',
-            'object_name': 'organization',
-            'external_id': organization.id
-            }
-        }
-    }
-%}
-{% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-        <li>
-          <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
-        </li>
-        <li>
             <a href="{{ path('organization_log', { 'id': organization.id }) }}">History</a>
         </li>
         <li>
@@ -94,25 +64,81 @@
         </li>
     </ul>
 </div>
-<div class="col-sm-7">
-{% set mlogcontext = {
-            'system': 'crewcall',
-            'object_name': 'organization',
-            'message_type': 'Notes',
-            'external_id': organization.id
-    }
-%}
-{% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
-    <strong>{{ note.subject }}</strong><br>
-    <pre>{{ note.body }}</pre>
-    <br>
-{% endfor %}
-{% set filecontext = {
-            'system': 'crewcall',
-            'object_name': 'organization',
-            'external_id': organization.id
-    }
-%}
-{% include 'CrewCallBundle::_files.html.twig' with filecontext %}
+
+<div class="col-sm-7" id="eventRight">
+  <ul class="nav nav-tabs">
+{#
+  <li class="active">
+  <a href="#shiftstab" data-toggle="tab">Shifts</a>
+  </li>
+  <li>
+  <a href="#caltab" data-toggle="tab">Calendar</a>
+  </li>
+#}
+  <li class="active">
+  <a href="#notestab" data-toggle="tab">Notes</a>
+  </li>
+  <li>
+  <a href="#filestab" data-toggle="tab">Files</a>
+  </li>
+  </ul>
+
+  <div class="tab-content ">
+    <div class="tab-pane active" id="notestab">
+            {% set mconf = {'mconfig': {
+                    'subject': "",
+                    'to_field': false,
+                    'from_field': false,
+                    'message_type': 'AdminNote',
+                    'context': {
+                        'system': 'crewcall',
+                        'object_name': 'organization',
+                        'external_id': organization.id
+                        }
+                    }
+                }
+            %}
+            {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+            <p><br>
+            <a href="#" onClick="createMessage()">Add a note</a><br />
+            </p>
+            {% set mlogcontext = {
+                        'system': 'crewcall',
+                        'object_name': 'organization',
+                        'message_type': 'Notes',
+                        'external_id': organization.id
+                }
+            %}
+            {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+                <strong>{{ note.subject }}</strong><br>
+                <pre>{{ note.body }}</pre>
+                <br>
+            {% endfor %}
+    </div>
+
+    <div class="tab-pane" id="filestab">
+        {% set sfconf = {'sfconfig': {
+                'context': {
+                    'system': 'crewcall',
+                    'object_name': 'organization',
+                    'external_id': organization.id
+                    }
+                }
+            }
+        %}
+        {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
+        <p><br>
+          <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
+        </p>
+        {% set filecontext = {
+                    'system': 'crewcall',
+                    'object_name': 'organization',
+                    'external_id': organization.id
+            }
+        %}
+        {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
+    </div>
+  </div>
 </div>
+
 {% endblock %}
