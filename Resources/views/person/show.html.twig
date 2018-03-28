@@ -132,23 +132,6 @@ function pickedFunction(function_id) {
     </table>
 
     <ul>
-        <li>
-            {% set mconf = {'mconfig': {
-                    'subject': "",
-                    'to_field': false,
-                    'from_field': false,
-                    'message_type': 'Notes',
-                    'context': {
-                        'system': 'crewcall',
-                        'object_name': 'person',
-                        'external_id': person.id
-                        }
-                    }
-                }
-            %}
-            {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-            <a href="#" onClick="createMessage()">Add a note</a><br />
-        </li>
 {% set sfconf = {'sfconfig': {
         'context': {
             'system': 'crewcall',
@@ -159,9 +142,6 @@ function pickedFunction(function_id) {
     }
 %}
 {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-        <li>
-          <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
-        </li>
         <li>
             <a href="{{ path('person_log', { 'id': person.id }) }}">History</a>
         </li>
@@ -237,6 +217,24 @@ function pickedFunction(function_id) {
 {% include 'CrewCallBundle::_calendar.html.twig' with { 'calendar_load_url': calendar_load_url}  %}
   </div>
   <div class="tab-pane" id="notestab">
+        {% set mconf = {'mconfig': {
+                'subject': "",
+                'to_field': false,
+                'from_field': false,
+                'message_type': 'Notes',
+                'context': {
+                    'system': 'crewcall',
+                    'object_name': 'person',
+                    'external_id': person.id
+                    }
+                }
+            }
+        %}
+        {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+    <p>
+    <br/>
+        <a href="#" onClick="createMessage()">Add a note</a><br />
+    </p>
 {% set mlogcontext = {
             'system': 'crewcall',
             'object_name': 'person',
@@ -246,12 +244,17 @@ function pickedFunction(function_id) {
 %}
 {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
     <strong>{{ note.subject }}</strong><br>
+    Written by {{ note.createdBy }} on {{ note.createdAt | date('Y-m-d')}}<br>
     <pre>{{ note.body }}</pre>
     <br>
 {% endfor %}
   </div>
 
   <div class="tab-pane" id="filestab">
+    <p>
+    <br/>
+      <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
+    </p>
 {% set filecontext = {
             'system': 'crewcall',
             'object_name': 'person',
