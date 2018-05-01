@@ -17,6 +17,22 @@ function grabFunctionPickerTab() {
     return false;
 }
 
+function grabOrganizationPickerTab() {
+    return false;
+
+    /* Guess the TODO */
+    if ($( "#orgstab div" ).length > 1) {
+        return false;
+    }
+    url = "{{ path('function_picker', {'access': 'ajax' }) }}?person_id={{ person.id }}";
+    $.get(url, function( data ) {
+        $( "#functab" ).html(data);
+    }).done(function() {
+        $( ".sfList" ).hide();
+    });
+    return false;
+}
+
 function pickedFunction(function_id) {
     var person_function = {};
     person_function.person_id   = {{ person.id }};
@@ -170,6 +186,9 @@ function pickedFunction(function_id) {
     <li>
     <a href="#functab" data-toggle="tab" onClick="grabFunctionPickerTab();">Manage functions</a>
     </li>
+    <li>
+    <a href="#orgstab" data-toggle="tab"  onClick="grabOrganizationPickerTab();">Manage organizations</a>
+    </li>
     </ul>
 
 <div class="tab-content ">
@@ -264,6 +283,9 @@ function pickedFunction(function_id) {
 {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
   </div>
   <div class="tab-pane" id="functab">
+  </div>
+  <div class="tab-pane" id="orgstab">
+    <p>To be done</p>
   </div>
 </div>
 {% endblock %}
