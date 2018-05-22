@@ -181,12 +181,14 @@ class ShiftController extends CommonController
      */
     public function deleteAction(Request $request, $access, Shift $shift)
     {
-        // Bloody good question here, because CSRF. This should add some sort of protection.
+        // Bloody good question here, because CSRF.
+        // This should add some sort of protection.
         if ($this->isRest($access)) {
             $em = $this->getDoctrine()->getManager();
-            $em->remove($shiftFunction);
-            $em->flush($shiftFunction);
-            return new JsonResponse(array("status" => "OK"), Response::HTTP_OK);
+            $em->remove($shift);
+            $em->flush($shift);
+            return new JsonResponse(array("status" => "OK"),
+                Response::HTTP_OK);
         }
 
         $form = $this->createDeleteForm($shift);
@@ -197,7 +199,6 @@ class ShiftController extends CommonController
             $em->remove($shift);
             $em->flush($shift);
         }
-
         return $this->redirectToRoute('shift_index');
     }
 

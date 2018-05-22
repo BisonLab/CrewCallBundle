@@ -110,6 +110,31 @@ function grabEditShiftForm(shift_id) {
     return false;
 }
 
+function deleteShift(shift_id) {
+    cheat_url = "{{ path('shift_delete', { 'id': 0, 'access': 'ajax' }) }}";
+    url = cheat_url.replace("0", shift_id);
+    if (!confirm("Are you sure you want to delete this Shift?")) {
+        return false;
+    }
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "DELETE",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 200) {
+                parent.location.reload();
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
 jQuery(document).ready(function() {
     grabShiftList({{ event.id }});
     return false;

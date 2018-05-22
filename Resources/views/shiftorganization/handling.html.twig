@@ -102,7 +102,7 @@ function deleteShiftOrganization(so_id) {
         type: "DELETE",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            if (xhr.status == 204) {
+            if (xhr.status == 200) {
                 parent.location.reload();
             }
       }).fail(function(xhr, status, error) {
