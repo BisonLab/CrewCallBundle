@@ -12,6 +12,7 @@
 {% endmacro %}
 {% import _self as jlmacros %}
 
+{% if jobs.count > 0 %}
 <table id="jobTable" class="table table-bordered table-sm">
     <thead>
         <tr>
@@ -28,15 +29,15 @@
         <tr>
             <td>
             {{ job.person }}
-{% set mlogcontext = {
-            'system': 'crewcall',
-            'object_name': 'person',
-            'external_id': job.person.id
-    }
-%}
-{% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-            &nbsp;(<a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>)
-{% endif %}
+    {% set mlogcontext = {
+                'system': 'crewcall',
+                'object_name': 'person',
+                'external_id': job.person.id
+        }
+    %}
+    {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
+                &nbsp;(<a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>)
+    {% endif %}
             </td>
             <td>{{ job.state }}</td>
             {% if job.shift.end < date() %}
@@ -62,8 +63,11 @@
             </td>
         </tr>
     {% endfor %}
-    {% if sos.count > 0 %}
-        </tbody>
+    </tbody>
+ </table>
+{% endif %}
+{% if sos.count > 0 %}
+<table id="shiftOrgTable" class="table table-bordered table-sm">
         <thead>
             <tr>
                 <th>Organization</th>

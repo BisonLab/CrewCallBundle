@@ -92,6 +92,9 @@ function grabEditShiftOrganizationForm(shift_id) {
 }
 
 function deleteShiftOrganization(so_id) {
+    if (!confirm("Are you sure you want to delete the organization on this shift?")) {
+        return false;
+    }
     cheat_url = "{{ path('shiftorganization_delete', { 'id': 0, 'access': 'ajax' }) }}";
     url = cheat_url.replace("0", so_id);
     $.ajax({
