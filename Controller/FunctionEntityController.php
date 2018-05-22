@@ -53,11 +53,11 @@ class FunctionEntityController extends CommonController
         $add_to = null;
         if ($person_id = $request->get('person_id')) {
             $person = $em->getRepository('CrewCallBundle:Person')->find($person_id);
+            $update = "PersonFunction";
+            $update_id = $person_id;
             foreach ($person->getPersonFunctions() as $hf) {
                 $has_functions[] = $hf->getFunction();
                 $has_f_ids[] = $hf->getFunction()->getId();
-                $update = "PersonFunction";
-                $update_id = $person_id;
             }
         }
 
