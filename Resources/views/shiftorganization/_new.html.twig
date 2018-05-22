@@ -1,4 +1,5 @@
 {{ form_start(form, {action:path('shiftorganization_new', {'access': 'ajax'}), 'attr': {'id':'newShiftOrganizationForm'}, 'style': 'inline'}) }}
     {{ form_widget(form) }}
-    <input id="submitNewShiftOrganization" type="submit" value="Add" onclick="this.value='Adding';this.disabled=true"  />
+    <input id="submitNewShiftOrganization" type="submit" value="Add" />
+{#     <input id="submitNewShiftOrganization" type="submit" value="Add" onclick="this.value='Adding';this.disabled=true"  /> #}
 {{ form_end(form) }}

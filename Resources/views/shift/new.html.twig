@@ -16,7 +16,8 @@ $(document).ready(function()
 
     {{ form_start(form) }}
         {{ form_widget(form) }}
-        <input type="submit" value="Add"  onclick="this.value='Adding';this.disabled=true" />
+        <input type="submit" value="Add" />
+{#         <input type="submit" value="Add" onclick="this.value='Adding';this.disabled=true;" /> #}
     {{ form_end(form) }}
 
     <ul>
