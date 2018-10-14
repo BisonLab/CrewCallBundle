@@ -126,46 +126,40 @@ function pickedFunction(function_id) {
             <tr>
                 <th>Functions</th>
                 <td>
-                <ul>
                 {% for f in person.personfunctions %}
-                <li>
-                {{ f }}
-                </li>
+                {{ f }}<br>
                 {% endfor %}
                 </td>
             </tr>
+{% if person.personfunctionorganizations | length > 0 %}
             <tr>
                 <th>Organizations</th>
                 <td>
-                <ul>
                 {% for pfo in person.personfunctionorganizations %}
-                <li>{{ pfo.organization }} ({{ pfo.function }})</li>
+                {{ pfo.organization }} ({{ pfo.function }})<rb>
                 {% endfor %}
                 </ul>
                 </td>
             </tr>
+{% endif %}
+            <tr>
+                <th>
+                    <a href="{{ path('person_log', { 'id': person.id }) }}">History</a>
+                    <br>
+                    <a href="{{ path('person_index') }}">Back to the people list</a>
+                    <br>
+                    <a href="{{ path('person_edit', { 'id': person.id }) }}">Edit</a>
+                    <br>
+                    <a href="{{ path('person_change_password', { 'id': person.id }) }}">Change Password</a>
+                    <br>
+                    {{ form_start(delete_form) }}
+                    <input type="submit" value="Delete">
+                    <br>
+                    {{ form_end(delete_form) }}
+                </th>
+                <td>&nbsp;</td>
         </tbody>
     </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('person_log', { 'id': person.id }) }}">History</a>
-        </li>
-        <li>
-            <a href="{{ path('person_index') }}">Back to the people list</a>
-        </li>
-        <li>
-            <a href="{{ path('person_edit', { 'id': person.id }) }}">Edit</a>
-        </li>
-        <li>
-            <a href="{{ path('person_change_password', { 'id': person.id }) }}">Change Password</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
 </div>
 <div class="col-sm-8" id="personRight">
 

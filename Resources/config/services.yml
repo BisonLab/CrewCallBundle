@@ -15,5 +15,16 @@ services:
         class: CrewCallBundle\Service\FormCreator
         arguments: ["@service_container"]
 
+    crewcall.statehandler:
+        class: CrewCallBundle\Service\StateHandler
+        arguments: ["@doctrine.orm.entity_manager", "@sakonnin.messages"]
+
     crewcall_retriever:
         alias: crewcall.retriever
+
+    crewcall.statechangelistener:
+        class: CrewCallBundle\EventListener\StateChangeListener
+        arguments: ["@crewcall.statehandler"]
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate  }
+            - { name: doctrine.event_listener, event: postFlush  }

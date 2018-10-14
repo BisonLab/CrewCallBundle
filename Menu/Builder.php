@@ -38,30 +38,36 @@ class Builder implements ContainerAwareInterface
         if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $menu->addChild('Events', array('route' => 'event_index'));
 
-            $menu->addChild('People');
-            $menu['People']->addChild('All', array('route' => 'person_index'));
-            $menu['People']->addChild('By Function', ['uri' => '#']);
-            $menu['People']['By Function']->setAttribute('dropdown', true)->setAttribute('class', 'has-dropdown');
-            $menu['People']->addChild('Applicants', array('route' => 'person_applicants'));
+            $peoplemenu = $menu->addChild('People');
+            $peoplemenu->addChild('All', array('route' => 'person_index'));
+            $by_func = $peoplemenu->addChild('By Function', ['uri' => '#']);
+            $by_func->setAttribute('dropdown', true)->setAttribute('class', 'has-dropdown');
+            $peoplemenu->addChild('Applicants', array('route' => 'person_applicants'));
 
-            $router = $this->container->get('router');
             $em = $this->container->get('doctrine')->getManager();
             foreach ($em->getRepository('CrewCallBundle:FunctionEntity')->findNamesWithPeopleCount() as $np) {
                 if ($np['people'] > 0) {
-                    $route = $router->generate('person_function', array('id' => $np['id']));
-                    $menu['People']['By Function']->addChild($np['name'] . " (".$np['people'].")", array('uri' => $route));
+                    $by_func->addChild($np['name'] . " (".$np['people'].")",
+                        array('route' => 'person_function',
+                        'routeParameters' => array('id' => $np['id'])));
                 }
             }
 
             $menu->addChild('Organizations', array('route' => 'organization_index'));
             $menu->addChild('Locations', array('route' => 'location_index'));
-            $menu->addChild('Admin Stuff', array('route' => ''));
-            $menu['Admin Stuff']->addChild('Functions', array('route' => 'function_index'));
-            $menu['Admin Stuff']->addChild('Report generator', array('route' => 'reports'));
+
+            $adminmenu = $menu->addChild('Admin Stuff', array('route' => ''));
+            $adminmenu->addChild('Functions', array('route' => 'function_index'));
+            $adminmenu->addChild('Report generator', array('route' => 'reports'));
+            $adminmenu->addChild('Mail and SMS templates',
+                array('route' => 'sakonnintemplate_index'));
             $sakonnin = $this->container->get('sakonnin.messages');
             $amt = $sakonnin->getMessageType('Announcements');
-            $Announcements_route = $router->generate('message_messagetype', array('id' => $amt->getId()));
-            $menu['Admin Stuff']->addChild('Announcements', array('uri' => $Announcements_route));
+            $adminmenu->addChild('Announcements',
+                array('route' => 'message_messagetype',
+                'routeParameters' => array('id' => $amt->getId())));
+            $adminmenu->addChild('Message Types',
+                array('route' => 'messagetype'));
         }
         $options['menu']      = $menu;
         $options['container'] = $this->container;
@@ -86,8 +92,8 @@ class Builder implements ContainerAwareInterface
         $menu = $this->sakonnin_builder->messageMenu($factory, $options);
 
         if ($options['container']->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-            $menu['Messages']->addChild('Write PM and send SMS', array('uri' => '#'));
-            $menu['Messages']['Write PM and send SMS']->setLinkAttribute('onclick', 'createPmMessage("PMSMS")');
+            $pmmenu = $menu['Messages']->addChild('Write PM and send SMS', array('uri' => '#'));
+            $pmmenu->setLinkAttribute('onclick', 'createPmMessage("PMSMS")');
         } else {
             $menu['Messages']->removeChild('Message History');
         }
