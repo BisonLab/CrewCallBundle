@@ -39,7 +39,7 @@
     </table>
 {% endif %}
 
-{% set upcoming = cc_jobs.upcomingforperson(user, {'state': 'CONFIRMED'}) %}
+{% set upcoming = cc_jobs.jobsforperson(user, {'booked': 'booked'}) %}
 {% if upcoming|length > 0 %}
     <h2>Upcoming Jobs</h2>
 

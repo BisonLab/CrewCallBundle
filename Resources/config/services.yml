@@ -1,6 +1,7 @@
 services:
     crewcall.jobs:
         class: CrewCallBundle\Service\Jobs
+        public: true
         arguments: ["@doctrine.orm.entity_manager"]
 
     crewcall.retriever:
@@ -9,6 +10,7 @@ services:
 
     crewcall.calendar:
         class: CrewCallBundle\Service\Calendar
+        public: true
         arguments: ["@router"]
 
     crewcall.formcreator:

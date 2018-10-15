@@ -18,14 +18,10 @@ class Jobs
 
     public function jobsForPerson(Person $person, $options = array())
     {
-        // The lot, not really good since it will become HUGE, but useable if
-        // we add filters/criterias, like a time interval.
-        if (isset($options['all'])) {
-            return $person->getJobs();
-        } elseif (isset($options['upcoming'])) {
-            return $this->em->getRepository('CrewCallBundle:Job')->findUpcomingForPerson($person);
-        } elseif (isset($options['wishlist'])) {
-            return $this->em->getRepository('CrewCallBundle:Job')->findWishlistForPerson($person);
+        if (isset($options['upcoming'])) {
+            return $this->em->getRepository('CrewCallBundle:Job')->findUpcomingForPerson($person, $options);
+        } else {
+            return $this->em->getRepository('CrewCallBundle:Job')->findJobsForPerson($person, $options);
         }
     }
 
