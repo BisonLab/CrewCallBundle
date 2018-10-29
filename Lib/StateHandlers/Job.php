@@ -16,14 +16,19 @@ class Job
 
     public function handle($job, $from, $to)
     {
-        if ($to == "CONFIRMED") {
+        if ($to == "CONFIRMED" || $to == "ASSIGNED") {
             // Create a message.
             $data = array(
+                'job'    => $job,
                 'event'  => $job->getEvent(),
                 'person' => $job->getPerson(),
             );
+            if ($to == "CONFIRMED")
+                $template = 'confirm-sms';
+            if ($to == "ASSIGNED")
+                $template = 'assigned-sms';
             $this->sm->postMessage(array(
-                'template' => 'confirm-sms',
+                'template' => $template,
                 'template_data' => $data,
                 'subject' => "Confirmation",
                 'to_type' => "INTERNAL",
