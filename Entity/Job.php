@@ -14,6 +14,7 @@ use CrewCallBundle\Lib\ExternalEntityConfig;
  *
  * @ORM\Table(name="crewcall_job")
  * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\JobRepository")
+ * @ORM\HasLifecycleCallbacks()
  * @Gedmo\Loggable
  */
 class Job
@@ -37,6 +38,15 @@ class Job
      * @Assert\Choice(callback = "getStatesList")
      */
     private $state;
+
+    /**
+     * @var string $ucode
+     * Just a unique representation of the ID.
+     *
+     * @ORM\Column(name="ucode", type="string", length=10, unique=true, nullable=true)
+     * @Gedmo\Versioned
+     */
+    private $ucode;
 
     /**
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="jobs")
@@ -63,6 +73,41 @@ class Job
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Get uCode
+     *
+     * @return string
+     */
+    public function getUcode()
+    {
+        return $this->ucode;
+    }
+
+    /**
+     * Set uCode
+     *
+     * @ORM\PrePersist
+     * @return string
+     */
+    public function setUcode()
+    {
+        /*
+         * I don't want consecutive codes alas I can't just use the ID.
+         * I hope this does the trick. It is a remote possibility that the
+         * combination of two IDs ends up with the same key when one of the
+         * two parts exeed the minimum three chars.
+         */
+        $p1 = strrev(\ShortCode\Reversible::convert(
+                $this->id, \ShortCode\Code::FORMAT_CHAR_CAPITAL, 3));
+        $p2 = \ShortCode\Reversible::convert(
+                $this->getPerson()->getId(),
+                    \ShortCode\Code::FORMAT_CHAR_CAPITAL, 3);
+
+        $this->ucode = $p1 . $p2;
+
+        return $this->ucode;
     }
 
     /**
@@ -199,6 +244,16 @@ class Job
     public function getLocation()
     {
         return $this->getEvent()->getLocation();
+    }
+
+    public function getStart()
+    {
+        return $this->getShift()->getStart();
+    }
+
+    public function getEnd()
+    {
+        return $this->getShift()->getEnd();
     }
 
     public function isBooked()
