@@ -36,13 +36,14 @@ class Builder implements ContainerAwareInterface
         $menu->addChild('My Calendar', array('route' => 'user_me_calendar'));
 
         if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-            $menu->addChild('Events', array('route' => 'event_index'));
+            $eventsmenu = $menu->addChild('Events');
+            $eventsmenu->addChild('List', array('route' => 'event_index'));
+            $eventsmenu->addChild('Add new Event', array('route' => 'event_new'));
 
             $peoplemenu = $menu->addChild('People');
             $peoplemenu->addChild('All', array('route' => 'person_index'));
             $by_func = $peoplemenu->addChild('By Function', ['uri' => '#']);
             $by_func->setAttribute('dropdown', true)->setAttribute('class', 'has-dropdown');
-            $peoplemenu->addChild('Applicants', array('route' => 'person_applicants'));
 
             $em = $this->container->get('doctrine')->getManager();
             foreach ($em->getRepository('CrewCallBundle:FunctionEntity')->findNamesWithPeopleCount() as $np) {
@@ -52,6 +53,9 @@ class Builder implements ContainerAwareInterface
                         'routeParameters' => array('id' => $np['id'])));
                 }
             }
+
+            $peoplemenu->addChild('Applicants', array('route' => 'person_applicants'));
+            $peoplemenu->addChild('Add Person', array('route' => 'person_new'));
 
             $menu->addChild('Organizations', array('route' => 'organization_index'));
             $menu->addChild('Locations', array('route' => 'location_index'));
