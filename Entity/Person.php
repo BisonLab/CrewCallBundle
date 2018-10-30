@@ -25,6 +25,11 @@ class Person extends BaseUser
     use \BisonLab\CommonBundle\Entity\AttributesTrait;
 
     /**
+     * Override FOSUserBundle User base class default role.
+     */
+    const ROLE_DEFAULT = 'ROLE_PERSON';
+
+    /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")

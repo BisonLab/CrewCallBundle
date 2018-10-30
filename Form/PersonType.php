@@ -29,6 +29,7 @@ class PersonType extends AbstractType
                     'multiple' =>  true,
                     'choices' =>
                         array(
+                            'Person' => 'ROLE_PERSON',
                             'Ordinary user' => 'ROLE_USER',
                             'Admin' => 'ROLE_ADMIN'
                             )
