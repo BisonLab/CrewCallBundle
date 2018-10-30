@@ -55,7 +55,7 @@ class Builder implements ContainerAwareInterface
             }
 
             $peoplemenu->addChild('Applicants', array('route' => 'person_applicants'));
-            $peoplemenu->addChild('Add Person', array('route' => 'person_new'));
+            $peoplemenu->addChild('Add person', array('route' => 'person_new'));
 
             $menu->addChild('Organizations', array('route' => 'organization_index'));
             $menu->addChild('Locations', array('route' => 'location_index'));

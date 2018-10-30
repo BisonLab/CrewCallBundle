@@ -1,0 +1,38 @@
+{% macro frow (func) %}
+<tr>
+{% if func.parent %}
+<td>&nbsp;<a href="#" onclick="pickedFunction({{ func.id }});">{{ func.name }}</a></td>
+{% else %}
+<td><a href="#" onclick="pickedFunction({{ func.id }});">{{ func.name }}</a></td>
+{% endif %}
+<td>
+{{ func.description }}
+</td>
+</tr>
+{% endmacro %}
+{% import _self as fmacros %}
+
+<table id="functionTable">
+<thead>
+    <th>Name</th>
+    <th>Description</th>
+</thead>
+    
+<tbody>
+{% for f in functionEntities if f.parent is null %}
+{% if f.children.count > 0 %}
+    <tr>
+    <td><strong>{{ f.name }}</strong></td>
+    <td>
+    &nbsp;
+    </td>
+    </tr>
+    {% for c in f.children  %}
+    {{ fmacros.frow(c) }}
+    {% endfor %}
+{% else %}
+    {{ fmacros.frow(f) }}
+{% endif %}
+{% endfor %}
+</tbody>
+</table>

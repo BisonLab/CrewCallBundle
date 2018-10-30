@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% include 'CrewCallBundle:organization:handling.html.twig' %}
 <div class="col-sm-5" id="orgLeft">
     <h1>{{ organization.name }}</h1>
 
@@ -34,16 +35,6 @@
                 <th>Attributes</th>
                 <td>{{ organization.attributes | prettyprint}}</td>
             </tr>
-            <tr>
-                <th>Persons</th>
-                <td>
-                <ul>
-                {% for pfo in organization.personfunctionorganizations %}
-                <li>{{ pfo.person }} ({{ pfo.function }})</li>
-                {% endfor %}
-                </ul>
-                </td>
-            </tr>
         </tbody>
     </table>
 
@@ -76,6 +67,9 @@
   </li>
 #}
   <li class="active">
+  <a href="#peopletab" data-toggle="tab">People</a>
+  </li>
+  <li>
   <a href="#notestab" data-toggle="tab">Notes</a>
   </li>
   <li>
@@ -84,7 +78,34 @@
   </ul>
 
   <div class="tab-content ">
-    <div class="tab-pane active" id="notestab">
+    <div class="tab-pane active" id="peopletab">
+
+<table id="apTable" class="table table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Function</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pfo in organization.personfunctionorganizations %}
+        <tr>
+        <td>
+            <a href="{{ path('person_show', { 'id': pfo.person.id }) }}">
+            {{ pfo.person }}
+            </a>
+        </td>
+        <td>{{ pfo.function }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    <div id="addExistingPerson" style="float: left">
+    <a href="#" onClick="grabAddExistingPersonForm();">Add person</a><br>
+    </div>
+ </div>
+
+    <div class="tab-pane" id="notestab">
             {% set mconf = {'mconfig': {
                     'subject': "",
                     'to_field': false,

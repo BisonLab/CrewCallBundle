@@ -1,0 +1,49 @@
+<script>
+function grabAddExistingPersonForm() {
+    url = "{{ path('organization_add_existing_person', { 'access': 'ajax', 'id': organization.id }) }}";
+    $.get(url, function( data ) {
+        $( "#addExistingPerson" ).html(data);
+        $( "#addExistingPerson" ).submit(function( event ) {
+            event.preventDefault();
+            submitAddExistingPersonForm();
+        });
+        $( "#crewcallbundle_pfo_person" ).autocomplete({
+          source: "{{ path('user_search', {'access': 'ajax'}) }}",
+          minLength: 2,
+          select: function( event, ui ) {
+            $( "#addExistingPersonForm #crewcallbundle_pfo_person" ).val(ui.item.value);
+            $( "#addExistingPersonForm #username" ).val(ui.item.username);
+          }
+         });
+    });
+    return false;
+}
+
+function submitAddExistingPersonForm(shift_id) {
+    username = $( "#addExistingPersonForm #username" ).val();
+    $( "#addExistingPersonForm #crewcallbundle_pfo_person" ).val(username);
+    formData = $( "#addExistingPersonForm" ).serialize();
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('organization_add_existing_person', { 'access': 'ajax', 'id': organization.id }) }}",
+        data: formData,
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 201) {
+                // Gotta reload. Easiest way to recount everything.
+                parent.location.reload();
+            } else {
+                $( "#newJob"+shift_id ).html(xhr.responseText);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+</script>

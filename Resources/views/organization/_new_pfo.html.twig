@@ -1,0 +1,5 @@
+{{ form_start(form, {action:path('organization_add_existing_person', {'access': 'ajax', 'id': organization.id }), 'attr': {'id':'addExistingPersonForm'}}) }}
+    {{ form_widget(form) }}
+    <input type="hidden" name="username" id="username">
+    <input id="submitAddExistingPerson" type="submit" value="Add" />
+{{ form_end(form) }}

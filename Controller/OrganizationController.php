@@ -3,6 +3,7 @@
 namespace CrewCallBundle\Controller;
 
 use CrewCallBundle\Entity\Organization;
+use CrewCallBundle\Entity\PersonFunctionOrganization;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -70,8 +71,8 @@ class OrganizationController extends CommonController
         $deleteForm = $this->createDeleteForm($organization);
 
         return $this->render('organization/show.html.twig', array(
-            'organization' => $organization,
             'delete_form' => $deleteForm->createView(),
+            'organization' => $organization,
         ));
     }
 
@@ -144,5 +145,42 @@ class OrganizationController extends CommonController
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+
+    /**
+     * Creates a new personFunctionOrganization entity.
+     * Pure REST/AJAX.
+     *
+     * @Route("/{id}/add_exitsting_person", name="organization_add_existing_person")
+     * @Method({"GET", "POST"})
+     */
+    public function addExistingPersonAction(Request $request, Organization $organization, $access)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $parent = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneByName('Organizations');
+        $pfo = new PersonFunctionOrganization();
+        $pfo->setOrganization($organization);
+        $form = $this->createForm('CrewCallBundle\Form\ExistingPersonOrganizationType', $pfo, array('parent_function' => $parent));
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($pfo);
+            $em->flush($pfo);
+
+            if ($this->isRest($access)) {
+                return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
+            } else {
+                return $this->redirectToRoute('organization_show', array('id' => $organization->getId()));
+            }
+        }
+
+        if ($this->isRest($access)) {
+            return $this->render('organization/_new_pfo.html.twig', array(
+                'pfo' => $pfo,
+                'organization' => $organization,
+                'form' => $form->createView(),
+            ));
+        }
     }
 }
