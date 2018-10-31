@@ -126,7 +126,7 @@ class EventController extends CommonController
     /**
      * Deletes a event entity.
      *
-     * @Route("/{id}", name="event_delete")
+     * @Route("/{id}/delete", name="event_delete")
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, Event $event)
@@ -146,7 +146,7 @@ class EventController extends CommonController
     /**
      * Sets "CONFIRMED" on the event and all shifts underneith.
      *
-     * @Route("/{id}", name="event_confirm")
+     * @Route("/{id}/confirm", name="event_confirm")
      * @Method("POST")
      */
     public function confirmAction(Request $request, Event $event)
