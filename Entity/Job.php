@@ -43,7 +43,7 @@ class Job
      * @var string $ucode
      * Just a unique representation of the ID.
      *
-     * @ORM\Column(name="ucode", type="string", length=10, unique=true, nullable=true)
+     * @ORM\Column(name="ucode", type="string", length=10, unique=true, nullable=false)
      * @Gedmo\Versioned
      */
     private $ucode;
@@ -98,9 +98,15 @@ class Job
          * I hope this does the trick. It is a remote possibility that the
          * combination of two IDs ends up with the same key when one of the
          * two parts exeed the minimum three chars.
+         * And BTW, Usinng this (Job) ID does not ork since there is none in
+         * prePersist and I am too lazy hacking around anything to add the ID
+         * before it's inserted, which will (unique) fail.
+         * Now we have a very harsh chek for double bookings, shifts not time.
+         * TODO: Add such checks so that it'll never throw an exception.
          */
         $p1 = strrev(\ShortCode\Reversible::convert(
-                $this->id, \ShortCode\Code::FORMAT_CHAR_CAPITAL, 3));
+                $this->getShift()->getId(),
+                    \ShortCode\Code::FORMAT_CHAR_CAPITAL, 3));
         $p2 = \ShortCode\Reversible::convert(
                 $this->getPerson()->getId(),
                     \ShortCode\Code::FORMAT_CHAR_CAPITAL, 3);

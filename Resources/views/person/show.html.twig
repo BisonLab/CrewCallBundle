@@ -26,7 +26,20 @@ function grabOrganizationPickerTab() {
     }
     url = "{{ path('function_picker', {'access': 'ajax' }) }}?person_id={{ person.id }}";
     $.get(url, function( data ) {
-        $( "#functab" ).html(data);
+        $( "#orgstab" ).html(data);
+    }).done(function() {
+        $( ".sfList" ).hide();
+    });
+    return false;
+}
+
+function grabJobLogSummary() {
+    if ($( "#hourstab div" ).length > 1) {
+        return false;
+    }
+    url = "{{ path('joblog_person', {'access': 'ajax', 'id': person.id }) }}";
+    $.get(url, function( data ) {
+        $( "#hourstab" ).html(data);
     }).done(function() {
         $( ".sfList" ).hide();
     });
@@ -185,6 +198,9 @@ function pickedFunction(function_id) {
     <a href="#orgstab" data-toggle="tab"  onClick="grabOrganizationPickerTab();">Manage organizations</a>
     </li>
 -->
+    <li>
+    <a href="#hourstab" data-toggle="tab"  onClick="grabJobLogSummary();">Hours</a>
+    </li>
     </ul>
 
 <div class="tab-content ">
@@ -258,25 +274,25 @@ function pickedFunction(function_id) {
   <div class="tab-pane" id="filestab">
     <p>
     <br/>
-{% set sfconf = {'sfconfig': {
-        'context': {
-            'system': 'crewcall',
-            'object_name': 'person',
-            'external_id': person.id
+    {% set sfconf = {'sfconfig': {
+            'context': {
+                'system': 'crewcall',
+                'object_name': 'person',
+                'external_id': person.id
+                }
             }
         }
-    }
-%}
-{% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-      <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
-    </p>
-{% set filecontext = {
-            'system': 'crewcall',
-            'object_name': 'person',
-            'external_id': person.id
-    }
-%}
-{% include 'CrewCallBundle::_files.html.twig' with filecontext %}
+    %}
+    {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
+          <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
+        </p>
+    {% set filecontext = {
+                'system': 'crewcall',
+                'object_name': 'person',
+                'external_id': person.id
+        }
+    %}
+    {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
   </div>
   <div class="tab-pane" id="functab">
   </div>
@@ -285,5 +301,9 @@ function pickedFunction(function_id) {
     <p>To be done</p>
   </div>
 -->
+  <div class="tab-pane" id="hourstab">
+  </div>
+
+  </div>
 </div>
 {% endblock %}

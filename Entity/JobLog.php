@@ -179,6 +179,11 @@ class JobLog
      */
     public function getOut()
     {
+        // Presume they ended their shift when it's ended.
+        // TODO: Consider setting this so there is always something in the
+        // table.
+        if (!$this->out)
+            return $this->getShift()->getEnd();
         return $this->out;
     }
 

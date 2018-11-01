@@ -4,6 +4,11 @@ services:
         public: true
         arguments: ["@doctrine.orm.entity_manager"]
 
+    crewcall.joblogs:
+        class: CrewCallBundle\Service\JobLogs
+        public: true
+        arguments: ["@doctrine.orm.entity_manager"]
+
     crewcall.retriever:
         class: CrewCallBundle\Service\CrewCallRetriever
         arguments: ["@doctrine.orm.entity_manager"]
