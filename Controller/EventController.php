@@ -22,11 +22,25 @@ class EventController extends CommonController
      * @Route("/", name="event_index")
      * @Method("GET")
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $events = $em->getRepository('CrewCallBundle:Event')->findAll();
+        if ($request->get('past')) {
+            $qb = $em->createQueryBuilder();
+            $qb->select('e')
+                 ->from('CrewCallBundle:Event', 'e')
+                 ->where('e.end < :today')
+                 ->setParameter('today', new \DateTime(), \Doctrine\DBAL\Types\Type::DATETIME);
+            $events = $qb->getQuery()->getResult();
+        } else {
+            $qb = $em->createQueryBuilder();
+            $qb->select('e')
+                 ->from('CrewCallBundle:Event', 'e')
+                 ->where('e.end > :yesterday')
+                 ->setParameter('yesterday', new \DateTime('yesterday'), \Doctrine\DBAL\Types\Type::DATETIME);
+            $events = $qb->getQuery()->getResult();
+        }
 
         return $this->render('event/index.html.twig', array(
             'events' => $events,

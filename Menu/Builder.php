@@ -38,7 +38,8 @@ class Builder implements ContainerAwareInterface
         if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $eventsmenu = $menu->addChild('Events');
             $eventsmenu->addChild('List', array('route' => 'event_index'));
-            $eventsmenu->addChild('Add new Event', array('route' => 'event_new'));
+            $eventsmenu->addChild('List old events', array('route' => 'event_index', 'routeParameters' => array('past' => 'true')));
+            $eventsmenu->addChild('Add new event', array('route' => 'event_new'));
 
             $peoplemenu = $menu->addChild('People');
             $peoplemenu->addChild('All', array('route' => 'person_index'));
