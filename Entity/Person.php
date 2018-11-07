@@ -257,7 +257,7 @@ class Person extends BaseUser
      */
     public function getDiets()
     {
-        return $this->diets;
+        return $this->diets ?: array();
     }
 
     /**
@@ -269,7 +269,7 @@ class Person extends BaseUser
     {
         $labels = array();
         $dtypes = ExternalEntityConfig::getTypesFor('Person', 'Diet');
-        foreach ($this->diets as $d) {
+        foreach ($this->getDiets() as $d) {
             $labels[] = $dtypes[$d]['label'];
         }
         return $labels;
