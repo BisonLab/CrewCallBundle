@@ -224,7 +224,10 @@ function pickedFunction(function_id) {
     {% for job in jobs %}
         {% set shift = job.shift %}
         <tr>
-            <td>{{ shift.event }}</td>
+            <td>
+            <a href="#" id="popSummary_event_{{ job.event.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            {{ shift.event }}
+            </td>
             <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
             <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
             <td>{{ shift.function }}</td>

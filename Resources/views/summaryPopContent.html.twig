@@ -1,0 +1,8 @@
+<table>
+{% for s in data_array if s.value is defined %}
+<tr>
+<th>{{ s.label }}</th>
+<td>{{ s.value }}</td>
+</tr>
+{% endfor %}
+</table>

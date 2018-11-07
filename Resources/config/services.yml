@@ -26,6 +26,11 @@ services:
         class: CrewCallBundle\Service\StateHandler
         arguments: ["@doctrine.orm.entity_manager", "@sakonnin.messages"]
 
+    crewcall.summarizer:
+        class: CrewCallBundle\Service\Summarizer
+        public: true
+        arguments: ['@router']
+
     crewcall_retriever:
         alias: crewcall.retriever
 
