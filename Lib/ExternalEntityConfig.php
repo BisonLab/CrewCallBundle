@@ -15,6 +15,16 @@ class ExternalEntityConfig
     protected static $states = array();
     protected static $types = array();
 
+    public static function setTypesConfig($types)
+    {
+        self::$types = $types;
+    }
+
+    public static function getTypesConfig()
+    {
+        return self::$types;
+    }
+
     public static function setStatesConfig($states)
     {
         self::$states = $states;
@@ -59,5 +69,22 @@ class ExternalEntityConfig
     {
         $states = self::getStatesFor($thingie);
         return array_combine(array_keys($states), array_keys($states));
+    }
+
+    public static function getTypesFor($thingie, $type)
+    {
+        if (!isset(self::$types[$thingie])) return array();
+        return isset(self::$types[$thingie][$type]) ? self::$types[$thingie][$type] : array();
+    }
+
+    public static function getTypesAsChoicesFor($thingie, $type)
+    {
+        $types = self::getTypesFor($thingie, $type);
+        $choices = array();
+        foreach ($types as $type => $params) {
+            if (!$params['chooseable']) continue;
+            $choices[$params['label']] = $type;
+        }
+        return $choices;
     }
 }

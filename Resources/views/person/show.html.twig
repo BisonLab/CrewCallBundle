@@ -101,6 +101,10 @@ function pickedFunction(function_id) {
                 <td>{% if person.dateofbirth %}{{ person.dateofbirth|date('Y-m-d') }}{% endif %}</td>
             </tr>
             <tr>
+                <th>Diets</th>
+                <td>{{ person.dietslabels | join(", ")}}</td>
+            </tr>
+            <tr>
                 <th>Mobile phone number</th>
                 <td>{{ person.mobilephonenumber }}</td>
             </tr>

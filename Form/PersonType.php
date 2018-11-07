@@ -21,11 +21,16 @@ class PersonType extends AbstractType
             ->add('first_name')
             ->add('last_name')
             ->add('date_of_birth')
+            ->add('diets', ChoiceType::class,array(
+                'choices' => ExternalEntityConfig::getTypesAsChoicesFor('Person', 'Diet'),
+                'expanded'  => true,
+                'multiple'  => true,))
             ->add('mobile_phone_number')
             ->add('home_phone_number')
             ->add('state', ChoiceType::class, array('choices' => ExternalEntityConfig::getStatesAsChoicesFor('Person')))
             ->add('roles', ChoiceType::class,
                 array(
+                    'expanded'  => true,
                     'multiple' =>  true,
                     'choices' =>
                         array(

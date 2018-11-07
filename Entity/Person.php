@@ -69,6 +69,14 @@ class Person extends BaseUser
     private $date_of_birth;
 
     /**
+     * Another odd one, but it's an increasingly hot topic.
+     * @var string
+     * @ORM\Column(name="diets", type="array", length=255, nullable=true)
+     * @Gedmo\Versioned
+     */
+    private $diets;
+
+    /**
      * @var string
      * @ORM\Column(name="mobile_phone_number", type="string", length=255, nullable=true)
      * @Gedmo\Versioned
@@ -226,6 +234,58 @@ class Person extends BaseUser
     public function getDateOfBirth()
     {
         return $this->date_of_birth;
+    }
+
+    /**
+     * Set diets
+     *
+     * @param string $diets
+     *
+     * @return Person
+     */
+    public function setDiets($diets)
+    {
+        $this->diets = $diets;
+
+        return $this;
+    }
+
+    /**
+     * Get diets
+     *
+     * @return string
+     */
+    public function getDiets()
+    {
+        return $this->diets;
+    }
+
+    /**
+     * Get diets
+     *
+     * @return string
+     */
+    public function getDietsLabels()
+    {
+        $labels = array();
+        $dtypes = ExternalEntityConfig::getTypesFor('Person', 'Diet');
+        foreach ($this->diets as $d) {
+            $labels[] = $dtypes[$d]['label'];
+        }
+        return $labels;
+    }
+
+    /*
+     * I'll use "DietTypes" here since I store the options in types.yml.
+     */
+    public static function getDietTypes()
+    {
+        return array_keys(ExternalEntityConfig::getTypesFor('Person', 'Diet'));
+    }
+
+    public static function getDietTypesAsChoiceArray()
+    {
+        return ExternalEntityConfig::getTypesAsChoicesFor('Person', 'Diet');
     }
 
     /**

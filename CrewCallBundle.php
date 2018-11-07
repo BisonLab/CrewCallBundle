@@ -15,6 +15,7 @@ class CrewCallBundle extends Bundle
     public function boot()
     {
         ExternalEntityConfig::setStatesConfig($this->container->getParameter('app.states')[(string)$this]);
+        ExternalEntityConfig::setTypesConfig($this->container->getParameter('app.types')[(string)$this]);
     }
 
     /* Concept pulled from KnpMenuBundle */
