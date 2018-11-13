@@ -1,0 +1,10 @@
+{% for message in sakonnin_messages.messagetype('Front page logged in').messages if message.state == "SHOW" %}
+{% if is_granted('show', message) %}
+<div id="status">
+<h3>{{ message.subject }}</h3>
+<pre wrap>
+{{ message.body }}
+</pre>
+</div>
+{% endif %}
+{% endfor %}

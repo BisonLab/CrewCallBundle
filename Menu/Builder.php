@@ -31,7 +31,7 @@ class Builder implements ContainerAwareInterface
     {
         $menu = $factory->createItem('root');
 
-        $menu->addChild('Home', array('route' => 'homepage'));
+        $menu->addChild('Dashboard', array('route' => 'homepage'));
         $menu->addChild('My Jobs', array('route' => 'user_me'));
         $menu->addChild('My Calendar', array('route' => 'user_me_calendar'));
 

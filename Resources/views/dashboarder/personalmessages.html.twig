@@ -1,0 +1,16 @@
+{% set mlogcontext = {
+            'system': 'crewcall',
+            'object_name': 'person',
+            'message_type': 'PersonNote',
+            'external_id': app.user.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+{% if is_granted('show', note) %}
+    <div id="status">
+<h3>{{ note.subject }}</h3>
+<pre wrap>
+{{ note.body }}
+</pre>
+{% endif %}
+{% endfor %}

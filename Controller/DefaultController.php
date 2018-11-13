@@ -13,10 +13,9 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', [
-            'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-        ]);
+        $dashboarder = $this->get('crewcall.dashboarder');
+        return $this->render('default/index.html.twig',
+            ['dashboarder' => $dashboarder]);
     }
 
     /**
@@ -86,7 +85,7 @@ class DefaultController extends Controller
                 || $organizations->count() > 0)
             $zilch = false;
 
-        return $this->render('CustomBundle:Default:globalSearchResult.html.twig',
+        return $this->render('default/globalSearchResult.html.twig',
             array(
                 'value'  => $value,
                 'zilch'  => $zilch,
