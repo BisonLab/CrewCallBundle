@@ -38,6 +38,7 @@
               <a href="#" onClick="grabEditShiftForm({{ shift.id }});">Edit</a><br>
               <a href="#" onClick="grabJobList({{ shift.id }}); grabNewJobForm({{shift.id}});">Add person</a><br>
               <a href="#" onClick="grabJobList({{ shift.id }}); grabNewShiftOrganizationForm({{shift.id}});">Add crew from an organization</a><br>
+              <a href="{{ path('shift_log', { 'id': shift.id }) }}">Edit history</a><br>
               <a href="#" onClick="deleteShift({{ shift.id }});">Delete</a><br>
             </td>
         </tr>
