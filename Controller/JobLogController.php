@@ -61,10 +61,17 @@ class JobLogController extends CommonController
      */
     public function newAction(Request $request, $access)
     {
+        $em = $this->getDoctrine()->getManager();
+        $job = null;
+        if ($job_id = $request->get('job')) {
+            $job = $em->getRepository('CrewCallBundle:Job')->find($job_id);
+        }
+
         $joblog = new JobLog();
+        if ($job)
+            $joblog->setJob($job);
         $form = $this->createForm('CrewCallBundle\Form\JobLogType', $joblog);
         $form->handleRequest($request);
-        $em = $this->getDoctrine()->getManager();
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
@@ -88,10 +95,6 @@ class JobLogController extends CommonController
 
         // Start anew.
         // TODO: Let the joblog_handler handle this aswell.
-        $job = null;
-        if ($job_id = $request->get('job')) {
-            $job = $em->getRepository('CrewCallBundle:Job')->find($job_id);
-        }
         if (!$job)
             return $this->returnNotFound($request, 'No job to tie the log to');
 

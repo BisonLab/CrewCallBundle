@@ -182,7 +182,7 @@ class JobLog
         // Presume they ended their shift when it's ended.
         // TODO: Consider setting this so there is always something in the
         // table.
-        if (!$this->out)
+        if (!$this->out && $this->getShift())
             return $this->getShift()->getEnd();
         return $this->out;
     }
@@ -208,7 +208,10 @@ class JobLog
 
     public function getShift()
     {
-        return $this->getJob()->getShift();
+        // Do not expect there to be something when it's created.
+        if ($this->job)
+            return $this->getJob()->getShift();
+        return null;
     }
 
     public function getJob()
