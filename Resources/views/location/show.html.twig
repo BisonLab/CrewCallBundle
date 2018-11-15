@@ -23,10 +23,7 @@
 
     <ul>
         <li>
-            <a href="{{ path('location_log', { 'id': location.id }) }}">History</a>
-        </li>
-        <li>
-            <a href="{{ path('location_index') }}">Back to Locations</a>
+            <a href="#" id="popLogSummary_location_{{ location.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('location', {{ location.id }});"> Edit History </a>
         </li>
         <li>
             <a href="{{ path('location_edit', { 'id': location.id }) }}">Edit</a>

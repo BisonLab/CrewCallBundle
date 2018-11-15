@@ -161,9 +161,7 @@ function pickedFunction(function_id) {
 {% endif %}
             <tr>
                 <th>
-                    <a href="{{ path('person_log', { 'id': person.id }) }}">History</a>
-                    <br>
-                    <a href="{{ path('person_index') }}">Back to the people list</a>
+                    <a href="#" id="popLogSummary_person_{{ person.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('person', {{ person.id }});"> Edit History </a><br>
                     <br>
                     <a href="{{ path('person_edit', { 'id': person.id }) }}">Edit</a>
                     <br>
@@ -218,6 +216,7 @@ function pickedFunction(function_id) {
             <th>End</th>
             <th>What</th>
             <th>Response</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -232,6 +231,17 @@ function pickedFunction(function_id) {
             <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
             <td>{{ shift.function }}</td>
             <td>{{ job.state }}</td>
+            <td>
+            {% if not job.booked %}
+                {% if job.state != "ASSIGNED" %}
+              <a role="button" class="btn btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
+                {% endif %}
+              <a role="button" class="btn btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
+              <a role="button" class="btn btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'DENIED', {{ job.shift.id }});">Deny</a>
+            {% else %}
+              <a role="button" class="btn btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Release</a>
+            {% endif %}
+            </td>
         </tr>
     {% endfor %}
     </tbody>

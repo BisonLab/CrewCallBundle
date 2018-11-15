@@ -1,0 +1,18 @@
+<table class="records_list">
+    <thead>
+        <tr>
+            <th>Who</th>
+            <th>When</th>
+            <th>What</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for s in data_array %}
+<tr>
+    <td>{{ s.username }}</td>
+    <td>{{ s.logged_at|date('Y-m-d H:i') }}</td>
+    <td>{{ s.data | prettyprint }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>

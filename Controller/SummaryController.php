@@ -52,7 +52,7 @@ class SummaryController extends CommonController
                 $entity = $em->getRepository('CrewCallBundle:Event')->find($id);
                 break;
             default:
-                return $this->returnNotFound($request, 'Unable to find entity.');
+                return $this->returnNotFound($request,'Unable to find class.');
                 break;
         }
 
@@ -64,5 +64,51 @@ class SummaryController extends CommonController
             return $this->returnRestData($request, $summary,
                 array('html' => 'CrewCallBundle::summaryPopContent.html.twig'));
         }
+    }
+
+    /*
+     * Showing the content of Gedmo Loggable. As a kinda summary.
+     * (Rationalizing why it's even here)
+     */
+
+    /**
+     *
+     * @Route("/log", name="summary_show_log", methods={"GET"})
+     */
+    public function logSummaryAction(Request $request, $access)
+    {
+        if (!$entity = $request->get("entity"))
+            return $this->returnNotFound($request, 'No entity.');
+        if (!$id = $request->get("entity_id"))
+            return $this->returnNotFound($request, 'No entity_id.');
+
+        return $this->_showLogSummary($request, $access, $entity, $id);
+    }
+
+    private function _showLogSummary($request, $access, $entity, $id)
+    {
+        // Switch it.
+        switch ($entity) {
+            case 'shift':
+                $class = 'CrewCallBundle:Shift';
+                break;
+            case 'organization':
+                $class = 'CrewCallBundle:Organization';
+                break;
+            case 'location':
+                $class = 'CrewCallBundle:Location';
+                break;
+            case 'person':
+                $class = 'CrewCallBundle:Person';
+                break;
+            case 'event':
+                $class = 'CrewCallBundle:Event';
+                break;
+            default:
+                return $this->returnNotFound($request,'Unable to find class.');
+                break;
+        }
+        return  $this->showLogPage($request,$access, $class, $id,
+            ['html' => 'CrewCallBundle::summaryLogPopContent.html.twig']);
     }
 }

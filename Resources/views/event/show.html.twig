@@ -88,14 +88,11 @@
             <tr>
                 <th>&nbsp;</th>
                 <td>
-            <a class="btn btn-primary btn-block" href="{{ path('event_log', { 'id': event.id }) }}">Edit history</a>
+                   <a href="#" id="popLogSummary_event_{{ event.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('event', {{ event.id }});"> Edit History </a><br>
                 </td>
             </tr>
             <tr>
                 <th>&nbsp;</th>
-                <td>
-            <a class="btn btn-primary btn-block" href="{{ path('event_index') }}">Back to Events</a>
-                </td>
             </tr>
         </tbody>
     </table>

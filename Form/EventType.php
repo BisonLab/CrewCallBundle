@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Doctrine\ORM\EntityRepository;
@@ -22,7 +23,7 @@ class EventType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('description')
+            ->add('description', TextType::class, array('required' => false))
             ->add('start', DateTimeType::class, array('label' => "Start",'date_widget' => "single_text", 'time_widget' => "single_text"))
             ->add('end', DateTimeType::class, array('label' => "End",'date_widget' => "single_text", 'time_widget' => "single_text"))
             ->add('state', ChoiceType::class, array(
