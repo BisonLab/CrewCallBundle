@@ -272,4 +272,26 @@ class PersonController extends CommonController
         else
             return $this->redirectToRoute('person_show', array('id' => $person->getId()));
     }
+
+    /**
+     * @param UserInterface $user
+     * @Route("/{id}/reset_password", name="person_reset_password")
+     */
+    public function resetPasswordAction(Person $person)
+    {
+        if (null === $person->getConfirmationToken()) {
+            $tokenGenerator = $this->get('fos_user.util.token_generator');
+            $person->setConfirmationToken($tokenGenerator->generateToken());
+        }
+
+        // send email you requested
+        $mailer = $this->get('fos_user.mailer');
+        $mailer->sendResettingEmailMessage($person);
+
+        // this depends on requirements
+        $person->setPasswordRequestedAt(new \DateTime());
+        $userManager = $this->get('fos_user.user_manager');
+        $userManager->updateUser($person);
+        return $this->redirectToRoute('person_show', array('id' => $person->getId()));
+    }
 }
