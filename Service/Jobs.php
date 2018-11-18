@@ -13,9 +13,16 @@ class Jobs
 
     public function __construct($em)
     {
-        $this->em         = $em;
+        $this->em = $em;
     }
 
+    /*
+     * Crew chief functions. (When we have a crew chief)
+     */
+
+    /*
+     * Person specific functions.
+     */
     public function jobsForPerson(Person $person, $options = array())
     {
         if (isset($options['upcoming'])) {

@@ -1,0 +1,28 @@
+{% if shifts|length > 0 %}
+    <h2>Upcoming shifts</h2>
+
+        <table class="table table-striped table-bordered table-sm">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Event</th>
+                <th>Start</th>
+                <th>Function</th>
+                <th>Amounts</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for shift in shifts %}
+            <tr>
+                <td> <a href="{{ path('event_show', { 'id': shift.event.id }) }}">{{ shift.event }}</a></td>
+                <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
+                <td>{{ shift.function }}</td>
+                <td>
+            W {{ shift.amount }} /
+            H {{ shift.registeredamount }} /
+            B {{ shift.bookedamount }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

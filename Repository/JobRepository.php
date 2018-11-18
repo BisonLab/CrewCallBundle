@@ -79,6 +79,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
                 $qb->andWhere('s.end <= :to')
                    ->setParameter('to', $to);
             }
+            $qb->orderBy('s.end', 'DESC');
         }
         return $qb->getQuery()->getResult();
     }
@@ -119,6 +120,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
                    ->setParameter('to', $to);
             }
         }
+        $qb->orderBy('s.end', 'DESC');
         return $qb->getQuery()->getResult();
     }
 
