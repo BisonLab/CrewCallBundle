@@ -1,6 +1,6 @@
-{% for message in sakonnin_messages.messagetype('Front page logged in').messages if message.state == "SHOW" %}
+{% for message in sakonnin_messages.messagetype('Admin Wall').messages if message.state == "SHOW" %}
 {% if is_granted('show', message) %}
-<div id="announcements">
+<div id="admin_wall">
 <h3>{{ message.subject }}</h3>
 <pre wrap>
 {{ message.body }}
