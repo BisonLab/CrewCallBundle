@@ -136,6 +136,15 @@ class Person extends BaseUser
     private $jobs;
 
     /**
+     * This is for states. A pereson shall only be able to have one at all
+     * time, but we need the history and need to set states in the future
+     * (Vacation)
+     * @ORM\OneToMany(targetEntity="PersonState", mappedBy="personstate",
+     * cascade={"remove"})
+     */
+    private $states;
+
+    /**
      * @ORM\OneToMany(targetEntity="PersonContext", mappedBy="owner", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     private $contexts;
@@ -390,7 +399,7 @@ class Person extends BaseUser
      * @param string $state
      * @return Person
      */
-    public function setState($state)
+    public function setState($state, $options = array())
     {
         if ($state == $this->state) return $this;
         $state = strtoupper($state);
@@ -427,6 +436,7 @@ class Person extends BaseUser
     {
         return ExternalEntityConfig::getStatesFor('Person');
     }
+
     public static function getStatesList()
     {
         return array_keys(ExternalEntityConfig::getStatesFor('Person'));
