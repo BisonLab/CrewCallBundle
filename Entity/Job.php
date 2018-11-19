@@ -62,6 +62,7 @@ class Job
 
     /**
      * @ORM\OneToMany(targetEntity="JobLog", mappedBy="job", cascade={"remove", "persist"})
+     * @ORM\OrderBy({"in" = "ASC"})
      */
     private $joblogs;
 

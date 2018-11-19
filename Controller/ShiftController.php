@@ -35,10 +35,10 @@ class ShiftController extends CommonController
                 $shifts = $event->getShifts();
             }
         } else {
-            // To be honest, I don't think having this at all is a good idea :=)
+            // To be honest,I don't think having this at all is a good idea :=)
             // Who wants a list of absolutely all shifts? Gotta filter on 
             // something somehow.
-            $shifts = $em->getRepository('CrewCallBundle:Shift')->findAll();
+            $shifts = $em->getRepository('CrewCallBundle:Shift')->findAll(array('start' => 'ASC'));
         }
         // Again, ajax-centric. But maybe return json later.
         if ($this->isRest($access)) {

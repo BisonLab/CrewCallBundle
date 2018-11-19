@@ -72,7 +72,7 @@ class PersonState
      * Set state
      *
      * @param string $state
-     * @return JobLog
+     * @return PersonState
      */
     public function setState($state)
     {

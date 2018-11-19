@@ -89,6 +89,7 @@ class Event
 
     /**
      * @ORM\OneToMany(targetEntity="Shift", mappedBy="event", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     * @ORM\OrderBy({"start" = "ASC"})
      */
     private $shifts;
 
