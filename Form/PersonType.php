@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 
 use CrewCallBundle\Lib\ExternalEntityConfig;
 use CrewCallBundle\Form\AddressType;
@@ -20,7 +21,7 @@ class PersonType extends AbstractType
         $builder
             ->add('first_name')
             ->add('last_name')
-            ->add('date_of_birth')
+            ->add('date_of_birth', BirthdayType::class, array('required' => false))
             ->add('diets', ChoiceType::class,array(
                 'choices' => ExternalEntityConfig::getTypesAsChoicesFor('Person', 'Diet'),
                 'expanded'  => true,
