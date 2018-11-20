@@ -9,21 +9,13 @@
         {% else %}
         <td>&nbsp;</td>
         {% endif %}
-        <td >{{ functionEntity.description }}</td>
-        <td >{{ functionEntity.state }}</td>
-        <td >{{ functionEntity.personfunctions.count }}</td>
-        <td >
-            <ul>
-                <li>
-                    <a href="{{ path('function_show', { 'id': functionEntity.id }) }}">show</a>
-                </li>
-                <li>
-                    <a href="{{ path('function_edit', { 'id': functionEntity.id }) }}">edit</a>
-                </li>
-                <li>
-                    <a href="{{ path('person_function', { 'id': functionEntity.id }) }}">people</a>
-                </li>
-            </ul>
+        <td>{{ functionEntity.description }}</td>
+        <td>{{ functionEntity.state }}</td>
+        <td>{{ functionEntity.personfunctions.count }}</td>
+        <td>
+            <a href="{{ path('function_show', { 'id': functionEntity.id }) }}">show</a> - 
+            <a href="{{ path('function_edit', { 'id': functionEntity.id }) }}">edit</a> - 
+            <a href="{{ path('person_function', { 'id': functionEntity.id }) }}">people</a>
         </td>
     </tr>
 {% endmacro %}
