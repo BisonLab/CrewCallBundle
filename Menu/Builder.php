@@ -43,20 +43,22 @@ class Builder implements ContainerAwareInterface
 
             $peoplemenu = $menu->addChild('People');
             $peoplemenu->addChild('All', array('route' => 'person_index'));
-            $by_func = $peoplemenu->addChild('By Function', ['uri' => '#']);
-            $by_func->setAttribute('dropdown', true)->setAttribute('class', 'has-dropdown');
-
-            $em = $this->container->get('doctrine')->getManager();
-            foreach ($em->getRepository('CrewCallBundle:FunctionEntity')->findNamesWithPeopleCount() as $np) {
-                if ($np['people'] > 0) {
-                    $by_func->addChild($np['name'] . " (".$np['people'].")",
-                        array('route' => 'person_function',
-                        'routeParameters' => array('id' => $np['id'])));
-                }
-            }
-
             $peoplemenu->addChild('Applicants', array('route' => 'person_applicants'));
             $peoplemenu->addChild('Add person', array('route' => 'person_new'));
+
+            $em = $this->container->get('doctrine')->getManager();
+            $ferepo = $em->getRepository('CrewCallBundle:FunctionEntity');
+            if (count($ferepo->findAll()) < 10) {
+                $by_func = $peoplemenu->addChild('By Function', ['uri' => '#']);
+                $by_func->setAttribute('dropdown', true)->setAttribute('class', 'has-dropdown');
+                foreach ($ferepo->findNamesWithPeopleCount() as $np) {
+                    if ($np['people'] > 0) {
+                        $by_func->addChild($np['name'] . " (".$np['people'].")",
+                            array('route' => 'person_function',
+                            'routeParameters' => array('id' => $np['id'])));
+                    }
+                }
+            }
 
             $menu->addChild('Organizations', array('route' => 'organization_index'));
             $menu->addChild('Locations', array('route' => 'location_index'));
