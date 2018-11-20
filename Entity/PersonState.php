@@ -53,10 +53,15 @@ class PersonState
     private $state;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="personstates")
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="person_states")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=false)
      */
     private $person;
+
+    public function __construct()
+    {
+        $this->from_date = new \DateTime();
+    }
 
     /**
      * Get id
@@ -79,7 +84,8 @@ class PersonState
         if ($state == $this->state) return $this;
         $state = strtoupper($state);
         if (!isset(self::getStates()[$state])) {
-            throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
+            throw new \InvalidArgumentException(
+                sprintf('The "%s" state is not a valid state.', $state));
         }
 
         $this->state = $state;
@@ -169,16 +175,8 @@ class PersonState
         return $this->person;
     }
 
-    public function setPerson(Person $person = null)
+    public function setPerson(Person $person)
     {
-        if ($this->person !== null) {
-            $this->person->removePersonState($this);
-        }
-
-        if ($person !== null) {
-            $person->addPersonState($this);
-        }
-
         $this->person = $person;
         return $this;
     }

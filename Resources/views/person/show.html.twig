@@ -126,7 +126,9 @@ function pickedFunction(function_id) {
             </tr>
             <tr>
                 <th>State</th>
-                <td>{{ person.state }}</td>
+                <td>{{ person.state }} 
+<!-- {% for state in person.states %}{{ state.state }} {{ state.fromdate | date('Y-m-d') }}{% endfor %} -->
+                </td>
             </tr>
             <tr>
                 <th>Attributes</th>

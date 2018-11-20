@@ -10,6 +10,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 use CrewCallBundle\Entity\PersonContext;
+use CrewCallBundle\Entity\PersonState;
 use CrewCallBundle\Entity\EmbeddableAddress;
 use CrewCallBundle\Lib\ExternalEntityConfig;
 
@@ -130,19 +131,19 @@ class Person extends BaseUser
 
     /**
      * This is for the actual jobs.
-     * @ORM\OneToMany(targetEntity="Job", mappedBy="person",
-     * cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="Job", mappedBy="person", fetch="EXTRA_LAZY", cascade={"remove"})
+     * @ORM\OrderBy({"start" = "ASC"})
      */
     private $jobs;
 
     /**
-     * This is for states. A pereson shall only be able to have one at all
+     * This is for states. A person shall only be able to have one at all
      * time, but we need the history and need to set states in the future
      * (Vacation)
-     * @ORM\OneToMany(targetEntity="PersonState", mappedBy="personstate",
-     * cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="PersonState", mappedBy="person", fetch="LAZY", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OrderBy({"from_date" = "ASC"})
      */
-    private $states;
+    private $person_states;
 
     /**
      * @ORM\OneToMany(targetEntity="PersonContext", mappedBy="owner", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
@@ -154,7 +155,8 @@ class Person extends BaseUser
         parent::__construct();
         // your own logic
         $this->person_function_organizations = new ArrayCollection();
-        $this->contexts  = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->contexts  = new ArrayCollection();
+        $this->person_states  = new ArrayCollection();
         $this->address = new EmbeddableAddress();
         $this->postal_address = new EmbeddableAddress();
     }
@@ -401,11 +403,20 @@ class Person extends BaseUser
      */
     public function setState($state, $options = array())
     {
-        if ($state == $this->state) return $this;
-        $state = strtoupper($state);
-        if (!isset(self::getStates()[$state])) {
-            throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
+        if (empty($options) && $state == $this->getState()) return $this;
+
+        $curstate = $this->getCurrentState();
+        $newstate = new PersonState();
+        $newstate->setState($state);
+        if (empty($options)) {
+            $curstate->setToDate(new \DateTime('yesterday'));
+        } elseif (isset($options['from_date'])) {
+
         }
+        $this->addState($newstate);
+        return $this;
+
+        // TODO: Put this one into the daily state changer.
         // Handle login enabling.
         // (Enabled in the fos user bundle takes care of that part.)
         if (in_array($state, ExternalEntityConfig::getEnableLoginStatesFor('Person'))) {
@@ -417,24 +428,64 @@ class Person extends BaseUser
         return $this;
     }
 
-    /**
-     * Get state
-     *
-     * @return string 
+    /*
+     * Add a PersonState.
+     * Not sure how much validation and functionality I should put here, but 
+     * I guess it's the rightest place since this is wqhere everything must
+     * go.
      */
-    public function getState()
+    public function addState(PersonState $state)
     {
-        return $this->state;
+        if (!$this->person_states->contains($state)) {
+            if (!$state->getPerson())
+                $state->setPerson($this);
+            $this->person_states->add($state);
+        }
+        return $this;
     }
 
     /**
-     * Get states and a list of them.
+     * Get state
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->getCurrentState()
+            ? $this->getCurrentState()->getState() : "";
+    }
+
+    /**
+     * Get current state
+     *
+     * @return string
+     */
+    public function getCurrentState()
+    {
+        // TODO: Gotta filter old states better when there are many.
+        $now = new \DateTime();
+        foreach ($this->getStates() as $ps) {
+            // There is always a from date.
+            if ($ps->getFromDate() > $now)
+                continue;
+            // But not a to_date.
+            if ($ps->getToDate() !== null && $ps->getToDate() < $now)
+                continue;
+            // Are we left with the only viable state now?
+            return $ps;
+        }
+        return null;
+    }
+
+    /**
+     * This is (annoyingly) different from the other getStates, but I canæt
+     * come up with a better name and "getPersonStates" is even more annoying.
      *
      * @return hash
      */
-    public static function getStates()
+    public function getStates()
     {
-        return ExternalEntityConfig::getStatesFor('Person');
+        return $this->person_states ?: new ArrayCollection();
     }
 
     public static function getStatesList()
@@ -449,6 +500,7 @@ class Person extends BaseUser
      */
     public function getEnabled()
     {
+            return true;
         if (in_array($this->getState(), ExternalEntityConfig::getEnableLoginStatesFor('Person'))) {
             return true;
         } else {
@@ -457,8 +509,10 @@ class Person extends BaseUser
     }
     public function isEnabled()
     {
-        /* Fallback, if no state. Which should only occure if you create the
-         * users the wrong way. Or in the CLI, when starting the project. */
+        /*
+         * Fallback, if no state. Which should only occure if you create the
+         * users the wrong way. Or in the CLI, when starting the project.
+         */
         if (!$this->getState()) return $this->enabled;
         return $this->getEnabled();
     }
