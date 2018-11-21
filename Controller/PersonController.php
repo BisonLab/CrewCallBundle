@@ -8,6 +8,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
@@ -16,7 +19,9 @@ use FOS\UserBundle\Event\GetResponseUserEvent;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 use CrewCallBundle\Entity\Person;
+use CrewCallBundle\Entity\PersonState;
 use CrewCallBundle\Entity\FunctionEntity;
+use CrewCallBundle\Lib\ExternalEntityConfig;
 
 /**
  * Person controller.
@@ -111,10 +116,12 @@ class PersonController extends CommonController
     public function showAction(Person $person)
     {
         $deleteForm = $this->createDeleteForm($person);
+        $stateForm = $this->createStateForm($person);
 
         return $this->render('person/show.html.twig', array(
             'person' => $person,
             'delete_form' => $deleteForm->createView(),
+            'state_form' => $stateForm->createView(),
         ));
     }
 
@@ -259,6 +266,30 @@ class PersonController extends CommonController
     }
 
     /**
+     * Creates a form to delete a person entity.
+     *
+     * @param Person $person The person entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createStateForm(Person $person)
+    {
+        $stateform = $this->createFormBuilder()
+            ->add('from_date', DateType::class, array('label' => "From",'widget' => "single_text"))
+            ->add('to_date', DateType::class, array('label' => "To",'widget' => "single_text"))
+            ->add('state', ChoiceType::class, array(
+                'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Person')))
+            ->add('submit', SubmitType::class)
+            ->setAction($this->generateUrl('person_state',
+                array('id' => $person->getId())))
+            ->setMethod('POST')
+            ->getForm();
+//        $stateform->find('person_id')->setData($person->getId());
+
+        return $stateform;
+    }
+
+    /**
      * Set state on a person.
      *
      * @Route("/{id}/state", name="person_state")
@@ -267,14 +298,38 @@ class PersonController extends CommonController
     public function stateAction(Request $request, Person $person)
     {
         // Security? This is the admin area, they can mess it all up anyway.
-        $state = $request->request->get('state');
-        $person->setState($state);
+        // If form:
+        $form = $this->createStateForm($person);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $form_data = $form->getData();
+            $person->setState($form_data['state'], array(
+                'from_date' => $form_data['from_date'] ?: null,
+                'to_date' => $form_data['to_date'] ?: null,
+                ));
+            $em->flush();
+            return $this->redirectToRoute('person_show',
+                array('id' => $person->getId()));
+        }
+        // Hopefully from the applicants page: (Or REST)
+        if (!$state = $request->request->get('state'))
+            return $this->redirectToRoute('person_show',
+                array('id' => $person->getId()));
+        $options = array();
+        if ($from_date = $request->request->get('from_date'))
+            $options['from_date'] = $from_date;
+        if ($to_date = $request->request->get('to_date'))
+            $options['to_date'] = $to_date;
+        $person->setState($state, $options);
         $this->getDoctrine()->getManager()->flush();
         $applicant = $request->request->get('applicant');
         if ($applicant)
             return $this->redirectToRoute('person_applicants');
         else
-            return $this->redirectToRoute('person_show', array('id' => $person->getId()));
+            return $this->redirectToRoute('person_show',
+                array('id' => $person->getId()));
     }
 
     /**

@@ -408,10 +408,20 @@ class Person extends BaseUser
         $curstate = $this->getCurrentState();
         $newstate = new PersonState();
         $newstate->setState($state);
-        if (empty($options)) {
+        if (empty($options))
             $curstate->setToDate(new \DateTime('yesterday'));
-        } elseif (isset($options['from_date'])) {
 
+        // TODO: Make sure there are no overlap!
+        if (isset($options['from_date'])) {
+            $newstate->setFromDate($options['from_date']);
+            if ($curstate->getToDate() === null 
+                    || $curstate->getToDate() > $options['from_date']) {
+                $to_date = clone($options['from_date']);
+                $curstate->setToDate($to_date->modify("-1 day"));
+            }
+        }
+        if (isset($options['to_date'])) {
+            $newstate->setToDate($options['to_date']);
         }
         $this->addState($newstate);
         return $this;
@@ -483,6 +493,19 @@ class Person extends BaseUser
      *
      * And I guess I can filter here instead of all around the application.
      *
+     * Filters:
+     * - from_date
+     * - to_date
+     * - year
+     *
+     * The default return is the "current" state. Current as in the first one
+     * hitting the criterias/filters.
+     *
+     * Return options:
+     * - last_and_next - the states before and after this one. 
+     * - with_future - The current and beyond
+     * - all - Every one hit by the filter.
+     *
      * @return hash
      */
     public function getStates($options = [])
@@ -521,6 +544,13 @@ class Person extends BaseUser
             if ($current) $states->add($current);
             if ($next) $states->add($next);
         }
+/*
+        if (isset($options['last_and_next'])) {
+            if ($last) $states->add($last);
+            if ($current) $states->add($current);
+            if ($next) $states->add($next);
+        }
+ */
         return $states;
     }
 
@@ -543,6 +573,7 @@ class Person extends BaseUser
             return false;
         }
     }
+
     public function isEnabled()
     {
         /*
@@ -551,6 +582,30 @@ class Person extends BaseUser
          */
         if (!$this->getState()) return $this->enabled;
         return $this->getEnabled();
+    }
+
+    /*
+     * Could be simple yes/no, but can just as well be alot more.
+     * Which is why I add options.
+     *
+     * * from - DateTime for a timeframe
+     * * to - DateTime for a timeframe
+     * * reasons - Will return a list of all reasons for being occupied.
+     */
+    public function isOccupied($options = [])
+    {
+        $occupied = false;
+        if (isset($options['reasons']))
+            $reasons = [];
+        else
+            $reasons = null;
+        if (!in_array($this->getState(),
+                ExternalEntityConfig::getActiveStatesFor('Person'))) {
+            if (is_array($reasons))
+                $reasons[] = array('state' => $this->getCurrentState());
+            else
+                return true;
+        }
     }
 
     /*

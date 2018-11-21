@@ -77,7 +77,25 @@ function pickedFunction(function_id) {
     return false;
 }
 
+function openStateChange() {
+    content = $("#change_state_popover").html();
+    $( "#stateChangeLink" ).popover({
+        html: true,
+        placement: 'left',
+        title: 'State change',
+        content: content
+    });
+    return false;
+    $(document).on("click", ".popover .close" , function(){
+        $(this).parents(".popover").popover('hide');
+    });
+}
+
 </script>
+
+<div id="change_state_popover" class="hidden">
+{{ form(state_form) }}
+</div>
 
 <div class="col-sm-4" id="personLeft">
     <h1>{{ person.fullname }}</h1>
@@ -134,6 +152,7 @@ function pickedFunction(function_id) {
                 {% if state.todate %}{{ state.todate | date('Y-m-d') }}{% endif %}
                 <br>
                 {% endfor %}
+<a href="#" id="stateChangeLink" onClick="openStateChange();">Add</a><br>
                 </td>
             </tr>
             <tr>

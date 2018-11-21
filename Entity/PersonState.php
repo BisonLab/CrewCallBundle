@@ -46,7 +46,7 @@ class PersonState
     /**
      * @var string $state
      *
-     * @ORM\Column(name="state", type="string", length=40, nullable=true)
+     * @ORM\Column(name="state", type="string", length=40, nullable=false)
      * @Gedmo\Versioned
      * @Assert\Choice(callback = "getStatesList")
      */
