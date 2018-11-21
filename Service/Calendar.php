@@ -7,6 +7,7 @@ use CrewCallBundle\Entity\Job;
 use CrewCallBundle\Entity\Shift;
 use CrewCallBundle\Entity\ShiftOrganization;
 use CrewCallBundle\Entity\Event;
+use CrewCallBundle\Entity\PersonState;
 
 /*
  * This thignie will convert events, shiftfs, and more with start and
@@ -30,10 +31,13 @@ class Calendar
             $cal = $this->shiftToCal($frog);
         } elseif ($frog instanceof Job) {
             $cal = $this->jobToCal($frog);
+        } elseif ($frog instanceof PersonState) {
+            $cal = $this->personStateToCal($frog);
         } else {
             throw new \InvalidArgumentException("Could not do anything useful with "
                 . get_class($frog));
         }
+        if (!$cal) return null;
         // TODO: Configurable domain.
         $vCalendar = new \Eluceo\iCal\Component\Calendar('CrewCall');
         $vEvent = new \Eluceo\iCal\Component\Event();
@@ -50,7 +54,8 @@ class Calendar
     {
         $arr = array();
         foreach ($frogs as $frog) {
-            $arr[] = $this->calToFullCal($frog);
+            if ($cal = $this->calToFullCal($frog))
+                $arr[] = $cal;
         }
         return $arr;
     }
@@ -77,15 +82,18 @@ class Calendar
             $cal = $this->shiftToCal($frog);
         } elseif ($frog instanceof Job) {
             $cal = $this->jobToCal($frog);
+        } elseif ($frog instanceof PersonState) {
+            $cal = $this->personStateToCal($frog);
         } else {
             throw new \InvalidArgumentException("Could not do anything useful with "
                 . get_class($frog));
         }
+        if (!$cal) return null;
         $fc['id'] = $cal['id'];
         $fc['title'] = $cal['title'];
-        $fc['content'] = $cal['content'];
-        $fc['popup_title'] = $cal['popup_title'];
-        $fc['popup_content'] = $cal['popup_content'];
+        $fc['content'] = $cal['content'] ?? '';
+        $fc['popup_title'] = $cal['popup_title'] ?? '';
+        $fc['popup_content'] = $cal['popup_content'] ?? '';
         $fc['start'] = $cal['start']->format("Y-m-d\TH:i:sP");
         if ($cal['end'])
             $fc['end'] = $cal['end']->format("Y-m-d\TH:i:sP");
@@ -172,6 +180,21 @@ class Calendar
         $c['start'] = $shift->getStart();
         $c['end'] = $shift->getEnd();
         $c['title'] = (string)$shift->getFunction();
+        return $c;
+    }
+
+    public function personStateToCal(PersonState $ps)
+    {
+        if ($ps->getState() == "ACTIVE") return null;
+        $c = array();
+        $c['id'] = $ps->getId();
+        $c['start'] = $ps->getFromDate();
+        if (!$ps->getToDate())
+            $td = new \DateTime("first day of next year");
+        else
+            $td = $ps->getToDate();
+        $c['end'] = $td;
+        $c['title'] = (string)$ps->getState();
         return $c;
     }
 }

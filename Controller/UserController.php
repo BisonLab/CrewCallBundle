@@ -68,8 +68,12 @@ class UserController extends CommonController
             $to = $request->get('end');
             $jobs = $jobservice->jobsForPerson($user,
                 array('all' => true, 'from' => $from, 'to' => $to));
+            $states = $user->getStates();
             
-            $calitems = $calendar->toFullCalendarArray($jobs);
+            $calitems = array_merge(
+                $calendar->toFullCalendarArray($jobs),
+                $calendar->toFullCalendarArray($states)
+            );
             // Not liked by OWASP since we just return an array.
             return new JsonResponse($calitems, Response::HTTP_OK);
         }

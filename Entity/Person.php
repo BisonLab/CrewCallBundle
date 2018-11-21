@@ -465,13 +465,13 @@ class Person extends BaseUser
         // TODO: Gotta filter old states better when there are many.
         $now = new \DateTime();
         foreach ($this->getStates() as $ps) {
-            // There is always a from date.
+            // There is always a from date. Is it in the future?
             if ($ps->getFromDate() > $now)
                 continue;
             // But not a to_date.
             if ($ps->getToDate() !== null && $ps->getToDate() < $now)
                 continue;
-            // Are we left with the only viable state now?
+            // Are we left with the first viable state now?
             return $ps;
         }
         return null;
@@ -481,11 +481,47 @@ class Person extends BaseUser
      * This is (annoyingly) different from the other getStates, but I canæt
      * come up with a better name and "getPersonStates" is even more annoying.
      *
+     * And I guess I can filter here instead of all around the application.
+     *
      * @return hash
      */
-    public function getStates()
+    public function getStates($options = [])
     {
-        return $this->person_states ?: new ArrayCollection();
+        if (empty($options) || !$this->person_states)
+            return $this->person_states ?: new ArrayCollection();
+
+        // Here I can hopefully use Criterias to set between dates.
+        if (isset($options['year'])) {
+
+        }
+        // And here.
+        if (isset($options['from_date'])) {
+
+        }
+        $states = new ArrayCollection();
+        $last = null;
+        $current = null;
+        $next = null;
+        $now = new \DateTime();
+        foreach ($this->person_states as $ps) {
+            if ($ps->getToDate() !== null && $ps->getToDate() < $now) {
+                $last = $ps;
+                continue;
+            }
+            // Are we left with the only viable state now?
+            if ($current)
+                $next = $ps;
+            else
+                $current = $ps;
+            // For now.
+            if ($next) break;
+        }
+        if (isset($options['last_and_next'])) {
+            if ($last) $states->add($last);
+            if ($current) $states->add($current);
+            if ($next) $states->add($next);
+        }
+        return $states;
     }
 
     public static function getStatesList()

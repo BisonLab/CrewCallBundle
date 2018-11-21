@@ -126,8 +126,14 @@ function pickedFunction(function_id) {
             </tr>
             <tr>
                 <th>State</th>
-                <td>{{ person.state }} 
-<!-- {% for state in person.states %}{{ state.state }} {{ state.fromdate | date('Y-m-d') }}{% endfor %} -->
+                <td>
+                {% for state in person.states({'last_and_next': true}) %}
+                {{ state.state }}
+                {% if state.fromdate %}{{ state.fromdate | date('Y-m-d') }}{% endif %}
+                ->
+                {% if state.todate %}{{ state.todate | date('Y-m-d') }}{% endif %}
+                <br>
+                {% endfor %}
                 </td>
             </tr>
             <tr>
