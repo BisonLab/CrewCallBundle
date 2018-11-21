@@ -46,7 +46,7 @@ class ShiftRepository extends \Doctrine\ORM\EntityRepository
         }
         if (isset($options['limit']))
             $qb->setMaxResults($options['limit']);
-        $qb->orderBy('s.end', 'DESC');
+        $qb->orderBy('s.start', 'ASC');
         return $qb->getQuery()->getResult();
     }
 
@@ -84,7 +84,7 @@ class ShiftRepository extends \Doctrine\ORM\EntityRepository
             $qb->andWhere('s.state in (:states)')
                ->setParameter('states', $states);
         }
-        $qb->orderBy('s.end', 'DESC');
+        $qb->orderBy('s.start', 'ASC');
         return $qb->getQuery()->getResult();
     }
 }
