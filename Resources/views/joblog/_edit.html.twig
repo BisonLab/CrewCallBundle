@@ -1,0 +1,5 @@
+{{ form_start(edit_form, {action:path('joblog_edit', {'access': 'ajax'}), 'attr': {'id':'editJobLogForm'}}) }}
+    {{ form_widget(edit_form) }}
+    <input id="submitEditJobLog" type="submit" value="Save" />
+{#     <input id="submitNewJobLog" type="submit" value="Add"  onclick="this.value='Adding';this.disabled=true" /> #}
+{{ form_end(edit_form) }}

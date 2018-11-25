@@ -141,4 +141,80 @@ class JobLogController extends CommonController
             'summary' => $logs['summary'],
         ));
     }
+
+    /**
+     * Displays a form to edit an existing shift entity.
+     *
+     * @Route("/{id}/edit", name="joblog_edit", defaults={"id" = 0})
+     * @Method({"GET", "POST"})
+     */
+    public function editAction(Request $request, JobLog $joblog, $access)
+    {
+        $editForm = $this->createForm('CrewCallBundle\Form\JobLogType', $joblog);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return new JsonResponse(array("status" => "OK"),
+                Response::HTTP_OK);
+        }
+
+        if ($this->isRest($access)) {
+            return $this->render('joblog/_edit.html.twig', array(
+                'joblog' => $joblog,
+                'edit_form' => $editForm->createView(),
+            ));
+        }
+
+        return $this->render('joblog/edit.html.twig', array(
+            'joblog' => $joblog,
+            'edit_form' => $editForm->createView(),
+        ));
+    }
+
+    /**
+     * Deletes a joblog entity.
+     *
+     * @Route("/{id}", name="joblog_delete")
+     * @Method("DELETE")
+     */
+    public function deleteAction(Request $request, $access, JobLog $joblog)
+    {
+        // Bloody good question here, because CSRF.
+        // This should add some sort of protection.
+        if ($this->isRest($access)) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($joblog);
+            $em->flush($joblog);
+            return new JsonResponse(array("status" => "OK"),
+                Response::HTTP_OK);
+        }
+
+        $form = $this->createDeleteForm($joblog);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($joblog);
+            $em->flush($joblog);
+        }
+        return $this->redirectToRoute('joblog_index');
+    }
+
+    /**
+     * Creates a form to delete a shift entity.
+     *
+     * @param JobLog $shift The shift entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createDeleteForm(JobLog $shift)
+    {
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('shift_delete', array('id' => $shift->getId())))
+            ->setMethod('DELETE')
+            ->getForm()
+        ;
+    }
 }

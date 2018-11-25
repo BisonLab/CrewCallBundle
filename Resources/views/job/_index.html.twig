@@ -6,6 +6,9 @@
     <tr>
     <td>{{ elem.in | date("Y-m-d H:i") }}</td>
     <td>{{ elem.out | date("Y-m-d H:i") }}</td>
+    <td>
+    <a href="#" id="editJobLog_{{ elem.id }}" data-html="true" onClick="grabEditJobLogForm({{ elem.id }}, {{ elem.job.shift.id }});">Edit</a><br>
+    </td>
     </tr>
     {% endfor %}
     </table>

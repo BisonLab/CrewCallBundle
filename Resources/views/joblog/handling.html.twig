@@ -32,6 +32,30 @@ function grabNewJobLogForm(job_id, shift_id) {
     return false;
 }
 
+function grabEditJobLogForm(joblog_id, shift_id) {
+    url = "{{ path('joblog_edit', { 'access': 'ajax', 'id': 'XXX' }) }}";
+    url = url.replace('XXX', joblog_id);
+    $.get(url, function( content ) {
+        $( "#editJobLog_"+joblog_id ).popover({
+            html: true,
+            placement: 'left',
+            title: 'Edit <a href="#" class="close" data-dismiss="alert">&times;</a>',
+            content: content
+        });
+        $( "#editJobLog_"+joblog_id ).popover("show");
+        $( "#crewcallbundle_joblog_job").hide();
+        $( "#crewcallbundle_joblog_job").prev().hide();
+        $( "#editJobLogForm" ).submit(function( event ) {
+            event.preventDefault();
+            submitEditJobLogForm(joblog_id, shift_id);
+        });
+        $(document).on("click", ".popover .close" , function(){
+            $(this).parents(".popover").popover('hide');
+        });
+    });
+    return false;
+}
+
 function submitNewJobLogForm(shift_id) {
     newJobLogFormData = $( "#newJobLogForm" ).serialize();
     $.ajax({
@@ -45,6 +69,33 @@ function submitNewJobLogForm(shift_id) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             if (xhr.status == 201) {
+                grabJobList(shift_id)
+            } else {
+                alert(xhr.responseText);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Message sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function submitEditJobLogForm(joblog_id, shift_id) {
+    editJobLogFormData = $( "#editJobLogForm" ).serialize();
+    url = "{{ path('joblog_edit', { 'access': 'ajax', 'id': 'XXX' }) }}";
+    url = url.replace('XXX', joblog_id);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: url,
+        data: editJobLogFormData,
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 200) {
                 grabJobList(shift_id)
             } else {
                 alert(xhr.responseText);
