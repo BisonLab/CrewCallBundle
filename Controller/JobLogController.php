@@ -74,12 +74,15 @@ class JobLogController extends CommonController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
+
             if ($form->isValid()) {
-                // TODO: Let the joblog_handler handle this.
+                // Check overlap.
+                if ($overlap = $em->getRepository('CrewCallBundle:JobLog')->checkOverlapForPerson($joblog)) {
+                    return new Response("Found existing work in the timeframe you entered. Shift is " . (string)current($overlap)->getJob()->getShift(), Response::HTTP_CONFLICT);
+                }
+
                 $em->persist($joblog);
                 $em->flush($joblog);
-                // And if time overlap:
-                //     const HTTP_CONFLICT = 409;
 
                 if ($this->isRest($access)) {
                     return new JsonResponse(array("status" => "OK"),
