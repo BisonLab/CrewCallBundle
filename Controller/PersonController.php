@@ -276,7 +276,7 @@ class PersonController extends CommonController
     {
         $stateform = $this->createFormBuilder()
             ->add('from_date', DateType::class, array('label' => "From",'widget' => "single_text"))
-            ->add('to_date', DateType::class, array('label' => "To",'widget' => "single_text"))
+            ->add('to_date', DateType::class, array('required' => false, 'label' => "To",'widget' => "single_text"))
             ->add('state', ChoiceType::class, array(
                 'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Person')))
             ->add('submit', SubmitType::class)
