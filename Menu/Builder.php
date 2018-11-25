@@ -96,16 +96,15 @@ class Builder implements ContainerAwareInterface
         $options['container'] = $this->container;
 
         $menu = $this->common_builder->userMenu($factory, $options);
-/* Gonna remove this for now. Put some of it in one or more Dashies.
-        $menu = $this->sakonnin_builder->messageMenu($factory, $options);
-
-        if ($options['container']->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-            $pmmenu = $menu['Messages']->addChild('Write PM and send SMS', array('uri' => '#'));
-            $pmmenu->setLinkAttribute('onclick', 'createPmMessage("PMSMS")');
-        } else {
-            $menu['Messages']->removeChild('Message History');
+        if ($this->container->getParameter('enable_personal_messaging')) {
+            $menu = $this->sakonnin_builder->messageMenu($factory, $options);
+            if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+                $pmmenu = $menu['Messages']->addChild('Write PM and send SMS', array('uri' => '#'));
+                $pmmenu->setLinkAttribute('onclick', 'createPmMessage("PMSMS")');
+            } else {
+                $menu['Messages']->removeChild('Message History');
+            }
         }
-*/
 
         // For local customized additions to the main menu.
         if ($this->custom_builder
