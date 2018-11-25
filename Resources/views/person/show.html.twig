@@ -70,7 +70,7 @@ function pickedFunction(function_id) {
                 alert("Something successfully didn't happen." + textStatus);
             }
       }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
+            errmsg = "Failed adding fiunction\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });

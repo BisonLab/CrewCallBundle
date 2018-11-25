@@ -74,6 +74,9 @@ class JobLogController extends CommonController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
+                    return new JsonResponse(array("status" => "OVERLAP"),
+                        Response::HTTP_CONFLICT);
+
             if ($form->isValid()) {
                 // TODO: Let the joblog_handler handle this.
                 $em->persist($joblog);

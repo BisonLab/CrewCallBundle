@@ -39,7 +39,7 @@ function submitNewShiftForm(event_id) {
                 $( "#newShift" ).html(xhr.responseText);
             }
       }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
+            errmsg = "Failed adding shift\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });
@@ -88,7 +88,7 @@ function submitEditShiftForm(shift_id) {
         // Cheating with twig.
         grabShiftList({{ event.id }});
       }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
+            errmsg = "Failed saving the shift\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });
@@ -128,7 +128,7 @@ function deleteShift(shift_id) {
                 parent.location.reload();
             }
       }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
+            errmsg = "Deleting the shift failed\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });

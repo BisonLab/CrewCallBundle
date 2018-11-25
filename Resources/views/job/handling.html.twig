@@ -28,7 +28,7 @@ function setStateOnJob(job_id, state, shift_id) {
       }).done( function( cont, textStatus, xhr ) {
             grabJobList(shift_id);
       }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
+            errmsg = "Failed chaning state\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });
@@ -82,7 +82,7 @@ function submitNewJobForm(shift_id) {
                 $( "#newJob"+shift_id ).html(xhr.responseText);
             }
       }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
+            errmsg = "Failed adding new job\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });

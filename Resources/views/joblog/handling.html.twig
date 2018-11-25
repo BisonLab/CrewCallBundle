@@ -74,7 +74,7 @@ function submitNewJobLogForm(shift_id) {
                 alert(xhr.responseText);
             }
       }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
+            errmsg = "Failed adding job\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });
@@ -101,7 +101,7 @@ function submitEditJobLogForm(joblog_id, shift_id) {
                 alert(xhr.responseText);
             }
       }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
+            errmsg = "Failed saving\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });

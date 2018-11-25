@@ -40,7 +40,7 @@ function submitAddExistingPersonForm(shift_id) {
                 $( "#newJob"+shift_id ).html(xhr.responseText);
             }
       }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
+            errmsg = "Failes adding person\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });

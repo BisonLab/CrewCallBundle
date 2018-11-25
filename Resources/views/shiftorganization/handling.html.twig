@@ -32,7 +32,7 @@ function submitNewShiftOrganizationForm(shift_id) {
                 $( "#newShiftOrganization_"+shift_id ).html(xhr.responseText);
             }
       }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
+            errmsg = "Failed adding shift\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });
@@ -71,7 +71,7 @@ function submitEditShiftOrganizationForm(shift_id) {
         $( "#editShiftOrganization_"+shift_id ).html("");
         grabShiftOrganizationList(shift_id);
       }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
+            errmsg = "Failed saving\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });
@@ -109,7 +109,7 @@ function deleteShiftOrganization(so_id) {
                 parent.location.reload();
             }
       }).fail(function(xhr, status, error) {
-            errmsg = "Message sending failed\n";
+            errmsg = "Failed to delete\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });
