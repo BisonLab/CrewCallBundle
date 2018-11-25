@@ -132,7 +132,6 @@ class Person extends BaseUser
     /**
      * This is for the actual jobs.
      * @ORM\OneToMany(targetEntity="Job", mappedBy="person", fetch="EXTRA_LAZY", cascade={"remove"})
-     * @ORM\OrderBy({"start" = "ASC"})
      */
     private $jobs;
 
