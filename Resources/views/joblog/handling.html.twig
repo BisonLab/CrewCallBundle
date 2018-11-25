@@ -107,4 +107,31 @@ function submitEditJobLogForm(joblog_id, shift_id) {
     });
     return false;
 }
+
+function deleteJobLog(joblog_id, shift_id) {
+    newJobLogFormData = $( "#newJobLogForm" ).serialize();
+    url = "{{ path('joblog_delete', { 'access': 'ajax', 'id': 'XXX' }) }}";
+    url = url.replace('XXX', joblog_id);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "DELETE",
+        url: url,
+        data: '',
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 200) {
+                grabJobList(shift_id)
+            } else {
+                alert(xhr.responseText);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Delete failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
 </script>

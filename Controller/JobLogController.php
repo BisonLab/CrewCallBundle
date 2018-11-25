@@ -78,6 +78,8 @@ class JobLogController extends CommonController
                 // TODO: Let the joblog_handler handle this.
                 $em->persist($joblog);
                 $em->flush($joblog);
+                // And if time overlap:
+                //     const HTTP_CONFLICT = 409;
 
                 if ($this->isRest($access)) {
                     return new JsonResponse(array("status" => "OK"),
@@ -177,7 +179,7 @@ class JobLogController extends CommonController
      * Deletes a joblog entity.
      *
      * @Route("/{id}", name="joblog_delete")
-     * @Method("DELETE")
+     * @Method({"DELETE", "POST"})
      */
     public function deleteAction(Request $request, $access, JobLog $joblog)
     {
@@ -190,31 +192,5 @@ class JobLogController extends CommonController
             return new JsonResponse(array("status" => "OK"),
                 Response::HTTP_OK);
         }
-
-        $form = $this->createDeleteForm($joblog);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($joblog);
-            $em->flush($joblog);
-        }
-        return $this->redirectToRoute('joblog_index');
-    }
-
-    /**
-     * Creates a form to delete a shift entity.
-     *
-     * @param JobLog $shift The shift entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm(JobLog $shift)
-    {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('shift_delete', array('id' => $shift->getId())))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
     }
 }
