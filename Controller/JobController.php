@@ -63,7 +63,12 @@ class JobController extends CommonController
     public function stateAction(Request $request, Job $job, $state, $access)
     {
         $job->setState($state);
+        
         $em = $this->getDoctrine()->getManager();
+        if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, array('booked' => true))) {
+            return new Response("Can not set job to a booked state because it will overlap with " . (string)current($overlap)->getShift(), Response::HTTP_CONFLICT);
+        }
+
         $em->persist($job);
         $em->flush($job);
 
