@@ -18,6 +18,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
         $qb = $this->_em->createQueryBuilder();
         $qb->select('j')
             ->from($this->_entityName, 'j')
+            ->innerJoin('j.shift', 's')
             ->where("j.person = :person")
             ->setParameter('person', $person);
 
@@ -39,7 +40,6 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
 
         if (isset($options['booked'])) {
             $states = ExternalEntityConfig::getBookedStatesFor('Job');
-            $qb->innerJoin('j.shift', 's');
             $qb->andWhere('j.state in (:states)')
                 ->setParameter('states', $states);
             if (!isset($options['from'])) {
@@ -50,7 +50,6 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
         }
 
         if (isset($options['old'])) {
-            $qb->innerJoin('j.shift', 's');
             if (!isset($options['to'])) {
                 $to = new \DateTime();
                 $qb->andWhere('s.end >= :to')
@@ -59,7 +58,6 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
         }
 
         if (isset($options['from']) || isset($options['to'])) {
-            $qb->innerJoin('j.shift', 's');
             // Unless there are a set timeframe, use "from now".
             $from = new \DateTime();
             if (isset($options['from'])) {
@@ -79,8 +77,8 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
                 $qb->andWhere('s.end <= :to')
                    ->setParameter('to', $to);
             }
-            $qb->orderBy('s.end', 'DESC');
         }
+        $qb->orderBy('s.start', 'ASC');
         return $qb->getQuery()->getResult();
     }
 
