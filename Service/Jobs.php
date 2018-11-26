@@ -25,17 +25,8 @@ class Jobs
      */
     public function jobsForPerson(Person $person, $options = array())
     {
-        if (isset($options['upcoming'])) {
-            return $this->em->getRepository('CrewCallBundle:Job')->findUpcomingForPerson($person, $options);
-        } else {
-            return $this->em->getRepository('CrewCallBundle:Job')->findJobsForPerson($person, $options);
-        }
-    }
-
-    public function upcomingForPerson(Person $person, $options = array())
-    {
         return $this->em->getRepository('CrewCallBundle:Job')
-                     ->findUpcomingForPerson($person, $options);
+            ->findJobsForPerson($person, $options);
     }
 
     public function opportunitiesForPerson(Person $person, $options = array())
@@ -44,7 +35,7 @@ class Jobs
         // Hopefully Doctrine does the job just as good, so I won't for now.
         $opportunities = new ArrayCollection();
         $jobshift = new ArrayCollection();
-        $jobs = $this->jobsForPerson($person, array('upcoming' => true));
+        $jobs = $this->jobsForPerson($person);
         foreach ($jobs as $job) {
             $jobshift->add($job->getShift());
         }

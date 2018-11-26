@@ -123,22 +123,4 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
         $qb->orderBy('s.end', 'DESC');
         return $qb->getQuery()->getResult();
     }
-
-    /*
-     * TODO: Add timeframe and default with from now
-     */
-    public function findUpcomingForPerson(Person $person, $options = array())
-    {
-        if (isset($options['state'])) {
-            if (!isset($options['from']))
-                $options['from'] = new \DateTime();
-            return $this->findByStateForPerson($person, $options);
-        }
-        $qb = $this->_em->createQueryBuilder();
-        $qb->select('j')
-            ->from($this->_entityName, 'j')
-            ->where("j.person = :person")
-            ->setParameter('person', $person);
-        return $qb->getQuery()->getResult();
-    }
 }
