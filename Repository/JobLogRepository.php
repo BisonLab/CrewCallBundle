@@ -9,7 +9,6 @@ class JobLogRepository extends \Doctrine\ORM\EntityRepository
 {
     public function checkOverlapForPerson($joblog)
     {
-dump($joblog);
         $person = $joblog->getJob()->getPerson();
         $from = $joblog->getIn();
         $to = $joblog->getOut();
