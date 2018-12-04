@@ -2,6 +2,7 @@
 {% block title %}{{ person.fullname }}{% endblock %}
 {% block body %}
 
+{% include 'CrewCallBundle:job:handling.html.twig' %}
 <script>
 
 function grabFunctionPickerTab() {
@@ -82,10 +83,10 @@ function openStateChange() {
     $( "#stateChangeLink" ).popover({
         html: true,
         placement: 'left',
-        title: 'State change',
+        title: 'State change <a href="#" class="close" data-dismiss="alert">&times;</a>',
         content: content
     });
-    return false;
+    $( "#stateChangeLink" ).popover("show");
     $(document).on("click", ".popover .close" , function(){
         $(this).parents(".popover").popover('hide');
     });

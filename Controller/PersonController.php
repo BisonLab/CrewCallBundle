@@ -223,6 +223,28 @@ class PersonController extends CommonController
     }
 
     /**
+     * Sends messages to a batch of persons.
+     *
+     * @Route("/persons_send_message", name="persons_send_message")
+     * @Method("POST")
+     */
+    public function personsSendMessageAction(Request $request)
+    {
+        $persons = $request->request->get('person_list');
+        $body = $request->request->get('body');
+        $sm = $this->get('sakonnin.messages');
+        $sm->postMessage(array(
+            'body' => $body,
+            'to' => implode(",", $persons),
+            'to_type' => "INTERNAL",
+            'from_type' => "INTERNAL",
+            'message_type' => "BULK"
+        ));
+
+        return new Response("Sent: " . $body, Response::HTTP_OK);
+    }
+
+    /**
      * Finds and displays the gedmo loggable history
      *
      * @Route("/{id}/log", name="person_log")
@@ -275,8 +297,15 @@ class PersonController extends CommonController
     private function createStateForm(Person $person)
     {
         $stateform = $this->createFormBuilder()
-            ->add('from_date', DateType::class, array('label' => "From",'widget' => "single_text"))
-            ->add('to_date', DateType::class, array('required' => false, 'label' => "To",'widget' => "single_text"))
+            ->add('from_date', DateType::class, array(
+                'label' => "From",
+                'format' => 'yyyy-MM-dd',
+                'widget' => "single_text"))
+            ->add('to_date', DateType::class, array(
+                'required' => false,
+                'format' => 'yyyy-MM-dd',
+                'label' => "To",
+                'widget' => "single_text"))
             ->add('state', ChoiceType::class, array(
                 'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Person')))
             ->add('submit', SubmitType::class)
