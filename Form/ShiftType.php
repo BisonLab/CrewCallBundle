@@ -22,8 +22,14 @@ class ShiftType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-           ->add('start', DateTimeType::class, array('label' => "Start",'date_widget' => "single_text", 'time_widget' => "single_text"))
-           ->add('end', DateTimeType::class, array('label' => "End",'date_widget' => "single_text", 'time_widget' => "single_text"))
+           ->add('start', DateTimeType::class, array(
+                'label' => "Start",
+                'date_widget' => "single_text",
+                'time_widget' => "single_text"))
+           ->add('end', DateTimeType::class, array(
+                'label' => "End",
+                'date_widget' => "single_text",
+                'time_widget' => "single_text"))
            ->add('state', ChoiceType::class, array(
               'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift')))
            ->add('amount')

@@ -23,9 +23,15 @@ class JobLogType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-           ->add('in', DateTimeType::class, array('label' => "In",'date_widget' => "single_text", 'time_widget' => "single_text", 
+           ->add('in', DateTimeType::class, array(
+                'label' => "In",
+                'date_widget' => "single_text",
+                'time_widget' => "single_text",
                 'attr' => array('autofocus' => true, 'tabindex' => 0)))
-           ->add('out', DateTimeType::class, array('label' => "Out",'date_widget' => "single_text", 'time_widget' => "single_text",
+           ->add('out', DateTimeType::class, array(
+                'label' => "Out",
+                'date_widget' => "single_text",
+                'time_widget' => "single_text",
                 'attr' => array('tabindex' => 1)))
            ->add('job', EntityType::class,
                 array('class' => 'CrewCallBundle:Job'))
