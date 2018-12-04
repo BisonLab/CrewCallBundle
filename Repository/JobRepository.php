@@ -121,4 +121,31 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
         $qb->orderBy('s.end', 'DESC');
         return $qb->getQuery()->getResult();
     }
+
+    /*
+     * Hmm, need it, gotta find out best way to to.
+     */
+    public function checkOverlapForPerson($job, $options)
+    {
+        $person = $job->getPerson();
+        $from = $job->getStart();
+        $to = $job->getEnd();
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('j')
+            ->from($this->_entityName, 'j')
+            ->innerJoin('j.shift', 's')
+            ->where("j.person = :person")
+            ->andWhere('s.start <= :to')
+            ->andWhere('s.end >= :from')
+            ->setParameter('person', $person)
+            ->setParameter('to', $to)
+            ->setParameter('from', $from);
+
+        if (isset($options['booked'])) {
+            $states = ExternalEntityConfig::getBookedStatesFor('Job');
+            $qb->andWhere('j.state in (:states)')
+                ->setParameter('states', $states);
+        }
+        return $qb->getQuery()->getResult();
+    }
 }
