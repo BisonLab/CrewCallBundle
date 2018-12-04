@@ -1,4 +1,17 @@
 {% extends 'base.html.twig' %}
+{% block title %}People{% endblock %}
+
+{% macro select_list(elem_list, prep = "") %}
+{% import _self as self %}
+    {% for elem in elem_list %}
+            <option value="{{ elem.id }}">{{ prep | raw }}{{ elem.name }}</option>
+        {% if elem.children %}
+            {% set foo = prep ~ '&nbsp; - ' %}
+                {{ self.select_list(elem.children, foo) }}
+        {% endif %}
+    {% endfor %}
+{% endmacro select_list %}
+{% import _self as fmacros %}
 
 {% block body %}
 <script>
@@ -31,7 +44,9 @@ function get_selected_persons() {
 -->
 <td>
    <form action="{{ path('person_function') }}" method="GET">
-   {{ form_widget(functionform) }}
+<select name="function">
+    {{ fmacros.select_list(functions) }}
+</select>
 </td>
 <td>
     <button class="btn btn-default" type="submit">Filter</button>

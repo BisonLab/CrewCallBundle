@@ -42,11 +42,12 @@ class PersonController extends CommonController
         $em = $this->getDoctrine()->getManager();
 
         $people = $em->getRepository('CrewCallBundle:Person')->findAll();
-        $functionform = $this->_createFunctionSelectBox();
 
+        $fe_repo = $em->getRepository('CrewCallBundle:FunctionEntity');
+        $functions = $fe_repo->findRootFunctions();
         return $this->render('person/index.html.twig', array(
-            'functionform' => $functionform,
             'people' => $people,
+            'functions' => $functions,
         ));
     }
 
@@ -59,39 +60,19 @@ class PersonController extends CommonController
     public function listByFunctionAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $fe_repo = $em->getRepository('CrewCallBundle:FunctionEntity');
 
         $fid = $request->get('function');
-        if (!$functionEntity = $em->getRepository('CrewCallBundle:FunctionEntity')->find($fid['function']))
+        if (!$functionEntity = $fe_repo->find($fid))
             return $this->returnNotFound($request, 'No function to filter');
         $people = $functionEntity->getAllPeople();
 
-        $functionform = $this->_createFunctionSelectBox();
+        $functions = $fe_repo->findRootFunctions();
         return $this->render('person/index.html.twig', array(
             'people' => $people,
-            'functionform' => $functionform,
+            'functions' => $functions,
             'functionEntity' => $functionEntity,
         ));
-    }
-
-    private function _createFunctionSelectBox()
-    {
-        $em = $this->getDoctrine()->getManager();
-        $form_factory = $this->get('form.factory');
-        // How cool would it be to sort this on modeltype?
-        $form = $form_factory->createNamedBuilder('function')
-                ->add('function', EntityType::class,
-                    array(
-                    'label' => false,
-                    'choice_label' => function ($fe) {
-                        return $fe->getName();
-                    },
-                    'class' => 'CrewCallBundle:FunctionEntity',
-                    'required' => false,
-                    'expanded' => false,
-                    'multiple' => false,
-                    'group_by' => 'parent.name',
-                    ));
-        return $form->getForm()->createView();
     }
 
     /**

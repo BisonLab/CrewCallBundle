@@ -56,4 +56,13 @@ class FunctionEntityRepository extends \Doctrine\ORM\EntityRepository
             return $qb->getQuery()->getResult();
         }
     }
+
+    public function findRootFunctions()
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('f')
+            ->from($this->_entityName, 'f')
+            ->where("f.parent is null");
+        return $qb->getQuery()->getResult();
+    }
 }
