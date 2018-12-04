@@ -230,17 +230,17 @@ class PersonController extends CommonController
      */
     public function personsSendMessageAction(Request $request)
     {
-        $persons = $request->request->get('person_list');
-        $body = $request->request->get('body');
         $sm = $this->get('sakonnin.messages');
+        $body = $request->request->get('body');
+        $persons = $request->request->get('person_list');
+        $message_type = $request->request->get('message_type');
         $sm->postMessage(array(
             'body' => $body,
             'to' => implode(",", $persons),
+            'message_type' => $message_type,
             'to_type' => "INTERNAL",
             'from_type' => "INTERNAL",
-            'message_type' => "BULK"
         ));
-
         return new Response("Sent: " . $body, Response::HTTP_OK);
     }
 
