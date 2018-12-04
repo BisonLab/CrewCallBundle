@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 use FOS\UserBundle\FOSUserEvents;
 use FOS\UserBundle\Event\FilterUserResponseEvent;
@@ -41,8 +42,10 @@ class PersonController extends CommonController
         $em = $this->getDoctrine()->getManager();
 
         $people = $em->getRepository('CrewCallBundle:Person')->findAll();
+        $functionform = $this->_createFunctionSelectBox();
 
         return $this->render('person/index.html.twig', array(
+            'functionform' => $functionform,
             'people' => $people,
         ));
     }
@@ -50,19 +53,45 @@ class PersonController extends CommonController
     /**
      * Lists all person entities.
      *
-     * @Route("/function/{id}", name="person_function")
+     * @Route("/function", name="person_function")
      * @Method("GET")
      */
-    public function listByFunctionAction(Request $request, FunctionEntity $functionEntity)
+    public function listByFunctionAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $people = $functionEntity->getPeople();
+        $fid = $request->get('function');
+        if (!$functionEntity = $em->getRepository('CrewCallBundle:FunctionEntity')->find($fid['function']))
+            return $this->returnNotFound($request, 'No function to filter');
+        $people = $functionEntity->getAllPeople();
 
+        $functionform = $this->_createFunctionSelectBox();
         return $this->render('person/index.html.twig', array(
             'people' => $people,
+            'functionform' => $functionform,
             'functionEntity' => $functionEntity,
         ));
+    }
+
+    private function _createFunctionSelectBox()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $form_factory = $this->get('form.factory');
+        // How cool would it be to sort this on modeltype?
+        $form = $form_factory->createNamedBuilder('function')
+                ->add('function', EntityType::class,
+                    array(
+                    'label' => false,
+                    'choice_label' => function ($fe) {
+                        return $fe->getName();
+                    },
+                    'class' => 'CrewCallBundle:FunctionEntity',
+                    'required' => false,
+                    'expanded' => false,
+                    'multiple' => false,
+                    'group_by' => 'parent.name',
+                    ));
+        return $form->getForm()->createView();
     }
 
     /**

@@ -324,6 +324,20 @@ class FunctionEntity
     }
 
     /**
+     * Get All People, aka, from the function children aswell.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAllPeople()
+    {
+        $people = $this->getPeople();
+        foreach ($this->getChildren() as $child) {
+            $people = array_merge($people, $child->getAllPeople());
+        }
+        return $people;
+    }
+
+    /**
      * Remove personFunctionOrganization
      *
      * @param \CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization
