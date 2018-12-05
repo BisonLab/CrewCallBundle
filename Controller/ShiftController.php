@@ -68,9 +68,15 @@ class ShiftController extends CommonController
     {
         $shift = new Shift();
         $em = $this->getDoctrine()->getManager();
+        $fgroups = $this->getParameter('crewcall.functiongroups');
+        $fparents = [];
+        foreach ($fgroups['Shift'] as $f) { 
+            $fparents[] = $em->getRepository('CrewCallBundle:FunctionEntity')
+                ->findOneByName($f);
+        }
         $wparent = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneByName('Worker');
         $form = $this->createForm('CrewCallBundle\Form\ShiftType',
-            $shift, array('parent_functions' => [$wparent]));
+            $shift, array('parent_functions' => $fparents));
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
