@@ -316,9 +316,14 @@ class FunctionEntity
      */
     public function getPeople()
     {
-        $people = array();
+        $people = new ArrayCollection();
         foreach ($this->person_functions as $pf) {
-            $people[] = $pf->getPerson();
+            if (!$people->contains($pf->getPerson()))
+                $people->add($pf->getPerson());
+        }
+        foreach ($this->person_function_organizations as $pfo) {
+            if (!$people->contains($pfo->getPerson()))
+                $people->add($pfo->getPerson());
         }
         return $people;
     }
@@ -332,7 +337,10 @@ class FunctionEntity
     {
         $people = $this->getPeople();
         foreach ($this->getChildren() as $child) {
-            $people = array_merge($people, $child->getAllPeople());
+            foreach($child->getAllPeople() as $p) {
+                if (!$people->contains($p))
+                    $people->add($p);
+            }
         }
         return $people;
     }
