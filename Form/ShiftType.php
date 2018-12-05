@@ -35,10 +35,13 @@ class ShiftType extends AbstractType
            ->add('amount')
            ->add('function', EntityType::class,
                array('class' => 'CrewCallBundle:FunctionEntity',
-                   'query_builder' => function(EntityRepository $er) {
+                   'group_by' => 'parent.name',
+                   'query_builder' => function(EntityRepository $er) use ($options) {
                    return $er->createQueryBuilder('f')
                     ->where("f.state = 'VISIBLE'")
-                    ->orderBy('f.name', 'ASC');
+                    ->andWhere("f.parent in (:parents)")
+                    ->orderBy('f.name', 'ASC')
+                    ->setParameter('parents', $options['parent_functions']);
                    },
                ))
             ->add('event')
@@ -51,6 +54,7 @@ class ShiftType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
+            'parent_functions' => [],
             'data_class' => 'CrewCallBundle\Entity\Shift'
         ));
     }

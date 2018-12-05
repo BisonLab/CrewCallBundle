@@ -67,13 +67,14 @@ class ShiftController extends CommonController
     public function newAction(Request $request, $access)
     {
         $shift = new Shift();
-        $form = $this->createForm('CrewCallBundle\Form\ShiftType', $shift);
-        // $this->handleForm($form, $request, $access);
+        $em = $this->getDoctrine()->getManager();
+        $wparent = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneByName('Worker');
+        $form = $this->createForm('CrewCallBundle\Form\ShiftType',
+            $shift, array('parent_functions' => [$wparent]));
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $em = $this->getDoctrine()->getManager();
                 $em->persist($shift);
                 $em->flush($shift);
                 if ($this->isRest($access)) {
@@ -94,7 +95,6 @@ class ShiftController extends CommonController
 
         // If this has a event set here, it's not an invalid create attempt.
         if ($event_id = $request->get('event')) {
-            $em = $this->getDoctrine()->getManager();
             if ($event = $em->getRepository('CrewCallBundle:Event')->find($event_id)) {
                 $shift->setEvent($event);
                 // Better have something to start with.
@@ -148,8 +148,10 @@ class ShiftController extends CommonController
      */
     public function editAction(Request $request, Shift $shift, $access)
     {
-        $deleteForm = $this->createDeleteForm($shift);
-        $editForm = $this->createForm('CrewCallBundle\Form\ShiftType', $shift);
+        $em = $this->getDoctrine()->getManager();
+        $wparent = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneByName('Worker');
+        $editForm = $this->createForm('CrewCallBundle\Form\ShiftType',
+            $shift, array('parent_functions' => [$wparent]));
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
@@ -158,6 +160,7 @@ class ShiftController extends CommonController
             return $this->redirectToRoute('shift_show', array('id' => $shift->getId()));
         }
 
+        $deleteForm = $this->createDeleteForm($shift);
         if ($this->isRest($access)) {
             return $this->render('shift/_edit.html.twig', array(
                 'shift' => $shift,

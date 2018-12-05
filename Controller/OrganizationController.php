@@ -159,10 +159,11 @@ class OrganizationController extends CommonController
     public function addExistingPersonAction(Request $request, Organization $organization, $access)
     {
         $em = $this->getDoctrine()->getManager();
-        $parent = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneByName('Organizations');
+        $oparent = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneByName('Organization');
+        $eparent = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneByName('Employee');
         $pfo = new PersonFunctionOrganization();
         $pfo->setOrganization($organization);
-        $form = $this->createForm('CrewCallBundle\Form\ExistingPersonOrganizationType', $pfo, array('parent_function' => $parent));
+        $form = $this->createForm('CrewCallBundle\Form\ExistingPersonOrganizationType', $pfo, array('parent_functions' => [$oparent, $eparent]));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
