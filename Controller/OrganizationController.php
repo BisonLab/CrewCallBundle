@@ -8,6 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 /**
@@ -182,5 +184,26 @@ class OrganizationController extends CommonController
                 'form' => $form->createView(),
             ));
         }
+    }
+
+    /**
+     * Removes a personFunctionOrganization entity.
+     * Pure REST/AJAX.
+     *
+     * @Route("/{id}/remove_person", name="organization_remove_person")
+     * @Method({"GET", "DELETE", "POST"})
+     */
+    public function removePersonAction(Request $request, PersonFunctionOrganization $pfo, $access)
+    {
+        $organization = $pfo->getOrganization();
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($pfo);
+        $em->flush($pfo);
+        if ($this->isRest($access)) {
+            return new JsonResponse(array("status" => "OK"),
+                Response::HTTP_OK);
+        }
+        return $this->redirectToRoute('organization_show',
+            array('id' => $organization->getId()));
     }
 }

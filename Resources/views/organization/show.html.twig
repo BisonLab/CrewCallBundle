@@ -82,6 +82,7 @@
         <tr>
             <th>Name</th>
             <th>Function</th>
+            <th>&nbsp;</th>
         </tr>
     </thead>
     <tbody>
@@ -93,6 +94,9 @@
             </a>
         </td>
         <td>{{ pfo.function }}</td>
+        <td>
+            <a role="button" class="btn btn-danger" href="{{ path('organization_remove_person', { 'id': pfo.id }) }}">Remove</a>
+        </td>
         </tr>
         {% endfor %}
     </tbody>

@@ -325,18 +325,18 @@ class Organization
         return $this->person_function_organizations;
     }
 
-    public function addPersonFunctionOrganization(PersonFunctionOrganization $function)
+    public function addPersonFunctionOrganization(PersonFunctionOrganization $pfo)
     {
-        if (!$this->person_function_organizations->contains($function)) {
-            $this->person_function_organizations->add($function);
+        if (!$this->person_function_organizations->contains($pfo)) {
+            $this->person_function_organizations->add($pfo);
         }
         return $this;
     }
 
-    public function removePersonFunctionOrganization(PersonFunctionOrganization $function)
+    public function removePersonFunctionOrganization(PersonFunctionOrganization $pfo)
     {
-        if ($this->person_function_organizations->contains($function)) {
-            $this->person_function_organizations->removeElement($function);
+        if ($this->person_function_organizations->contains($pfo)) {
+            $this->person_function_organizations->removeElement($pfo);
         }
         return $this;
     }
@@ -348,8 +348,8 @@ class Organization
     public function getPersons()
     {
         $persons = array();
-        foreach ($this->getPersonFunctionOrganizations() as $f) {
-            $persons += $f->getPersons();
+        foreach ($this->getPersonFunctionOrganizations() as $pfo) {
+            $persons += $pfo->getPersons();
         } 
     }
 
