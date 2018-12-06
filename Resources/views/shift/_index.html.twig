@@ -31,9 +31,6 @@
             {{ shift.state }}
             </td>
             <td>
-{# Until someone asks for a pure shift view, (The one there is is ugly.)
-                <a href="{{ path('shift_show', { 'id': shift.id }) }}">Show</a>
-#}
               <a href="#" onClick="grabJobList({{ shift.id }});">Jobs</a><br>
               <a href="#" onClick="grabEditShiftForm({{ shift.id }});">Edit</a><br>
               <a href="#" onClick="grabJobList({{ shift.id }}); grabNewJobForm({{shift.id}});">Add person</a><br>

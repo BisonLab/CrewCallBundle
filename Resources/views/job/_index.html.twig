@@ -31,7 +31,8 @@
     <tbody>
     {% for job in jobs %}
         <tr>
-            <td>
+            {% set reason = job.person.occupied({'reasons': true}) %}
+            <td {% if reason %}class="cc_warn"{% endif %}>
             <a href="#" id="popSummary_person_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
             {{ job.person }}
     {% set mlogcontext = {
@@ -42,6 +43,9 @@
     %}
     {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
                 &nbsp;(<a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>)
+    {% endif %}
+    {% if reason %}
+        <br>{{ reason.state }}
     {% endif %}
             </td>
             <td>

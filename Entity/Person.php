@@ -404,7 +404,7 @@ class Person extends BaseUser
     {
         if (empty($options) && $state == $this->getState()) return $this;
 
-        $curstate = $this->getCurrentState();
+        $curstate = $this->getStateOnDate();
         $newstate = new PersonState();
         $newstate->setState($state);
         if (empty($options))
@@ -460,8 +460,8 @@ class Person extends BaseUser
      */
     public function getState()
     {
-        return $this->getCurrentState()
-            ? $this->getCurrentState()->getState() : "";
+        return $this->getStateOnDate()
+            ? $this->getStateOnDate()->getState() : "";
     }
 
     /**
@@ -469,16 +469,19 @@ class Person extends BaseUser
      *
      * @return string
      */
-    public function getCurrentState()
+    public function getStateOnDate($date = null)
     {
-        // TODO: Gotta filter old states better when there are many.
-        $now = new \DateTime();
+        if (!$date)
+            $date = new \DateTime();
+        elseif (!$date instanceOf \DateTime)
+            $date = new \DateTime($date);
+
         foreach ($this->getStates() as $ps) {
             // There is always a from date. Is it in the future?
-            if ($ps->getFromDate() > $now)
+            if ($ps->getFromDate() > $date)
                 continue;
             // But not a to_date.
-            if ($ps->getToDate() !== null && $ps->getToDate() < $now)
+            if ($ps->getToDate() !== null && $ps->getToDate() < $date)
                 continue;
             // Are we left with the first viable state now?
             return $ps;
@@ -565,8 +568,10 @@ class Person extends BaseUser
      */
     public function getEnabled()
     {
+        // TODO: Make this work again.
             return true;
-        if (in_array($this->getState(), ExternalEntityConfig::getEnableLoginStatesFor('Person'))) {
+        if (in_array($this->getState(),
+                ExternalEntityConfig::getEnableLoginStatesFor('Person'))) {
             return true;
         } else {
             return false;
@@ -587,24 +592,53 @@ class Person extends BaseUser
      * Could be simple yes/no, but can just as well be alot more.
      * Which is why I add options.
      *
-     * * from - DateTime for a timeframe
-     * * to - DateTime for a timeframe
+     * It should check both states and (booked) jobs but that will be
+     * too resource-expensive since job iteself does not have dates and then
+     * I'd have to iterate through all jobs with shifts to find the ones
+     * matching.
+     *
+     * * date - On a specific date - Any job that day will return treue
+     * * datetime - On a specific date and time - State and job on that time will return true
+     * * TODO: from - DateTime for a timeframe 
+     * * TODO: to - DateTime for a timeframe
      * * reasons - Will return a list of all reasons for being occupied.
      */
     public function isOccupied($options = [])
     {
         $occupied = false;
-        if (isset($options['reasons']))
-            $reasons = [];
-        else
-            $reasons = null;
-        if (!in_array($this->getState(),
+        $reasons = [];
+        // Find a date.
+        $time = new \DateTime();
+        if (isset($options['date']))
+            $time = new \DateTime($options['date']);
+        if (isset($options['datetime']))
+            $time = new \DateTime($options['datetime']);
+
+        /*
+         * Check state.
+         */
+        $stateobj = $this->getStateOnDate($time);
+        $state = $stateobj->getState();
+        if (!in_array($state,
                 ExternalEntityConfig::getActiveStatesFor('Person'))) {
-            if (is_array($reasons))
-                $reasons[] = array('state' => $this->getCurrentState());
-            else
-                return true;
+            $occupied = true;
+            $reasons['stateobj'] = $stateobj;
+            $reasons['state'] = $state;
         }
+
+        /*
+         * Check jobs.
+         * TODO: Maybe do it, probaly not. Better handled by job handler.
+         */
+
+        /*
+         * Return something.
+         */
+dump($reasons);
+        if ($occupied && isset($options['reasons']))
+            return $reasons;
+        else
+            return $occupied;
     }
 
     /*
