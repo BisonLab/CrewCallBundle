@@ -104,6 +104,9 @@ class SummaryController extends CommonController
             case 'event':
                 $class = 'CrewCallBundle:Event';
                 break;
+            case 'job':
+                $class = 'CrewCallBundle:Job';
+                break;
             default:
                 return $this->returnNotFound($request,'Unable to find class.');
                 break;

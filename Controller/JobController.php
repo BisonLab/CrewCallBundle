@@ -40,6 +40,15 @@ class JobController extends CommonController
             return $this->returnNotFound($request, 'No shift to tie the jobs to');
 
         $jobs = $shift->getJobs();
+        $log_repo = $em->getRepository('Gedmo\Loggable\Entity\LogEntry');
+        foreach ($jobs as $job) {
+            if ($log = $log_repo->findOneBy(array(
+            'objectClass' => 'CrewCallBundle\Entity\Job',
+            'objectId'    => $job->getId())
+            , array('loggedAt' => 'DESC')))
+                $job->setUpdatedAt($log->getLoggedAt());
+        }
+
         $sos = $shift->getShiftOrganizations();
         if ($this->isRest($access)) {
             return $this->render('job/_index.html.twig', array(

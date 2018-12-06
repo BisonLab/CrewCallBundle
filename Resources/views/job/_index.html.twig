@@ -44,7 +44,10 @@
                 &nbsp;(<a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>)
     {% endif %}
             </td>
-            <td>{{ job.state }}</td>
+            <td>
+                {{ job.state }}
+                {% if job.updatedat is defined %}<br>{{ job.updatedat|date('Y-m-d H:i') }}{% endif %}
+            </td>
             {% if job.shift.end < date() %}
                 <td id="jobLogTable_{{ job.id }}">
                 {% if job.joblogs | length > 0  %}

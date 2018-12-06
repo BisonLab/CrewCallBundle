@@ -66,6 +66,11 @@ class Job
      */
     private $joblogs;
 
+    /*
+     * Just a placeholder for easier handling and showing in twig templates.
+     */
+    private $updated_at;
+
     /**
      * Get id
      *
@@ -238,6 +243,9 @@ class Job
         return $this->joblogs;
     }
 
+    /*
+     * Access functions
+     */
     public function getFunction()
     {
         return $this->getShift()->getFunction();
@@ -271,5 +279,16 @@ class Job
     public function __toString()
     {
         return (string)$this->getFunction();
+    }
+
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt($updated_at)
+    {
+        $this->updated_at = $updated_at;
+        return $this;
     }
 }
