@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
+use CrewCallBundle\Lib\ExternalEntityConfig;
 
 /**
  * Shift controller.
@@ -43,10 +44,14 @@ class ShiftController extends CommonController
         // Again, ajax-centric. But maybe return json later.
         if ($this->isRest($access)) {
             return $this->render('shift/_index.html.twig', array(
+                'statechoices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift'),
+                'event' => $event,
                 'shifts' => $shifts
             ));
         }
         return $this->render('shift/index.html.twig', array(
+           'statechoices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift'),
+            'event' => $event,
             'shifts' => $shifts,
         ));
     }
@@ -209,6 +214,32 @@ class ShiftController extends CommonController
             $em->flush($shift);
         }
         return $this->redirectToRoute('shift_index');
+    }
+
+    /**
+     * Sets a (new) state on the shift.
+     *
+     * @Route("/{id}", name="shift_state")
+     * @Method("POST")
+     */
+    public function stateAction(Request $request, $access, Shift $shift)
+    {
+        // Bloody good question here, because CSRF.
+        // This should add some sort of protection.
+        $state = $request->request->get('state');
+        if ($state != $shift->getState()) {
+            $shift->setState($state);
+            $em = $this->getDoctrine()->getManager();
+            $em->flush($shift);
+        }
+        if ($this->isRest($access)) {
+            return new JsonResponse(array("status" => "OK"),
+                Response::HTTP_OK);
+        }
+        if (!$event_id = $request->request->get('event'))
+            $event_id = $shift->getEvent()->getId();
+        return $this->redirectToRoute('event_show', array(
+            'id' => $event_id));
     }
 
     /**
