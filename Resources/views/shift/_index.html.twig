@@ -5,7 +5,7 @@
         <tr>
             <th>Start</th>
             <th>End</th>
-            <th>Function</th>
+            <th>What</th>
             <th>Amount</th>
             <th>State</th>
             <th>Actions</th>
@@ -17,7 +17,9 @@
             <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
             <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
             <td>
-            {{ shift.function }}
+            {{ shift.function }}<br>
+            at {{ shift.event.name }}
+            <a href="#" id="popSummary_event_{{ shift.event.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ shift.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
             </td>
             <td>
             Want: {{ shift.amount }} </br>

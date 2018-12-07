@@ -32,7 +32,7 @@ class ShiftController extends CommonController
         if ($event_id = $request->get('event')) {
             $em = $this->getDoctrine()->getManager();
             if ($event = $em->getRepository('CrewCallBundle:Event')->find($event_id)) {
-                $shifts = $event->getShifts();
+                $shifts = $event->getAllShifts();
             }
         } else {
             // To be honest,I don't think having this at all is a good idea :=)

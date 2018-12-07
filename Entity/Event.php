@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\Common\Collections\Criteria;
 
 use CrewCallBundle\Lib\ExternalEntityConfig;
 
@@ -268,6 +269,23 @@ class Event
     public function getShifts()
     {
         return $this->shifts;
+    }
+
+    /**
+     * Get shifts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAllShifts()
+    {
+        $shifts = new ArrayCollection($this->shifts->toArray());
+        foreach ($this->getChildren() as $child) {
+            $shifts = new ArrayCollection(array_merge($shifts->toArray() ,
+                $child->getAllShifts()->toArray()));
+        }
+        $criteria = Criteria::create()
+            ->orderBy(array("start" => Criteria::ASC));
+        return $shifts->matching($criteria);
     }
 
     /**
