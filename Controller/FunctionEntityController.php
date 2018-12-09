@@ -3,8 +3,7 @@
 namespace CrewCallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,8 +22,7 @@ class FunctionEntityController extends CommonController
     /**
      * Lists all functionEntity entities.
      *
-     * @Route("/", name="function_index")
-     * @Method("GET")
+     * @Route("/", name="function_index", methods={"GET"})
      */
     public function indexAction()
     {
@@ -40,8 +38,7 @@ class FunctionEntityController extends CommonController
     /**
      * Lists all functionEntity entities in a pickable fasion
      *
-     * @Route("/picker", name="function_picker")
-     * @Method("GET")
+     * @Route("/picker", name="function_picker", methods={"GET"})
      */
     public function pickerAction(Request $request, $access)
     {
@@ -86,8 +83,7 @@ class FunctionEntityController extends CommonController
     /**
      * Update the functions list on entities having them.
      *
-     * @Route("/update_picked/{update}/{update_id}", name="picked_functions_updater")
-     * @Method("POST")
+     * @Route("/update_picked/{update}/{update_id}", name="picked_functions_updater", methods={"POST"})
      */
     public function updatePickedAction(Request $request, $update, $update_id)
     {
@@ -123,8 +119,7 @@ class FunctionEntityController extends CommonController
     /**
      * Creates a new functionEntity entity.
      *
-     * @Route("/new", name="function_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="function_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request)
     {
@@ -149,8 +144,7 @@ class FunctionEntityController extends CommonController
     /**
      * Finds and displays a functionEntity entity.
      *
-     * @Route("/{id}", name="function_show")
-     * @Method("GET")
+     * @Route("/{id}", name="function_show", methods={"GET"})
      */
     public function showAction(FunctionEntity $functionEntity)
     {
@@ -165,8 +159,7 @@ class FunctionEntityController extends CommonController
     /**
      * Displays a form to edit an existing functionEntity entity.
      *
-     * @Route("/{id}/edit", name="function_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="function_edit", methods={"GET", "POST"})
      */
     public function editAction(Request $request, FunctionEntity $functionEntity)
     {
@@ -190,8 +183,7 @@ class FunctionEntityController extends CommonController
     /**
      * Deletes a functionEntity entity.
      *
-     * @Route("/{id}", name="function_delete")
-     * @Method("DELETE")
+     * @Route("/{id}", name="function_delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request, FunctionEntity $functionEntity)
     {

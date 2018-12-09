@@ -3,8 +3,7 @@
 namespace CrewCallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,8 +23,7 @@ class JobController extends CommonController
     /**
      * Lists all job entities.
      *
-     * @Route("/", name="job_index")
-     * @Method("GET")
+     * @Route("/", name="job_index", methods={"GET"})
      */
     public function indexAction(Request $request, $access)
     {
@@ -66,8 +64,7 @@ class JobController extends CommonController
 
     /**
      *
-     * @Route("/{id}/state/{state}", name="job_state")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/state/{state}", name="job_state", methods={"GET", "POST"})
      */
     public function stateAction(Request $request, Job $job, $state, $access)
     {
@@ -91,8 +88,7 @@ class JobController extends CommonController
     /**
      * Creates a new Job
      *
-     * @Route("/new", name="job_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="job_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request, $access)
     {

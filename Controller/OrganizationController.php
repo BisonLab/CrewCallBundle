@@ -5,8 +5,7 @@ namespace CrewCallBundle\Controller;
 use CrewCallBundle\Entity\Organization;
 use CrewCallBundle\Entity\PersonFunctionOrganization;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,8 +21,7 @@ class OrganizationController extends CommonController
     /**
      * Lists all organization entities.
      *
-     * @Route("/", name="organization_index")
-     * @Method("GET")
+     * @Route("/", name="organization_index", methods={"GET"})
      */
     public function indexAction()
     {
@@ -39,8 +37,7 @@ class OrganizationController extends CommonController
     /**
      * Creates a new organization entity.
      *
-     * @Route("/new", name="organization_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="organization_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request)
     {
@@ -65,8 +62,7 @@ class OrganizationController extends CommonController
     /**
      * Finds and displays a organization entity.
      *
-     * @Route("/{id}", name="organization_show")
-     * @Method("GET")
+     * @Route("/{id}", name="organization_show", methods={"GET"})
      */
     public function showAction(Organization $organization)
     {
@@ -81,8 +77,7 @@ class OrganizationController extends CommonController
     /**
      * Displays a form to edit an existing organization entity.
      *
-     * @Route("/{id}/edit", name="organization_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="organization_edit", methods={"GET", "POST"})
      */
     public function editAction(Request $request, Organization $organization)
     {
@@ -106,8 +101,7 @@ class OrganizationController extends CommonController
     /**
      * Deletes a organization entity.
      *
-     * @Route("/{id}", name="organization_delete")
-     * @Method("DELETE")
+     * @Route("/{id}", name="organization_delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request, Organization $organization)
     {
@@ -153,8 +147,7 @@ class OrganizationController extends CommonController
      * Creates a new personFunctionOrganization entity.
      * Pure REST/AJAX.
      *
-     * @Route("/{id}/add_exitsting_person", name="organization_add_existing_person")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/add_exitsting_person", name="organization_add_existing_person", methods={"GET", "POST"})
      */
     public function addExistingPersonAction(Request $request, Organization $organization, $access)
     {
@@ -195,8 +188,7 @@ class OrganizationController extends CommonController
      * Removes a personFunctionOrganization entity.
      * Pure REST/AJAX.
      *
-     * @Route("/{id}/remove_person", name="organization_remove_person")
-     * @Method({"GET", "DELETE", "POST"})
+     * @Route("/{id}/remove_person", name="organization_remove_person", methods={"GET", "DELETE", "POST"})
      */
     public function removePersonAction(Request $request, PersonFunctionOrganization $pfo, $access)
     {

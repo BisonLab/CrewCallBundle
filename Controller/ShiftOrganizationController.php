@@ -4,8 +4,7 @@ namespace CrewCallBundle\Controller;
 
 use CrewCallBundle\Entity\ShiftOrganization;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,8 +20,7 @@ class ShiftOrganizationController extends CommonController
     /**
      * Lists all shiftOrganization entities.
      *
-     * @Route("/", name="shiftorganization_index")
-     * @Method("GET")
+     * @Route("/", name="shiftorganization_index", methods={"GET"})
      */
     public function indexAction(Request $request, $access)
     {
@@ -50,8 +48,7 @@ class ShiftOrganizationController extends CommonController
     /**
      * Creates a new shiftOrganization entity.
      *
-     * @Route("/new", name="shiftorganization_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="shiftorganization_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request, $access)
     {
@@ -94,8 +91,7 @@ class ShiftOrganizationController extends CommonController
     /**
      * Finds and displays a shiftOrganization entity.
      *
-     * @Route("/{id}", name="shiftorganization_show")
-     * @Method("GET")
+     * @Route("/{id}", name="shiftorganization_show", methods={"GET"})
      */
     public function showAction(ShiftOrganization $shiftOrganization)
     {
@@ -110,8 +106,7 @@ class ShiftOrganizationController extends CommonController
     /**
      * Displays a form to edit an existing shiftOrganization entity.
      *
-     * @Route("/{id}/edit", name="shiftorganization_edit", defaults={"id" = 0})
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="shiftorganization_edit", defaults={"id" = 0}, methods={"GET", "POST"})
      */
     public function editAction(Request $request, ShiftOrganization $shiftOrganization, $access)
     {
@@ -147,8 +142,7 @@ class ShiftOrganizationController extends CommonController
     /**
      * Deletes a shiftOrganization entity.
      *
-     * @Route("/{id}", name="shiftorganization_delete")
-     * @Method("DELETE")
+     * @Route("/{id}", name="shiftorganization_delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request, ShiftOrganization $shiftOrganization, $access)
     {

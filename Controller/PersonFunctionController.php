@@ -3,8 +3,7 @@
 namespace CrewCallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,8 +22,7 @@ class PersonFunctionController extends CommonController
      * Creates a new personFunction entity.
      * Pure REST/AJAX.
      *
-     * @Route("/new", name="personfunction_new")
-     * @Method({"POST"})
+     * @Route("/new", name="personfunction_new", methods={"POST"})
      */
     public function newAction(Request $request, $access)
     {
@@ -59,8 +57,7 @@ class PersonFunctionController extends CommonController
     /**
      * Finds and displays a personFunction entity.
      *
-     * @Route("/{id}", name="personfunction_show")
-     * @Method("GET")
+     * @Route("/{id}", name="personfunction_show", methods={"GET"})
      */
     public function showAction(PersonFunction $personFunction)
     {
@@ -75,8 +72,7 @@ class PersonFunctionController extends CommonController
     /**
      * Displays a form to edit an existing personFunction entity.
      *
-     * @Route("/{id}/edit", name="personfunction_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="personfunction_edit", methods={"GET", "POST"})
      */
     public function editAction(Request $request, PersonFunction $personFunction)
     {
@@ -100,8 +96,7 @@ class PersonFunctionController extends CommonController
     /**
      * Deletes a personFunction entity.
      *
-     * @Route("/{id}", name="personfunction_delete")
-     * @Method("DELETE")
+     * @Route("/{id}", name="personfunction_delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request, PersonFunction $personFunction)
     {

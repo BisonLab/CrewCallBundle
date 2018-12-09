@@ -4,8 +4,7 @@ namespace CrewCallBundle\Controller;
 
 use CrewCallBundle\Entity\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
@@ -19,8 +18,7 @@ class EventController extends CommonController
     /**
      * Lists all event entities.
      *
-     * @Route("/", name="event_index")
-     * @Method("GET")
+     * @Route("/", name="event_index", methods={"GET"})
      */
     public function indexAction(Request $request)
     {
@@ -50,8 +48,7 @@ class EventController extends CommonController
     /**
      * Creates a new event entity.
      *
-     * @Route("/new", name="event_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="event_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request)
     {
@@ -95,8 +92,7 @@ class EventController extends CommonController
     /**
      * Finds and displays a event entity.
      *
-     * @Route("/{id}", name="event_show")
-     * @Method("GET")
+     * @Route("/{id}", name="event_show", methods={"GET"})
      */
     public function showAction(Event $event)
     {
@@ -115,8 +111,7 @@ class EventController extends CommonController
     /**
      * Displays a form to edit an existing event entity.
      *
-     * @Route("/{id}/edit", name="event_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="event_edit", methods={"GET", "POST"})
      */
     public function editAction(Request $request, Event $event)
     {
@@ -140,8 +135,7 @@ class EventController extends CommonController
     /**
      * Deletes a event entity.
      *
-     * @Route("/{id}/delete", name="event_delete")
-     * @Method("DELETE")
+     * @Route("/{id}/delete", name="event_delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request, Event $event)
     {
@@ -160,8 +154,7 @@ class EventController extends CommonController
     /**
      * Sets "CONFIRMED" on the event and all shifts underneith.
      *
-     * @Route("/{id}/confirm", name="event_confirm")
-     * @Method("POST")
+     * @Route("/{id}/confirm", name="event_confirm", methods={"POST"})
      */
     public function confirmAction(Request $request, Event $event)
     {

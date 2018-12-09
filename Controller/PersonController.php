@@ -3,8 +3,7 @@
 namespace CrewCallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,8 +33,7 @@ class PersonController extends CommonController
     /**
      * Lists all person entities.
      *
-     * @Route("/", name="person_index")
-     * @Method("GET")
+     * @Route("/", name="person_index", methods={"GET"})
      */
     public function indexAction()
     {
@@ -54,8 +52,7 @@ class PersonController extends CommonController
     /**
      * Lists all person entities.
      *
-     * @Route("/function", name="person_function")
-     * @Method("GET")
+     * @Route("/function", name="person_function", methods={"GET"})
      */
     public function listByFunctionAction(Request $request)
     {
@@ -79,8 +76,7 @@ class PersonController extends CommonController
      * Lists all persons without a state, aka newly registered and ready to be
      * accepted or denied.
      *
-     * @Route("/applicants", name="person_applicants")
-     * @Method("GET")
+     * @Route("/applicants", name="person_applicants", methods={"GET"})
      */
     public function listApplicantsAction(Request $request)
     {
@@ -94,8 +90,7 @@ class PersonController extends CommonController
     /**
      * Creates a new person entity.
      *
-     * @Route("/new", name="person_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="person_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request)
     {
@@ -120,8 +115,7 @@ class PersonController extends CommonController
     /**
      * Finds and displays a person entity.
      *
-     * @Route("/{id}", name="person_show")
-     * @Method("GET")
+     * @Route("/{id}", name="person_show", methods={"GET"})
      */
     public function showAction(Person $person)
     {
@@ -138,8 +132,7 @@ class PersonController extends CommonController
     /**
      * Calendar for person
      *
-     * @Route("/{id}/calendar", name="person_calendar")
-     * @Method("POST")
+     * @Route("/{id}/calendar", name="person_calendar", methods={"POST"})
      */
     public function personCalendarAction(Request $request, $access, Person $person)
     {
@@ -164,8 +157,7 @@ class PersonController extends CommonController
     /**
      * Displays a form to edit an existing person entity.
      *
-     * @Route("/{id}/edit", name="person_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="person_edit", methods={"GET", "POST"})
      */
     public function editAction(Request $request, Person $person)
     {
@@ -215,8 +207,7 @@ class PersonController extends CommonController
     /**
      * Deletes a person entity.
      *
-     * @Route("/{id}", name="person_delete")
-     * @Method("DELETE")
+     * @Route("/{id}", name="person_delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request, Person $person)
     {
@@ -235,8 +226,7 @@ class PersonController extends CommonController
     /**
      * Sends messages to a batch of persons.
      *
-     * @Route("/persons_send_message", name="persons_send_message")
-     * @Method("POST")
+     * @Route("/persons_send_message", name="persons_send_message", methods={"POST"})
      */
     public function personsSendMessageAction(Request $request)
     {
@@ -331,8 +321,7 @@ class PersonController extends CommonController
     /**
      * Set state on a person.
      *
-     * @Route("/{id}/state", name="person_state")
-     * @Method({"POST"})
+     * @Route("/{id}/state", name="person_state", methods={"POST"})
      */
     public function stateAction(Request $request, Person $person)
     {

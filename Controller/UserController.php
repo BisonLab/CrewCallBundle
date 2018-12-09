@@ -3,8 +3,7 @@
 namespace CrewCallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,8 +30,7 @@ class UserController extends CommonController
     /**
      * Lists all Jobs for a user.
      *
-     * @Route("/me", name="user_me")
-     * @Method("GET")
+     * @Route("/me", name="user_me", methods={"GET"})
      */
     public function meAction(Request $request, $access)
     {
@@ -84,8 +82,7 @@ class UserController extends CommonController
 
     /**
      *
-     * @Route("/confirm/{id}", name="user_confirm_job")
-     * @Method("POST")
+     * @Route("/confirm/{id}", name="user_confirm_job", methods={"POST"})
      */
     public function confirmJobAction(Request $request, Job $job, $access)
     {
@@ -103,8 +100,7 @@ class UserController extends CommonController
 
     /**
      *
-     * @Route("/register_interest/{id}", name="user_register_interest")
-     * @Method("POST")
+     * @Route("/register_interest/{id}", name="user_register_interest", methods={"POST"})
      */
     public function registerInterestAction(Request $request, Shift $shift, $access)
     {
@@ -122,8 +118,7 @@ class UserController extends CommonController
 
     /**
      *
-     * @Route("/job_calendaritem/{id}", name="user_job_calendar_item")
-     * @Method("GET")
+     * @Route("/job_calendaritem/{id}", name="user_job_calendar_item", methods={"GET"})
      */
     public function jobCaledarItemAction(Request $request, Job $job, $access)
     {
@@ -143,8 +138,7 @@ class UserController extends CommonController
 
     /**
      *
-     * @Route("/delete_interest/{id}", name="user_delete_interest")
-     * @Method({"DELETE", "POST"})
+     * @Route("/delete_interest/{id}", name="user_delete_interest", methods={"DELETE", "POST"})
      */
     public function deleteInterestAction(Request $request, Job $job, $access)
     {

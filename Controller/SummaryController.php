@@ -5,7 +5,7 @@ namespace CrewCallBundle\Controller;
 use CrewCallBundle\Entity\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 

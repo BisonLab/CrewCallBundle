@@ -4,8 +4,7 @@ namespace CrewCallBundle\Controller;
 
 use CrewCallBundle\Entity\Shift;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,8 +21,7 @@ class ShiftController extends CommonController
     /**
      * Lists all shift entities.
      *
-     * @Route("/", name="shift_index")
-     * @Method("GET")
+     * @Route("/", name="shift_index", methods={"GET"})
      */
     public function indexAction(Request $request, $access)
     {
@@ -59,8 +57,7 @@ class ShiftController extends CommonController
     /**
      * Creates a new shift entity.
      *
-     * @Route("/new", name="shift_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="shift_new", methods={"GET", "POST"})
      */
     /*
      * This one is quite hacked together, but it's because I have to keep the
@@ -138,8 +135,7 @@ class ShiftController extends CommonController
     /**
      * Finds and displays a shift entity.
      *
-     * @Route("/{id}", name="shift_show")
-     * @Method("GET")
+     * @Route("/{id}", name="shift_show", methods={"GET"})
      */
     public function showAction(Shift $shift)
     {
@@ -154,8 +150,7 @@ class ShiftController extends CommonController
     /**
      * Displays a form to edit an existing shift entity.
      *
-     * @Route("/{id}/edit", name="shift_edit", defaults={"id" = 0})
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="shift_edit", defaults={"id" = 0}, methods={"GET", "POST"})
      */
     public function editAction(Request $request, Shift $shift, $access)
     {
@@ -190,8 +185,7 @@ class ShiftController extends CommonController
     /**
      * Deletes a shift entity.
      *
-     * @Route("/{id}", name="shift_delete")
-     * @Method("DELETE")
+     * @Route("/{id}", name="shift_delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request, $access, Shift $shift)
     {
@@ -219,8 +213,7 @@ class ShiftController extends CommonController
     /**
      * Sets a (new) state on the shift.
      *
-     * @Route("/{id}", name="shift_state")
-     * @Method("POST")
+     * @Route("/{id}", name="shift_state", methods={"POST"})
      */
     public function stateAction(Request $request, $access, Shift $shift)
     {

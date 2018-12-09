@@ -4,8 +4,7 @@ namespace CrewCallBundle\Controller;
 
 use CrewCallBundle\Entity\Location;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
@@ -19,8 +18,7 @@ class LocationController extends CommonController
     /**
      * Lists all location entities.
      *
-     * @Route("/", name="location_index")
-     * @Method("GET")
+     * @Route("/", name="location_index", methods={"GET"})
      */
     public function indexAction()
     {
@@ -36,8 +34,7 @@ class LocationController extends CommonController
     /**
      * Creates a new location entity.
      *
-     * @Route("/new", name="location_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="location_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request)
     {
@@ -62,8 +59,7 @@ class LocationController extends CommonController
     /**
      * Finds and displays a location entity.
      *
-     * @Route("/{id}", name="location_show")
-     * @Method("GET")
+     * @Route("/{id}", name="location_show", methods={"GET"})
      */
     public function showAction(Location $location)
     {
@@ -78,8 +74,7 @@ class LocationController extends CommonController
     /**
      * Displays a form to edit an existing location entity.
      *
-     * @Route("/{id}/edit", name="location_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="location_edit", methods={"GET", "POST"})
      */
     public function editAction(Request $request, Location $location)
     {
@@ -103,8 +98,7 @@ class LocationController extends CommonController
     /**
      * Deletes a location entity.
      *
-     * @Route("/{id}", name="location_delete")
-     * @Method("DELETE")
+     * @Route("/{id}", name="location_delete", methods={"DELETE"})
      */
     public function deleteAction(Request $request, Location $location)
     {

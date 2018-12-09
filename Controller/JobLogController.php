@@ -3,8 +3,7 @@
 namespace CrewCallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,8 +24,7 @@ class JobLogController extends CommonController
     /**
      * a Time Sheet.
      *
-     * @Route("/", name="joblog_index")
-     * @Method("GET")
+     * @Route("/", name="joblog_index", methods={"GET"})
      */
     public function indexAction(Request $request, $access)
     {
@@ -56,8 +54,7 @@ class JobLogController extends CommonController
     /**
      * Creates a new JobLog entry
      *
-     * @Route("/new", name="joblog_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="joblog_new", methods={"GET", "POST"})
      */
     public function newAction(Request $request, $access)
     {
@@ -121,8 +118,7 @@ class JobLogController extends CommonController
     /**
      * The time log per person.
      *
-     * @Route("/{id}/person", name="joblog_person")
-     * @Method("GET")
+     * @Route("/{id}/person", name="joblog_person", methods={"GET"})
      */
     public function indexPersonAction(Request $request, $access, Person $person)
     {
@@ -150,8 +146,7 @@ class JobLogController extends CommonController
     /**
      * Displays a form to edit an existing shift entity.
      *
-     * @Route("/{id}/edit", name="joblog_edit", defaults={"id" = 0})
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="joblog_edit", defaults={"id" = 0}, methods={"GET", "POST"})
      */
     public function editAction(Request $request, JobLog $joblog, $access)
     {
@@ -181,8 +176,7 @@ class JobLogController extends CommonController
     /**
      * Deletes a joblog entity.
      *
-     * @Route("/{id}", name="joblog_delete")
-     * @Method({"DELETE", "POST"})
+     * @Route("/{id}", name="joblog_delete", methods={"DELETE", "POST"})
      */
     public function deleteAction(Request $request, $access, JobLog $joblog)
     {
