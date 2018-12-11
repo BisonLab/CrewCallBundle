@@ -275,12 +275,12 @@ function openStateChange() {
             <td>
             {% if not job.booked %}
                 {% if job.state != "ASSIGNED" %}
-              <a role="button" class="btn btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
+              <a role="button" class="btn-sm btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
                 {% endif %}
-              <a role="button" class="btn btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
-              <a role="button" class="btn btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'DENIED', {{ job.shift.id }});">Deny</a>
+              <a role="button" class="btn-sm btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
+              <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'DENIED', {{ job.shift.id }});">Deny</a>
             {% else %}
-              <a role="button" class="btn btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Release</a>
+              <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Release</a>
             {% endif %}
             </td>
         </tr>
