@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{% set newrow = true %}
+{% for dash in dashboarder.dashboards(app.user) %}
+
+{% if newrow == true %}
+<div class="row">
+{% set newrow = false %}
+{% else %}
+{% set newrow = true %}
+{% endif %}
+
+<div class="col-sm-6">
+{{ dash | raw }}
+</div>
+
+{% if newrow == true %}
+</div> <!-- row -->
+{% endif %}
+
+{% endfor %}
+{% if newrow == false %}
+</div>
+{% endif %}
+
+{% endblock %}
