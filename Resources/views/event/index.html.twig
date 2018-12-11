@@ -19,7 +19,12 @@
         <tbody>
         {% for event in events if event.parent is null %}
             <tr>
-                <td><a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.mainevent }}</a></td>
+                <td>
+                <a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.mainevent }}</a>
+                {% for child in event.children %}
+                    <br> * <a href="{{ path('event_show', { 'id': child.id }) }}">{{ child.name }}</a>
+                {% endfor %}
+                </td>
                 <td>{{ event.location }}</td>
                 <td data-order="{{ event.start | date('U')}}" >{% if event.start %}{{ event.start|date('Y-m-d H:i') }}{% endif %}</td>
                 <td data-order="{{ event.end | date('U')}}" >{% if event.end %}{{ event.end|date('Y-m-d H:i') }}{% endif %}</td>

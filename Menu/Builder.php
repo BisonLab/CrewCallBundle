@@ -40,6 +40,7 @@ class Builder implements ContainerAwareInterface
             $eventsmenu->addChild('List', array('route' => 'event_index'));
             $eventsmenu->addChild('List old events', array('route' => 'event_index', 'routeParameters' => array('past' => 'true')));
             $eventsmenu->addChild('Add new event', array('route' => 'event_new'));
+            $eventsmenu->addChild('Calendar', array('route' => 'event_calendar'));
 
             $peoplemenu = $menu->addChild('People');
             $peoplemenu->addChild('All', array('route' => 'person_index'));

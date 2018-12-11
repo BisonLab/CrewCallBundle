@@ -6,6 +6,8 @@ use CrewCallBundle\Entity\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 /**
@@ -92,7 +94,7 @@ class EventController extends CommonController
     /**
      * Finds and displays a event entity.
      *
-     * @Route("/{id}", name="event_show", methods={"GET"})
+     * @Route("/{id}/show", name="event_show", methods={"GET"})
      */
     public function showAction(Event $event)
     {
@@ -176,6 +178,39 @@ class EventController extends CommonController
     public function showLogAction(Request $request, $access, $id)
     {
         return  $this->showLogPage($request,$access, "CrewCallBundle:Event", $id);
+    }
+
+    /**
+     * Calendar for event
+     *
+     * @Route("/calendar", name="event_calendar", methods={"GET", "POST"})
+     */
+    public function eventCalendarAction(Request $request, $access)
+    {
+        if ($this->isRest($access)) {
+            $calendar = $this->container->get('crewcall.calendar');
+            $jobservice = $this->container->get('crewcall.jobs');
+
+            // Gotta get the time scope.
+            $from = new \Datetime($request->get('start'));
+            $to = new \Datetime($request->get('end'));
+
+            $em = $this->getDoctrine()->getManager();
+            $qb = $em->createQueryBuilder();
+            $qb->select('e')
+                 ->from('CrewCallBundle:Event', 'e')
+                 ->where('e.end > :from')
+                 ->andWhere('e.start < :to')
+                 ->setParameter('from', $from, \Doctrine\DBAL\Types\Type::DATETIME)
+                 ->setParameter('to', $to, \Doctrine\DBAL\Types\Type::DATETIME);
+            $events = $qb->getQuery()->getResult();
+            
+            $calitems = $calendar->toFullCalendarArray($events);
+            // Not liked by OWASP since we just return an array.
+            return new JsonResponse($calitems, Response::HTTP_OK);
+        }
+        return $this->render('event/calendar.html.twig', array(
+        ));
     }
 
     /**
