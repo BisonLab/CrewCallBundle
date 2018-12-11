@@ -124,6 +124,10 @@ function openStateChange() {
                 <td>{{ person.dietslabels | join(", ")}}</td>
             </tr>
             <tr>
+                <th>E-Mail</th>
+                <td>{{ person.email }}</td>
+            </tr>
+            <tr>
                 <th>Mobile phone number</th>
                 <td>{{ person.mobilephonenumber }}</td>
             </tr>
@@ -181,7 +185,7 @@ function openStateChange() {
                 <th>Organizations</th>
                 <td>
                 {% for pfo in person.personfunctionorganizations %}
-                {{ pfo.organization }} ({{ pfo.function }})<rb>
+                {{ pfo.organization }} ({{ pfo.function }})<br>
                 {% endfor %}
                 </ul>
                 </td>
