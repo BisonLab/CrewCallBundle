@@ -74,7 +74,7 @@ class Shift
     private $amount;
 
     /**
-     * @ORM\OneToMany(targetEntity="Job", mappedBy="shift", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="Job", mappedBy="shift", cascade={"persist","remove"})
      */
     private $jobs;
 

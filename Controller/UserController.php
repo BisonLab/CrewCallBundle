@@ -40,11 +40,13 @@ class UserController extends CommonController
         // Again, ajax-centric.
         if ($this->isRest($access)) {
             return $this->render('user/_me.html.twig', array(
+                'past' => $request->get('past'),
                 'user' => $user
             ));
         }
 
         return $this->render('user/me.html.twig', array(
+            'past' => $request->get('past'),
             'user' => $user,
         ));
     }
