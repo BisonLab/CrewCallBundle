@@ -129,11 +129,24 @@ class Calendar
 
     public function eventToCal(Event $event)
     {
+        // Pretty complex, but it does use the ID to make sure we use the same
+        // colour on the same (sub) event.
+        $phi = 0.618033988749895;
+        $phi = (1 + sqrt(5))/2;
+        $id =  $event->getId();
+        if ($event->getParent()) $id = $event->getParent()->getId();
+        $id = $id * 3.14;
+        $n = $id * $phi - floor($id * $phi);
+        $hue = floor($n * 256);
+        $col = $this->hslToRgb( $hue, 0.5, 0.7 );
+
         $c = array();
         $c['id'] = $event->getId();
-        $c['title'] = $event->getName();
+        $c['title'] = $col . " " . $event->getName();
         $c['start'] = $event->getStart();
         $c['end'] = $event->getEnd();
+        $c['color'] = "#" . $col;
+        $c['textColor'] = "black";
         return $c;
     }
 
@@ -196,5 +209,49 @@ class Calendar
         $c['end'] = $td;
         $c['title'] = (string)$ps->getState();
         return $c;
+    }
+
+    // Nicked from https://gist.github.com/brandonheyer/5254516
+    public function hslToRgb( $h, $s, $l )
+    {
+        $r; 
+        $g; 
+        $b;
+        $c = ( 1 - abs( 2 * $l - 1 ) ) * $s;
+        $x = $c * ( 1 - abs( fmod( ( $h / 60 ), 2 ) - 1 ) );
+        $m = $l - ( $c / 2 );
+        if ( $h < 60 ) {
+            $r = $c;
+            $g = $x;
+            $b = 0;
+        } else if ( $h < 120 ) {
+            $r = $x;
+            $g = $c;
+            $b = 0;         
+        } else if ( $h < 180 ) {
+            $r = 0;
+            $g = $c;
+            $b = $x;                    
+        } else if ( $h < 240 ) {
+            $r = 0;
+            $g = $x;
+            $b = $c;
+        } else if ( $h < 300 ) {
+            $r = $x;
+            $g = 0;
+            $b = $c;
+        } else {
+            $r = $c;
+            $g = 0;
+            $b = $x;
+        }
+        $r = floor(( $r + $m ) * 255);
+        $g = floor(( $g + $m ) * 255);
+        $b = floor(( $b + $m ) * 255);
+        $wcol = str_pad(dechex(round($r)), 2, "0", STR_PAD_LEFT);
+        $wcol .= str_pad(dechex(round($g)), 2, "0", STR_PAD_LEFT);
+        $wcol .= str_pad(dechex(round($b)), 2, "0", STR_PAD_LEFT);
+        return $wcol;
+        return array( floor( $r ), floor( $g ), floor( $b ) );
     }
 }
