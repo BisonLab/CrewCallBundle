@@ -142,7 +142,7 @@ class Calendar
 
         $c = array();
         $c['id'] = $event->getId();
-        $c['title'] = $col . " " . $event->getName();
+        $c['title'] = $event->getName();
         $c['start'] = $event->getStart();
         $c['end'] = $event->getEnd();
         $c['color'] = "#" . $col;
