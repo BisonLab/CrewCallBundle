@@ -44,7 +44,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
                 ->setParameter('states', $states);
             if (!isset($options['from'])) {
                 $from = new \DateTime();
-                $qb->andWhere('s.start >= :from')
+                $qb->andWhere('s.end >= :from')
                     ->setParameter('from', $from);
             }
         }
@@ -66,7 +66,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
                 else
                     $from = new \DateTime($options['from']);
             }
-            $qb->andWhere('s.start >= :from')
+            $qb->andWhere('s.end >= :from')
                ->setParameter('from', $from);
 
             if (isset($options['to'])) {
@@ -74,7 +74,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
                     $to = $options['to'];
                 else
                     $to = new \DateTime($options['to']);
-                $qb->andWhere('s.end <= :to')
+                $qb->andWhere('s.start <= :to')
                    ->setParameter('to', $to);
             }
         }

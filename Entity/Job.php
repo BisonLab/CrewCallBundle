@@ -71,6 +71,15 @@ class Job
      */
     private $updated_at;
 
+    /*
+     * Another placeholder. Boolean to hint that this job overlaps with
+     * another. Will be used in twig templates, but may have other uses
+     * aswell.
+     * But you have to use "checkOverlap" in the crewcall.jobs service for
+     * this to be set.
+     */
+    private $overlap;
+
     /**
      * Get id
      *
@@ -289,6 +298,17 @@ class Job
     public function setUpdatedAt($updated_at)
     {
         $this->updated_at = $updated_at;
+        return $this;
+    }
+
+    public function getOverlap()
+    {
+        return $this->overlap;
+    }
+
+    public function setOverlap($overlap)
+    {
+        $this->overlap = $overlap;
         return $this;
     }
 }

@@ -25,8 +25,10 @@ class Jobs
      */
     public function jobsForPerson(Person $person, $options = array())
     {
-        return $this->em->getRepository('CrewCallBundle:Job')
+        $jobs = $this->em->getRepository('CrewCallBundle:Job')
             ->findJobsForPerson($person, $options);
+        $c = $this->checkOverlap($jobs);
+        return $c;
     }
 
     public function opportunitiesForPerson(Person $person, $options = array())
@@ -67,6 +69,21 @@ class Jobs
             }
         }
         return $opportunities;
+    }
+
+    public function checkOverlap($jobs)
+    {
+        $last = null;
+        $checked = new \Doctrine\Common\Collections\ArrayCollection();
+        foreach ($jobs as $job) {
+            if ($last && $this->overlap($job->getShift(), $last->getShift())) {
+                $job->setOverlap(true);
+                $last->setOverlap(true);
+            }
+            $checked->add($job);
+            $last = $job;
+        }
+        return $checked;
     }
 
     public function overlap(Shift $one, Shift $two)

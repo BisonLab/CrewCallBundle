@@ -634,7 +634,6 @@ class Person extends BaseUser
         /*
          * Return something.
          */
-dump($reasons);
         if ($occupied && isset($options['reasons']))
             return $reasons;
         else
