@@ -22,7 +22,7 @@
         <tr>
             <th>Person</th>
             <th>State</th>
-            {% if shift.end < date() %}
+            {% if shift.start < date() %}
                 <th>Time Sheet</th>
             {% endif %}
             <th>Actions</th>
@@ -52,7 +52,7 @@
                 {{ job.state }}
                 {% if job.updatedat is defined %}<br>{{ job.updatedat|date('Y-m-d H:i') }}{% endif %}
             </td>
-            {% if job.shift.end < date() %}
+            {% if job.shift.start < date() %}
                 <td id="jobLogTable_{{ job.id }}">
                 {% if job.joblogs | length > 0  %}
                      {{ jlmacros.list_joblogs(job.joblogs) }}
