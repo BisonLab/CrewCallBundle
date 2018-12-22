@@ -33,8 +33,8 @@
         <tr>
             {% set reason = job.person.occupied({'reasons': true}) %}
             <td {% if reason %}class="cc_warn"{% endif %}>
+            <a href="#" id="popSummary_person_jobs_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="popSummary('person_jobs', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
             <a href="#" id="popSummary_person_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
-            {{ job.person }}
     {% set mlogcontext = {
                 'system': 'crewcall',
                 'object_name': 'person',
@@ -42,8 +42,9 @@
         }
     %}
     {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-                &nbsp;(<a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>)
+                <a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
     {% endif %}
+            {{ job.person }}
     {% if reason %}
         <br>{{ reason.state }}
     {% endif %}

@@ -255,6 +255,29 @@ class PersonController extends CommonController
     }
 
     /**
+     * Finds and returns the jobs for a person.
+     *
+     * @Route("/{id}", name="person_jobs", methods={"GET"})
+     */
+    public function showJobsAction(Request $request, $access, Person $person)
+    {
+        $options = [];
+        // I'll default today +2 days. Add options at will and need.
+        $options['from'] = new \DateTime();
+        $options['to'] = new \DateTime('+2days');
+        $summary = [];
+        foreach($this->get('crewcall.jobs')->jobsForPerson(
+            $person, $options) as $job) {
+                $summary[] = [(string)$job, $job->getStart()->format("d M H:i"), $job->getEnd()->format("d M H:i"), $job->getState()];
+        }
+        
+        if ($this->isRest($access)) {
+            return $this->returnRestData($request, $summary,
+                array('html' => 'CrewCallBundle::summaryPopContent.html.twig'));
+        }
+    }
+
+    /**
      * Creates a form to delete a person entity.
      *
      * @param Person $person The person entity

@@ -42,11 +42,17 @@ class SummaryController extends CommonController
 
     private function _show($request, $access, $entity, $id)
     {
+        $summary = null;
         $em = $this->getDoctrine()->getManager();
         // Switch it.
         switch ($entity) {
             case 'person':
                 $entity = $em->getRepository('CrewCallBundle:Person')->find($id);
+                break;
+            // Feels wrong, but it's kinda effective and is reuse.
+            case 'person_jobs':
+                $entity = $em->getRepository('CrewCallBundle:Person')->find($id);
+                $summary = $this->personJobs($entity);
                 break;
             case 'event':
                 $entity = $em->getRepository('CrewCallBundle:Event')->find($id);
@@ -59,7 +65,9 @@ class SummaryController extends CommonController
         if (!$entity) {
             return $this->returnNotFound($request, 'Unable to find entity.');
         }
-        $summary = $this->get('crewcall.summarizer')->summarize($entity, $access);
+        if (!$summary)
+            $summary = $this->get('crewcall.summarizer')->summarize($entity, $access);
+dump($summary);
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $summary,
                 array('html' => 'CrewCallBundle::summaryPopContent.html.twig'));
@@ -113,5 +121,32 @@ class SummaryController extends CommonController
         }
         return  $this->showLogPage($request,$access, $class, $id,
             ['html' => 'CrewCallBundle::summaryLogPopContent.html.twig']);
+    }
+    
+    /*
+     * Let's call this "Local custom helpers"
+     */
+    public function personJobs($person)
+    {
+        $options = [];
+        // I'll default today +2 days. Add options at will and need.
+        $options['from'] = new \DateTime();
+        $options['to'] = new \DateTime('+2days');
+        $summary = [];
+        foreach($this->get('crewcall.jobs')->jobsForPerson(
+            $person, $options) as $job) {
+                $label = (string)$job . " at " . (string)$job->getEvent();
+                $value = $job->getStart()->format("d M H:i")
+                    . " -> " .
+                    $job->getEnd()->format("d M H:i")
+                    . "(" . $job->getState() . ")";
+                $summary[] = [
+                    'label' => $label,
+                    'value' => $value
+                    ];
+        }
+        if (count($summary) == 0)
+            $summary[] = ['label' => "No jobs for this period", 'value' => ""];
+        return $summary;
     }
 }
