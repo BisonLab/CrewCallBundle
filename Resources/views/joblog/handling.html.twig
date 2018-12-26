@@ -10,17 +10,28 @@ function grabJobLogList(job_id) {
 }
 
 function grabNewJobLogForm(job_id, shift_id) {
-    url = "{{ path('joblog_new', { 'access': 'ajax' }) }}?job=" + job_id;
+    url = "{{ path('joblog_new', { 'access': 'ajax' }) }}";
+    if (job_id == "shift") {
+        url = url + "?shift=" + shift_id;
+    } else {
+        url = url + "?job=" + job_id;
+    }
     $.get(url, function( content ) {
-        $( "#addJobLog_"+job_id ).popover({
+        popat = "#addJobLog_"+job_id;
+        if (job_id == "shift") {
+            popat = "#addJobLog_shift_"+shift_id;
+        }
+        $( popat ).popover({
             html: true,
             placement: 'left',
             title: 'Add Work <a href="#" class="close" data-dismiss="alert">&times;</a>',
             content: content
         });
-        $( "#addJobLog_"+job_id ).popover("show");
+        $( popat ).popover("show");
         $( "#crewcallbundle_joblog_job").hide();
         $( "#crewcallbundle_joblog_job").prev().hide();
+        $( "#crewcallbundle_joblog_shift").hide();
+        $( "#crewcallbundle_joblog_shift").prev().hide();
         $( "#newJobLogForm" ).submit(function( event ) {
             event.preventDefault();
             submitNewJobLogForm(shift_id);

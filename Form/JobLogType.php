@@ -44,7 +44,8 @@ class JobLogType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CrewCallBundle\Entity\JobLog'
+            'data_class' => 'CrewCallBundle\Entity\JobLog',
+            'allow_extra_fields' => true
         ));
     }
 

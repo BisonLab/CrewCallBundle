@@ -23,7 +23,9 @@
             <th>Person</th>
             <th>State</th>
             {% if shift.start < date() %}
-                <th>Time Sheet</th>
+                <th>Time Sheet
+                  <br><a href="#" id="addJobLog_shift_{{ shift.id }}" data-html="true" onClick="grabNewJobLogForm('shift', {{ shift.id }});">Add in / out for all jobs</a>
+                </th>
             {% endif %}
             <th>Actions</th>
         </tr>
@@ -52,8 +54,9 @@
             <td>
                 {{ job.state }}
                 {% if job.updatedat is defined %}<br>{{ job.updatedat|date('Y-m-d H:i') }}{% endif %}
-            </td>
             {% if job.shift.start < date() %}
+                <br><a role="button" class="btn-sm btn-primary" href="#" onClick="setStateOnJob({{shift.id}}, 'COMPLETED', {{ job.shift.id }});">Complete</a>
+            </td>
                 <td id="jobLogTable_{{ job.id }}">
                 {% if job.joblogs | length > 0  %}
                      {{ jlmacros.list_joblogs(job.joblogs) }}
@@ -61,8 +64,9 @@
                     &nbsp;
                 {% endif %}
                     <a role="button" class="btn-sm btn-primary" href="#" id="addJobLog_{{ job.id }}" data-html="true" onClick="grabNewJobLogForm({{ job.id }}, {{ job.shift.id }});">Add</a>
-                    <a role="button" class="btn-sm btn-primary" href="#" onClick="setStateOnJob({{shift.id}}, 'COMPLETED', {{ job.shift.id }});">Complete</a>
                 </td>
+            {% else %}
+            </td>
             {% endif %}
             <td>
             {% if not job.booked %}
