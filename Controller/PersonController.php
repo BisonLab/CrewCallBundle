@@ -64,7 +64,7 @@ class PersonController extends CommonController
             return $this->returnNotFound($request, 'No function to filter');
         $people = $functionEntity->getAllPeople();
 
-        $functions = $fe_repo->findRootFunctions();
+        $functions = $functionEntity->getRootFunctionEntity()->getAllChildren();
         return $this->render('person/index.html.twig', array(
             'people' => $people,
             'functions' => $functions,

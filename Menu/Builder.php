@@ -43,24 +43,19 @@ class Builder implements ContainerAwareInterface
             $eventsmenu->addChild('Calendar', array('route' => 'event_calendar'));
 
             $peoplemenu = $menu->addChild('People');
-            $peoplemenu->addChild('All', array('route' => 'person_index'));
-            $peoplemenu->addChild('Applicants', array('route' => 'person_applicants'));
-            $peoplemenu->addChild('Add person', array('route' => 'person_new'));
-
             $em = $this->container->get('doctrine')->getManager();
             $ferepo = $em->getRepository('CrewCallBundle:FunctionEntity');
-            if (count($ferepo->findAll()) < 10) {
-                $by_func = $peoplemenu->addChild('By Function', ['uri' => '#']);
-                $by_func->setAttribute('dropdown', true)->setAttribute('class', 'has-dropdown');
-                foreach ($ferepo->findNamesWithPeopleCount() as $np) {
-                    if ($np['people'] > 0) {
-                        $by_func->addChild($np['name'] . " (".$np['people'].")",
-                            array('route' => 'person_function',
-                            'routeParameters' => array('id' => $np['id'])));
-                    }
-                }
+            foreach ($ferepo->findParentsWithPeople() as $pfe) {
+                // Spot the ugliness.
+                $peoplemenu->addChild($pfe->getName() . "s",
+                    array('route' => 'person_function',
+                    'routeParameters' => array('function' => $pfe->getId())));
             }
-
+            $peoplemenu->addChild('All', array('route' => 'person_index'));
+            if ($this->container->getParameter('allow_registration')) {
+                $peoplemenu->addChild('Applicants', array('route' => 'person_applicants'));
+            }
+            $peoplemenu->addChild('Add person', array('route' => 'person_new'));
             $menu->addChild('Organizations', array('route' => 'organization_index'));
             $menu->addChild('Locations', array('route' => 'location_index'));
 

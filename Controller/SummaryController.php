@@ -67,7 +67,6 @@ class SummaryController extends CommonController
         }
         if (!$summary)
             $summary = $this->get('crewcall.summarizer')->summarize($entity, $access);
-dump($summary);
         if ($this->isRest($access)) {
             return $this->returnRestData($request, $summary,
                 array('html' => 'CrewCallBundle::summaryPopContent.html.twig'));

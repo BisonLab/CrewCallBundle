@@ -20,6 +20,21 @@ class FunctionEntityRepository extends \Doctrine\ORM\EntityRepository
         return $result = $query->getResult();
     }
 
+    public function findParentsWithPeople()
+    {
+        // So wrong, but didn't find out how to to this in DQL without it
+        // being even worse.
+        $parents = [];
+        foreach ($this->findAll() as $fe) {
+            if (count($fe->getPersonFunctions()) > 0
+                    || count($fe->getPersonFunctionOrganizations()) > 0 ) {
+                $tfe = $fe->getRootFunctionEntity();
+                $parents[$tfe->getName()] = $tfe;
+            }
+        }
+        return array_values($parents);
+    }
+
     public function searchByField($field, $value)
     {
         if ($field == 'attributes') {

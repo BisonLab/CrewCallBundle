@@ -239,6 +239,20 @@ class FunctionEntity
     }
 
     /**
+     * Get all children
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAllChildren()
+    {
+        $children = $this->children->toArray();
+        foreach ($this->children as $child) {
+            $children = array_merge($children, $child->getAllChildren());
+        }
+        return $children;
+    }
+
+    /**
      * Set parent
      *
      * @param \CrewCallBundle\Entity\FunctionEntity $parent
@@ -259,6 +273,19 @@ class FunctionEntity
     public function getParent()
     {
         return $this->parent;
+    }
+
+    /**
+     * Get the parent of parents.
+     *
+     * @return \CrewCallBundle\Entity\FunctionEntity 
+     */
+    public function getRootFunctionEntity()
+    {
+        if ($parent = $this->getParent())
+            return $parent->getRootFunctionEntity();
+        else
+            return $this;
     }
 
     /**

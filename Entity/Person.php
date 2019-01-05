@@ -404,24 +404,30 @@ class Person extends BaseUser
     {
         if (empty($options) && $state == $this->getState()) return $this;
 
-        $curstate = $this->getStateOnDate();
+            
         $newstate = new PersonState();
         $newstate->setState($state);
-        if (empty($options))
-            $curstate->setToDate(new \DateTime('yesterday'));
-
-        // TODO: Make sure there are no overlap!
         if (isset($options['from_date'])) {
             $newstate->setFromDate($options['from_date']);
-            if ($curstate->getToDate() === null 
-                    || $curstate->getToDate() > $options['from_date']) {
-                $to_date = clone($options['from_date']);
-                $curstate->setToDate($to_date->modify("-1 day"));
+        }
+
+        if ($curstate = $this->getStateOnDate()) {
+            if (empty($options))
+                $curstate->setToDate(new \DateTime('yesterday'));
+            // TODO: Make sure there are no overlap!
+            if (isset($options['from_date'])) {
+                if ($curstate->getToDate() === null 
+                        || $curstate->getToDate() > $options['from_date']) {
+                    $to_date = clone($options['from_date']);
+                    $curstate->setToDate($to_date->modify("-1 day"));
+                }
             }
         }
+
         if (isset($options['to_date'])) {
             $newstate->setToDate($options['to_date']);
         }
+
         $this->addState($newstate);
         return $this;
 
