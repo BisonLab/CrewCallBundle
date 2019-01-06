@@ -296,6 +296,8 @@ function openStateChange() {
   </div>
   <div class="tab-pane" id="notestab">
         {% set mconf = {'mconfig': {
+                'formname': 'personnote',
+                'reload_after_post': true,
                 'subject': "",
                 'to_field': false,
                 'from_field': false,
@@ -311,7 +313,7 @@ function openStateChange() {
         {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
     <p>
     <br/>
-        <a href="#" onClick="createMessage()">Add a note</a><br />
+        <a href="#" onClick='createMessage("personnote");'>Add a note</a><br />
     </p>
 {% set mlogcontext = {
             'system': 'crewcall',

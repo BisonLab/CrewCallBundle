@@ -93,6 +93,7 @@
                 <th>Start</th>
                 <th>End</th>
                 <th>What</th>
+                <th>&nbsp;</th>
             </tr>
         </thead>
         <tbody>
@@ -104,6 +105,30 @@
                 <td data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
                 <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
                 <td>{{ shift.function }}</td>
+                <td>
+{% set mlogcontext = {
+            'system': 'crewcall',
+            'object_name': 'event',
+            'message_type': 'ConfirmNote',
+            'external_id': shift.event.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+<strong>{{ note.subject }}</strong><br>
+{{ note.body }}
+{% endfor %}
+{% set mlogcontext = {
+            'system': 'crewcall',
+            'object_name': 'shift',
+            'message_type': 'ConfirmNote',
+            'external_id': shift.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+<strong>{{ note.subject }}</strong><br>
+{{ note.body }}
+{% endfor %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
@@ -145,7 +170,28 @@ jQuery(document).ready(function() {
                 <td data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
                 <td>{{ shift.function }}</td>
                 <td>
-                    <form method="POST" action="{{ path('user_register_interest', {'id': shift.id }) }}">
+{% set mlogcontext = {
+            'system': 'crewcall',
+            'object_name': 'event',
+            'message_type': 'ConfirmNote',
+            'external_id': shift.event.id
+    }
+%}
+{% set confirm = false %}
+{% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+{% set confirm = confirm ~ note.subject ~ '\\n' ~ note.body ~ '\\n' %}
+{% endfor %}
+{% set mlogcontext = {
+            'system': 'crewcall',
+            'object_name': 'shift',
+            'message_type': 'ConfirmNote',
+            'external_id': shift.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+{% set confirm = confirm ~ note.subject ~ '\\n' ~ note.body ~ '\\n' %}
+{% endfor %}
+                    <form method="POST" action="{{ path('user_register_interest', {'id': shift.id }) }}" {% if confirm %}onSubmit='return confirm("{{ confirm  }}");'{% endif %}>
                     <button type="submit" class="btn btn-success">I want it!</button>
                     </form>
                 </td>
@@ -155,7 +201,7 @@ jQuery(document).ready(function() {
     </table>
 {% endif %}
 
-{% set wishlist = cc_jobs.jobsforperson(user, {'state': 'INTERESTED'}) %}
+{% set wishlist = cc_jobs.jobsforperson(user, {'state': 'INTERESTED' }) %}
 {% if wishlist|length > 0 %}
     <h2>Wishlist</h2>
 
@@ -167,6 +213,7 @@ jQuery(document).ready(function() {
                 <th>Start</th>
                 <th>End</th>
                 <th>What</th>
+                <th>&nbsp;</th>
                 <th>&nbsp;</th>
             </tr>
         </thead>
@@ -183,6 +230,30 @@ jQuery(document).ready(function() {
                     <form method="POST" action="{{ path('user_delete_interest', {'id': job.id }) }}">
                     <button type="submit" class="btn btn-danger">Cancel</button>
                     </form>
+                </td>
+                <td>
+{% set mlogcontext = {
+            'system': 'crewcall',
+            'object_name': 'event',
+            'message_type': 'ConfirmNote',
+            'external_id': shift.event.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+<strong>{{ note.subject }}</strong><br>
+{{ note.body }}
+{% endfor %}
+{% set mlogcontext = {
+            'system': 'crewcall',
+            'object_name': 'shift',
+            'message_type': 'ConfirmNote',
+            'external_id': shift.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+<strong>{{ note.subject }}</strong><br>
+{{ note.body }}
+{% endfor %}
                 </td>
             </tr>
         {% endfor %}

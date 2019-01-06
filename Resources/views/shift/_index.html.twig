@@ -46,9 +46,35 @@
               <a href="#" onClick="grabEditShiftForm({{ shift.id }});">Edit</a><br>
               <a href="#" onClick="grabJobList({{ shift.id }}); grabNewJobForm({{shift.id}});">Add person</a><br>
               <a href="#" onClick="grabJobList({{ shift.id }}); grabNewShiftOrganizationForm({{shift.id}});">Add crew from an organization</a><br>
+    {% set mlogcontext = {
+                'system': 'crewcall',
+                'object_name': 'shift',
+                'external_id': shift.id
+        }
+    %}
+    {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
+             <a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a><br>
+    {% endif %}
+    {% set mconf = {'mconfig': {
+            'formname': 'shiftnote_' ~ shift.id,
+            'reload_after_post': true,
+            'subject': "",
+            'to_field': false,
+            'from_field': false,
+            'message_type': 'Notes',
+            'context': {
+                'system': 'crewcall',
+                'object_name': 'shift',
+                'external_id': shift.id
+                }
+            }
+        }
+    %}
+    {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+            <a href="#" onClick='createMessage("shiftnote_{{ shift.id }}");'>Add a note</a><br />
               <a href="#" id="popLogSummary_shift_{{ shift.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('shift', {{ shift.id }});">
                 Edit History
-            </a><br>
+              </a><br>
               <a href="#" onClick="deleteShift({{ shift.id }});">Delete</a><br>
             </td>
         </tr>

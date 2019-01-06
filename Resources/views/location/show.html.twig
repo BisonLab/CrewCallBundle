@@ -50,6 +50,8 @@
   <div class="tab-content ">
     <div class="tab-pane active" id="notestab">
       {% set mconf = {'mconfig': {
+              'formname': 'locationnote',
+              'reload_after_post': true,
               'subject': "",
               'to_field': false,
               'from_field': false,
@@ -65,13 +67,13 @@
       {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
       <p>
       <br>
-      <a href="#" onClick="createMessage()">Add a note</a><br />
+      <a href="#" onClick='createMessage("locationnote");'>Add a note</a><br />
       </p>
     {% set mlogcontext = {
-                'system': 'crewcall',
-                'object_name': 'location',
-                'message_type': 'Notes',
-                'external_id': location.id
+        'system': 'crewcall',
+        'object_name': 'location',
+        'message_type': 'Notes',
+        'external_id': location.id
         }
     %}
     {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
