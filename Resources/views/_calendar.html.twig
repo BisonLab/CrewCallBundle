@@ -53,7 +53,9 @@ $(function () {
             }
         ],
         eventRender: function(event, element) {
-            $( element ).popover({
+            element.popover({
+                title: event.popup_title,
+                content: event.popup_content,
                 html: true,
                 /* This one ends up with "Error in parsing value for ‘left’.
  * Declaration dropped." And the only reference I found was an 11 yeqars old
@@ -61,10 +63,11 @@ $(function () {
                 Neither of these worked.
                 container: 'fc-widget-content',
                 container: 'calendar',
-                */
+                container: 'fc-view-container',
                 placement: 'auto',
-                title: event.popup_title,
-                content: event.popup_content
+                */
+                placement: 'auto top',
+                container: 'body'
             });
         }
     });
