@@ -46,10 +46,12 @@ function submitNewShiftForm(event_id) {
     return false;
 }
 
-function grabNewShiftForm(event_id = false) {
+function grabNewShiftForm(event_id = false, last_shift_id = false) {
     old_html = $( "#newShift" ).html();
     url = "{{ path('shift_new', { 'access': 'ajax' }) }}";
-    if (event_id) {
+    if (last_shift_id) {
+        url = url + "?from_shift=" + last_shift_id;
+    } else if (event_id) {
         url = url + "?event=" + event_id;
     }
     $.get(url, function( data ) {
@@ -60,6 +62,12 @@ function grabNewShiftForm(event_id = false) {
          */
         $( "#crewcallbundle_shift_event").prev().hide();
         $( "#crewcallbundle_shift_event").hide();
+        /* This is tempting for reducing the form elements, but it may create
+         * an issue even if I do add one day when time is below start time.
+         * (Which will not validate as the validation is set up right now.)
+        $( "#crewcallbundle_shift_end_date").prev().hide();
+        $( "#crewcallbundle_shift_end_date").hide();
+         */
         $( "#newShiftForm" ).submit(function( event ) {
             event.preventDefault();
             submitNewShiftForm(event_id);
@@ -99,7 +107,8 @@ function grabEditShiftForm(shift_id) {
     orgurl = "{{ path('shift_edit', { 'access': 'ajax' }) }}";
     url = orgurl.replace("0", shift_id);
     $.get(url, function( data ) {
-        $( "#editShift" ).html(data);
+        $( "#jobList_"+shift_id ).html(data);
+        $( "#jobList_" + shift_id ).show();
         $( "#crewcallbundle_shift_event").prev().hide();
         $( "#crewcallbundle_shift_event").hide();
         $( "#editShiftForm" ).submit(function( event ) {
@@ -145,7 +154,11 @@ jQuery(document).ready(function() {
 </div>
 
 <div id="newShift">
-<a href="#" onClick="grabNewShiftForm({{event.id}});">Add shift</a>
+{% if last_shift %}
+<a href="#" onClick="grabNewShiftForm(false, {{ last_shift.id }});">Add shift</a>
+{% else %}
+<a href="#" onClick="grabNewShiftForm({{ event.id }});">Add shift</a>
+{% endif %}
 </div>
 
 <div id="editShift">

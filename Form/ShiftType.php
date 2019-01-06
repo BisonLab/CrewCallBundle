@@ -8,6 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Doctrine\ORM\EntityRepository;
@@ -33,7 +34,8 @@ class ShiftType extends AbstractType
                 'time_widget' => "single_text"))
            ->add('state', ChoiceType::class, array(
               'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift')))
-           ->add('amount', IntegerType::class, array('required' => true, 'attr' => array('size' => 3)))
+           // ->add('amount', IntegerType::class, array('required' => true, 'attr' => array('size' => 3)))
+           ->add('amount', TextType::class, array('required' => true, 'attr' => array('size' => 3, 'pattern' => '[0-9]{1,3}')))
            ->add('function', EntityType::class,
                array('class' => 'CrewCallBundle:FunctionEntity',
                    'group_by' => 'parent.name',

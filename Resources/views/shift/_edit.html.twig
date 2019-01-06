@@ -1,17 +1,28 @@
-<script>
-$(document).ready(function()
-    {
-    $("#crewcallbundle_shift_start_date input").each(function(){
-        $(this).attr("readonly","readonly");
-    });
-    $("#crewcallbundle_shift_end_date input").each(function(){
-        $(this).attr("readonly","readonly");
-    });
-});
-</script>
-{{ form_start(edit_form, {action:path('shift_edit', {'access': 'ajax'}), 'attr': {'id':'editShiftForm'}}) }}
-    {{ form_widget(edit_form) }}
+{% form_theme edit_form 'form_div_layout.html.twig' %}
+{{ form_start(edit_form, {action:path('shift_edit', {'access': 'ajax'}), 'attr': {'id':'editShiftForm', 'class': 'ccCompactForm'}}) }}
+<legend>Edit shift</legend>
+    <label>Start
+    {{ form_widget(edit_form.start) }}
+    </label>
+    <label>End
+{{ form_widget(edit_form.end) }}
+    </label>
+    <label>State
+{{ form_widget(edit_form.state) }}
+    </label>
+    <label>Amount
+{{ form_widget(edit_form.amount) }}
+    </label>
+    <label>Function
+{{ form_widget(edit_form.function) }}
+    </label>
+    <label>Event
+{{ form_widget(edit_form.event) }}
+    </label>
+    <label>&nbsp;
     <input type="submit" value="Save" />
+    </label>
+</fieldset>
 {{ form_end(edit_form) }}
 
 {{ form_start(delete_form) }}

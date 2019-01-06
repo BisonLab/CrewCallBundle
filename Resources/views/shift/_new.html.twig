@@ -1,19 +1,26 @@
-<script>
-$(document).ready(function()
-    {
-    $("#crewcallbundle_shift_start_date input").each(function(){
-        $(this).attr("readonly","readonly");
-    });
-    $("#crewcallbundle_shift_end_date input").each(function(){
-        $(this).attr("readonly","readonly");
-    });
-});
-</script>
-<h4>New shift</h4>
 {# Don't like to add the access like this, but these templates are for ajax, alas I can just as well admit it. #}
-{{ form_start(form, {action:path('shift_new', {'access': 'ajax'}), 'attr': {'id':'newShiftForm'}}) }}
-    {{ form_widget(form) }}
+{% form_theme form 'form_div_layout.html.twig' %}
+{{ form_start(form, {action:path('shift_new', {'access': 'ajax'}), 'attr': {'id':'newShiftForm', 'class': 'ccCompactForm'}}) }}
+<fieldset>
+<legend>New shift</legend>
+    <label>Start
+    {{ form_widget(form.start) }}
+    </label>
+    <label>End
+{{ form_widget(form.end) }}
+    </label>
+    <label>State
+{{ form_widget(form.state) }}
+    </label>
+    <label>Amount
+{{ form_widget(form.amount) }}
+    </label>
+    <label>Function
+{{ form_widget(form.function) }}
+    </label>
+    <label>&nbsp;
     <input id="submitNewShift" type="submit" value="Add" />
+    </label>
+</fieldset>
 {#     <input id="submitNewShift" type="submit" value="Add"  onclick="this.value='Adding';this.disabled=true;return false;" /> #}
 {{ form_end(form) }}
-

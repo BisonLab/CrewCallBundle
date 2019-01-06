@@ -116,7 +116,7 @@
 
   <div class="tab-content ">
     <div class="tab-pane active" id="shiftstab">
-    {% include 'CrewCallBundle:shift:handling.html.twig' with { 'event': event}  %}
+    {% include 'CrewCallBundle:shift:handling.html.twig' with { 'last_shift': last_shift, 'event': event}  %}
     </div>
 
   <!-- TODO: Make this click-loadable as with the functab -->

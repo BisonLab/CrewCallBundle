@@ -1,6 +1,14 @@
-{{ form_start(form, {action:path('job_new', {'access': 'ajax'}), 'attr': {'id':'newJobForm'}}) }}
-    {{ form_widget(form) }}
+{% form_theme form 'form_div_layout.html.twig' %}
+{{ form_start(form, {action:path('job_new', {'access': 'ajax'}), 'attr': {'id':'newJobForm', 'class': 'ccCompactForm'}}) }}
     <input type="hidden" name="username" id="username">
+    <label>Person
+    {{ form_widget(form.person) }}
+    </label>
+    <label>State
+    {{ form_widget(form.state) }}
+    </label>
+    <label>&nbsp;
     <input id="submitNewJob" type="submit" value="Add" />
+    </label>
 {#     <input id="submitNewJob" type="submit" value="Add"  onclick="this.value='Adding';this.disabled=true" /> #}
 {{ form_end(form) }}

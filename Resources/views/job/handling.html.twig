@@ -42,6 +42,7 @@ function grabNewJobForm(shift_id) {
     }
     $.get(url, function( data ) {
         $( "#newJob"+shift_id ).html(data);
+        $( "#jobList_" + shift_id ).show();
         $( "#newShiftOrganization_"+shift_id).hide();
         $( "#crewcallbundle_job_shift").prev().hide();
         $( "#crewcallbundle_job_shift").hide();
