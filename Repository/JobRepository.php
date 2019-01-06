@@ -57,18 +57,16 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             }
         }
 
+        // Unless there are a set timeframe, use "from now".
+        $from = new \DateTime();
+        // And here it can be overridden
         if (isset($options['from']) || isset($options['to'])) {
-            // Unless there are a set timeframe, use "from now".
-            $from = new \DateTime();
             if (isset($options['from'])) {
                 if ($options['from'] instanceof \DateTime )
                     $from = $options['from'];
                 else
                     $from = new \DateTime($options['from']);
             }
-            $qb->andWhere('s.end >= :from')
-               ->setParameter('from', $from);
-
             if (isset($options['to'])) {
                 if ($options['to'] instanceof \DateTime )
                     $to = $options['to'];
@@ -78,6 +76,8 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
                    ->setParameter('to', $to);
             }
         }
+        // Either the default or what's set above.
+        $qb->andWhere('s.end >= :from')->setParameter('from', $from);
         $qb->orderBy('s.start', 'ASC');
         return $qb->getQuery()->getResult();
     }
