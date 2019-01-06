@@ -129,7 +129,7 @@
             'subject': "",
             'to_field': false,
             'from_field': false,
-            'message_type': 'AdminNote',
+            'message_type': 'Notes',
             'context': {
                 'system': 'crewcall',
                 'object_name': 'event',
@@ -145,13 +145,19 @@
     {% set mlogcontext = {
                 'system': 'crewcall',
                 'object_name': 'event',
-                'message_type': 'Notes',
+                'message_group': 'Notes',
                 'external_id': event.id
         }
     %}
     {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
-        <strong>{{ note.subject }}</strong><br>
+        <strong>{{ note.subject }}</strong> ({{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }})
         <pre>{{ note.body }}</pre>
+        {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
+        <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
+        {{ form_start(mdelform) }}
+        {{ form_rest(mdelform) }}
+        <input class="dabatdbutton" type="submit" name="submit" value="Delete">
+        </form>
         <br>
     {% endfor %}
   </div>
