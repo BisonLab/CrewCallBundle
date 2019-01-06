@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class ShiftOrganizationType extends AbstractType
 {
@@ -16,7 +17,7 @@ class ShiftOrganizationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('amount')
+            ->add('amount', IntegerType::class, array('required' => true, 'attr' => array('size' => 3)))
             ->add('shift')
             ->add('organization', EntityType::class,
                 array('class' => 'CrewCallBundle:Organization',
