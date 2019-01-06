@@ -33,7 +33,7 @@ class Job
                 'subject' => "Confirmation",
                 'to_type' => "INTERNAL",
                 'from_type' => "INTERNAL",
-                'to' => $job->getPerson()->getUserName(),
+                'to' => $job->getPerson()->getId(),
                 'message_type' => "PMSMS"
             ));
         }
