@@ -95,15 +95,14 @@ class ShiftController extends CommonController
                     return $this->redirectToRoute('shift_show',
                         array('id' => $shift->getId()));
                 }
-            }
-/*
- else {
-                // The issue here is that I want to return this if it's a /rest/ call, but not /ajax/. If AJAX, return html form.
+            } else {
+                // The issue here is that I want to return this if it's a
+                // /rest/ call, but not /ajax/. If AJAX, return a prettier
+                // text.
                 if ($this->isRest($access)) {
                     return $this->returnErrorResponse("Validation Error", 400, $this->handleFormErrors($form));
                 }
             }
-*/
         }
 
         // If this has a event set here, it's not an invalid create attempt.
