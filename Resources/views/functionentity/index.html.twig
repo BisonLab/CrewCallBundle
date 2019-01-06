@@ -11,7 +11,11 @@
         {% endif %}
         <td>{{ functionEntity.description }}</td>
         <td>{{ functionEntity.state }}</td>
-        <td>{{ functionEntity.personfunctions.count }}</td>
+        <td>
+        {% for state, amount in functionEntity.countpeople({ 'by_state': true }) %}
+        {{ state }}: {{ amount }}<br/>
+        {% endfor %}
+        </td>
         <td>
             <a href="{{ path('function_show', { 'id': functionEntity.id }) }}">show</a> - 
             <a href="{{ path('function_edit', { 'id': functionEntity.id }) }}">edit</a> - 

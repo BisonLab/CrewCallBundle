@@ -430,4 +430,45 @@ class FunctionEntity
     {
         return $this->getName();
     }
+
+    /*
+     * Helper functions.
+     */
+
+    /*
+     * Many ways of counting, this is kinda resourceeating, but useful and
+     * hopefully not too bad. If we do get performance issues we'd find out
+     * hopefully and stop using it where it hurts.
+     *
+     * * No options: Just count personfunctions.
+     * * 'all': Count getAllPeople()
+     * * 'by_state': Count getPeople() and sort by state.
+     * * 'all_by_state': Count getAllPeople() and sort by state.
+     */
+    public function countPeople($options = [])
+    {
+        // The simplest one.
+        if (empty($options))
+            return $this->personfunctions->count() + $this->personfunctionorganizations->count();
+        if (isset($options['by_state'])) {
+            $states = [];
+            foreach ($this->getPeople() as $p) {
+                if (!isset($states[$p->getState()]))
+                    $states[$p->getState()] = 1;
+                else
+                    $states[$p->getState()]++;
+            }
+            return $states;
+        }
+        if (isset($options['all_by_state'])) {
+            $states = [];
+            foreach ($this->getAllPeople() as $p) {
+                if (!isset($states[$p->getState()]))
+                    $states[$p->getState()] = 1;
+                else
+                    $states[$p->getState()]++;
+            }
+            return $states;
+        }
+    }
 }
