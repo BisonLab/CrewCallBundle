@@ -17,6 +17,7 @@ use CrewCallBundle\Entity\PersonState;
 class Calendar
 {
     private $router;
+    private $user;
 
     public function __construct($router)
     {
@@ -50,8 +51,9 @@ class Calendar
         return $vCalendar->render();
     }
 
-    public function toFullCalendarArray($frogs)
+    public function toFullCalendarArray($frogs, $user = null)
     {
+        $this->user = $user;
         $arr = array();
         foreach ($frogs as $frog) {
             if ($cal = $this->calToFullCal($frog))
@@ -175,14 +177,17 @@ class Calendar
             . (string)$job->getLocation();
 
         /*
-         *  I should somehow find out if the user looking at the calendar is
-         *  the person "owning" it or an admin using it in person view. No need
-         *  to "Put in my calendar" if the latter.
-         *  And we may even want a completely different text.
+         * No need to "Put in my calendar" if it's not you.
+         * And we may even want a completely different text.
          */
-        $c['popup_content'] = preg_replace("/\n/", "<br />"
-            , $c['content']) . '<br><a href="'
-            . $url  . '">Put in my calendar</a>';
+        if ($this->user == $job->getPerson()) {
+            $c['popup_content'] = preg_replace("/\n/", "<br />"
+                , $c['content']) . '<br><a href="'
+                . $url  . '">Put in my calendar</a>';
+        } else {
+            $c['popup_content'] = preg_replace("/\n/", "<br />"
+                , $c['content']);
+        }
         return $c;
     }
 

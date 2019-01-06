@@ -105,6 +105,7 @@ class EventController extends CommonController
 
         return $this->render('event/show.html.twig', array(
             'event' => $event,
+            'last_shift' => !empty($event->getShifts()) ? $event->getShifts()->last() : false,
             'delete_form' => $deleteForm->createView(),
             'confirm_form' => $confirmForm
         ));
@@ -205,7 +206,7 @@ class EventController extends CommonController
                  ->setParameter('to', $to, \Doctrine\DBAL\Types\Type::DATETIME);
             $events = $qb->getQuery()->getResult();
             
-            $calitems = $calendar->toFullCalendarArray($events);
+            $calitems = $calendar->toFullCalendarArray($events, $this->getUser());
             // Not liked by OWASP since we just return an array.
             return new JsonResponse($calitems, Response::HTTP_OK);
         }

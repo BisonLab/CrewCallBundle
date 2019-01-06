@@ -36,20 +36,23 @@ class ShiftController extends CommonController
         } else {
             // To be honest,I don't think having this at all is a good idea :=)
             // Who wants a list of absolutely all shifts? Gotta filter on 
-            // something somehow.
-            $shifts = $em->getRepository('CrewCallBundle:Shift')->findAll(array('start' => 'ASC'));
+            // something somehow. Some day.
+            $shifts = $em->getRepository('CrewCallBundle:Shift')
+                ->findAll(array('start' => 'ASC'));
         }
         // Again, ajax-centric. But maybe return json later.
         if ($this->isRest($access)) {
             return $this->render('shift/_index.html.twig', array(
                 'statechoices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift'),
                 'event' => $event,
+                'last_shift' => $shifts->last(),
                 'shifts' => $shifts
             ));
         }
         return $this->render('shift/index.html.twig', array(
            'statechoices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift'),
             'event' => $event,
+            'last_shift' => $shifts->last(),
             'shifts' => $shifts,
         ));
     }
@@ -86,9 +89,11 @@ class ShiftController extends CommonController
                 $em->persist($shift);
                 $em->flush($shift);
                 if ($this->isRest($access)) {
-                    return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
+                    return new JsonResponse(array("status" => "OK"),
+                        Response::HTTP_CREATED);
                 } else { 
-                    return $this->redirectToRoute('shift_show', array('id' => $shift->getId()));
+                    return $this->redirectToRoute('shift_show',
+                        array('id' => $shift->getId()));
                 }
             }
 /*
@@ -107,18 +112,29 @@ class ShiftController extends CommonController
                 $shift->setEvent($event);
                 // Better have something to start with.
                 $shift->setStart($event->getStart());
-                $shift->setEnd($event->getEnd());
-                // There are no Manager. Neither in shift, nor event.
-                // $shift->setManager($event->getManager());
+                // But ending at the end of the event is just too much. Let's
+                // add 8 hours instead.
+                $shift->setEnd($event->getStart()->modify('+8 hours'));
+                $form->setData($shift);
+            }
+        }
+        if ($from_shift = $request->get('from_shift')) {
+            if ($fshift = $em->getRepository('CrewCallBundle:Shift')->find($from_shift)) {
+                $shift->setEvent($fshift->getEvent());
+                // Better have something to start with.
+                $shift->setStart($fshift->getStart());
+                $shift->setEnd($fshift->getEnd());
                 $form->setData($shift);
             }
         }
 
-        // Not sure yet how to handle pure REST, keep ajax for now.
-        // (And I can start being annoyed by "isRest" which means both ajax and
-        // rest. 
-        // (But I can test on accept-header and return the _new-template if
-        // HTML is asked for. returnRest with a set template does fix that part)
+        /*
+         * Not sure yet how to handle pure REST, keep ajax for now.
+         * (And I can start being annoyed by "isRest" which means both ajax
+         * and rest.  (But I can test on accept-header and return the
+         * _new-template if HTML is asked for. returnRest with a set template
+         * does fix that part)
+         */
         if ($this->isRest($access)) {
             return $this->render('shift/_new.html.twig', array(
                 'shift' => $shift,
