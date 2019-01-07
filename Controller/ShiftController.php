@@ -181,12 +181,10 @@ class ShiftController extends CommonController
             return $this->redirectToRoute('shift_show', array('id' => $shift->getId()));
         }
 
-        $deleteForm = $this->createDeleteForm($shift);
         if ($this->isRest($access)) {
             return $this->render('shift/_edit.html.twig', array(
                 'shift' => $shift,
-                'edit_form' => $editForm->createView(),
-                'delete_form' => $deleteForm->createView(),
+                'edit_form' => $editForm->createView()
             ));
         }
 

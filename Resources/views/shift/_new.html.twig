@@ -1,6 +1,6 @@
 {# Don't like to add the access like this, but these templates are for ajax, alas I can just as well admit it. #}
 {% form_theme form 'form_div_layout.html.twig' %}
-{{ form_start(form, {action:path('shift_new', {'access': 'ajax'}), 'attr': {'id':'newShiftForm', 'class': 'ccCompactForm'}}) }}
+{{ form_start(form, {'action': path('shift_new', {'access': 'ajax'}), 'attr': {'id':'newShiftForm', 'class': 'ccCompactForm'}}) }}
 <fieldset>
 <legend>New shift</legend>
     <label>Start

@@ -80,6 +80,7 @@ function submitEditShiftForm(shift_id) {
      * The option is to make the controller action not use the ID in
      * the URL. I may change to that later. */
     orgurl = "{{ path('shift_edit', { 'access': 'ajax' }) }}";
+console.log(orgurl);
     url = orgurl.replace("0", shift_id);
     $.ajax({
         beforeSend: function(req) {
@@ -106,10 +107,8 @@ function grabEditShiftForm(shift_id) {
     orgurl = "{{ path('shift_edit', { 'access': 'ajax' }) }}";
     url = orgurl.replace("0", shift_id);
     $.get(url, function( data ) {
-        $( "#jobList_"+shift_id ).html(data);
+        $( "#editShift_"+shift_id ).html(data);
         $( "#jobList_" + shift_id ).show();
-        $( "#crewcallbundle_shift_event").prev().hide();
-        $( "#crewcallbundle_shift_event").hide();
         $( "#editShiftForm" ).submit(function( event ) {
             event.preventDefault();
             submitEditShiftForm(shift_id);

@@ -107,3 +107,9 @@
     {% endif %}
     </tbody>
 </table>
+    <div id="newShiftOrganization_{{ shift.id }}">
+    <a href="#" onClick="grabNewShiftOrganizationForm({{ shift.id }});">Add crew from an organization</a><br>
+    </div>
+    <div id="newJob{{ shift.id }}">
+    <a href="#" onClick="grabNewJobForm({{shift.id}});">Add person</a>
+    </div>

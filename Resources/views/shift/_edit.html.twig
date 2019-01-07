@@ -1,6 +1,5 @@
 {% form_theme edit_form 'form_div_layout.html.twig' %}
-{{ form_start(edit_form, {action:path('shift_edit', {'access': 'ajax'}), 'attr': {'id':'editShiftForm', 'class': 'ccCompactForm'}}) }}
-<legend>Edit shift</legend>
+{{ form_start(edit_form, { 'action': path('shift_edit', {'access': 'ajax'}), 'attr': {'id':'editShiftForm', 'class': 'ccCompactForm'}}) }}
     <label>Start
     {{ form_widget(edit_form.start) }}
     </label>
@@ -16,15 +15,11 @@
     <label>Function
 {{ form_widget(edit_form.function) }}
     </label>
-    <label>Event
+<div class="hidden">
 {{ form_widget(edit_form.event) }}
-    </label>
+</div>
     <label>&nbsp;
-    <input type="submit" value="Save" />
+    <input id="submitEditShift"  type="submit" value="Save" />
     </label>
 </fieldset>
 {{ form_end(edit_form) }}
-
-{{ form_start(delete_form) }}
-<input type="submit" value="Delete">
-{{ form_end(delete_form) }}

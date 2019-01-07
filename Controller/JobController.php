@@ -34,6 +34,11 @@ class JobController extends CommonController
             $em = $this->getDoctrine()->getManager();
             $shift = $em->getRepository('CrewCallBundle:Shift')->find($shift_id);
         }
+        /*
+         * If you ask yourself why this is not set as a route option you are
+         * into something. Reason is that there might be more than shifts for
+         * filtering this.
+         */
         if (!$shift)
             return $this->returnNotFound($request, 'No shift to tie the jobs to');
 
