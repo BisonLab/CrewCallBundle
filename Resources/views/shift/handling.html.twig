@@ -80,7 +80,6 @@ function submitEditShiftForm(shift_id) {
      * The option is to make the controller action not use the ID in
      * the URL. I may change to that later. */
     orgurl = "{{ path('shift_edit', { 'access': 'ajax' }) }}";
-console.log(orgurl);
     url = orgurl.replace("0", shift_id);
     $.ajax({
         beforeSend: function(req) {
