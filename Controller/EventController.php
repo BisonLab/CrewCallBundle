@@ -25,21 +25,12 @@ class EventController extends CommonController
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $eventrepo = $em->getRepository('CrewCallBundle:Event');
 
         if ($request->get('past')) {
-            $qb = $em->createQueryBuilder();
-            $qb->select('e')
-                 ->from('CrewCallBundle:Event', 'e')
-                 ->where('e.end < :today')
-                 ->setParameter('today', new \DateTime(), \Doctrine\DBAL\Types\Type::DATETIME);
-            $events = $qb->getQuery()->getResult();
+            $events = $eventrepo->findEvents(['past' => true, 'parents_only' => true]);
         } else {
-            $qb = $em->createQueryBuilder();
-            $qb->select('e')
-                 ->from('CrewCallBundle:Event', 'e')
-                 ->where('e.end > :yesterday')
-                 ->setParameter('yesterday', new \DateTime('yesterday'), \Doctrine\DBAL\Types\Type::DATETIME);
-            $events = $qb->getQuery()->getResult();
+            $events = $eventrepo->findEvents(['future' => true, 'parents_only' => true]);
         }
 
         return $this->render('event/index.html.twig', array(

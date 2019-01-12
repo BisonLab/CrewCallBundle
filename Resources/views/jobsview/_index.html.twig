@@ -1,0 +1,61 @@
+<table id="jobsViewTable" style="width:100%" class="hover display compact order-column">
+    <thead>
+        <tr>
+            <th class="jwPerson">Person</th>
+            <th class="jwMobile">Mobile</th>
+            <th class="jwStart">Start</th>
+            <th class="jwEvent">Event</th>
+            <th class="jwFunction">Function</th>
+            <th class="jwState">State</th>
+            <th class="jwHours">Hours</th>
+            <th class="jwSelect">Select</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for job in jobs %}
+        <tr id=jobRow_{{ job.id }}>
+            {% set reason = job.person.occupied({'reasons': true}) %}
+            <td class="jwPerson{% if reason %} cc_warn{% endif %}">
+            <a href="#" id="popSummary_person_jobs_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="popSummary('person_jobs', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
+            <a href="#" id="popSummary_person_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+    {% set mlogcontext = {
+                'system': 'crewcall',
+                'object_name': 'person',
+                'external_id': job.person.id
+        }
+    %}
+    {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
+                <a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
+    {% endif %}
+            {{ job.person }}
+    {% if reason %}
+        <br>{{ reason.state }}
+    {% endif %}
+            </td>
+            <td class="jwMobile">
+                {{ job.person.mobilephonenumber }}
+            </td>
+            <td class="jwStart">
+                {{ job.start | date("Y-m-d H:i") }}
+            </td>
+            <td>
+            <a href="#" id="popSummary_event_{{ job.event.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+                {{ job.event.name }}
+            </td>
+            <td class="jwFunction">
+                {{ job.function.name }}
+            </td>
+            <td class="jwState">
+                {{ job.state }} {% if job.statechanged %}{{ job.statechanged | date('Y-m-d H:i') }}{% endif %}
+            </td>
+            <td class="jwHours">
+            <input size="5" class="jobs_list_hours" type="text" name="jobs_hours_{{ job.id }}" value="" />
+            
+            </td>
+            <td class="jwSelect">
+            <input class="jobs_list_checkbox" type="checkbox" name="jobs_list" value="{{ job.id }}">
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+ </table>

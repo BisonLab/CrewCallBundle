@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Jobs view{% endblock %}
+
+{% macro select_list(elem_list, prep = "") %}
+{% import _self as self %}
+    {% for elem in elem_list %}
+            <option value="{{ elem.id }}">{{ prep | raw }}{{ elem.name }}</option>
+        {% if elem.children %}
+            {% set foo = prep ~ '&nbsp; - ' %}
+                {{ self.select_list(elem.children, foo) }}
+        {% endif %}
+    {% endfor %}
+{% endmacro select_list %}
+{% import _self as fmacros %}
+
+{% block body %}
+{% include 'CrewCallBundle:jobsview:handling.html.twig' %}
+
+<div id="jwfilters">
+<h3>Filters</h3>
+
+<form id="filtersForm" method="GET">
+
+<label>Coming/current event</label>
+<select name="cur_event">
+<option value="" selected>All</option>
+{{ fmacros.select_list(future_events) }}
+</select>
+
+<label>Past event</label>
+<select name="past_event">
+<option value="" selected>All</option>
+{{ fmacros.select_list(past_events) }}
+</select>
+
+<label>Function</label>
+<select name="function">
+<option value="" selected>All</option>
+{{ fmacros.select_list(functions) }}
+</select>
+
+<br>
+
+<label>Event state</label>
+<select name="event_state">
+<option value="" selected>All</option>
+{% for e in event_states %}
+<option value="{{ e }}">{{ e }}</option>
+{% endfor %}
+</select>
+
+<label>Shift state</label>
+<select name="shift_state">
+<option value="" selected>All</option>
+{% for s in shift_states %}
+<option value="{{ s }}">{{ s }}</option>
+{% endfor %}
+</select>
+
+<label>Job state</label>
+<select name="job_state">
+<option value="" selected>All</option>
+{% for j in job_states %}
+<option value="{{ j }}">{{ j }}</option>
+{% endfor %}
+</select>
+<br>
+<label>From</label>
+<input type="date" value="{{ date() | date("Y-m-d") }}" name="from_date"/>
+
+<label>To</label>
+<input type="date" value="{{ date() | date("Y-m-d") }}" name="to_date"/>
+
+</form>
+<a href="#" onClick="return grabJobList();"><button>Grab</button> </a>
+<a href="#" onClick="return printTableContent();"><button id="printbutton">Print</button></a>
+{% for val in ['Person', 'Mobile', 'Start', 'Event', 'Function', 'State', 'Hours', 'Select'] %}
+<input id="jwcheck_{{ val }}" type="checkbox" onClick='checkChecked("{{ val }}");' checked>{{ val }}</input>
+{% endfor %}
+
+</div>
+<div id="jobsView">
+</div>
+<div class="jwSelect" id="jobSelect" align="right">
+<button class="dababutton" onClick="select_all_jobs(true);">Select all</button>
+<button class="dababutton" onClick="select_all_jobs(false);">Deselect all</button>
+</br>
+<select id="jobStateSelect" name="jobStateSelect">
+<option value="" selected>All</option>
+{% for j in job_states %}
+<option value="{{ j }}">{{ j }}</option>
+{% endfor %}
+</select>
+<button class="dababutton" id="set_states_link" onClick="setStateOnSelectedJobs(false);">Set state</button>
+<!--
+<button class="dababutton" id="message_popover_link" onClick="openMessagePopover(false);">Send a message</button>
+-->
+</div>
+
+
+{% endblock %}

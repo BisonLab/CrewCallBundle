@@ -43,15 +43,6 @@ class JobController extends CommonController
             return $this->returnNotFound($request, 'No shift to tie the jobs to');
 
         $jobs = $shift->getJobs();
-        $log_repo = $em->getRepository('Gedmo\Loggable\Entity\LogEntry');
-        foreach ($jobs as $job) {
-            if ($log = $log_repo->findOneBy(array(
-            'objectClass' => 'CrewCallBundle\Entity\Job',
-            'objectId'    => $job->getId())
-            , array('loggedAt' => 'DESC')))
-                $job->setUpdatedAt($log->getLoggedAt());
-        }
-
         $sos = $shift->getShiftOrganizations();
         if ($this->isRest($access)) {
             return $this->render('job/_index.html.twig', array(
@@ -88,6 +79,30 @@ class JobController extends CommonController
         } else { 
             return $this->redirectToRoute('shift_show', array('id' => $job->getShift()->getId()));
         }
+    }
+
+    /**
+     *
+     * @Route("/states", name="jobs_state", methods={"POST"})
+     */
+    public function stateOnJobsAction(Request $request)
+    {
+        $jobs = $request->get('jobs');
+        $state = $request->get('state');
+
+        $em = $this->getDoctrine()->getManager();
+        $jobrepo = $em->getRepository('CrewCallBundle:Job');
+        foreach ($jobs as $job_id) {
+            if (!$job = $jobrepo->find($job_id))
+                return new JsonResponse(array("status" => "NOT FOUND"), Response::HTTP_NOT_FOUND);
+            $job->setState($state);
+            if ($job->isBooked() && $overlap = $jobrepo->checkOverlapForPerson($job, array('booked' => true))) {
+            return new Response("Can not set job to a booked state because it will overlap with " . (string)current($overlap)->getShift(), Response::HTTP_CONFLICT);
+            }
+        }
+        $em->flush();
+
+        return new JsonResponse(array("status" => "OK"), Response::HTTP_OK);
     }
 
     /**

@@ -35,7 +35,7 @@ class Shift
     private $event;
 
     /**
-     * @var string
+     * @var DateTime
      *
      * @ORM\Column(name="starttime", type="datetime", nullable=false)
      * @Gedmo\Versioned
@@ -43,7 +43,7 @@ class Shift
     private $start;
 
     /**
-     * @var string
+     * @var DateTime
      *
      * @ORM\Column(name="endtime", type="datetime", nullable=true)
      * @Gedmo\Versioned

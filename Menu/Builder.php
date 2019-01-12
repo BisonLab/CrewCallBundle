@@ -72,6 +72,7 @@ class Builder implements ContainerAwareInterface
             $adminmenu->addChild('Message Types',
                 array('route' => 'messagetype'));
         }
+        $menu->addChild('Jobs view', array('route' => 'jobsview_index'));
         $options['menu']      = $menu;
         $options['container'] = $this->container;
         // For local additions to the main menu.

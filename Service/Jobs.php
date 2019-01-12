@@ -17,6 +17,10 @@ class Jobs
     }
 
     /*
+     * Admin functions.
+     */
+
+    /*
      * Crew chief functions. (When we have a crew chief)
      */
 

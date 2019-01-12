@@ -53,7 +53,7 @@
             </td>
             <td>
                 {{ job.state }}
-                {% if job.updatedat is defined %}<br>{{ job.updatedat|date('Y-m-d H:i') }}{% endif %}
+                {% if job.statechanged %}<br>{{ job.statechanged|date('Y-m-d H:i') }}{% endif %}
             {% if job.shift.start < date() %}
                 <br><a role="button" class="btn-sm btn-primary" href="#" onClick="setStateOnJob({{shift.id}}, 'COMPLETED', {{ job.shift.id }});">Complete</a>
             </td>

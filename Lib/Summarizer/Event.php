@@ -28,6 +28,12 @@ class Event
             );
 
         $summary[] = array(
+            'name' => 'state',
+            'value' => (string)$event->getState(),
+            'label' => 'State'
+            );
+
+        $summary[] = array(
             'name' => 'start',
             'value' => $event->getStart()->format("d M H:i"),
             'label' => 'Start'

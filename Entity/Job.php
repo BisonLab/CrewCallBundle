@@ -66,10 +66,11 @@ class Job
      */
     private $joblogs;
 
-    /*
-     * Just a placeholder for easier handling and showing in twig templates.
+    /**
+     * @ORM\Column(name="state_changed", type="datetime", nullable=true)
+     * This is a lot quicker to pull than the info from Gedbo Loggable.
      */
-    private $updated_at;
+    private $state_changed;
 
     /*
      * Another placeholder. Boolean to hint that this job overlaps with
@@ -145,6 +146,7 @@ class Job
             throw new \InvalidArgumentException(sprintf('The "%s" state is not a valid state.', $state));
         }
 
+        $this->setStateChanged();
         $this->state = $state;
 
         return $this;
@@ -290,14 +292,14 @@ class Job
         return (string)$this->getFunction();
     }
 
-    public function getUpdatedAt()
+    public function getStateChanged()
     {
-        return $this->updated_at;
+        return $this->state_changed;
     }
 
-    public function setUpdatedAt($updated_at)
+    public function setStateChanged()
     {
-        $this->updated_at = $updated_at;
+        $this->state_changed = new \DateTime();
         return $this;
     }
 

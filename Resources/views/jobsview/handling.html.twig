@@ -1,0 +1,94 @@
+<script>
+
+$(document).ready(function() {
+    $( '#jwcheck_Hours' ).attr('checked', false)
+})
+
+/*
+ * This will be kinda spectacular, maybe.
+ * It'll pull a form with all the filtering and grab a new job list
+ * based on it.
+ */
+function grabJobList() {
+    bare_url = "{{ path('jobsview_jobs')}}";
+    filtersFormData = $( "#filtersForm" ).serialize();
+    url = bare_url + "?" + filtersFormData;
+    $.get(url, function( data ) {
+        $( "#jobsView" ).html(data);
+      }).done( function( cont, textStatus, xhr ) {
+        $( "#jobsViewTable" ).dataTable({
+            "order": [[ 1, "asc" ]],
+            "paging": false,
+            "searching": true
+            });
+        $( ".jwHours" ).hide();
+    });
+    return false;
+}
+
+function select_all_jobs(value) {
+    $(".jobs_list_checkbox").prop('checked', value);
+}
+
+function get_selected_jobs() {
+    list = [];
+    $(".jobs_list_checkbox").each(function(index, box) {
+        if ($(box).prop('checked') == true) {
+            list.push(box.value);
+        }
+    });
+    return list;
+}
+
+function setStateOnSelectedJobs() {
+    url = "{{ path('jobs_state') }}";
+    list = get_selected_jobs();
+    state = $( "#jobStateSelect option:selected" ).val();
+    data = {'jobs': list, 'state': state};
+
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        data: data,
+        type: "POST",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            grabJobList();
+      }).fail(function(xhr, status, error) {
+            errmsg = "Failed changing state\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function checkChecked(classname)
+{
+    if ($( "#jwcheck_" + classname ).is(":checked")) {
+        $( ".jw" + classname ).show();
+    } else {
+        $( ".jw" + classname ).hide();
+    }
+}
+
+function printTableContent()
+{
+    $("header").hide();
+    // This may be a bit specific for my designs,
+    document.body.style.paddingTop = "0px";
+    $("#jwfilters").hide();
+    $("#jobsViewTable_info").hide();
+    $("#jobsViewTable_filter").hide();
+    $(".jwSelect").hide();
+    window.print();
+    document.body.style.paddingTop = "";
+    $("#jwfilters").show();
+    $("#jobsViewTable_info").show();
+    $("#jobsViewTable_filter").show();
+    $(".jwSelect").show();
+    $("header").show();
+}
+
+</script>

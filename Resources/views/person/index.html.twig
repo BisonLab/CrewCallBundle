@@ -44,6 +44,7 @@ function get_selected_persons() {
 -->
 <td>
    <form action="{{ path('person_function') }}" method="GET">
+<label>Function</label>
 <select name="function">
     {{ fmacros.select_list(functions) }}
 </select>
@@ -98,7 +99,7 @@ function get_selected_persons() {
 <tr border="0">
 <td colspan="5" border="0">&nbsp;</td>
 <td colspan="2" border="0" halign="right">
-<div align=right>
+<div align="right">
 <button class="dababutton" onClick="select_all_persons(true);">Select all</button>
 <button class="dababutton" onClick="select_all_persons(false);">Deselect all</button>
 </br>

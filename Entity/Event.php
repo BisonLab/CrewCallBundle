@@ -289,6 +289,23 @@ class Event
     }
 
     /**
+     * Get jobs
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAllJobs($filter = [])
+    {
+        $jobs = new ArrayCollection();
+        foreach ($this->getAllShifts() as $shift) {
+            $jobs = new ArrayCollection(array_merge($jobs->toArray() ,
+                $shift->getJobs()->toArray()));
+        }
+        $criteria = Criteria::create()
+            ->orderBy(array("start" => Criteria::ASC));
+        return $jobs->matching($criteria);
+    }
+
+    /**
      * Add child
      *
      * @param \CrewCallBundle\Entity\Event $child
@@ -320,6 +337,20 @@ class Event
     public function getChildren()
     {
         return $this->children;
+    }
+
+    /**
+     * Get all Children of this event
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAllChildren()
+    {
+        $children = $this->children->toArray();
+        foreach ($this->children as $child) {
+            $children = array_merge($children, $child->getAllChildren());
+        }
+        return $children;
     }
 
     /**

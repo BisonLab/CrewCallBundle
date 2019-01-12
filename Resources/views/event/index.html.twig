@@ -17,7 +17,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for event in events if event.parent is null %}
+        {% for event in events %}
             <tr>
                 <td>
                 <a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.mainevent }}</a>
