@@ -150,6 +150,26 @@ class JobController extends CommonController
 
     /**
      *
+     * @Route("/release", name="jobs_release", methods={"POST"})
+     */
+    public function releaseJobsAction(Request $request)
+    {
+        $jobs = $request->get('jobs');
+
+        $em = $this->getDoctrine()->getManager();
+        $jobrepo = $em->getRepository('CrewCallBundle:Job');
+        foreach ($jobs as $job_id) {
+            if (!$job = $jobrepo->find($job_id))
+                return new JsonResponse(array("status" => "NOT FOUND"), Response::HTTP_NOT_FOUND);
+            $em->remove($job);
+        }
+        $em->flush();
+
+        return new JsonResponse(array("status" => "OK"), Response::HTTP_OK);
+    }
+
+    /**
+     *
      * @Route("/move", name="jobs_move", methods={"POST"})
      */
     public function moveJobsAction(Request $request)

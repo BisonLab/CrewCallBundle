@@ -64,6 +64,29 @@ function setStateOnSelectedJobs() {
     return false;
 }
 
+function releaseSelectedJobs() {
+    url = "{{ path('jobs_release') }}";
+    slist = get_selected_jobs();
+    data = { 'jobs': slist };
+
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        data: data,
+        type: "POST",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            grabJobList();
+      }).fail(function(xhr, status, error) {
+            errmsg = "Failed changing state\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
 function moveJobs() {
     mlist = {};
     $(".move_job_to option:selected").each(function(index, box) {
