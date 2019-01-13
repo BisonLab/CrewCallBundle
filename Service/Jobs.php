@@ -41,7 +41,7 @@ class Jobs
         // Hopefully Doctrine does the job just as good, so I won't for now.
         $opportunities = new ArrayCollection();
         $jobshift = new ArrayCollection();
-        $jobs = $this->jobsForPerson($person);
+        $jobs = $this->jobsForPerson($person, $options);
         foreach ($jobs as $job) {
             $jobshift->add($job->getShift());
         }
@@ -52,7 +52,9 @@ class Jobs
         foreach ($person->getPersonFunctions() as $pf) {
             $functions[] = $pf->getFunction();
         }
-        $shifts = $this->em->getRepository('CrewCallBundle:Shift')->findUpcomingForFunctions($functions, $options['booked'] = true);
+        $options['booked'] = true;
+        $shifts = $this->em->getRepository('CrewCallBundle:Shift')
+            ->findUpcomingForFunctions($functions, $options);
 
         foreach ($shifts as $sf) {
             // Already in jobs?

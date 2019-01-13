@@ -65,6 +65,9 @@ class ShiftRepository extends \Doctrine\ORM\EntityRepository
                 $from = $options['from'];
             else
                 $from = new \DateTime($options['from']);
+            // Doublecheck, there are no upcoming in the past.
+            if ($from < new \DateTime())
+                $from = new \DateTime();
         }
         $qb->andWhere('s.start >= :from')
            ->setParameter('from', $from);

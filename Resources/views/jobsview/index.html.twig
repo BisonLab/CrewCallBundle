@@ -75,27 +75,33 @@
 </form>
 <a href="#" onClick="return grabJobList();"><button>Grab</button> </a>
 <a href="#" onClick="return printTableContent();"><button id="printbutton">Print</button></a>
-{% for val in ['Person', 'Mobile', 'Start', 'Event', 'Function', 'State', 'Hours', 'Select'] %}
+{# TODO: Replace this with a configuration option with all the available tabe columns and show/hide/false to decide if the colums shall be available at all, shown by default or hidden. #}
+{% for val in ['Person', 'Mobile', 'Start', 'Event', 'Function', 'State', 'Hours', 'Move', 'Select'] %}
 <input id="jwcheck_{{ val }}" type="checkbox" onClick='checkChecked("{{ val }}");' checked>{{ val }}</input>
 {% endfor %}
 
 </div>
 <div id="jobsView">
 </div>
-<div class="jwSelect" id="jobSelect" align="right">
-<button class="dababutton" onClick="select_all_jobs(true);">Select all</button>
-<button class="dababutton" onClick="select_all_jobs(false);">Deselect all</button>
-</br>
-<select id="jobStateSelect" name="jobStateSelect">
-<option value="" selected>All</option>
-{% for j in job_states %}
-<option value="{{ j }}">{{ j }}</option>
-{% endfor %}
-</select>
-<button class="dababutton" id="set_states_link" onClick="setStateOnSelectedJobs(false);">Set state</button>
-<!--
-<button class="dababutton" id="message_popover_link" onClick="openMessagePopover(false);">Send a message</button>
--->
+<div class="buttons" align="right">
+  <div class="jwSelect" id="jobSelect">
+    <button class="dababutton" onClick="select_all_jobs(true);">Select all</button>
+    <button class="dababutton" onClick="select_all_jobs(false);">Deselect all</button>
+    </br>
+    <select id="jobStateSelect" name="jobStateSelect">
+    <option value="" selected>All</option>
+    {% for j in job_states %}
+    <option value="{{ j }}">{{ j }}</option>
+    {% endfor %}
+    </select>
+    <button class="dababutton" id="set_states_link" onClick="setStateOnSelectedJobs(false);">Set state</button>
+    <!--
+    <button class="dababutton" id="message_popover_link" onClick="openMessagePopover(false);">Send a message</button>
+    -->
+  </div>
+  <div class="jwMove">
+    <button class="dababutton" id="set_move_to_link" onClick="moveJobs();">Move Jobs</button>
+  </div>
 </div>
 
 

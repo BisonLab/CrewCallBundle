@@ -7,6 +7,7 @@
             <th class="jwEvent">Event</th>
             <th class="jwFunction">Function</th>
             <th class="jwState">State</th>
+            <th class="jwMove">Move</th>
             <th class="jwHours">Hours</th>
             <th class="jwSelect">Select</th>
         </tr>
@@ -47,6 +48,14 @@
             </td>
             <td class="jwState">
                 {{ job.state }} {% if job.statechanged %}{{ job.statechanged | date('Y-m-d H:i') }}{% endif %}
+            </td>
+            <td class="jwMove">
+<select class="move_job_to" name="{{job.id}}">
+<option value="">{{ job.shift.function.name }} {{ job.start | date("H:i") }}</option>
+{% for o in cc_jobs.opportunitiesforperson(job.person, {'from': job.shift.event.start, 'to': job.shift.event.end }) %}
+<option value="{{ o.id}}">{{ o.function.name }} {{ o.start | date("Y-m-d H:i") }} {{ o.end | date("H:i") }}</option>
+{% endfor %}
+</select>
             </td>
             <td class="jwHours">
             <input size="5" class="jobs_list_hours" type="text" name="jobs_hours_{{ job.id }}" value="" />

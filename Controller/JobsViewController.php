@@ -141,7 +141,9 @@ class JobsViewController extends CommonController
         }
 
         return $this->render('jobsview/_index.html.twig', array(
-            'jobs'  => $jobs
+            'jobs'  => $jobs,
+            'from'  => $from_date,
+            'to'  => $to_date
         ));
     }
 

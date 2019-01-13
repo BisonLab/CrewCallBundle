@@ -149,6 +149,30 @@ class JobController extends CommonController
     }
 
     /**
+     *
+     * @Route("/move", name="jobs_move", methods={"POST"})
+     */
+    public function moveJobsAction(Request $request)
+    {
+        $moves = $request->get('moves');
+
+        $em = $this->getDoctrine()->getManager();
+        $jobrepo = $em->getRepository('CrewCallBundle:Job');
+        $shiftrepo = $em->getRepository('CrewCallBundle:Shift');
+        foreach ($moves as $job_id => $shift_id) {
+            if (!$job = $jobrepo->find($job_id))
+                return new JsonResponse(array("status" => "NOT FOUND"), Response::HTTP_NOT_FOUND);
+            if (!$shift = $shiftrepo->find($shift_id))
+                return new JsonResponse(array("status" => "NOT FOUND"), Response::HTTP_NOT_FOUND);
+            $job->setShift($shift);
+            // I will not check overlap, this is hopefully done by purpose.
+        }
+        $em->flush();
+
+        return new JsonResponse(array("status" => "OK"), Response::HTTP_OK);
+    }
+
+    /**
      * Finds and displays the gedmo loggable history
      *
      * @Route("/{id}/log", name="job_log")
