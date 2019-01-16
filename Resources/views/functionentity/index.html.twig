@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% block title %}Functions{% endblock %}
 
+{# Todo: make this one recursive so it'll show function -> function and so on #}
 {% macro function_row (functionEntity) %}
     <tr>
         <td><a href="{{ path('function_show', { 'id': functionEntity.id }) }}">{{ functionEntity.name }}</a></td>
