@@ -245,6 +245,8 @@ class Event
      */
     public function addShift(\CrewCallBundle\Entity\Shift $shift)
     {
+        if ($this->shifts->contains($shift))
+            return $this;
         $this->shifts[] = $shift;
         $shift->setEvent($this);
 

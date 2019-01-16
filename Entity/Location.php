@@ -22,6 +22,8 @@ use CrewCallBundle\Lib\ExternalEntityConfig;
  */
 class Location
 {
+    use \BisonLab\CommonBundle\Entity\AttributesTrait;
+
     /**
      * @var integer
      *
@@ -86,11 +88,17 @@ class Location
      */
     private $events;
 
+    /**
+     * @ORM\OneToMany(targetEntity="LocationContext", mappedBy="owner", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     */
+    private $contexts;
+
     public function __construct($options = array())
     {
         $this->children = new ArrayCollection();
         $this->address = new EmbeddableAddress();
         $this->events  = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->contexts = new ArrayCollection();
     }
 
     public function __toString()
@@ -160,7 +168,7 @@ class Location
      * Set state
      *
      * @param string $state
-     * @return Organization
+     * @return Location
      */
     public function setState($state)
     {
@@ -193,11 +201,11 @@ class Location
      */
     public static function getStates()
     {
-        return ExternalEntityConfig::getStatesFor('Organization');
+        return ExternalEntityConfig::getStatesFor('Location');
     }
     public static function getStatesList()
     {
-        return array_keys(ExternalEntityConfig::getStatesFor('Organization'));
+        return array_keys(ExternalEntityConfig::getStatesFor('Location'));
     }
 
     /**
@@ -279,5 +287,36 @@ class Location
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /**
+     * Get contexts
+     *
+     * @return objects
+     */
+    public function getContexts()
+    {
+        return $this->contexts;
+    }
+
+    /**
+     * add context
+     *
+     * @return mixed
+     */
+    public function addContext(LocationContext $context)
+    {
+        $this->contexts[] = $context;
+        $context->setOwner($this) ;
+    }
+
+    /**
+     * Remove contexts
+     *
+     * @param LocationContext $contexts
+     */
+    public function removeContext(LocationContext $contexts)
+    {
+        $this->contexts->removeElement($contexts);
     }
 }

@@ -401,7 +401,10 @@ class FunctionEntity
      */
     public function addShift(\CrewCallBundle\Entity\Shift $shift)
     {
+        if ($this->shifts->contains($shift))
+            return $this;
         $this->shifts[] = $shift;
+        $shift->setFunction($this);
 
         return $this;
     }

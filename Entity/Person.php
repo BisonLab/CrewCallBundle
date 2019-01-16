@@ -746,6 +746,7 @@ class Person extends BaseUser
     {
         if (!$this->jobs->contains($job)) {
             $this->jobs->add($job);
+            $job->setPerson($this);
         }
 
         return $this;

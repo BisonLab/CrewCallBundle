@@ -24,7 +24,7 @@ class Shift
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
@@ -271,7 +271,10 @@ class Shift
      */
     public function addJob(\CrewCallBundle\Entity\Job $job)
     {
+        if ($this->jobs->contains($job))
+            return $this;
         $this->jobs[] = $job;
+        $job->setShift($this);
 
         return $this;
     }
