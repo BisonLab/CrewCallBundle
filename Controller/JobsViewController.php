@@ -82,7 +82,8 @@ class JobsViewController extends CommonController
         $jobrepo = $em->getRepository('CrewCallBundle:Job');
 
         $persons = new ArrayCollection();
-        $filters = $request->get('filter');
+        // In case we add jobs during the "filter extraction"
+        $jobs = [];
 
         $from_date = $request->get('from_date');
         $to_date   = $request->get('to_date');
@@ -107,6 +108,16 @@ class JobsViewController extends CommonController
             // If you pick an event, I presume you do not care about dates.
             unset($job_filters['from']);
             unset($job_filters['to']);
+        }
+
+        if ($userid = $request->get('userid') ) {
+            $person = $this->container->get('fos_user.user_manager')
+                ->findUserBy(array('id' => $userid));
+            if (!$person)
+                throw new \InvalidArgumentException('Could not find the person');
+            $persons->add($person);
+            $person_filters['persons'] = $persons;
+            $job_filters['persons'] = $persons;
         }
 
         if ($function_id = $request->get('function') ) {

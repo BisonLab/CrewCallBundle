@@ -61,6 +61,11 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('states', $options['states']);
         }
 
+        if (isset($options['persons'])) {
+            $qb->andWhere('j.person in (:persons)')
+            ->setParameter('persons', $options['persons']);
+        }
+
         if (isset($options['wishlist'])) {
             $states = ExternalEntityConfig::getWishlistStatesFor('Job');
             $qb->andWhere('j.state in (:state)')

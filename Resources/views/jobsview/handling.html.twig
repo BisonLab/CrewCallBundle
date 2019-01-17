@@ -2,6 +2,15 @@
 
 $(document).ready(function() {
     $( '#jwcheck_Hours' ).attr('checked', false)
+
+    $( "#filter_username" ).autocomplete({
+      source: "{{ path('user_search', {'access': 'ajax'}) }}",
+      minLength: 2,
+      select: function( event, ui ) {
+        $( "#filter_username" ).val(ui.item.label);
+        $( "#filter_userid" ).val(ui.item.userid);
+      }
+     });
 })
 
 /*
