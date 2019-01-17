@@ -28,7 +28,18 @@ class EventController extends CommonController
         $eventrepo = $em->getRepository('CrewCallBundle:Event');
 
         if ($request->get('past')) {
-            $events = $eventrepo->findEvents(['past' => true, 'parents_only' => true]);
+            // Use this?
+/*
+            $events = $eventrepo->findEvents(['past' => true,
+                'parents_only' => true]);
+ */
+            // Or this? Not decided yet
+            $qb = $em->createQueryBuilder();
+            $qb->select('e')
+                 ->from('CrewCallBundle:Event', 'e')
+                 ->where('e.end < :today')
+                 ->setParameter('today', new \DateTime(), \Doctrine\DBAL\Types\Type::DATETIME);
+            $events = $qb->getQuery()->getResult();
         } else {
             $events = $eventrepo->findEvents(['future' => true, 'parents_only' => true]);
         }
