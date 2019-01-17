@@ -110,7 +110,8 @@ class JobsViewController extends CommonController
             unset($job_filters['to']);
         }
 
-        if ($userid = $request->get('userid') ) {
+        // Looks stupid, but userid does not get cleared. I need to understand jQuery autocomplete.
+        if ($request->get('username') && $userid = $request->get('userid') ) {
             $person = $this->container->get('fos_user.user_manager')
                 ->findUserBy(array('id' => $userid));
             if (!$person)
