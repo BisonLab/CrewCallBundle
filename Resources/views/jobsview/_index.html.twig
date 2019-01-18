@@ -51,9 +51,9 @@
             </td>
             <td class="jwMove">
 <select class="move_job_to" name="{{job.id}}">
-<option value="">{{ job.shift.function.name }} {{ job.start | date("H:i") }}</option>
+<option value="">{{ job.shift }} {{ job.start | date("H:i") }}</option>
 {% for o in cc_jobs.opportunitiesforperson(job.person, {'from': job.shift.event.start, 'to': job.shift.event.end }) %}
-<option value="{{ o.id}}">{{ o.function.name }} {{ o.start | date("Y-m-d H:i") }} {{ o.end | date("H:i") }}</option>
+<option value="{{ o.id}}">{{ o }} {{ o.start | date("Y-m-d H:i") }} {{ o.end | date("H:i") }}</option>
 {% endfor %}
 </select>
             </td>
@@ -62,7 +62,7 @@
             
             </td>
             <td class="jwSelect">
-            <input class="jobs_list_checkbox" type="checkbox" name="jobs_list" value="{{ job.id }}">
+            <input class="jobs_list_checkbox" type="checkbox" name="jobs_list" value="{{ job.id }}" onClick="countJobsList();">
             </td>
         </tr>
     {% endfor %}

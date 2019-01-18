@@ -35,8 +35,15 @@ function grabJobList() {
     return false;
 }
 
+function countJobsList() {
+    list = get_selected_jobs();
+console.log(list.length);
+    $( "#jobs_selected_count").text("Selected: " + list.length);
+}
+
 function select_all_jobs(value) {
     $(".jobs_list_checkbox").prop('checked', value);
+    countJobsList();
 }
 
 function get_selected_jobs() {
