@@ -114,6 +114,9 @@ class Job
          * I hope this does the trick. It is a remote possibility that the
          * combination of two IDs ends up with the same key when one of the
          * two parts exeed the minimum three chars.
+         *
+         * (Edit: It has happened. inserted 80K jobs and woopsie. Added time()
+         *
          * And BTW, Usinng this (Job) ID does not ork since there is none in
          * prePersist and I am too lazy hacking around anything to add the ID
          * before it's inserted, which will (unique) fail.
@@ -121,13 +124,16 @@ class Job
          * TODO: Add such checks so that it'll never throw an exception.
          */
         $p1 = strrev(\ShortCode\Reversible::convert(
-                $this->getShift()->getId(),
-                    \ShortCode\Code::FORMAT_CHAR_CAPITAL, 3));
-        $p2 = \ShortCode\Reversible::convert(
-                $this->getPerson()->getId(),
-                    \ShortCode\Code::FORMAT_CHAR_CAPITAL, 3);
+                (int)$shift_id,
+                    \ShortCode\Code::FORMAT_ALNUM_SMALL, 2));
 
-        $this->ucode = $p1 . $p2;
+        $p2 = strtolower(\ShortCode\Random::get(2));
+
+        $p3 = \ShortCode\Reversible::convert(
+                $person->getId(),
+                    \ShortCode\Code::FORMAT_ALNUM_SMALL, 2);
+
+        $this->ucode = $p1 . $p2 . $p3;
 
         return $this->ucode;
     }
