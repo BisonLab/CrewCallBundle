@@ -85,6 +85,8 @@ class Shift
 
     public function __construct($options = array())
     {
+        $this->jobs  = new ArrayCollection();
+        $this->shift_organizations  = new ArrayCollection();
     }
 
     public function getId()
