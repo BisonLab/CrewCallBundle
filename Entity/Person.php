@@ -28,7 +28,7 @@ class Person extends BaseUser
     /**
      * Override FOSUserBundle User base class default role.
      */
-    const ROLE_DEFAULT = 'ROLE_PERSON';
+    const ROLE_DEFAULT = 'ROLE_USER';
 
     /**
      * @ORM\Id
