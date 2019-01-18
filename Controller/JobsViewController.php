@@ -54,7 +54,8 @@ class JobsViewController extends CommonController
         $functionrepo = $em->getRepository('CrewCallBundle:FunctionEntity');
         // Future must include current.
         $future_events = $eventrepo->findEvents(['future' => true, 'parents_only' => true]);
-        $past_events = $eventrepo->findEvents(['past' => true, 'parents_only' => true]);
+        $past_events = $eventrepo->findEvents(['past' => true,
+            'parents_only' => true, 'limit' => 100]);
         $worker = $functionrepo->findOneByName('Worker');
         $functions = $worker->getAllChildren();
         $event_states = Event::getStatesList();

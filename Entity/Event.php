@@ -103,7 +103,7 @@ class Event
      * do that if this ends up being too odd for the users or code.
      */
     /**
-     * @ORM\OneToMany(targetEntity="Event", mappedBy="parent", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="Event", mappedBy="parent", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     private $children;
 

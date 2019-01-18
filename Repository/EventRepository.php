@@ -44,7 +44,7 @@ class EventRepository extends \Doctrine\ORM\EntityRepository
             // And we have to set from to something in the past if it's not
             // set already.
             if (!isset($options['from']))
-                $options['from'] = '2000-01-01';
+                $options['from'] = '2018-01-01';
         }
 
         if (isset($options['future'])) {
@@ -76,6 +76,9 @@ class EventRepository extends \Doctrine\ORM\EntityRepository
         // Either the default or what's set above.
         $qb->andWhere('e.end >= :from')->setParameter('from', $from);
         $qb->orderBy('e.start', $order);
+        if (isset($options['limit'])) {
+            $qb->setMaxResults($options['limit']);
+        }
         return $qb->getQuery()->getResult();
     }
 

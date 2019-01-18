@@ -70,7 +70,7 @@ class FunctionEntity
      * do that if this ends up being too odd for the users or code.
      */
     /**
-     * @ORM\OneToMany(targetEntity="FunctionEntity", mappedBy="parent", fetch="EXTRA_LAZY", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="FunctionEntity", mappedBy="parent", cascade={"remove"})
      */
     private $children;
 
