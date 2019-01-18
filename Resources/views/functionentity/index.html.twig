@@ -2,14 +2,10 @@
 {% block title %}Functions{% endblock %}
 
 {# Todo: make this one recursive so it'll show function -> function and so on #}
-{% macro function_row (functionEntity) %}
+{% macro function_row (functionEntity, so_far) %}
+{% import _self as self %}
     <tr>
-        <td><a href="{{ path('function_show', { 'id': functionEntity.id }) }}">{{ functionEntity.name }}</a></td>
-        {% if functionEntity.parent %}
-        <td >{{ functionEntity.parent.name }}</td>
-        {% else %}
-        <td>&nbsp;</td>
-        {% endif %}
+        <td>{{ so_far }} <a href="{{ path('function_show', { 'id': functionEntity.id }) }}">{{ functionEntity.name }}</a></td>
         <td>{{ functionEntity.description }}</td>
         <td>{{ functionEntity.state }}</td>
         <td>
@@ -23,6 +19,14 @@
             <a href="{{ path('person_function', { 'id': functionEntity.id }) }}">people</a>
         </td>
     </tr>
+    {% if so_far is not empty %}
+    {% set so_far = so_far ~ " -- " ~ functionEntity.name %}
+    {% else %}
+    {% set so_far = functionEntity.name %}
+    {% endif %}
+    {% for child in functionEntity.children %}
+        {{ self.function_row(child, so_far) }}
+    {% endfor %}
 {% endmacro %}
 {% import _self as fmacros %}
 
@@ -33,7 +37,6 @@
         <thead class="thead-inverse">
             <tr>
                 <th>Name</th>
-                <th>Group (Parent function)</th>
                 <th>Description</th>
                 <th>State</th>
                 <th>People</th>
@@ -42,8 +45,8 @@
         </thead>
         <tbody>
         {# This was an attempt at nesting, but it was thwarted by table sorting. Gonna keep it for now, in case of good ideas. #}
-        {% for functionEntity in functionEntities %}
-            {{ fmacros.function_row(functionEntity) }}
+        {% for functionEntity in functionEntities if functionEntity.parent is empty %}
+            {{ fmacros.function_row(functionEntity, '') }}
             {# I'll take it for granted that a group has children
         {% for functionEntity in functionEntities if functionEntity.parent is null %}
             {% if functionEntity.children.count > 0 %}

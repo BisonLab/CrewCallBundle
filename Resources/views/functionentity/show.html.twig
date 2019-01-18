@@ -21,44 +21,12 @@
                 <th>State</th>
                 <td>{{ functionEntity.state }}</td>
             </tr>
+{#
             <tr>
                 <th>Attributes</th>
                 <td>{{ functionEntity.attributes | prettyprint }}</td>
             </tr>
-            <tr>
-                <th>Persons</th>
-                <td>
-                <ul>
-                {% for pfo in functionEntity.personfunctions %}
-                <li>{{ pfo.person }}</li>
-                {% endfor %}
-                </ul>
-                </td>
-            </tr>
-{%  if functionEntity.personfunctionorganizations.count > 0 %}
-            <tr>
-                <th>Organizations</th>
-                <td>
-                <ul>
-                {% for pfo in functionEntity.personfunctionorganizations %}
-                <li>{{ pfo.person }} ({{ pfo.organization }})</li>
-                {% endfor %}
-                </ul>
-                </td>
-            </tr>
-{% endif %}
-{%  if functionEntity.shifts.count > 0 %}
-            <tr>
-                <th>Shifts</th>
-                <td>
-                <ul>
-                {% for shift in functionEntity.shifts %}
-                <li>{{ shift.event }} ({{ shift.event.location }})</li>
-                {% endfor %}
-                </ul>
-                </td>
-            </tr>
-{% endif %}
+#}
         </tbody>
     </table>
 
