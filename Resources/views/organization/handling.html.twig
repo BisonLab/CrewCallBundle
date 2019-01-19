@@ -3,6 +3,8 @@ function grabAddExistingPersonForm() {
     url = "{{ path('organization_add_existing_person', { 'access': 'ajax', 'id': organization.id }) }}";
     $.get(url, function( data ) {
         $( "#addExistingPerson" ).html(data);
+        $( "#crewcallbundle_pfo_organization").hide();
+        $( "#crewcallbundle_pfo_organization").prev().hide();
         $( "#addExistingPerson" ).submit(function( event ) {
             event.preventDefault();
             submitAddExistingPersonForm();

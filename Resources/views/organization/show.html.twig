@@ -81,6 +81,8 @@
     <thead>
         <tr>
             <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
             <th>Function</th>
             <th>&nbsp;</th>
         </tr>
@@ -93,6 +95,8 @@
             {{ pfo.person }}
             </a>
         </td>
+        <td>{{ pfo.person.email }}</td>
+        <td>{{ pfo.person.mobilephonenumber }}</td>
         <td>{{ pfo.function }}</td>
         <td>
             <a role="button" class="btn-sm btn-danger" href="{{ path('organization_remove_person', { 'id': pfo.id }) }}">Remove</a>
