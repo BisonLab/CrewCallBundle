@@ -96,36 +96,23 @@ function get_selected_persons() {
                 </td>
             </tr>
         {% endfor %}
-<tr border="0">
-<td colspan="5" border="0">&nbsp;</td>
-<td colspan="2" border="0" halign="right">
+        </tbody>
+    </table>
 <div align="right">
 <button class="dababutton" onClick="select_all_persons(true);">Select all</button>
 <button class="dababutton" onClick="select_all_persons(false);">Deselect all</button>
 </br>
 <button class="dababutton" id="message_popover_link" onClick="openMessagePopover(false);">Send a message</button>
 </div>
+
 <div align=right>
-</td>
-</tr>
-
-        </tbody>
-    </table>
-
 <div id="message_popover" class="hidden">
 <form id="person_list_form" method="POST">
 <table>
-<tr>
-<td>
 <textarea name="body" cols="20" rows="4"></textarea>
-</td>
-<td>
 <input type="radio" value="BULKALL" name="message_type" CHECKED>SMS, Email, PM</input><br>
 <input type="radio" value="BULKSMS" name="message_type">SMS only</input><br>
 <input class="dababutton" id="sendmessage" type="submit" name="submit" value="Send">
-</td>
-</tr>
-</table>
 </form>
 </div>
 
