@@ -77,9 +77,11 @@ class EventController extends CommonController
                 $event->setStart($parent->getStart());
                 $event->setEnd($parent->getEnd());
                 $event->setOrganization($parent->getOrganization());
+                $event->setLocation($parent->getLocation());
                 // TODO: Consider setting manager, location and organization
-                // aswell. But not befire I've decided on wether I want to
+                // aswell. But not before I've decided on wether I want to
                 // inherit from the parent or not. And on which properties.
+                // (Org and loc are included, for now at least.)
                 $form->setData($event);
             }
         } elseif (!$form->isSubmitted()) {

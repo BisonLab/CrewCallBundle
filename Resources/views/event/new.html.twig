@@ -12,7 +12,11 @@ $(document).ready(function()
     });
 });
 </script>
-    <h1>Event creation</h1>
+{% if event.parent %}
+    <h1>Add subevent to {{ event.parent }}</h1>
+{% else %}
+    <h1>New Event</h1>
+{% endif %}
 
     {{ form_start(form) }}
         {{ form_widget(form) }}
