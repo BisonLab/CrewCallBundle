@@ -61,7 +61,6 @@ function get_selected_persons() {
             <tr>
                 <th>Username</th>
                 <th>Name</th>
-                <th>Date of birth</th>
                 <th>Mobile</th>
                 <th>State</th>
 {# Undecided               <th>Actions</th> #}
@@ -73,7 +72,6 @@ function get_selected_persons() {
             <tr>
                 <td><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.username }}</a></td>
                 <td>{{ person.fullname }}</td>
-                <td>{% if person.dateofbirth %}{{ person.dateofbirth|date('Y-m-d') }}{% endif %}</td>
                 <td>{{ person.mobilephonenumber }}</td>
                 <td {% if person.occupied({'reasons': true}) %}class="cc_warn"{% endif %}>
                 {{ person.state }}
