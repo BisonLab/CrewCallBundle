@@ -17,11 +17,13 @@ use CrewCallBundle\Entity\PersonState;
 class Calendar
 {
     private $router;
+    private $summarizer;
     private $user;
 
-    public function __construct($router)
+    public function __construct($router, $summarizer)
     {
         $this->router = $router;
+        $this->summarizer = $summarizer;
     }
 
     public function toIcal($frog)
@@ -149,6 +151,19 @@ class Calendar
         $c['end'] = $event->getEnd();
         $c['color'] = "#" . $col;
         $c['textColor'] = "black";
+        $c['content'] = 
+              'What: ' . (string)$event . "\n"
+            . 'Where: ' . (string)$event->getLocation() . "\n";
+
+        $url =  $this->router->generate('event_show', 
+            array('id' => $event->getId()));
+        $c['popup_title'] = (string)$event;
+
+        // Should I do summary maybe?
+        $c['popup_content'] = preg_replace("/\n/", "<br />"
+            , $c['content']) . '<br><a href="'
+            . $url  . '">Go to event</a>';
+
         return $c;
     }
 

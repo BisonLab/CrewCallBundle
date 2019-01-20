@@ -21,7 +21,7 @@ services:
     crewcall.calendar:
         class: CrewCallBundle\Service\Calendar
         public: true
-        arguments: ["@router"]
+        arguments: ["@router", "@crewcall.summarizer"]
 
     crewcall.formcreator:
         class: CrewCallBundle\Service\FormCreator
