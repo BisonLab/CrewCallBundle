@@ -64,7 +64,7 @@ function get_selected_persons() {
                 <th>Date of birth</th>
                 <th>Mobile</th>
                 <th>State</th>
-                <th>Actions</th>
+{# Undecided               <th>Actions</th> #}
                 <th>Select</th>
             </tr>
         </thead>
@@ -78,6 +78,7 @@ function get_selected_persons() {
                 <td {% if person.occupied({'reasons': true}) %}class="cc_warn"{% endif %}>
                 {{ person.state }}
                 </td>
+{#
                 <td>
                   <a href="{{ path('person_show', { 'id': person.id }) }}">Show</a> - 
                   <a href="{{ path('person_edit', { 'id': person.id }) }}">Edit</a>
@@ -91,6 +92,7 @@ function get_selected_persons() {
             <br><a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>
 {% endif %}
                 </td>
+#}
                 <td>
                         <input class="person_list_checkbox" type="checkbox" name="person_list" value="{{ person.id }}">
                 </td>
