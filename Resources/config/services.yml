@@ -1,4 +1,9 @@
 services:
+    crewcall.events:
+        class: CrewCallBundle\Service\Events
+        public: true
+        arguments: ["@doctrine.orm.entity_manager"]
+
     crewcall.jobs:
         class: CrewCallBundle\Service\Jobs
         public: true

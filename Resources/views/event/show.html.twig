@@ -74,9 +74,16 @@
             <tr>
                 <th>&nbsp;</th>
                 <td>
+            <a class="btn btn-primary btn-block" href="{{ path('event_clone', {'event': event.id}) }}">Create a copy with new start date</a>
+                </td>
+            </tr>
+            <tr>
+                <th>&nbsp;</th>
+                <td>
             <a class="btn btn-primary btn-block" href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a>
                 </td>
             </tr>
+{% if not event.booked %}
             <tr>
                 <th>&nbsp;</th>
                 <td>
@@ -85,6 +92,7 @@
             {{ form_end(delete_form) }}
                 </td>
             </tr>
+{% endif %}
             <tr>
                 <th>&nbsp;</th>
                 <td>

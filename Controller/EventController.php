@@ -176,6 +176,46 @@ class EventController extends CommonController
     }
 
     /**
+     * Clone or copy? It takes an event and creates a new set of subevents and
+     * shifts based on a new start date.
+     *
+     * @Route("/{event}/clone", name="event_clone", methods={"GET", "POST"})
+     */
+    public function cloneAction(Request $request, Event $event)
+    {
+        $clone = new Event();
+        $form = $this->createForm('CrewCallBundle\Form\EventType', $clone);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $events = $this->container->get('crewcall.events');
+            $clone = $events->cloneEvent($event, $clone);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($clone);
+            $em->flush($clone);
+            return $this->redirectToRoute('event_show', array('id' => $clone->getId()));
+        }
+
+        $clone->setParent($event->getParent());
+        $clone->setStart($event->getStart());
+        // This will be set automagically, gotta  make sure it's in the future
+        // and hidden in the form view.
+        $clone->setEnd(new \DateTime("3000-01-01"));
+        $clone->setOrganization($event->getOrganization());
+        $clone->setLocation($event->getLocation());
+        // TODO: Consider setting manager, location and organization
+        // aswell. But not before I've decided on wether I want to
+        // inherit from the parent or not. And on which properties.
+        // (Org and loc are included, for now at least.)
+        $form->setData($clone);
+        return $this->render('event/new.html.twig', array(
+            'event' => $clone,
+            'clone' => $event,
+            'form' => $form->createView(),
+        ));
+    }
+
+    /**
      * Finds and displays the gedmo loggable history
      *
      * @Route("/{id}/log", name="event_log")

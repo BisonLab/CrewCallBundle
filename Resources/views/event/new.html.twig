@@ -2,16 +2,27 @@
 
 {% block body %}
 <script>
-$(document).ready(function()
-    {
+$(document).ready(function() {
+
+{#
     $("#crewcallbundle_event_start_date input").each(function(){
         $(this).attr("readonly","readonly");
     });
     $("#crewcallbundle_event_end_date input").each(function(){
         $(this).attr("readonly","readonly");
     });
+#}
+{% if clone is defined %}
+    $("#crewcallbundle_event_end").hide();
+    $("#crewcallbundle_event_end").prev().hide();
+{% endif %}
 });
 </script>
+{% if clone is defined %}
+
+    <h1>Make a copy of {{ clone.name }}</h1>
+    <form method="POST" action="{{ path('event_clone', { 'event': clone.id }) }}">
+{% else %}
 {% if event.parent %}
     <h1>Add subevent to {{ event.parent }}</h1>
 {% else %}
@@ -19,6 +30,7 @@ $(document).ready(function()
 {% endif %}
 
     {{ form_start(form) }}
+{% endif %}
         {{ form_widget(form) }}
         <input type="submit" value="Create"/>
     {{ form_end(form) }}
