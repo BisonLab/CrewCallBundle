@@ -124,13 +124,13 @@ class Job
          * TODO: Add such checks so that it'll never throw an exception.
          */
         $p1 = strrev(\ShortCode\Reversible::convert(
-                (int)$shift_id,
+                $this->getShift()->getId(),
                     \ShortCode\Code::FORMAT_ALNUM_SMALL, 2));
 
         $p2 = strtolower(\ShortCode\Random::get(2));
 
         $p3 = \ShortCode\Reversible::convert(
-                $person->getId(),
+                $this->getPerson()->getId(),
                     \ShortCode\Code::FORMAT_ALNUM_SMALL, 2);
 
         $this->ucode = $p1 . $p2 . $p3;
