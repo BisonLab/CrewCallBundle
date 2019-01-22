@@ -622,9 +622,11 @@ class Person extends BaseUser
             $time = new \DateTime($options['datetime']);
 
         /*
-         * Check state.
+         * Check state. I'll default to the uncertain
          */
-        $stateobj = $this->getStateOnDate($time);
+        if (!$stateobj = $this->getStateOnDate($time))
+            return true;
+
         $state = $stateobj->getState();
         if (!in_array($state,
                 ExternalEntityConfig::getActiveStatesFor('Person'))) {

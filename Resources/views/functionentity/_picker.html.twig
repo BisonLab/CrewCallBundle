@@ -21,16 +21,8 @@
     <div class="col-xs-4">
         <h3>Available</h3>
         <select name="functions[]" id="undo_redo_to" class="form-control" size="40" multiple="multiple">
-        {% for f in functionEntities if f.parent is null and f.id not in has_f_ids %}
-            {% if f.children.count > 0 %}
-                <optgroup label="{{ f.name }}">
-                {% for c in f.children if f.id not in has_f_ids %}
-                    <option value="{{ c.id }}">{{ c.name }}</option>
-                {% endfor %}
-                </optgroup>
-            {% else %}
-                <option value="{{ f.id }}">{{ f.name }}</option>
-            {% endif %}
+        {% for f in functionEntities if f.id not in has_f_ids %}
+            <option value="{{ f.id }}">{{ f.name }}</option>
         {% endfor %}
         </select>
         {{ form_rest(update_form) }}

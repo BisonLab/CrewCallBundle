@@ -6,6 +6,8 @@ use Knp\Menu\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
+use CrewCallBundle\Lib\ExternalEntityConfig;
+
 class Builder implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
@@ -44,14 +46,13 @@ class Builder implements ContainerAwareInterface
 
             $peoplemenu = $menu->addChild('People');
             $em = $this->container->get('doctrine')->getManager();
-            $ferepo = $em->getRepository('CrewCallBundle:FunctionEntity');
-            foreach ($ferepo->findParentsWithPeople() as $pfe) {
-                // Spot the ugliness.
-                $peoplemenu->addChild($pfe->getName() . "s",
-                    array('route' => 'person_function',
-                    'routeParameters' => array('function' => $pfe->getId())));
-            }
             $peoplemenu->addChild('All', array('route' => 'person_index'));
+            foreach (ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType') as $ftname => $ftarr) {
+                // Spot the ugliness.
+                $peoplemenu->addChild($ftarr['label'] . "s",
+                    array('route' => 'person_function_type',
+                    'routeParameters' => array('function_type' => $ftname)));
+            }
             if ($this->container->getParameter('allow_registration')) {
                 $peoplemenu->addChild('Applicants', array('route' => 'person_applicants'));
             }

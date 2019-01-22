@@ -73,20 +73,7 @@ class ShiftController extends CommonController
     {
         $shift = new Shift();
         $em = $this->getDoctrine()->getManager();
-        $fgroups = $this->getParameter('crewcall.functiongroups');
-        $fparents = [];
-        $functions = [];
-        foreach ($fgroups['Shift'] as $f) { 
-            $fp = $em->getRepository('CrewCallBundle:FunctionEntity')
-                ->findOneByName($f);
-            if ($fp->getParent())
-                $functions[] = $fp;
-            $fparents[] = $fp;
-            $functions = array_merge($functions, $fp->getAllChildren());
-        }
-        $form = $this->createForm('CrewCallBundle\Form\ShiftType',
-            $shift, array('functions' => $functions));
-            // $shift, array('parent_functions' => $fparents));
+        $form = $this->createForm('CrewCallBundle\Form\ShiftType', $shift);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -175,9 +162,7 @@ class ShiftController extends CommonController
     public function editAction(Request $request, Shift $shift, $access)
     {
         $em = $this->getDoctrine()->getManager();
-        $wparent = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneByName('Worker');
-        $editForm = $this->createForm('CrewCallBundle\Form\ShiftType',
-            $shift, array('parent_functions' => [$wparent]));
+        $editForm = $this->createForm('CrewCallBundle\Form\ShiftType', $shift);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
