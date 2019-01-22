@@ -67,4 +67,17 @@
         </tr>
     {% endfor %}
     </tbody>
+    <tfoot>
+        <tr>
+            <td class="jwPerson">&nbsp;</td>
+            <td class="jwMobile">&nbsp;</td>
+            <td class="jwStart">&nbsp;</td>
+            <td class="jwEvent">&nbsp;</td>
+            <td class="jwFunction">{% for function, count in count_by_function %}{{ function }}: {{ count }}<br>{% endfor %}</td>
+            <td class="jwState">{% for state, count in count_by_state %}{{ state }}: {{ count }}<br>{% endfor %}</td>
+            <td class="jwMove">&nbsp;</td>
+            <td class="jwHours">&nbsp;</td>
+            <td class="jwSelect"><span id="jobs_selected_count">Selected: 0</span></td>
+        </tr>
+    </tfoot>
  </table>
