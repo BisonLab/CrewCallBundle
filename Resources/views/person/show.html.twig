@@ -301,6 +301,7 @@ function openStateChange() {
                 'subject': "",
                 'to_field': false,
                 'from_field': false,
+                'expire_field': true,
                 'message_type': 'Notes',
                 'context': {
                     'system': 'crewcall',
@@ -318,12 +319,12 @@ function openStateChange() {
 {% set mlogcontext = {
             'system': 'crewcall',
             'object_name': 'person',
-            'message_type': 'PersonNote',
+            'message_group': 'Notes',
             'external_id': person.id
     }
 %}
 {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
-    <strong>{{ note.subject }}</strong> ({{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }})
+    <strong>{{ note.subject }}</strong> ({{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}). {% if note.expireat %}Expires {{ note.expireat | date('Y-m-d') }}{% endif %}
     <pre>{{ note.body }}</pre>
     {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
     <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
