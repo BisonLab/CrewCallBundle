@@ -260,6 +260,17 @@ class Job
         return $this->joblogs;
     }
 
+    public function getStateChanged()
+    {
+        return $this->state_changed;
+    }
+
+    public function setStateChanged()
+    {
+        $this->state_changed = new \DateTime();
+        return $this;
+    }
+
     /*
      * Access functions
      */
@@ -296,17 +307,6 @@ class Job
     public function __toString()
     {
         return (string)$this->getFunction();
-    }
-
-    public function getStateChanged()
-    {
-        return $this->state_changed;
-    }
-
-    public function setStateChanged()
-    {
-        $this->state_changed = new \DateTime();
-        return $this;
     }
 
     public function getOverlap()
