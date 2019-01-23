@@ -34,21 +34,13 @@ class ShiftType extends AbstractType
                 'time_widget' => "single_text"))
            ->add('state', ChoiceType::class, array(
               'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift')))
-           // ->add('amount', IntegerType::class, array('required' => true, 'attr' => array('size' => 3)))
            ->add('amount', TextType::class, array('required' => true, 'attr' => array('size' => 3, 'pattern' => '[0-9]{1,3}')))
            ->add('function', EntityType::class,
                array('class' => 'CrewCallBundle:FunctionEntity',
-                   'choices' => $options['functions'],
-/*
-                   'group_by' => 'parent.name',
                    'query_builder' => function(EntityRepository $er) use ($options) {
-                   return $er->createQueryBuilder('f')
-                    ->where("f.state = 'VISIBLE'")
-                    ->andWhere("f.parent in (:parents)")
-                    ->orderBy('f.name', 'ASC')
-                    ->setParameter('parents', $options['parent_functions']);
+                       $er->setReturnQb(true);
+                       return $er->findByFunctionGroup('Shift');
                    },
-*/
                ))
             ->add('event')
            ;
@@ -60,8 +52,6 @@ class ShiftType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'functions' => [],
-            'parent_functions' => [],
             'data_class' => 'CrewCallBundle\Entity\Shift'
         ));
     }

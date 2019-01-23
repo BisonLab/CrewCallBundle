@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CrewCallBundle\Lib\ExternalEntityConfig;
+use CrewCallBundle\Entity\FunctionEntity;
 
 class FunctionEntityType extends AbstractType
 {
@@ -22,9 +23,10 @@ class FunctionEntityType extends AbstractType
             ->add('description')
             ->add('state', ChoiceType::class, array(
               'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Function')))
+            ->add('function_type', ChoiceType::class, array(
+              'choices' => FunctionEntity::getFunctionTypesAsChoiceArray()))
             // I wonder if having these here is a good idea as long as it's json.
             // ->add('attributes')
-            ->add('parent')
         ;
     }
     

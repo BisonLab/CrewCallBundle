@@ -42,7 +42,7 @@ class PersonController extends CommonController
         $people = $em->getRepository('CrewCallBundle:Person')->findAll();
 
         $fe_repo = $em->getRepository('CrewCallBundle:FunctionEntity');
-        $functions = $fe_repo->findRootFunctions();
+        $functions = $fe_repo->findAll(['name' => 'ASC']);
         return $this->render('person/index.html.twig', array(
             'people' => $people,
             'functions' => $functions,
@@ -50,7 +50,7 @@ class PersonController extends CommonController
     }
 
     /**
-     * Lists all person entities.
+     * Lists all person entities with a function
      *
      * @Route("/function", name="person_function", methods={"GET"})
      */
@@ -59,16 +59,35 @@ class PersonController extends CommonController
         $em = $this->getDoctrine()->getManager();
         $fe_repo = $em->getRepository('CrewCallBundle:FunctionEntity');
 
-        $fid = $request->get('function');
+        $fid = $request->get('function_id');
         if (!$functionEntity = $fe_repo->find($fid))
             return $this->returnNotFound($request, 'No function to filter');
-        $people = $functionEntity->getAllPeople();
-
-        $functions = $functionEntity->getRootFunctionEntity()->getAllChildren();
+        $people = $functionEntity->getPeople();
+        $functions = $fe_repo->findBy(['function_type'
+            => $functionEntity->getFunctionType()], ['name' => 'ASC']);
         return $this->render('person/index.html.twig', array(
             'people' => $people,
             'functions' => $functions,
             'functionEntity' => $functionEntity,
+        ));
+    }
+
+    /**
+     * Lists all person entities with a function_type
+     *
+     * @Route("/{function_type}/function_type", name="person_function_type", methods={"GET"})
+     */
+    public function listByFunctionTypeAction(Request $request, $function_type)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $people = $em->getRepository('CrewCallBundle:Person')
+            ->findByFunctionType($function_type);
+        $functions = $em->getRepository('CrewCallBundle:FunctionEntity')
+            ->findByFunctionType($function_type);
+        return $this->render('person/index.html.twig', array(
+            'people' => $people,
+            'function_type' => ucfirst(strtolower($function_type)),
+            'functions' => $functions,
         ));
     }
 

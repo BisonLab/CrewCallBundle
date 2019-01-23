@@ -9,6 +9,29 @@ class PersonRepository extends \Doctrine\ORM\EntityRepository
 {
     use \BisonLab\CommonBundle\Entity\ContextRepositoryTrait;
 
+    public function findByFunctionType($function_type)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('p')
+            ->from($this->_entityName, 'p')
+            ->innerJoin('p.person_functions', 'pf')
+            ->innerJoin('pf.function', 'f')
+            ->where("f.function_type = :function_type")
+            ->setParameter("function_type", $function_type);
+        $pfs = $qb->getQuery()->getResult();
+
+        $qb2 = $this->_em->createQueryBuilder();
+        $qb2->select('p')
+            ->from($this->_entityName, 'p')
+            ->innerJoin('p.person_function_organizations', 'pf')
+            ->innerJoin('pf.function', 'f')
+            ->where("f.function_type = :function_type")
+            ->setParameter("function_type", $function_type);
+
+        return new \Doctrine\Common\Collections\ArrayCollection(
+            array_merge($pfs, $qb2->getQuery()->getResult()));
+    }
+
     public function getOneByContext($system, $object_name, $external_id)
     {
         return $this->_getOneByContext($this->_entityName . "Context",

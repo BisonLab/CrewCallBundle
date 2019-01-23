@@ -3,36 +3,71 @@
 namespace CrewCallBundle\Repository;
 
 use Doctrine\ORM\Query\ResultSetMapping;
+use CrewCallBundle\Lib\ExternalEntityConfig;
 
 /**
  *
  */
 class FunctionEntityRepository extends \Doctrine\ORM\EntityRepository
 {
+    // I wonder if this can work out as a good idea. Point is to use in the
+    // forms for returning the query buillder with the wuery from here instead
+    // of the result, which it does not like.
+    private $return_qb = false;
+    public function setReturnQb($val = true)
+    {
+        $this->return_qb = $val;
+    }
+
     public function findAll()
     {
         return $this->findBy(array(), array('name' => 'ASC'));
+    }
+
+    public function findByFunctionType($function_type, $visible_only = true)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('f')
+            ->from($this->_entityName, 'f')
+            ->where("f.function_type = :function_type")
+            ->setParameter('function_type', $function_type);
+
+        if ($visible_only)
+            $qb->andWhere('f.state = :visible')->setParameter('visible', 'VISIBLE');
+        $qb->orderBy('f.name', 'ASC');
+        if ($this->return_qb) return $qb;
+        return $qb->getQuery()->getResult();
+    }
+
+    /*
+     * I do not like "Group", but until someone comes up with a bvetter name
+     * Ill keep it.
+     */
+    public function findByFunctionGroup($function_group, $visible_only = true)
+    {
+        $function_types = [];
+        foreach (ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType') as $k => $arr) {
+            if (in_array($function_group, $arr['groups']))
+                $function_types[] = $k;
+        }
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('f')
+            ->from($this->_entityName, 'f')
+            ->where("f.function_type in (:function_types)")
+            ->setParameter('function_types', $function_types);
+
+        if ($visible_only)
+            $qb->andWhere('f.state = :visible')->setParameter('visible', 'VISIBLE');
+        $qb->orderBy('f.name', 'ASC');
+
+        if ($this->return_qb) return $qb;
+        return $qb->getQuery()->getResult();
     }
 
     public function findNamesWithPeopleCount()
     {
         $query = $this->_em->createQuery('SELECT fe.id, fe.name, count(pf.id) as people FROM ' . $this->_entityName . ' fe JOIN fe.person_functions pf GROUP BY fe.id');
         return $result = $query->getResult();
-    }
-
-    public function findParentsWithPeople()
-    {
-        // So wrong, but didn't find out how to to this in DQL without it
-        // being even worse.
-        $parents = [];
-        foreach ($this->findAll() as $fe) {
-            if (count($fe->getPersonFunctions()) > 0
-                    || count($fe->getPersonFunctionOrganizations()) > 0 ) {
-                $tfe = $fe->getRootFunctionEntity();
-                $parents[$tfe->getName()] = $tfe;
-            }
-        }
-        return array_values($parents);
     }
 
     public function searchByField($field, $value)
@@ -70,14 +105,5 @@ class FunctionEntityRepository extends \Doctrine\ORM\EntityRepository
                 ->setParameter(2, '%' . mb_strtoupper($value) . '%');
             return $qb->getQuery()->getResult();
         }
-    }
-
-    public function findRootFunctions()
-    {
-        $qb = $this->_em->createQueryBuilder();
-        $qb->select('f')
-            ->from($this->_entityName, 'f')
-            ->where("f.parent is null");
-        return $qb->getQuery()->getResult();
     }
 }

@@ -1,18 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}People{% endblock %}
 
-{% macro select_list(elem_list, prep = "") %}
-{% import _self as self %}
-    {% for elem in elem_list %}
-            <option value="{{ elem.id }}">{{ prep | raw }}{{ elem.name }}</option>
-        {% if elem.children %}
-            {% set foo = prep ~ '&nbsp; - ' %}
-                {{ self.select_list(elem.children, foo) }}
-        {% endif %}
-    {% endfor %}
-{% endmacro select_list %}
-{% import _self as fmacros %}
-
 {% block body %}
 <script>
 function select_all_persons(value) {
@@ -32,6 +20,8 @@ function get_selected_persons() {
 
     {% if functionEntity is defined %}
     <h1>People with {{ functionEntity }}</h1>
+    {% elseif function_type is defined %}
+    <h1>{{ function_type }}s</h1>
     {% else %}
     <h1>People</h1>
     {% endif %}
@@ -45,8 +35,11 @@ function get_selected_persons() {
 <td>
    <form action="{{ path('person_function') }}" method="GET">
 <label>Function</label>
-<select name="function">
-    {{ fmacros.select_list(functions) }}
+<select name="function_id">
+    <option value="">All</option>
+    {% for elem in functions %}
+    <option value="{{ elem.id }}" {% if functionEntity is defined and elem.id == functionEntity.id %}selected{% endif %}>{{ elem.name }}</option>
+    {% endfor %}
 </select>
 </td>
 <td>

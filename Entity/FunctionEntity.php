@@ -61,6 +61,15 @@ class FunctionEntity
      */
     private $state;
 
+    /**
+     * @var string $function_type
+     *
+     * @ORM\Column(name="function_type", type="string", length=40, nullable=true)
+     * @Gedmo\Versioned
+     * @Assert\Choice(callback = "getFunctionTypes")
+     */
+    private $function_type;
+
     /* 
      * This is for grouping the functions. Hopefully just one group and one
      * subgroup.
@@ -205,6 +214,55 @@ class FunctionEntity
     }
 
     /**
+     * Set function_type
+     *
+     * @param string $function_type
+     *
+     * @return Person
+     */
+    public function setFunctionType($function_type)
+    {
+        $this->function_type = $function_type;
+
+        return $this;
+    }
+
+    /**
+     * Get function_type
+     *
+     * @return string
+     */
+    public function getFunctionType()
+    {
+        return $this->function_type;
+    }
+
+    /**
+     * Get function_type
+     *
+     * @return string
+     */
+    public function getFunctionTypeLabel()
+    {
+        $labels = array();
+        $ftypes = ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType');
+        return $ftypes[$this->function_type]['label'];
+    }
+
+    /*
+     *
+     */
+    public static function getFunctionTypes()
+    {
+        return array_keys(ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType'));
+    }
+
+    public static function getFunctionTypesAsChoiceArray()
+    {
+        return ExternalEntityConfig::getTypesAsChoicesFor('FunctionEntity', 'FunctionType');
+    }
+
+    /**
      * Add child
      *
      * @param \CrewCallBundle\Entity\FunctionEntity $child
@@ -233,24 +291,12 @@ class FunctionEntity
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
+/*
     public function getChildren()
     {
         return $this->children;
     }
-
-    /**
-     * Get all children
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getAllChildren()
-    {
-        $children = $this->children->toArray();
-        foreach ($this->children as $child) {
-            $children = array_merge($children, $child->getAllChildren());
-        }
-        return $children;
-    }
+ */
 
     /**
      * Set parent
@@ -270,23 +316,12 @@ class FunctionEntity
      *
      * @return \CrewCallBundle\Entity\FunctionEntity 
      */
+/*
     public function getParent()
     {
         return $this->parent;
     }
-
-    /**
-     * Get the parent of parents.
-     *
-     * @return \CrewCallBundle\Entity\FunctionEntity 
-     */
-    public function getRootFunctionEntity()
-    {
-        if ($parent = $this->getParent())
-            return $parent->getRootFunctionEntity();
-        else
-            return $this;
-    }
+ */
 
     /**
      * Add personFunction
@@ -351,23 +386,6 @@ class FunctionEntity
         foreach ($this->person_function_organizations as $pfo) {
             if (!$people->contains($pfo->getPerson()))
                 $people->add($pfo->getPerson());
-        }
-        return $people;
-    }
-
-    /**
-     * Get All People, aka, from the function children aswell.
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getAllPeople()
-    {
-        $people = $this->getPeople();
-        foreach ($this->getChildren() as $child) {
-            foreach($child->getAllPeople() as $p) {
-                if (!$people->contains($p))
-                    $people->add($p);
-            }
         }
         return $people;
     }
@@ -444,9 +462,9 @@ class FunctionEntity
      * hopefully and stop using it where it hurts.
      *
      * * No options: Just count personfunctions.
-     * * 'all': Count getAllPeople()
+     * * 'function_type': By function type - TODO
      * * 'by_state': Count getPeople() and sort by state.
-     * * 'all_by_state': Count getAllPeople() and sort by state.
+     * * 'function_type_by_state':  - TODO
      */
     public function countPeople($options = [])
     {
@@ -456,16 +474,6 @@ class FunctionEntity
         if (isset($options['by_state'])) {
             $states = [];
             foreach ($this->getPeople() as $p) {
-                if (!isset($states[$p->getState()]))
-                    $states[$p->getState()] = 1;
-                else
-                    $states[$p->getState()]++;
-            }
-            return $states;
-        }
-        if (isset($options['all_by_state'])) {
-            $states = [];
-            foreach ($this->getAllPeople() as $p) {
                 if (!isset($states[$p->getState()]))
                     $states[$p->getState()] = 1;
                 else

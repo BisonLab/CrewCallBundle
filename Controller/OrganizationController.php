@@ -2,14 +2,15 @@
 
 namespace CrewCallBundle\Controller;
 
-use CrewCallBundle\Entity\Organization;
-use CrewCallBundle\Entity\PersonFunctionOrganization;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
+
+use CrewCallBundle\Entity\Organization;
+use CrewCallBundle\Entity\PersonFunctionOrganization;
 
 /**
  * Organization controller.
@@ -152,15 +153,9 @@ class OrganizationController extends CommonController
     public function addExistingPersonAction(Request $request, Organization $organization, $access)
     {
         $em = $this->getDoctrine()->getManager();
-        $fgroups = $this->getParameter('crewcall.functiongroups');
-        $fparents = [];
-        foreach ($fgroups['Organization'] as $f) { 
-            $fparents[] = $em->getRepository('CrewCallBundle:FunctionEntity')
-                ->findOneByName($f);
-        }
         $pfo = new PersonFunctionOrganization();
         $pfo->setOrganization($organization);
-        $form = $this->createForm('CrewCallBundle\Form\ExistingPersonOrganizationType', $pfo, array('parent_functions' => $fparents));
+        $form = $this->createForm('CrewCallBundle\Form\ExistingPersonOrganizationType', $pfo);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

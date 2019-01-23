@@ -1,11 +1,24 @@
 {% extends 'base.html.twig' %}
 {% block title %}Functions{% endblock %}
 
-{# Todo: make this one recursive so it'll show function -> function and so on #}
-{% macro function_row (functionEntity, so_far) %}
-{% import _self as self %}
-    <tr>
-        <td>{{ so_far }} <a href="{{ path('function_show', { 'id': functionEntity.id }) }}">{{ functionEntity.name }}</a></td>
+{% block body %}
+    <h1>Functions</h1>
+
+        <table id="sortable_table" class="table table-striped table-bordered table-sm">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Descriptions</th>
+                <th>State</th>
+                <th>People</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for functionEntity in functionEntities %}
+        <td><a href="{{ path('function_show', { 'id': functionEntity.id }) }}">{{ functionEntity.name }}</a></td>
+        <td>{{ functionEntity.functiontypelabel }}</td>
         <td>{{ functionEntity.description }}</td>
         <td>{{ functionEntity.state }}</td>
         <td>
@@ -16,55 +29,9 @@
         <td>
             <a href="{{ path('function_show', { 'id': functionEntity.id }) }}">show</a> - 
             <a href="{{ path('function_edit', { 'id': functionEntity.id }) }}">edit</a> - 
-            <a href="{{ path('person_function', { 'id': functionEntity.id }) }}">people</a>
+            <a href="{{ path('person_function', { 'function_id': functionEntity.id }) }}">people</a>
         </td>
-    </tr>
-    {% if so_far is not empty %}
-    {% set so_far = so_far ~ " -- " ~ functionEntity.name %}
-    {% else %}
-    {% set so_far = functionEntity.name %}
-    {% endif %}
-    {% for child in functionEntity.children %}
-        {{ self.function_row(child, so_far) }}
-    {% endfor %}
-{% endmacro %}
-{% import _self as fmacros %}
-
-{% block body %}
-    <h1>Functions</h1>
-
-        <table id="sortable_table" class="table table-striped table-bordered table-sm">
-        <thead class="thead-inverse">
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>State</th>
-                <th>People</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {# This was an attempt at nesting, but it was thwarted by table sorting. Gonna keep it for now, in case of good ideas. #}
-        {% for functionEntity in functionEntities if functionEntity.parent is empty %}
-            {{ fmacros.function_row(functionEntity, '') }}
-            {# I'll take it for granted that a group has children
-        {% for functionEntity in functionEntities if functionEntity.parent is null %}
-            {% if functionEntity.children.count > 0 %}
-                <tr>
-                <td><strong>{{ functionEntity.name }}</strong></td>
-                <td>{{ functionEntity.description }}</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                </tr>
-                {% for child in functionEntity.children  %}
-                    {{ fmacros.function_row(child) }}
-                {% endfor %}
-            {% else %}
-                {{ fmacros.function_row(functionEntity) }}
-            {% endif %}
-            #}
+        </tr>
         {% endfor %}
         </tbody>
     </table>

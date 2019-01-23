@@ -34,13 +34,15 @@
 {{ fmacros.select_list(past_events) }}
 </select>
 
-{#
+<br>
+
 <label>Function</label>
 <select name="function">
 <option value="" selected>All</option>
-{{ fmacros.select_list(functions) }}
+{% for f in functions %}
+<option value="{{ f.id }}">{{ f.name }}</option>
+{% endfor %}
 </select>
-#}
 
 <label>Person</label>
 <input id="filter_username" name="username" />
@@ -92,7 +94,6 @@
 </div>
 <div class="buttons" align="right">
   <div class="jwSelect" id="jobSelect">
-    <span id="jobs_selected_count">Selected: 0</span>
     <button class="dababutton" onClick="select_all_jobs(true);">Select all</button>
     <button class="dababutton" onClick="select_all_jobs(false);">Deselect all</button>
     </br>

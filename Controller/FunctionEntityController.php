@@ -43,8 +43,9 @@ class FunctionEntityController extends CommonController
     public function pickerAction(Request $request, $access)
     {
         $em = $this->getDoctrine()->getManager();
+        $group = $request->get('function_group') ?: "Shift";
 
-        $functionEntities = $em->getRepository('CrewCallBundle:FunctionEntity')->findAll();
+        $functionEntities = $em->getRepository('CrewCallBundle:FunctionEntity')->findByFunctionGroup($group);
 
         $has_functions = $has_f_ids = array();
         $add_to = null;

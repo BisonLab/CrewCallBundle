@@ -26,13 +26,9 @@ class ExistingPersonOrganizationType extends AbstractType
                array('class' => 'CrewCallBundle:Organization'))
            ->add('function', EntityType::class,
                array('class' => 'CrewCallBundle:FunctionEntity',
-                   'group_by' => 'parent.name',
                    'query_builder' => function(EntityRepository $er) use ($options) {
-                   return $er->createQueryBuilder('f')
-                    ->where("f.state = 'VISIBLE'")
-                    ->andWhere("f.parent in (:parents)")
-                    ->orderBy('f.name', 'ASC')
-                    ->setParameter('parents', $options['parent_functions']);
+                       $er->setReturnQb(true);
+                       return $er->findByFunctionGroup('Organization');
                    },
                ))
         ;
@@ -44,7 +40,6 @@ class ExistingPersonOrganizationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'parent_functions' => [],
             'data_class' => 'CrewCallBundle\Entity\PersonFunctionOrganization'
         ));
     }
