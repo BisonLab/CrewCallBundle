@@ -132,7 +132,7 @@ class ShiftOrganization
      */
     public function getState()
     {
-        return $this->state;
+        return $this->state ?: "CONFIRMED";
     }
 
     /**

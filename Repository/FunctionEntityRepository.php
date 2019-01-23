@@ -10,6 +10,15 @@ use CrewCallBundle\Lib\ExternalEntityConfig;
  */
 class FunctionEntityRepository extends \Doctrine\ORM\EntityRepository
 {
+    // I wonder if this can work out as a good idea. Point is to use in the
+    // forms for returning the query buillder with the wuery from here instead
+    // of the result, which it does not like.
+    private $return_qb = false;
+    public function setReturnQb($val = true)
+    {
+        $this->return_qb = $val;
+    }
+
     public function findAll()
     {
         return $this->findBy(array(), array('name' => 'ASC'));
@@ -26,7 +35,7 @@ class FunctionEntityRepository extends \Doctrine\ORM\EntityRepository
         if ($visible_only)
             $qb->andWhere('f.state = :visible')->setParameter('visible', 'VISIBLE');
         $qb->orderBy('f.name', 'ASC');
-
+        if ($this->return_qb) return $qb;
         return $qb->getQuery()->getResult();
     }
 
@@ -51,6 +60,7 @@ class FunctionEntityRepository extends \Doctrine\ORM\EntityRepository
             $qb->andWhere('f.state = :visible')->setParameter('visible', 'VISIBLE');
         $qb->orderBy('f.name', 'ASC');
 
+        if ($this->return_qb) return $qb;
         return $qb->getQuery()->getResult();
     }
 

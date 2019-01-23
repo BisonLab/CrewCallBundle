@@ -38,10 +38,8 @@ class ShiftType extends AbstractType
            ->add('function', EntityType::class,
                array('class' => 'CrewCallBundle:FunctionEntity',
                    'query_builder' => function(EntityRepository $er) use ($options) {
-                   return $er->createQueryBuilder('f')
-                    ->where("f.state = 'VISIBLE'")
-                    ->andWhere("f.function_type in ('Shift')")
-                    ->orderBy('f.name', 'ASC');
+                       $er->setReturnQb(true);
+                       return $er->findByFunctionGroup('Shift');
                    },
                ))
             ->add('event')

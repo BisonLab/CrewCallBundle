@@ -2,14 +2,15 @@
 
 namespace CrewCallBundle\Controller;
 
-use CrewCallBundle\Entity\Organization;
-use CrewCallBundle\Entity\PersonFunctionOrganization;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
+
+use CrewCallBundle\Entity\Organization;
+use CrewCallBundle\Entity\PersonFunctionOrganization;
 
 /**
  * Organization controller.

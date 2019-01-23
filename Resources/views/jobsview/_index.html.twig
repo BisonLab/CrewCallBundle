@@ -66,6 +66,38 @@
             </td>
         </tr>
     {% endfor %}
+    {% for so in shiftorganizations %}
+        <tr id=jobRow_so_{{ so.id }}>
+            <td class="jwPerson">
+            {{ so.organization }}
+            </td>
+            <td class="jwMobile">
+                {{ so.organization.officephonenumber }}
+            </td>
+            <td class="jwStart">
+                {{ so.shift.start | date("Y-m-d H:i") }}
+            </td>
+            <td>
+            <a href="#" id="popSummary_event_{{ so.shift.event.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ so.shift.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+                {{ so.shift.event.name }}
+            </td>
+            <td class="jwFunction">
+                {{ so.shift.function.name }}
+            </td>
+            <td class="jwState">
+                {{ so.state }}<br>{{ so.amount }} people.
+            </td>
+            <td class="jwMove">
+            &nbsp;
+            </td>
+            <td class="jwHours">
+            &nbsp;
+            </td>
+            <td class="jwSelect">
+            &nbsp;
+            </td>
+        </tr>
+    {% endfor %}
     </tbody>
     <tfoot>
         <tr>

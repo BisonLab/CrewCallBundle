@@ -81,10 +81,13 @@ class JobsViewController extends CommonController
     {
         $em = $this->getDoctrine()->getManager();
         $jobrepo = $em->getRepository('CrewCallBundle:Job');
+        $so_repo = $em->getRepository('CrewCallBundle:ShiftOrganization');
 
         $persons = new ArrayCollection();
         // In case we add jobs during the "filter extraction"
         $jobs = [];
+        // The batch of jobs..
+        $shiftorganizations = [];
 
         $from_date = $request->get('from_date');
         $to_date   = $request->get('to_date');
@@ -156,6 +159,9 @@ class JobsViewController extends CommonController
         // template, but I'll do it anywa.
         $count_by_state = [];
         $count_by_function = [];
+        // Must be able to count people from an organization. No need to show
+        // unless there are any.
+        $jobs_organization = false;
         foreach ($jobs as $j) {
             // Gawd I'm lazy. Must find out the idioms for this one.
             if (isset($count_by_state[$j->getState()]))
@@ -168,10 +174,26 @@ class JobsViewController extends CommonController
                 $count_by_function[$j->getFunction()->getName()] = 1;
         }
 
+        if (empty($shiftorganizations)) {
+            $shiftorganizations = $so_repo->findJobs($job_filters);
+            foreach ($shiftorganizations as $so) {
+                // Gawd I'm lazy. Must find out the idioms for this one.
+                if (isset($count_by_state[$so->getState()]))
+                    $count_by_state[$so->getState()] += $so->getAmount();
+                else
+                    $count_by_state[$so->getState()] = $so->getAmount();
+                if (isset($count_by_function[$so->getShift()->getFunction()->getName()]))
+                    $count_by_function[$so->getShift()->getFunction()->getName()] += $so->getAmount();
+                else
+                    $count_by_function[$so->getShift()->getFunction()->getName()] = $so->getAmount();
+            }
+        }
+
         return $this->render('jobsview/_index.html.twig', array(
             'from'  => $from_date,
             'to'  => $to_date,
             'jobs'  => $jobs,
+            'shiftorganizations'  => $shiftorganizations,
             'count_by_state'  => $count_by_state,
             'count_by_function'  => $count_by_function,
         ));
