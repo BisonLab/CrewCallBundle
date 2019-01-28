@@ -6,12 +6,14 @@
     }
 %}
 <div id="personalmessages">
+<h3>Messages to you</h3>
 {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
 {% if is_granted('show', note) %}
-<h3>{{ note.subject }}</h3>
+<strong>{{ note.subject }}</strong>
 <pre wrap>
 {{ note.body }}
 </pre>
+<button>Read</button>
 {% endif %}
 {% endfor %}
 </div>
