@@ -3,6 +3,7 @@
 {% block body %}
 
 {% include 'CrewCallBundle:job:handling.html.twig' %}
+{% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' with { 'reload_after_post': true } %}
 <script>
 
 function grabFunctionPickerTab() {
@@ -221,7 +222,7 @@ function openStateChange() {
     <a href="#caltab" data-toggle="tab">Calendar</a>
     </li>
     <li>
-    <a href="#notestab" data-toggle="tab">Notes</a>
+    <a href="#notestab" data-toggle="tab">Notes / Messages</a>
     </li>
     <li>
     <a href="#filestab" data-toggle="tab">Files</a>
@@ -294,38 +295,76 @@ function openStateChange() {
 {% set calendar_load_url = path('person_calendar', {'id': person.id, 'access': 'ajax'}) %}
 {% include 'CrewCallBundle::_calendar.html.twig' with { 'calendar_load_url': calendar_load_url}  %}
   </div>
+
   <div class="tab-pane" id="notestab">
-        {% set mconf = {'mconfig': {
-                'formname': 'personnote',
-                'reload_after_post': true,
-                'subject': "",
-                'to_field': false,
-                'from_field': false,
-                'expire_field': true,
-                'message_type': 'Notes',
-                'context': {
-                    'system': 'crewcall',
-                    'object_name': 'person',
-                    'external_id': person.id
-                    }
+    <p>
+    {% set mconf = {'mconfig': {
+            'formname': 'importansnote',
+            'reload_after_post': true,
+            'subject': "",
+            'to_type': "NONE",
+            'from_type': "NONE",
+            'expire_field': true,
+            'message_type': 'ImportantNote',
+            'context': {
+                'system': 'crewcall',
+                'object_name': 'person',
+                'external_id': person.id
                 }
             }
-        %}
-        {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-    <p>
-    <br/>
-        <a href="#" onClick='createMessage("personnote");'>Add a note</a><br />
+        }
+    %}
+    {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+        <a href="#" onClick='createMessage("adminpersonnote");'>Add an <strong>important</strong> note for admins</a><br />
+    {% set mconf = {'mconfig': {
+            'formname': 'adminpersonmessage',
+            'reload_after_post': true,
+            'subject': "",
+            'to_type': "NONE",
+            'from_type': "NONE",
+            'expire_field': false,
+            'message_type': 'PersonNote',
+            'context': {
+                'system': 'crewcall',
+                'object_name': 'person',
+                'external_id': person.id
+                }
+            }
+        }
+    %}
+    {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+        <a href="#" onClick='createMessage("adminpersonmessage");'>Add message (Note tp person)</a><br />
+    {% set mconf = {'mconfig': {
+            'formname': 'adminpersonnote',
+            'reload_after_post': true,
+            'subject': "",
+            'to_type': "NONE",
+            'from_type': "NONE",
+            'expire_field': false,
+            'message_type': 'AdminNote',
+            'context': {
+                'system': 'crewcall',
+                'object_name': 'person',
+                'external_id': person.id
+                }
+            }
+        }
+    %}
+    {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+        <a href="#" onClick='createMessage("adminpersonnote");'>Add a note for admins</a><br />
     </p>
 {% set mlogcontext = {
+            'message_group': 'Notes',
+            'order': 'DESC',
             'system': 'crewcall',
             'object_name': 'person',
-            'message_group': 'Notes',
             'external_id': person.id
     }
 %}
 {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
     <strong>{{ note.subject }}</strong> ({{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}). {% if note.expireat %}Expires {{ note.expireat | date('Y-m-d') }}{% endif %}
     <pre>{{ note.body }}</pre>
+    <a href="#" onClick='grabEditMessageForm({{ note.id }});'><button>Edit</button></a>
     {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
     <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
     {{ form_start(mdelform) }}
