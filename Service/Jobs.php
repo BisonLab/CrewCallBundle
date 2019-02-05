@@ -10,10 +10,13 @@ use CrewCallBundle\Entity\Shift;
 class Jobs
 {
     private $em;
+    private $sakonnin;
+    private $shiftcache = [];
 
-    public function __construct($em)
+    public function __construct($em, $sakonnin)
     {
         $this->em = $em;
+        $this->sakonnin = $sakonnin;
     }
 
     /*
@@ -27,6 +30,40 @@ class Jobs
     /*
      * Person specific functions.
      */
+    /*
+     * For creating an array which is serializebale and suiteable for the
+     * user/worker frontend (Rather customize this here than use the
+     * serializer on job, which would end up with way too much data unless I
+     * really messed around with it. And I'll leave that for the admin
+     * frontend.
+     */
+    public function jobsForPersonArray(Person $person, $options = array())
+    {
+        $jobs = $this->em->getRepository('CrewCallBundle:Job')
+            ->findJobsForPerson($person, $options);
+        // Just walk throug it once, alas overlap check here aswell.
+        $lastjob = null;
+        $lastarr = null;
+        $checked = new \Doctrine\Common\Collections\ArrayCollection();
+        foreach ($jobs as $job) {
+            $arr = [
+                'name' => (string)$job,
+            ];
+            $shiftarr = $this->getShiftArr($job->getShift());
+            $arr = array_merge($arr, $shiftarr);
+
+            if ($lastjob && $this->overlap($job->getShift(), $lastjob->getShift())) {
+                $arr['overlap'] = true;
+                $checked->last()['overlap'] = true;
+            } else {
+                $arr['overlap'] = false;
+            }
+            $checked->add($arr);
+            $lastjob = $job;
+        }
+        return $checked;
+    }
+
     public function jobsForPerson(Person $person, $options = array())
     {
         $jobs = $this->em->getRepository('CrewCallBundle:Job')
@@ -97,5 +134,54 @@ class Jobs
         // Why bother checking if it's the same? :=)
         if ($one === $two) return true;
         return (($one->getStart() <= $two->getEnd()) && ($one->getEnd() >= $two->getStart()));
+    }
+
+    // Private for now
+    private function getShiftArr(Shift $shift)
+    {
+        // So, what do we need here? To be continued..
+        if (!isset($this->shiftcache[$shift->getId()])) {
+            $event = $event->getShift();
+            $location = $event->getLocation();
+            $confirmnotes = [];
+            $emcontext = [
+                'system' => 'crewcall',
+                'object_name' => 'shift',
+                'message_type' => 'ConfirmNote',
+                'external_id' => $shift->getId(),
+            ];
+            foreach ($this->sakonnin->MessagesForContext($emcontext) as $c) {
+                $confirm_notes[] = ['subject' => $c->getSubject(),
+                    'body' => $c->getBody()];
+            }
+            $emcontext = [
+                'system' => 'crewcall',
+                'object_name' => 'event',
+                'message_type' => 'ConfirmNote',
+                'external_id' => $event->getId(),
+            ];
+            foreach ($this->sakonnin->MessagesForContext($emcontext) as $c) {
+                $confirm_notes[] = ['subject' => $c->getSubject(),
+                    'body' => $c->getBody()];
+            }
+            $arr = [
+                'event' => [
+                    'name' => (string)$event,
+                    'location' => [
+                        'name' => $location->getName(),
+                        // 'address' => (string)$location->getAddrerss()
+                    ],
+                ],
+                'shift' => [
+                    'name' => (string)$shift,
+                    'function' => (string)$shift->getFunction(),
+                    'start' => $shift->getStart()->format("Y-m-d H:i"),
+                    'end' => $shift->getEnd()->format("Y-m-d H:i"),
+                ],
+                'confirm_notes' => $confirm_notes
+            ];
+            $this->shiftcache[$shift->getId()] = $arr;
+        }
+        return $this->shiftcache[$shift->getId()];
     }
 }
