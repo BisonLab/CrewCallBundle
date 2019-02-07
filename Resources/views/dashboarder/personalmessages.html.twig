@@ -1,8 +1,31 @@
+<script>
+/* This must be overkill from h*/
+function setStateOnMessage(message_id, state) {
+    cheat_url = "{{ path('message_state', { 'id': 0, 'state': 'NONE', 'access': 'ajax' }) }}";
+    c_url = cheat_url.replace("0", message_id);
+    url = c_url.replace("NONE", state);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "POST",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            $('#personnote_' + message_id).hide();
+      }).fail(function(xhr, status, error) {
+            errmsg = "Failed chaning state\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+</script>
 {% set mlogcontext = {
             'system': 'crewcall',
             'object_name': 'person',
-            'message_type': 'PersonNote',
-            'state': 'UNREAD',
+            'message_types': ['PersonNote', 'PM', 'PMSMS'],
+            'states': ['UNREAD','SENT'],
             'external_id': app.user.id
     }
 %}
@@ -15,7 +38,7 @@
 <pre wrap>
 {{ note.body }}
 </pre>
-<a href="{{ path('message_state', {'access': 'ajax', 'id': note.id, 'state': 'ARCHIVED'}) }}" onClick="$('#personnote_{{ note.id}}').hide(); return false;"><button>Read it!</button></a>
+<a href="#" onClick="return setStateOnMessage({{ note.id }}, 'ARCHIVED');"><button>Read it!</button></a>
 </div>
 {% endif %}
 {% endfor %}
