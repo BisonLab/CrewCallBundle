@@ -19,4 +19,13 @@
 </div>
 {% endif %}
 {% endfor %}
+{% for note in sakonnin_messages.MessagesForUser(app.user, {'state': 'UNREAD'}) %}
+<div id="personnote_{{ note.id}}">
+<strong>{{ note.subject }}</strong>
+<pre wrap>
+{{ note.body }}
+</pre>
+<a href="{{ path('message_state', {'access': 'ajax', 'id': note.id, 'state': 'ARCHIVED'}) }}" onClick="$('#personnote_{{ note.id}}').hide(); return false;"><button>Read it!</button></a>
+</div>
+{% endfor %}
 </div>
