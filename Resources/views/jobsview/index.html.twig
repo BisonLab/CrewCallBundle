@@ -28,11 +28,16 @@
 {{ fmacros.select_list(future_events) }}
 </select>
 
+{#
 <label>Past event</label>
 <select name="past_event">
 <option value="" selected>All</option>
 {{ fmacros.select_list(past_events) }}
 </select>
+#}
+<label>Past event</label>
+<input id="filter_event" name="event" />
+<input type="hidden" id="filter_event_id" name="past_event" />
 
 <br>
 

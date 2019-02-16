@@ -11,6 +11,16 @@ $(document).ready(function() {
         $( "#filter_userid" ).val(ui.item.userid);
       }
      });
+    $( "#filter_event" ).autocomplete({
+      source: "{{ path('event_search', {'access': 'ajax'}) }}",
+      minLength: 2,
+      select: function( event, ui ) {
+console.log("Fikk");
+console.log(ui.item);
+        $( "#filter_event" ).val(ui.item.label);
+        $( "#filter_event_id" ).val(ui.item.id);
+      }
+     });
 })
 
 /*

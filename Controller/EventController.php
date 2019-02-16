@@ -259,6 +259,46 @@ class EventController extends CommonController
     }
 
     /**
+     * Calendar for event
+     *
+     * @Route("/search", name="event_search", methods={"GET"})
+     */
+    public function searchAction(Request $request, $access)
+    {
+        if (!$term = $request->query->get("term"))
+            $term = $request->query->get("event");
+                // Gotta be able to handle two-letter usernames.
+        if (strlen($term) > 1) {
+            $result = array();
+            $em = $this->getDoctrine()->getManager();
+            $qb = $em->createQueryBuilder();
+            $qb->select('e')
+                 ->from('CrewCallBundle:Event', 'e')
+                ->where('lower(e.name) LIKE :term')
+                ->setParameter('term', strtolower($term) . '%');
+
+            if ($events = $qb->getQuery()->getResult()) {
+                foreach ($events as $event) {
+                    // TODO: Add full name.
+                    $res = array(
+                        'id' => $event->getId(),
+                        'value' => $event->getName(),
+                        'label' => $event->getName(),
+                    );
+                    $result[] = $res;
+                }
+            }
+        } else {
+            $result = "Too little information provided for a viable search";
+        }
+
+        if ($this->isRest($access)) {
+            // Format for autocomplete.
+            return $this->returnRestData($request, $result);
+        }
+    }
+
+    /**
      * Creates a form to delete a event entity.
      *
      * @param Event $event The event entity
