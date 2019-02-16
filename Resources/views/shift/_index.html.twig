@@ -30,12 +30,15 @@
             {% endif %}
             </td>
             <td>
-            {{ shift.state }}<br>
             <form action="{{ path('shift_state', { 'id': shift.id }) }}" method="POST">
             <input type="hidden" name="event" value="{{ event.id }}">
             <select name="state" id="state_change">
-            {% for state, id in statechoices %}
-            <option value="{{ id }}">{{ state }}</options>
+            {% for state, idx in statechoices %}
+                {% if shift.state == state %}
+                <option value="{{ idx }}" selected>{{ state }}</options>
+                {% else %}
+                <option value="{{ idx }}">{{ state }}</options>
+                {% endif %}
             {% endfor %}
             </select>
             <input type="submit" value="Change" />

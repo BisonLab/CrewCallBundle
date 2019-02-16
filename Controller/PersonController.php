@@ -205,6 +205,9 @@ class PersonController extends CommonController
      */
     public function changePasswordAction(Request $request, Person $person)
     {
+        // Yup, disabled. Probably to be removed totally.
+        return $this->redirectToRoute('person_show', array('id' => $person->getId()));
+        
         $form = $this->createChangePasswordForm($person);
         $form->handleRequest($request);
 

@@ -48,7 +48,7 @@ function setStateOnMessage(message_id, state) {
 <pre wrap>
 {{ note.body }}
 </pre>
-<a href="{{ path('message_state', {'access': 'ajax', 'id': note.id, 'state': 'ARCHIVED'}) }}" onClick="$('#personnote_{{ note.id}}').hide(); return false;"><button>Read it!</button></a>
+<a href="#" onClick="return setStateOnMessage({{ note.id }}, 'ARCHIVED');"><button>Read it!</button></a>
 </div>
 {% endfor %}
 </div>

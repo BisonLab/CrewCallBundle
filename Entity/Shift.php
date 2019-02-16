@@ -53,11 +53,11 @@ class Shift
     /**
      * @var string $state
      *
-     * @ORM\Column(name="state", type="string", length=40, nullable=true)
+     * @ORM\Column(name="state", type="string", length=40, nullable=false)
      * @Gedmo\Versioned
      * @Assert\Choice(callback = "getStatesList")
      */
-    private $state;
+    private $state = "REGISTERED";
 
     /**
      * @ORM\ManyToOne(targetEntity="FunctionEntity", inversedBy="shifts")

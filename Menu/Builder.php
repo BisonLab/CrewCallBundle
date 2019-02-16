@@ -72,6 +72,7 @@ class Builder implements ContainerAwareInterface
                 'routeParameters' => array('id' => $amt->getId())));
             $adminmenu->addChild('Message Types',
                 array('route' => 'messagetype'));
+            $adminmenu->addChild('Playfront', array('route' => 'frontplay'));
             $menu->addChild('Jobs view', array('route' => 'jobsview_index'));
         }
         $options['menu']      = $menu;

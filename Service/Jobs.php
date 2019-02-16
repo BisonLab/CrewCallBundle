@@ -37,7 +37,7 @@ class Jobs
      * really messed around with it. And I'll leave that for the admin
      * frontend.
      */
-    public function jobsForPersonArray(Person $person, $options = array())
+    public function jobsForPersonAsArray(Person $person, $options = array())
     {
         $jobs = $this->em->getRepository('CrewCallBundle:Job')
             ->findJobsForPerson($person, $options);
@@ -48,6 +48,7 @@ class Jobs
         foreach ($jobs as $job) {
             $arr = [
                 'name' => (string)$job,
+                'id' => $job->getId(),
             ];
             $shiftarr = $this->getShiftArr($job->getShift());
             $arr = array_merge($arr, $shiftarr);
@@ -61,7 +62,7 @@ class Jobs
             $checked->add($arr);
             $lastjob = $job;
         }
-        return $checked;
+        return $checked->toArray();
     }
 
     public function jobsForPerson(Person $person, $options = array())
@@ -70,6 +71,19 @@ class Jobs
             ->findJobsForPerson($person, $options);
         $c = $this->checkOverlap($jobs);
         return $c;
+    }
+
+    public function opportunitiesForPersonAsArray(Person $person, $options = array())
+    {
+        $opps = [];
+        foreach ($this->opportunitiesForPerson($person, $options) as $o) {
+            $arr = [
+                'name' => (string)$o,
+                'id' => $o->getId(),
+            ];
+            $opps[] = array_merge($arr, $this->getShiftArr($o));
+        }
+        return $opps;
     }
 
     public function opportunitiesForPerson(Person $person, $options = array())
@@ -141,7 +155,7 @@ class Jobs
     {
         // So, what do we need here? To be continued..
         if (!isset($this->shiftcache[$shift->getId()])) {
-            $event = $event->getShift();
+            $event = $shift->getEvent();
             $location = $event->getLocation();
             $confirmnotes = [];
             $emcontext = [
@@ -150,7 +164,7 @@ class Jobs
                 'message_type' => 'ConfirmNote',
                 'external_id' => $shift->getId(),
             ];
-            foreach ($this->sakonnin->MessagesForContext($emcontext) as $c) {
+            foreach ($this->sakonnin->getMessagesForContext($emcontext) as $c) {
                 $confirm_notes[] = ['subject' => $c->getSubject(),
                     'body' => $c->getBody()];
             }
@@ -160,13 +174,14 @@ class Jobs
                 'message_type' => 'ConfirmNote',
                 'external_id' => $event->getId(),
             ];
-            foreach ($this->sakonnin->MessagesForContext($emcontext) as $c) {
+            foreach ($this->sakonnin->getMessagesForContext($emcontext) as $c) {
                 $confirm_notes[] = ['subject' => $c->getSubject(),
                     'body' => $c->getBody()];
             }
             $arr = [
                 'event' => [
                     'name' => (string)$event,
+                    'id' => $event->getId(),
                     'location' => [
                         'name' => $location->getName(),
                         // 'address' => (string)$location->getAddrerss()
@@ -174,11 +189,14 @@ class Jobs
                 ],
                 'shift' => [
                     'name' => (string)$shift,
+                    'id' => $shift->getId(),
                     'function' => (string)$shift->getFunction(),
-                    'start' => $shift->getStart()->format("Y-m-d H:i"),
-                    'end' => $shift->getEnd()->format("Y-m-d H:i"),
+                    'start_date' => $shift->getStart()->format("Y-m-d H:i"),
+                    'start_string' => $shift->getStart()->format("d M H:i"),
+                    'end_date' => $shift->getEnd()->format("Y-m-d H:i"),
+                    'end_string' => $shift->getEnd()->format("d M H:i"),
                 ],
-                'confirm_notes' => $confirm_notes
+                'confirm_notes' => $confirmnotes
             ];
             $this->shiftcache[$shift->getId()] = $arr;
         }

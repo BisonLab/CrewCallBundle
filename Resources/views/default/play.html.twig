@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Frontend development{% endblock %}
+{% block body %}
+
+<a href="#" onClick="return grabMe();"><button>Jobslist</button> </a>
+<a href="#" onClick="return hitMe();"><button>Log to console</button> </a>
+<pre id="playpart">
+</pre>
+
+<p id="confbuttons">
+</p>
+
+<p id="signupbuttons">
+</p>
+
+<p id="cancelbuttons">
+</p>
+
+<script>
+
+confbuttons = $("#confbuttons");
+confurl = '';
+conftoken = '';
+signupbuttons = $("#signupbuttons");
+signupurl = '';
+signuptoken = '';
+cancelbuttons = $("#cancelbuttons");
+cancelurl = '';
+canceltoken = '';
+
+function createConfirmButton(item, index) {
+    url = confurl.replace('ID', item['id']);
+    form =
+        '<form action="' + url + '" method="POST">'
+        + '<input type="hidden" name="_csrf_token" value="' + conftoken + '">'
+        + '<input type="submit" value="Confirm ' + item['name'] + '">'
+        + '</form>';
+    confbuttons.html(confbuttons.html() + form);
+    console.log(confbuttons.html());
+}
+
+function createSignupButton(item, index) {
+    url = signupurl.replace('ID', item['id']);
+    form =
+        '<form action="' + url + '" method="POST">'
+        + '<input type="hidden" name="_csrf_token" value="' + signuptoken + '">'
+        + '<input type="submit" value="I want ' + item['name'] + '">'
+        + '</form>';
+    signupbuttons.html(signupbuttons.html() + form);
+    console.log(signupbuttons.html());
+}
+
+function createCancelButton(item, index) {
+    url = cancelurl.replace('ID', item['id']);
+    form =
+        '<form action="' + url + '" method="POST">'
+        + '<input type="hidden" name="_csrf_token" value="' + canceltoken + '">'
+        + '<input type="submit" value="Cancel interest in ' + item['name'] + '">'
+        + '</form>';
+    cancelbuttons.html(cancelbuttons.html() + form);
+    console.log(cancelbuttons.html());
+}
+
+function grabMe() {
+    url = "{{ path('uf_me')}}";
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "GET",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            $("#playpart").html(JSON.stringify(cont, undefined, 2));
+            confurl = cont['jobs']['confirm_job']['url'];
+            conftoken = cont['jobs']['confirm_job']['_csrf_token'];
+            signupurl = cont['jobs']['signup_shift']['url'];
+            signuptoken = cont['jobs']['signup_shift']['_csrf_token'];
+            cancelurl = cont['jobs']['delete_interest']['url'];
+            canceltoken = cont['jobs']['delete_interest']['_csrf_token'];
+            cont['jobs']['assigned'].forEach(createConfirmButton);
+            cont['jobs']['opportunities'].forEach(createSignupButton);
+            cont['jobs']['interested'].forEach(createCancelButton);
+      }).fail(function(xhr, status, error) {
+            errmsg = "Blaeh\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function hitMe() {
+    $this.http.get('https://leke.crewcall.no/uf/me').subscribe(data=> {
+        console.log(data);
+    });
+}
+</script>
+
+{% endblock %}

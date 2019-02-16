@@ -200,8 +200,6 @@ function openStateChange() {
                     <br>
                     <a href="{{ path('person_reset_password', { 'id': person.id }) }}">Send Password reset mail</a>
                     <br>
-                    <a href="{{ path('person_change_password', { 'id': person.id }) }}">Change Password</a>
-                    <br>
                     {{ form_start(delete_form) }}
                     <input type="submit" value="Delete">
                     <br>

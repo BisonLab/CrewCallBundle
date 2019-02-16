@@ -5,14 +5,34 @@ namespace CrewCallBundle\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class DefaultController extends Controller
 {
+    /**
+     * @Route("/admin/frontplay", name="frontplay")
+     */
+    public function playAction(Request $request)
+    {
+        return $this->render('default/play.html.twig');
+    }
+
     /**
      * @Route("/", name="homepage")
      */
     public function indexAction(Request $request)
     {
+        // Plain cheating and alternative to mess with symfony.
+        foreach ($request->getAcceptableContentTypes() as $accept) {
+            if ($accept == 'application/json')
+                return new JsonResponse([
+                    'login' => 'OK',
+                    'userfront_url' => $this->generateUrl('uf_me',
+                        [], UrlGeneratorInterface::ABSOLUTE_URL)
+                    ], 200);
+        }
+
         $dashboarder = $this->get('crewcall.dashboarder');
         return $this->render('default/index.html.twig',
             ['dashboarder' => $dashboarder]);

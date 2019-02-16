@@ -174,9 +174,12 @@ class Calendar
         if ($job->isBooked()) {
             $c['color'] = "green";
             $c['textColor'] = "white";
-        } else {
+        } elseif ($job->getState() == "ASSIGNED") {
             $c['color'] = "orange";
             $c['textColor'] = "black";
+        } else {
+            $c['color'] = "red";
+            $c['textColor'] = "white";
         }
         // For the text in the ical calendar thingie.
         $c['content'] = 
