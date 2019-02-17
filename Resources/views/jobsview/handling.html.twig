@@ -15,8 +15,6 @@ $(document).ready(function() {
       source: "{{ path('event_search', {'access': 'ajax'}) }}",
       minLength: 2,
       select: function( event, ui ) {
-console.log("Fikk");
-console.log(ui.item);
         $( "#filter_event" ).val(ui.item.label);
         $( "#filter_event_id" ).val(ui.item.id);
       }
@@ -47,7 +45,6 @@ function grabJobList() {
 
 function countJobsList() {
     list = get_selected_jobs();
-console.log(list.length);
     $( "#jobs_selected_count").text("Selected: " + list.length);
 }
 
