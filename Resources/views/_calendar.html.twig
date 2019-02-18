@@ -28,7 +28,7 @@ $(function () {
 {% else %}
         defaultView: 'month',
 {% endif %}
-        /* Not entirely useable. Does not show a whole year, not months.
+        /* Not entirely useable. Does not show a whole year, nor months.
         views: {
             basicYear: {
                 type: 'basic',
@@ -38,13 +38,6 @@ $(function () {
         },
         */
         eventSources: [
-{# Not yet.
-            {
-            googleCalendarApiKey: '{{ googlecalendarapikey }}',
-            googleCalendarId: 'en.usa#holiday@group.v.calendar.google.com',
-            className: 'gcal-event' // an option!
-            },
-#}
             {
                 url: '{{ calendar_load_url }}',
                 type: 'POST',
