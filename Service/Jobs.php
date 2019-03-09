@@ -156,8 +156,10 @@ class Jobs
         // So, what do we need here? To be continued..
         if (!isset($this->shiftcache[$shift->getId()])) {
             $event = $shift->getEvent();
+            $eventparent = $event->getParent();
             $location = $event->getLocation();
-            $confirmnotes = [];
+            $organization = $event->getOrganization();
+            $confirm_notes = [];
             $emcontext = [
                 'system' => 'crewcall',
                 'object_name' => 'shift',
@@ -165,18 +167,30 @@ class Jobs
                 'external_id' => $shift->getId(),
             ];
             foreach ($this->sakonnin->getMessagesForContext($emcontext) as $c) {
-                $confirm_notes[] = ['subject' => $c->getSubject(),
+                $confirm_notes[] = [
+                    'id' => $c->getId(),
+                    'subject' => $c->getSubject(),
                     'body' => $c->getBody()];
             }
-            $emcontext = [
-                'system' => 'crewcall',
-                'object_name' => 'event',
-                'message_type' => 'ConfirmNote',
-                'external_id' => $event->getId(),
-            ];
-            foreach ($this->sakonnin->getMessagesForContext($emcontext) as $c) {
-                $confirm_notes[] = ['subject' => $c->getSubject(),
-                    'body' => $c->getBody()];
+            if ($eventparent) {
+                $all_events = $eventparent->getChildren()->toArray();
+                $all_events[] = $eventparent;
+            } else {
+                $all_events = [$event];
+            }
+            foreach ($all_events as $e) {
+                $emcontext = [
+                    'system' => 'crewcall',
+                    'object_name' => 'event',
+                    'message_type' => 'ConfirmNote',
+                    'external_id' => $e->getId(),
+                ];
+                foreach ($this->sakonnin->getMessagesForContext($emcontext) as $c) {
+                    $confirm_notes[] = [
+                        'id' => $c->getId(),
+                        'subject' => $c->getSubject(),
+                        'body' => $c->getBody()];
+                }
             }
             $arr = [
                 'event' => [
@@ -184,7 +198,10 @@ class Jobs
                     'id' => $event->getId(),
                     'location' => [
                         'name' => $location->getName(),
-                        // 'address' => (string)$location->getAddrerss()
+                        'address' => (string)$location->getAddress()
+                    ],
+                    'organization' => [
+                        'name' => $organization->getName(),
                     ],
                 ],
                 'shift' => [
@@ -196,7 +213,7 @@ class Jobs
                     'end_date' => $shift->getEnd()->format("Y-m-d H:i"),
                     'end_string' => $shift->getEnd()->format("d M H:i"),
                 ],
-                'confirm_notes' => $confirmnotes
+                'confirm_notes' => $confirm_notes
             ];
             $this->shiftcache[$shift->getId()] = $arr;
         }

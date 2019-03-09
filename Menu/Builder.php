@@ -73,6 +73,7 @@ class Builder implements ContainerAwareInterface
             $adminmenu->addChild('Message Types',
                 array('route' => 'messagetype'));
             $adminmenu->addChild('Playfront', array('route' => 'frontplay'));
+            $adminmenu->addChild('Mobilefront', array('uri' => '/public/userfront/'));
             $menu->addChild('Jobs view', array('route' => 'jobsview_index'));
         }
         $options['menu']      = $menu;

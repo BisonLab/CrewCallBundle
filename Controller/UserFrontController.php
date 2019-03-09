@@ -50,15 +50,6 @@ class UserFrontController extends CommonController
     }
 
     /**
-     * Login check
-     *
-     * @Route("/login_check", name="uf_login_check", methods={"POST"})
-     */
-    public function loginCheckAction(Request $request)
-    {
-    }
-
-    /**
      * Ping
      *
      * @Route("/ping", name="uf_ping", methods={"GET"})
@@ -84,8 +75,8 @@ class UserFrontController extends CommonController
             'lastname' => $user->getLastName(),
         ];
 
-        $retarr['jobs'] = $this->meJobs($request, true);
-        $retarr['messages'] = $this->meMessages($request, true);
+//        $retarr['jobs'] = $this->meJobs($request, true);
+//        $retarr['messages'] = $this->meMessages($request, true);
         return new JsonResponse($retarr, 200);
     }
 
@@ -206,10 +197,12 @@ class UserFrontController extends CommonController
                 'from' => $from, 'to' => $to,
                 'state' => 'ASSIGNED']);
         }
+
         if (!$state || $state == 'CONFIRMED') {
-            $retarr['booked'] = $ccjobs->jobsForPersonAsArray($user, [
+            $retarr['confirmed'] = $ccjobs->jobsForPersonAsArray($user, [
                 'booked' => true]);
         }
+
         if ($as_array)
             return $retarr;
         return new JsonResponse($retarr, 200);
@@ -302,15 +295,29 @@ class UserFrontController extends CommonController
         // Gotta get the time scope.
         $from = $request->get('start');
         $to = $request->get('end');
-        $jobs = $jobservice->jobsForPerson($user,
-            array('all' => true, 'from' => $from, 'to' => $to));
-        $states = $user->getStates();
-        
-        $calitems = array_merge(
-            $calendar->toFullCalendarArray($jobs, $this->getUser()),
-            $calendar->toFullCalendarArray($states, $this->getUser())
-        );
-        // Not liked by OWASP since we just return an array.
+        $options = [ 'from' => $from, 'to' => $to ];
+        if ($state = $request->get('state'))
+            $options['state'] = $state;
+        $jobs = $jobservice->jobsForPerson($user, $options);
+
+        // If the date difference exeeds a week, we want to just send the
+        // summary. (If you want a complete list, use the UserController
+        // version.
+        $from_t = strtotime($from);
+        $to_t   = strtotime($to);
+        // 20 days and above? Summary it is.        
+error_log("From: " . $from . " To:" . $to . " State:" . $state);
+        if (($to_t - $from_t) > 1728000) {
+            $calitems = array_merge(
+                $calendar->toFullCalendarSummary($jobs, $this->getUser()),
+                $calendar->toFullCalendarSummary($states, $this->getUser())
+            );
+        } else {
+            $calitems = array_merge(
+                $calendar->toFullCalendarArray($jobs, $this->getUser()),
+                $calendar->toFullCalendarArray($states, $this->getUser())
+            );
+        }
         return new JsonResponse($calitems, Response::HTTP_OK);
     }
 

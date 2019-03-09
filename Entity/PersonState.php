@@ -180,4 +180,19 @@ class PersonState
         $this->person = $person;
         return $this;
     }
+
+    /*
+     * Helpers
+     */
+
+    public function getDays()
+    {
+        $ftime = $this->getFromDate()->format("U");
+        if ($this->getToDate())
+            $ttime = $this->getToDate()->format("U");
+        else
+            $ttime = time();
+        $seconds = $ttime - $ftime;
+        return floor($seconds / 86400) + 1;
+    }
 }

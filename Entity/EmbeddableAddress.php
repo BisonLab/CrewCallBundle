@@ -360,7 +360,7 @@ class EmbeddableAddress
 
     public function __toString()
     {
-        return (string)$this->addressLine1;
+        return $this->addressLine1 . ", " . $this->postalName;
     }
 
     // Should I add the name stuff from person/location/organization?

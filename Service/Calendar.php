@@ -53,6 +53,48 @@ class Calendar
         return $vCalendar->render();
     }
 
+    public function toFullCalendarSummary($frogs, $user = null)
+    {
+        $this->user = $user;
+        $arr = array();
+        $summary_arr = [];
+        foreach ($frogs as $frog) {
+            if ($cal = $this->calToFullCal($frog)) {
+                $start = preg_replace("/([0-9-]+).*/", '$1', $cal['start']);
+                $sd = new \DateTime($start);
+                $end = preg_replace("/([0-9-]+).*/", '$1', $cal['end']);
+                if (empty($end))
+                    $ed = clone($sd);
+                else
+                    $ed = new \DateTime($end);
+
+                // First, break each frog into days.
+                while ($sd <= $ed) {
+                    $s = $sd->format("Ymd") . $cal['color'];
+                
+                    // $cal['title'] = '<span class="circle-' . $cal['color'] . '">.</span>';
+                    // $cal['color'] = "transparent";
+                    $cal['start'] = $sd->format("Y-m-d\T01:00");
+                    $cal['end'] = $sd->format("Y-m-d\T10:00");
+                    $cal['title'] = ' ';
+                    $cal['textColor'] = $cal['color'];
+                    $sd->modify('+1 day');
+
+                    // Can not continue / drop until sd has been modified.
+                    // (Avoiding eternal loops.)
+                    if (isset($summary_arr[$s]))
+                        continue;
+
+                    $arr[] = $cal;
+                    $summary_arr[$s] = true;
+
+                }
+
+            }
+        }
+        return $arr;
+    }
+
     public function toFullCalendarArray($frogs, $user = null)
     {
         $this->user = $user;
@@ -71,10 +113,8 @@ class Calendar
      *  - End
      *  - Title
      *  - Allday (true if it is)
-     *  - Url (But I'm not sure this is the right place, and we do need two of'em. iCal and to the event/shift(function) itself.
-     *
-     * I can consider adding colouring of items based on state and/or length here. 
-     * Or make it a customizeable thinge with another service.
+     *  - Url (But I'm not sure this is the right place, and we do need two
+     *    of'em. iCal and to the event/shift(function) itself.
      *
      */
    
@@ -231,6 +271,9 @@ class Calendar
             $td = $ps->getToDate();
         $c['end'] = $td;
         $c['title'] = (string)$ps->getState();
+        $c['content'] = (string)$ps->getState();
+        $c['color'] = "blue";
+        $c['textColor'] = "white";
         return $c;
     }
 

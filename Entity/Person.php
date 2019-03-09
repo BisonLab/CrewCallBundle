@@ -404,54 +404,93 @@ class Person extends BaseUser
     public function setState($state, $options = array())
     {
         if (empty($options) && $state == $this->getState()) return $this;
-
             
         $newstate = new PersonState();
         $newstate->setState($state);
-        if (isset($options['from_date'])) {
-            $newstate->setFromDate($options['from_date']);
+
+        // Should add "And from_date is today";
+        if (empty($options)) {
+            $newstate->setFromDate(new \DateTime());
+            if ($curstate = $this->getStateOnDate()) {
+                $curstate->setToDate(new \DateTime('yesterday'));
+            }
+            $this->addState($newstate);
+            return $this;
         }
 
-        if ($curstate = $this->getStateOnDate()) {
-            if (empty($options))
-                $curstate->setToDate(new \DateTime('yesterday'));
-            // TODO: Make sure there are no overlap!
-            if (isset($options['from_date'])) {
-                if ($curstate->getToDate() === null 
-                        || $curstate->getToDate() > $options['from_date']) {
-                    $to_date = clone($options['from_date']);
-                    $curstate->setToDate($to_date->modify("-1 day"));
-                }
-            }
+        if (isset($options['from_date'])) {
+            $newstate->setFromDate($options['from_date']);
+        } else {
+            $newstate->setFromDate(new \DateTime());
         }
 
         if (isset($options['to_date'])) {
             $newstate->setToDate($options['to_date']);
         }
 
-        $this->addState($newstate);
-        return $this;
+        // Find out if we have to inject the state or whatever.
+        $before = null;
+        $after  = null;
+        foreach ($this->person_states as $ps) {
+            // Get rid of oldies and Too newdies
+            if ($ps->getToDate() !== null && $ps->getToDate() < $newstate->getFromDate()) {
+                continue;
+            }
+            if ($ps->getFromDate() > $newstate->getToDate()) {
+                continue;
+            }
 
-        // TODO: Put this one into the daily state changer.
-        // Handle login enabling.
-        // (Enabled in the fos user bundle takes care of that part.)
-        if (in_array($state, ExternalEntityConfig::getEnableLoginStatesFor('Person'))) {
-            $this->setEnabled(true);
-        } else {
-            $this->setEnabled(false);
+            if ($ps->getFromDate() < $newstate->getFromDate()) {
+                // Are we (not) closer?
+                if ($before && $before->getFromDate() < $ps->getFromDate())
+                    continue;
+                $before = $ps;
+            }
+
+            if ($ps->getToDate() > $newstate->getToDate()) {
+                // Are we (not) closer?
+                if ($after && ($after->getToDate() < $ps->getToDate() || $ps->getToDate() == null))
+                    continue;
+                $after = $ps;
+            }
         }
-        $this->state = $state;
+        $this->addState($newstate);
+        if ($before && $before === $after) {
+            $afterstate = new PersonState();
+            $afterstate->setState($before->getState());
+            $afterdate = clone($newstate->getToDate());
+            $afterstate->setFromDate($afterdate->modify("+1 day"));
+            $afterstate->setToDate($before->getToDate());
+            $this->addState($afterstate);
+        } elseif ($after) {
+            $afterdate = clone($newstate->getToDate());
+            $after->setFromDate($afterdate->modify("+1 day"));
+        } elseif ($before) {
+            $afterstate = new PersonState();
+            $afterstate->setState($before->getState());
+            $afterdate = clone($newstate->getToDate());
+            $afterstate->setFromDate($afterdate->modify("+1 day"));
+            $this->addState($afterstate);
+        }
+        
+        if ($before) {
+            $bend = clone($newstate->getFromDate());
+            $before->setToDate($bend->modify("-1 day"));
+        }
         return $this;
     }
 
     /*
      * Add a PersonState.
      * Not sure how much validation and functionality I should put here, but 
-     * I guess it's the rightest place since this is wqhere everything must
+     * I guess it's the rightest place since this is where everything must
      * go.
      */
     public function addState(PersonState $state)
     {
+        // Only validation I care about for now:
+        if ($state->getToDate() && $state->getToDate() < $state->getFromDate())
+            throw new \InvalidArgumentException("To date on a state can not be before from date"); 
         if (!$this->person_states->contains($state)) {
             if (!$state->getPerson())
                 $state->setPerson($this);
@@ -473,6 +512,9 @@ class Person extends BaseUser
 
     /**
      * Get current state
+     * Should use criterias or querybuilder calls for efficiency.
+     * But array/doctrine-collection criterias is not really good on dates and
+     * repositories nor querybuilders are not to be accessed from entities.
      *
      * @return string
      */
@@ -497,23 +539,11 @@ class Person extends BaseUser
     }
 
     /**
-     * This is (annoyingly) different from the other getStates, but I canæt
-     * come up with a better name and "getPersonStates" is even more annoying.
+     * If you need more advance filtering than "last_and_next", use the
+     * PersonState repository->getByPerson()
      *
-     * And I guess I can filter here instead of all around the application.
-     *
-     * Filters:
-     * - from_date
-     * - to_date
-     * - year
-     *
-     * The default return is the "current" state. Current as in the first one
-     * hitting the criterias/filters.
-     *
-     * Return options:
+     * Return option:
      * - last_and_next - the states before and after this one. 
-     * - with_future - The current and beyond
-     * - all - Every one hit by the filter.
      *
      * @return hash
      */
@@ -522,14 +552,6 @@ class Person extends BaseUser
         if (empty($options) || !$this->person_states)
             return $this->person_states ?: new ArrayCollection();
 
-        // Here I can hopefully use Criterias to set between dates.
-        if (isset($options['year'])) {
-
-        }
-        // And here.
-        if (isset($options['from_date'])) {
-
-        }
         $states = new ArrayCollection();
         $last = null;
         $current = null;
@@ -553,13 +575,6 @@ class Person extends BaseUser
             if ($current) $states->add($current);
             if ($next) $states->add($next);
         }
-/*
-        if (isset($options['last_and_next'])) {
-            if ($last) $states->add($last);
-            if ($current) $states->add($current);
-            if ($next) $states->add($next);
-        }
- */
         return $states;
     }
 

@@ -35,3 +35,16 @@
 {% import _self as jlmacros %}
 <h3>Job Log</h3>
 {{ jlmacros.list_joblogs(joblogs) }}
+
+<h3>State changes</h3>
+<table class="table table-bordered table-sm">
+<th>What</th><th>From</th><th>To</th><th>Days</th>
+{% for elem in person.states %}
+<tr>
+<td>{{ elem.state }}</td>
+<td>{% if elem.fromdate is not null %}{{ elem.fromdate | date("Y-m-d") }}{% else %}&nbsp;{% endif %}</td>
+<td>{% if elem.todate is not null %}{{ elem.todate | date("Y-m-d") }}{% else %}&nbsp;{% endif %}</td>
+<td>{{ elem.days }}</td>
+</tr>
+{% endfor %}
+</table>

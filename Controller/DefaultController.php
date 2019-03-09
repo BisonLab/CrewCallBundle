@@ -23,6 +23,9 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+        // Plain user? Send to the (newer) userfront.
+        if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
+            return $this->redirect("/public/userfront/");
         // Plain cheating and alternative to mess with symfony.
         foreach ($request->getAcceptableContentTypes() as $accept) {
             if ($accept == 'application/json')

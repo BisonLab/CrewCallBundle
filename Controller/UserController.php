@@ -68,12 +68,29 @@ class UserController extends CommonController
             $to = $request->get('end');
             $jobs = $jobservice->jobsForPerson($user,
                 array('all' => true, 'from' => $from, 'to' => $to));
-            $states = $user->getStates();
-            
+            // $states = $user->getStates();
+            $em = $this->getDoctrine()->getManager();
+            $states = $em->getRepository('CrewCallBundle:PersonState')
+                ->findByPerson($user,
+                array('from_date' => $from, 'to_date' => $to));
+error_log("From: " . $from . " To:" . $to);
             $calitems = array_merge(
                 $calendar->toFullCalendarArray($jobs, $this->getUser()),
                 $calendar->toFullCalendarArray($states, $this->getUser())
             );
+    $from_t = strtotime($from);
+    $to_t   = strtotime($to);
+    if (($to_t - $from_t) > 1728000) {
+        $calitems = array_merge(
+            $calendar->toFullCalendarSummary($jobs, $this->getUser()),
+            $calendar->toFullCalendarSummary($states, $this->getUser())
+        );
+    } else {
+        $calitems = array_merge(
+            $calendar->toFullCalendarArray($jobs, $this->getUser()),
+            $calendar->toFullCalendarArray($states, $this->getUser())
+        );
+    }
             // Not liked by OWASP since we just return an array.
             return new JsonResponse($calitems, Response::HTTP_OK);
         }

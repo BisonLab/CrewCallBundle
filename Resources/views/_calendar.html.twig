@@ -22,21 +22,12 @@ $(function () {
             center: 'title',
             right: 'month, agendaWeek, agendaDay, listWeek'
         },
-        lazyFetching: true,
+        lazyFetching: false,
 {% if defaultView is defined %}
         defaultView: '{{ defaultview }}',
 {% else %}
         defaultView: 'month',
 {% endif %}
-        /* Not entirely useable. Does not show a whole year, nor months.
-        views: {
-            basicYear: {
-                type: 'basic',
-                duration: { months: 12 },
-                buttonText: 'Year'
-            }
-        },
-        */
         eventSources: [
             {
                 url: '{{ calendar_load_url }}',
@@ -50,20 +41,24 @@ $(function () {
                 title: event.popup_title,
                 content: event.popup_content,
                 html: true,
-                /* This one ends up with "Error in parsing value for ‘left’.
- * Declaration dropped." And the only reference I found was an 11 yeqars old
- * jQuery bug.
-                Neither of these worked.
-                container: 'fc-widget-content',
-                container: 'calendar',
-                container: 'fc-view-container',
-                placement: 'auto',
-                */
                 placement: 'auto top',
                 container: 'body'
             });
         }
     });
+/*
+ * Internal playground:
+        viewRender: function (view, element) {
+             $('#calendar').fullCalendar('refetchEvents');
+            alert("Rerendered!");
+         },
+  dayClick: function(date, jsEvent, view) {
+
+            $('#calendar').fullCalendar('gotoDate',date);
+            $('#calendar').fullCalendar('changeView','agendaDay');
+
+   }
+ */
 });
 </script>
 <div id="calendar"></div>

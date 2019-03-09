@@ -174,12 +174,14 @@ class JobLogController extends CommonController
 
         if ($this->isRest($access)) {
             return $this->render('joblog/_indexPerson.html.twig', array(
+                'person' => $person,
                 'joblogs' => $logs['joblogs'],
                 'summary' => $logs['summary'],
             ));
         }
 
         return $this->render('joblog/indexPerson.html.twig', array(
+            'person' => $person,
             'joblogs' => $logs['joblogs'],
             'summary' => $logs['summary'],
         ));
