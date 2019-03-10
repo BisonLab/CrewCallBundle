@@ -115,7 +115,7 @@
   <a href="#caltab" data-toggle="tab">Calendar</a>
   </li>
   <li>
-  <a href="#notestab" data-toggle="tab">Notes</a>
+  <a href="#notestab" data-toggle="tab">Notes / Checks</a>
   </li>
   <li>
   <a href="#filestab" data-toggle="tab">Files</a>
@@ -134,12 +134,30 @@
 
   <div class="tab-pane" id="notestab">
     {% set mconf = {'mconfig': {
-            'formname': 'eventnote',
+            'formname': 'eventconfirmcheck',
+            'reload_after_post': true,
+            'message_type': 'ConfirmCheck',
+            'submit': 'Save',
+            'context': {
+                'system': 'crewcall',
+                'object_name': 'event',
+                'external_id': event.id
+                }
+            }
+        }
+    %}
+    {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
+    <p><br>
+    <a href="#" onClick='createCheck("eventconfirmcheck");'>Add a must confirm checkbox</a><br />
+    </p>
+    {% set mconf = {'mconfig': {
+            'formname': 'eventconfirmnote',
             'reload_after_post': true,
             'subject': "",
-            'to_field': false,
-            'from_field': false,
-            'message_type': 'Notes',
+            'to_type': "NONE",
+            'from_type': "NONE",
+            'message_type': 'ConfirmNote',
+            'submit': 'Save',
             'context': {
                 'system': 'crewcall',
                 'object_name': 'event',
@@ -149,9 +167,8 @@
         }
     %}
     {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+    <a href="#" onClick='createMessage("eventconfirmnote");'>Add a must confirm note</a><br />
     <p><br>
-    <a href="#" onClick='createMessage("eventnote");'>Add a note</a><br />
-    </p>
     {% set mlogcontext = {
                 'system': 'crewcall',
                 'object_name': 'event',
@@ -162,6 +179,27 @@
     {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
         <strong>{{ note.subject }}</strong> ({{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }})
         <pre>{{ note.body }}</pre>
+        {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
+        <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
+        {{ form_start(mdelform) }}
+        {{ form_rest(mdelform) }}
+        <input class="dabatdbutton" type="submit" name="submit" value="Delete">
+        </form>
+        <br>
+    {% endfor %}
+    <p><br>
+    {% set mlogcontext = {
+                'system': 'crewcall',
+                'object_name': 'event',
+                'message_type': ['ConfirmCheck'],
+                'external_id': event.id
+        }
+    %}
+    {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+        {{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}
+        <ul>
+        <li>{{ note.body }}</li>
+        </ul>
         {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
         <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
         {{ form_start(mdelform) }}

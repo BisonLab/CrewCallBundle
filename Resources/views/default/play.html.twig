@@ -63,7 +63,7 @@ function createCancelButton(item, index) {
 }
 
 function grabMe() {
-    url = "{{ path('uf_me')}}";
+    url = "{{ path('uf_me_jobs')}}";
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");

@@ -160,17 +160,32 @@ class Jobs
             $location = $event->getLocation();
             $organization = $event->getOrganization();
             $confirm_notes = [];
-            $emcontext = [
+            $checks = [];
+            $scnc = [
                 'system' => 'crewcall',
                 'object_name' => 'shift',
                 'message_type' => 'ConfirmNote',
                 'external_id' => $shift->getId(),
             ];
-            foreach ($this->sakonnin->getMessagesForContext($emcontext) as $c) {
+            foreach ($this->sakonnin->getMessagesForContext($scnc) as $c) {
                 $confirm_notes[] = [
                     'id' => $c->getId(),
                     'subject' => $c->getSubject(),
-                    'body' => $c->getBody()];
+                    'body' => $c->getBody()
+                    ];
+            }
+            $sccc = [
+                'system' => 'crewcall',
+                'object_name' => 'shift',
+                'message_type' => 'ConfirmCheck',
+                'external_id' => $shift->getId(),
+            ];
+            foreach ($this->sakonnin->getMessagesForContext($sccc) as $c) {
+                $checks[] = [
+                    'id' => $c->getId(),
+                    'type' => (string)$c->getMessageType(),
+                    'body' => $c->getBody()
+                    ];
             }
             if ($eventparent) {
                 $all_events = $eventparent->getChildren()->toArray();
@@ -179,17 +194,30 @@ class Jobs
                 $all_events = [$event];
             }
             foreach ($all_events as $e) {
-                $emcontext = [
+                $ecnc = [
                     'system' => 'crewcall',
                     'object_name' => 'event',
                     'message_type' => 'ConfirmNote',
                     'external_id' => $e->getId(),
                 ];
-                foreach ($this->sakonnin->getMessagesForContext($emcontext) as $c) {
+                foreach ($this->sakonnin->getMessagesForContext($ecnc) as $c) {
                     $confirm_notes[] = [
                         'id' => $c->getId(),
                         'subject' => $c->getSubject(),
                         'body' => $c->getBody()];
+                }
+                $eccc = [
+                    'system' => 'crewcall',
+                    'object_name' => 'event',
+                    'message_type' => 'ConfirmCheck',
+                    'external_id' => $event->getId(),
+                ];
+                foreach ($this->sakonnin->getMessagesForContext($eccc) as $c) {
+                    $checks[] = [
+                        'id' => $c->getId(),
+                        'type' => (string)$c->getMessageType(),
+                        'body' => $c->getBody()
+                        ];
                 }
             }
             $arr = [
@@ -213,6 +241,7 @@ class Jobs
                     'end_date' => $shift->getEnd()->format("Y-m-d H:i"),
                     'end_string' => $shift->getEnd()->format("d M H:i"),
                 ],
+                'checks' => $checks,
                 'confirm_notes' => $confirm_notes
             ];
             $this->shiftcache[$shift->getId()] = $arr;

@@ -64,6 +64,8 @@
             'subject': "",
             'to_field': false,
             'from_field': false,
+            'to_type': "NONE",
+            'from_type': "NONE",
             'message_type': 'Notes',
             'context': {
                 'system': 'crewcall',
@@ -75,6 +77,22 @@
     %}
     {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
             <a href="#" onClick='createMessage("shiftnote_{{ shift.id }}");'>Add a note</a><br />
+    {% set mconf = {'mconfig': {
+            'formname': 'shiftconfirmcheck',
+            'reload_after_post': true,
+            'message_type': 'ConfirmCheck',
+            'submit': 'Save',
+            'context': {
+                'system': 'crewcall',
+                'object_name': 'shift',
+                'external_id': shift.id
+                }
+            }
+        }
+    %}
+    {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
+    <a href="#" onClick='createCheck("shiftconfirmcheck");'>Add a must confirm checkbox</a><br />
+
               <a href="#" id="popLogSummary_shift_{{ shift.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('shift', {{ shift.id }});">
                 Edit History
               </a><br>
