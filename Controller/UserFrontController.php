@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 use CrewCallBundle\Entity\Person;
+use CrewCallBundle\Entity\Event;
 use CrewCallBundle\Entity\Shift;
 use CrewCallBundle\Entity\Job;
 
@@ -28,6 +29,9 @@ use CrewCallBundle\Model\FullCalendarEvent;
  */
 class UserFrontController extends CommonController
 {
+    private $shiftcache = [];
+    private $eventcache = [];
+
     /**
      * Login
      *
@@ -173,7 +177,7 @@ class UserFrontController extends CommonController
                 '_csrf_token' => $signuptoken,
                 'url' => $this->generateUrl('uf_signup_shift', ['id' => 'ID'], UrlGeneratorInterface::ABSOLUTE_URL)
             ];
-            $retarr['opportunities'] = $ccjobs->opportunitiesForPersonAsArray($user);
+            $retarr['opportunities'] = $this->opportunitiesForPersonAsArray($user);
         }
             
         if (!$state || $state == 'INTERESTED') {
@@ -182,7 +186,7 @@ class UserFrontController extends CommonController
                 '_csrf_token' => $ditoken,
                 'url' => $this->generateUrl('uf_delete_interest', ['id' => 'ID'], UrlGeneratorInterface::ABSOLUTE_URL)
             ];
-            $retarr['interested'] = $ccjobs->jobsForPersonAsArray($user, [
+            $retarr['interested'] = $this->jobsForPersonAsArray($user, [
                 'from' => $from, 'to' => $to,
                 'state' => 'INTERESTED']);
         }
@@ -193,13 +197,13 @@ class UserFrontController extends CommonController
                 '_csrf_token' => $confirmtoken,
                 'url' => $this->generateUrl('uf_confirm_job', ['id' => 'ID'], UrlGeneratorInterface::ABSOLUTE_URL)
             ];
-            $retarr['assigned'] = $ccjobs->jobsForPersonAsArray($user, [
+            $retarr['assigned'] = $this->jobsForPersonAsArray($user, [
                 'from' => $from, 'to' => $to,
                 'state' => 'ASSIGNED']);
         }
 
         if (!$state || $state == 'CONFIRMED') {
-            $retarr['confirmed'] = $ccjobs->jobsForPersonAsArray($user, [
+            $retarr['confirmed'] = $this->jobsForPersonAsArray($user, [
                 'booked' => true]);
         }
 
@@ -214,24 +218,27 @@ class UserFrontController extends CommonController
      */
     public function confirmJobAction(Request $request, Job $job)
     {
-        $token = $request->request->get('_csrf_token');
+        if (!$token = $request->request->get('_csrf_token')) {
+            $json_data = json_decode($request->getContent(), true);
+            $token = $json_data['_csrf_token'];
+        }
         if (!$this->isCsrfTokenValid('confirm-job', $token)) {
-            return new Response("No", Response::HTTP_FORBIDDEN);
+            return new JsonResponse(["ERRROR" => "No luck"], Response::HTTP_FORBIDDEN);
         }
 
         // From the part this called, the previous state *shall* be ASSIGNED.
         // Just check it.
         if ($job->getState() != 'ASSIGNED')
-            return new Response("Bad state", Response::HTTP_FORBIDDEN);
+            return new JsonResponse(["ERRROR" => "No luck"], Response::HTTP_FORBIDDEN);
 
         if ($job->getPerson() !== $this->getUser())
-            return new Response("Bad user", Response::HTTP_FORBIDDEN);
+            return new JsonResponse(["ERRROR" => "No luck"], Response::HTTP_FORBIDDEN);
         
         $job->setState('CONFIRMED');
         $em = $this->getDoctrine()->getManager();
         $em->persist($job);
         $em->flush($job);
-        return new Response("OK", Response::HTTP_OK);
+        return new JsonResponse(["OK" => "Well done"], Response::HTTP_OK);
     }
 
     /**
@@ -240,9 +247,14 @@ class UserFrontController extends CommonController
      */
     public function signupShiftAction(Request $request, Shift $shift)
     {
-        $token = $request->request->get('_csrf_token');
+        if (!$token = $request->request->get('_csrf_token')) {
+            $json_data = json_decode($request->getContent(), true);
+error_log(print_r($json_data, true));
+            $token = $json_data['_csrf_token'];
+        }
+
         if (!$this->isCsrfTokenValid('signup-shift', $token)) {
-            return new Response("No", Response::HTTP_FORBIDDEN);
+            return new JsonResponse(["ERRROR" => "No luck"], Response::HTTP_FORBIDDEN);
         }
 
         $user = $this->getUser();
@@ -253,7 +265,7 @@ class UserFrontController extends CommonController
         $em = $this->getDoctrine()->getManager();
         $em->persist($job);
         $em->flush($job);
-        return new Response("OK", Response::HTTP_OK);
+        return new JsonResponse(["OK" => "Well done"], Response::HTTP_OK);
     }
 
     /**
@@ -262,23 +274,26 @@ class UserFrontController extends CommonController
      */
     public function deleteInterestAction(Request $request, Job $job)
     {
-        $token = $request->request->get('_csrf_token');
+        if (!$token = $request->request->get('_csrf_token')) {
+            $json_data = json_decode($request->getContent(), true);
+            $token = $json_data['_csrf_token'];
+        }
         if (!$this->isCsrfTokenValid('delete-interest', $token)) {
-            return new Response("No", Response::HTTP_FORBIDDEN);
+            return new JsonResponse(["ERRROR" => "No luck"], Response::HTTP_FORBIDDEN);
         }
         // From the part this called, the previous state *shall* be ASSIGNED.
         // Just check it.
         $user = $this->getUser();
         if ($job->getState() != 'INTERESTED')
-            return new Response("Bad state", Response::HTTP_FORBIDDEN);
+            return new JsonResponse(["ERRROR" => "No luck"], Response::HTTP_FORBIDDEN);
 
         if ($job->getPerson() !== $user)
-            return new Response("Bad user", Response::HTTP_FORBIDDEN);
+            return new JsonResponse(["ERRROR" => "No luck"], Response::HTTP_FORBIDDEN);
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($job);
         $em->flush($job);
-        return new Response("OK", Response::HTTP_OK);
+        return new JsonResponse(["OK" => "Well done"], Response::HTTP_OK);
     }
 
     /**
@@ -339,5 +354,192 @@ error_log("From: " . $from . " To:" . $to . " State:" . $state);
         $response->headers->set('Content-Type', 'text/calendar; charset=utf-8');
         $response->headers->set('Content-Disposition', 'attachment; filename="cal.ics"');
         return $response;
+    }
+
+    /*
+     * For creating an array which is serializebale and suiteable for the
+     * user/worker frontend (Rather customize this here than use the
+     * serializer on job, which would end up with way too much data unless I
+     * really messed around with it. And I'll leave that for the admin
+     * frontend.
+     */
+    public function jobsForPersonAsArray(Person $person, $options = array())
+    {
+        $em = $this->getDoctrine()->getManager();
+        $ccjobs = $this->container->get('crewcall.jobs');
+
+        $jobs = $em->getRepository('CrewCallBundle:Job')
+            ->findJobsForPerson($person, $options);
+
+        // Just walk throug it once, alas overlap check here aswell.
+        $lastjob = null;
+        $lastarr = null;
+        $checked = new \Doctrine\Common\Collections\ArrayCollection();
+        foreach ($jobs as $job) {
+            $arr = [
+                'name' => (string)$job,
+                'id' => $job->getId(),
+            ];
+            $shiftarr = $this->getShiftArr($job->getShift());
+            $arr = array_merge($arr, $shiftarr);
+
+            if ($lastjob && $ccjobs->overlap($job->getShift(), $lastjob->getShift())) {
+                $arr['overlap'] = true;
+                $checked->last()['overlap'] = true;
+            } else {
+                $arr['overlap'] = false;
+            }
+            $checked->add($arr);
+            $lastjob = $job;
+        }
+        return $checked->toArray();
+    }
+
+    public function opportunitiesForPersonAsArray(Person $person, $options = array())
+    {
+        $em = $this->getDoctrine()->getManager();
+        $ccjobs = $this->container->get('crewcall.jobs');
+
+        $opps = [];
+        foreach ($ccjobs->opportunitiesForPerson($person, $options) as $o) {
+            $arr = [
+                'name' => (string)$o,
+                'id' => $o->getId(),
+            ];
+            $opps[] = array_merge($arr, $this->getShiftArr($o));
+        }
+        return $opps;
+    }
+
+    public function getShiftArr(Shift $shift)
+    {
+        $sakonnin = $this->container->get('sakonnin.messages');
+        // TODO: Eventcache
+
+        // So, what do we need here? To be continued..
+        if (!isset($this->shiftcache[$shift->getId()])) {
+            $event = $shift->getEvent();
+            $eventparent = $event->getParent();
+            $location = $event->getLocation();
+            $organization = $event->getOrganization();
+            $confirm_notes = [];
+            $checks = [];
+            $scnc = [
+                'system' => 'crewcall',
+                'object_name' => 'shift',
+                'message_type' => 'ConfirmNote',
+                'external_id' => $shift->getId(),
+            ];
+            foreach ($sakonnin->getMessagesForContext($scnc) as $c) {
+                $confirm_notes[] = [
+                    'id' => $c->getId(),
+                    'subject' => $c->getSubject(),
+                    'confirm_required' => (string)$c->getMessageType() == "ConfirmNote" ? true : false,
+                    'body' => $c->getBody()
+                    ];
+            }
+            $sccc = [
+                'system' => 'crewcall',
+                'object_name' => 'shift',
+                'message_types' => ['ConfirmCheck', 'InformCheck'],
+                'external_id' => $shift->getId(),
+            ];
+            foreach ($sakonnin->getMessagesForContext($sccc) as $c) {
+                $checks[] = [
+                    'id' => $c->getId(),
+                    'type' => (string)$c->getMessageType(),
+                    'confirm_required' => (string)$c->getMessageType() == "ConfirmCheck" ? true : false,
+                    'body' => $c->getBody()
+                    ];
+            }
+            $eventarr = $this->getEventArr($event);
+            if (count($eventarr['checks']) > 0) {
+                $checks = array_merge($checks, $eventarr['checks']);
+            }
+            if (count($eventarr['confirm_notes']) > 0) {
+                $confirm_notes = array_merge($confirm_notes, $eventarr['confirm_notes']);
+            }
+            unset($eventarr['checks']);
+            unset($eventarr['confirm_notes']);
+
+            $shiftarr = [
+                'event' => $eventarr,
+                'shift' => [
+                    'name' => (string)$shift,
+                    'id' => $shift->getId(),
+                    'function' => (string)$shift->getFunction(),
+                    'start_date' => $shift->getStart()->format("Y-m-d H:i"),
+                    'start_string' => $shift->getStart()->format("d M H:i"),
+                    'end_date' => $shift->getEnd()->format("Y-m-d H:i"),
+                    'end_string' => $shift->getEnd()->format("d M H:i"),
+                ],
+                'checks' => $checks,
+                'confirm_notes' => $confirm_notes
+            ];
+            $this->shiftcache[$shift->getId()] = $shiftarr;
+        }
+        return $this->shiftcache[$shift->getId()];
+    }
+
+    public function getEventArr(Event $event)
+    {
+        $sakonnin = $this->container->get('sakonnin.messages');
+
+        // So, what do we need here? To be continued..
+        if (!isset($this->eventcache[$event->getId()])) {
+            $eventparent = $event->getParent();
+            $location = $event->getLocation();
+            $organization = $event->getOrganization();
+            $confirm_notes = [];
+            $checks = [];
+            $all_events = [$event];
+            if ($eventparent) {
+                $all_events[] = $eventparent;
+            }
+            foreach ($all_events as $e) {
+                $ecnc = [
+                    'system' => 'crewcall',
+                    'object_name' => 'event',
+                    'message_type' => 'ConfirmNote',
+                    'external_id' => $e->getId(),
+                ];
+                foreach ($sakonnin->getMessagesForContext($ecnc) as $c) {
+                    $confirm_notes[] = [
+                        'id' => $c->getId(),
+                        'subject' => $c->getSubject(),
+                        'confirm_required' => (string)$c->getMessageType() == "ConfirmNote" ? true : false,
+                        'body' => $c->getBody()];
+                }
+                $eccc = [
+                    'system' => 'crewcall',
+                    'object_name' => 'event',
+                    'message_types' => ['ConfirmCheck', 'InformCheck'],
+                    'external_id' => $e->getId(),
+                ];
+                foreach ($sakonnin->getMessagesForContext($eccc) as $c) {
+                    $checks[] = [
+                        'id' => $c->getId(),
+                        'type' => (string)$c->getMessageType(),
+                        'confirm_required' => (string)$c->getMessageType() == "ConfirmCheck" ? true : false,
+                        'body' => $c->getBody()
+                        ];
+                }
+            }
+            $eventarr = [
+                'name' => (string)$event,
+                'id' => $event->getId(),
+                'location' => [
+                    'name' => $location->getName(),
+                    'address' => (string)$location->getAddress()
+                ],
+                'organization' => [
+                    'name' => $organization->getName(),
+                ],
+                'checks' => $checks,
+                'confirm_notes' => $confirm_notes
+            ];
+            $this->eventcache[$event->getId()] = $eventarr;
+        }
+        return $this->eventcache[$event->getId()];
     }
 }
