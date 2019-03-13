@@ -89,6 +89,11 @@ class Event
     private $organization;
 
     /**
+     * @ORM\OneToMany(targetEntity="PersonFunctionOrganization", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $person_function_organizations;
+
+    /**
      * @ORM\OneToMany(targetEntity="Shift", mappedBy="event", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      * @ORM\OrderBy({"start" = "ASC"})
      */
@@ -472,6 +477,46 @@ class Event
     public function getOrganization()
     {
         return $this->organization;
+    }
+
+    /*
+     * The big "Does this work or not" is wether this getter should include
+     * *all* functions. Alas also those in the person_* tables. I say "Yes", but
+     * then it's not that easy to handle these functions in picker-forms.
+     */
+    public function getPersonFunctionEvents()
+    {
+        return $this->person_function_events;
+    }
+
+    public function addPersonFunctionEvent(PersonFunctionEvent $pfo)
+    {
+        if (!$this->person_function_events->contains($pfo)) {
+            $this->person_function_events->add($pfo);
+        }
+        return $this;
+    }
+
+    public function removePersonFunctionEvent(PersonFunctionEvent $pfo)
+    {
+        if ($this->person_function_events->contains($pfo)) {
+            $this->person_function_events->removeElement($pfo);
+        }
+        return $this;
+    }
+
+    /*
+     * The downside of this "helper" is that we don't see the function, aka
+     * what they do in the event.
+     */
+    public function getPersons()
+    {
+        $persons = new ArrayCollection();
+        foreach ($this->getPersonFunctionEvents() as $pfe) {
+            if ($persons->contains($pfe->getPerson()))
+                continue;
+            $persons->add($pfe->getPerson());
+        }
     }
 
     public function setConfirmed()

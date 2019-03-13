@@ -130,6 +130,14 @@ class Person extends BaseUser
     private $person_function_organizations;
 
     /**
+     * This is really functions, but since we have three (four) ways for a
+     * function to be connected to this Person object we have to define each
+     * by the other end of the person_function_ connection.
+     * @ORM\OneToMany(targetEntity="PersonFunctionEvent", mappedBy="person", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $person_function_events;
+
+    /**
      * This is for the actual jobs.
      * @ORM\OneToMany(targetEntity="Job", mappedBy="person", fetch="EXTRA_LAZY", cascade={"remove"})
      */
@@ -154,6 +162,7 @@ class Person extends BaseUser
         parent::__construct();
         // your own logic
         $this->person_function_organizations = new ArrayCollection();
+        $this->person_function_events = new ArrayCollection();
         $this->contexts  = new ArrayCollection();
         $this->jobs  = new ArrayCollection();
         $this->person_states  = new ArrayCollection();
@@ -746,11 +755,63 @@ class Person extends BaseUser
      */
     public function getOrganizations($active = true)
     {
-        $o = new ArrayCollection();
+        $orgs = new ArrayCollection();
         foreach ($this->getPersonFunctionOrganizations() as $pfo) {
-            $o[] = $pfo->getOrganization();
+            if ($orgs->contains($pfo->getOrganization()))
+                continue;
+            $orgs->add($pfo->getOrganization());
         }
-        return $o;
+        return $orgs;
+    }
+
+    /**
+     * Add personFunctionEvent
+     *
+     * @param \CrewCallBundle\Entity\PersonFunctionEvent $personFunctionEvent
+     *
+     * @return Person
+     */
+    public function addPersonFunctionEvent(\CrewCallBundle\Entity\PersonFunctionEvent $personFunctionEvent)
+    {
+        $this->person_function_events[] = $personFunctionEvent;
+
+        return $this;
+    }
+
+    /**
+     * Remove personFunctionEvent
+     *
+     * @param \CrewCallBundle\Entity\PersonFunctionEvent $personFunctionEvent
+     */
+    public function removePersonFunctionEvent(\CrewCallBundle\Entity\PersonFunctionEvent $personFunctionEvent)
+    {
+        $this->person_function_events->removeElement($personFunctionEvent);
+    }
+
+    /**
+     * Get personFunctionEvents
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPersonFunctionEvents()
+    {
+        return $this->person_function_events;
+    }
+
+    /**
+     * Get Events
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEvents($active = true)
+    {
+        $evts = new ArrayCollection();
+        foreach ($this->getPersonFunctionEvents() as $pfe) {
+            if ($pfe->contains($pfe->getEvent()))
+                continue;
+            $evts->add($pfe->getEvent());
+        }
+        return $evts;
     }
 
     /**
