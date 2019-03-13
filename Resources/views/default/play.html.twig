@@ -73,15 +73,15 @@ function grabMe() {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             $("#playpart").html(JSON.stringify(cont, undefined, 2));
-            confurl = cont['jobs']['confirm_job']['url'];
-            conftoken = cont['jobs']['confirm_job']['_csrf_token'];
-            signupurl = cont['jobs']['signup_shift']['url'];
-            signuptoken = cont['jobs']['signup_shift']['_csrf_token'];
-            cancelurl = cont['jobs']['delete_interest']['url'];
-            canceltoken = cont['jobs']['delete_interest']['_csrf_token'];
-            cont['jobs']['assigned'].forEach(createConfirmButton);
-            cont['jobs']['opportunities'].forEach(createSignupButton);
-            cont['jobs']['interested'].forEach(createCancelButton);
+            confurl     = cont['confirm_job']['url'];
+            conftoken   = cont['confirm_job']['_csrf_token'];
+            signupurl   = cont['signup_shift']['url'];
+            signuptoken = cont['signup_shift']['_csrf_token'];
+            cancelurl   = cont['delete_interest']['url'];
+            canceltoken = cont['delete_interest']['_csrf_token'];
+            cont['assigned'].forEach(createConfirmButton);
+            cont['opportunities'].forEach(createSignupButton);
+            cont['interested'].forEach(createCancelButton);
       }).fail(function(xhr, status, error) {
             errmsg = "Blaeh\n";
             errmsg = errmsg + xhr.responseText + "\n";

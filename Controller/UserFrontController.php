@@ -162,13 +162,35 @@ class UserFrontController extends CommonController
         // Create a csrf token for use in the next step
         $csrfman = $this->get('security.csrf.token_manager');
 
-        $from = $request->get('from') ?? null;
-        $to = $request->get('to') ?? null;
+        $today = new \DateTime();
+        $from = new \DateTime($request->get('from') ?? null);
+        $to = new \DateTime($request->get('to') ?? '+1 year');
         $state = $request->get('state') ?? null;
+        // Hack, by request.
+        if ($month = $request->get('month')) {
+            $year = date("Y");
+            $now_month = date("m");
+            if ($month < $now_month)
+                $year++;
+            $from = new \DateTime($year . "-" . $month);
+            $to = clone($from);
+            $to->modify('last day of this month');
+        }
+
+        // Either way, never go below today. Historical jobs will be handled
+        // somewhere else or with a query option to override.
+        if ($from < $today)
+            $from = $today;
+
         $user = $this->getUser();
         // Should I add a "Limit"?
 
-        $retarr = [];
+        $retarr = [
+            'period' => [ 'from' => $from->format('Y-m-d'), 'to' => $to->format('Y-m-d') ],
+            'state' => $state
+            ];
+
+ error_log("From: " . $from->format('Y-m-d') . " To:" . $to->format('Y-m-d') . " State:" . $state . " Month:" . $month);
 
         // There is no real state for opportunities, logically.
         if (!$state || $state == 'OPPORTUNITIES') {
@@ -177,7 +199,11 @@ class UserFrontController extends CommonController
                 '_csrf_token' => $signuptoken,
                 'url' => $this->generateUrl('uf_signup_shift', ['id' => 'ID'], UrlGeneratorInterface::ABSOLUTE_URL)
             ];
-            $retarr['opportunities'] = $this->opportunitiesForPersonAsArray($user);
+            $retarr['opportunities'] = $this->opportunitiesForPersonAsArray(
+                $user,
+                [ 'from' => $from, 'to' => $to ]
+                );
+            $retarr['opportunities_count'] = count($retarr['opportunities']);
         }
             
         if (!$state || $state == 'INTERESTED') {
@@ -189,6 +215,7 @@ class UserFrontController extends CommonController
             $retarr['interested'] = $this->jobsForPersonAsArray($user, [
                 'from' => $from, 'to' => $to,
                 'state' => 'INTERESTED']);
+            $retarr['interested_count'] = count($retarr['interested']);
         }
 
         if (!$state || $state == 'ASSIGNED') {
@@ -200,11 +227,14 @@ class UserFrontController extends CommonController
             $retarr['assigned'] = $this->jobsForPersonAsArray($user, [
                 'from' => $from, 'to' => $to,
                 'state' => 'ASSIGNED']);
+            $retarr['assigned_count'] = count($retarr['assigned']);
         }
 
         if (!$state || $state == 'CONFIRMED') {
             $retarr['confirmed'] = $this->jobsForPersonAsArray($user, [
+                'from' => $from, 'to' => $to,
                 'booked' => true]);
+            $retarr['confirmed_count'] = count($retarr['confirmed']);
         }
 
         if ($as_array)
@@ -321,7 +351,6 @@ error_log(print_r($json_data, true));
         $from_t = strtotime($from);
         $to_t   = strtotime($to);
         // 20 days and above? Summary it is.        
-error_log("From: " . $from . " To:" . $to . " State:" . $state);
         if (($to_t - $from_t) > 1728000) {
             $calitems = array_merge(
                 $calendar->toFullCalendarSummary($jobs, $this->getUser()),
@@ -356,13 +385,6 @@ error_log("From: " . $from . " To:" . $to . " State:" . $state);
         return $response;
     }
 
-    /*
-     * For creating an array which is serializebale and suiteable for the
-     * user/worker frontend (Rather customize this here than use the
-     * serializer on job, which would end up with way too much data unless I
-     * really messed around with it. And I'll leave that for the admin
-     * frontend.
-     */
     public function jobsForPersonAsArray(Person $person, $options = array())
     {
         $em = $this->getDoctrine()->getManager();
