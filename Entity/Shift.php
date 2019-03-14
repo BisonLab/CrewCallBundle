@@ -344,6 +344,33 @@ class Shift
     }
 
     /**
+     * Count jobs and personorgs by state
+     *
+     * @return int
+     */
+    public function getJobsAmountByState($state = null)
+    {
+        $amounts = array();
+        foreach ($this->getJobs() as $job) {
+            $s = $job->getState();
+            if (!isset($amounts[$s]))
+                $amounts[$s] = 0;
+            $amounts[$s]++;
+        }
+        foreach ($this->getShiftOrganizations() as $so) {
+            // If they are mentioned, they are booked. Aka amount is by
+            // definition booked.
+            $s = $so->getState();
+            if (!isset($amounts[$s]))
+                $amounts[$s] = 0;
+            $amounts[$s] += $so->getAmount();
+        }
+        if ($state)
+            return $amounts[$state] ?: 0;
+        return $amounts;
+    }
+
+    /**
      * Get the amount of persons Booked, including organization
      *
      * @return int

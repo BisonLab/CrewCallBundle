@@ -13,6 +13,7 @@
                 <th>Start</th>
                 <th>End</th>
                 <th>State</th>
+                <th>Amounts</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -29,6 +30,12 @@
                 <td data-order="{{ event.start | date('U')}}" >{% if event.start %}{{ event.start|date('Y-m-d H:i') }}{% endif %}</td>
                 <td data-order="{{ event.end | date('U')}}" >{% if event.end %}{{ event.end|date('Y-m-d H:i') }}{% endif %}</td>
                 <td>{{ event.state }}</td>
+                <td>
+                Need totally: {{ event.totalamountneeded }}<br>
+                {% for state, amount in event.jobsamountbystate %}
+                {{ state }}: {{ amount }}<br>
+                {% endfor %}
+                </td>
                 <td>
                 <a href="{{ path('event_show', { 'id': event.id }) }}">show</a><br>
                 <a href="{{ path('event_edit', { 'id': event.id }) }}">edit</a>

@@ -536,6 +536,52 @@ class Event
         }
     }
 
+    public function getTotalAmountNeeded()
+    {
+        $amount = 0;
+        foreach ($this->getShifts() as $shift) {
+            $amount += $shift->getAmount();
+        }
+        foreach ($this->getChildren() as $child) {
+            foreach ($this->getShifts() as $shift) {
+                $amount += $shift->getAmount();
+            }
+        }
+        return $amount;
+    }
+
+    /**
+     * Count amount of each by state
+     *
+     * @return int
+     */
+    public function getJobsAmountByState($state = null)
+    {
+        $amounts = [
+            'INTERESTED' => 0,
+            'ASSIGNED' => 0,
+            'CONFIRMED' => 0,
+            ];
+        foreach ($this->getShifts() as $shift) {
+            foreach ($shift->getJobsAmountByState() as $s => $a) {
+                if (!isset($amounts[$s]))
+                    $amounts[$s] = 0;
+                $amounts[$s] += $a;
+            }
+        }
+        // Gotta ask the children aswell
+        foreach ($this->getChildren() as $child) {
+            foreach ($child->getJobsAmountByState() as $cs => $ca) {
+                if (!isset($amounts[$cs]))
+                    $amounts[$cs] = 0;
+                $amounts[$cs] += $ca;
+            }
+        }
+        if ($state)
+            return $amounts[$state] ?: 0;
+        return $amounts;
+    }
+
     public function isFuture()
     {
         if ($this->getEnd())
