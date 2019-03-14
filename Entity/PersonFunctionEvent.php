@@ -7,6 +7,9 @@ use FOS\UserBundle\Model\User as BaseUser;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
+use CrewCallBundle\Entity\Event;
+use CrewCallBundle\Entity\Person;
+use CrewCallBundle\Entity\FunctionEntity;
 
 /**
  * @ORM\Entity
@@ -91,7 +94,7 @@ class PersonFunctionEvent
      *
      * @return PersonFunctionEvent
      */
-    public function setEvent(\CrewCallBundle\Entity\Event $event)
+    public function setEvent(Event $event)
     {
         $this->event = $event;
         return $this;

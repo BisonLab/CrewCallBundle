@@ -89,9 +89,9 @@ class Event
     private $organization;
 
     /**
-     * @ORM\OneToMany(targetEntity="PersonFunctionOrganization", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="PersonFunctionEvent", mappedBy="event", cascade={"persist", "remove"}, orphanRemoval=true)
      */
-    private $person_function_organizations;
+    private $person_function_events;
 
     /**
      * @ORM\OneToMany(targetEntity="Shift", mappedBy="event", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
@@ -509,14 +509,18 @@ class Event
      * The downside of this "helper" is that we don't see the function, aka
      * what they do in the event.
      */
-    public function getPersons()
+    public function getPersons($function_name = null)
     {
         $persons = new ArrayCollection();
         foreach ($this->getPersonFunctionEvents() as $pfe) {
             if ($persons->contains($pfe->getPerson()))
                 continue;
+            if ($function_name 
+                && $function_name != $pfe->getFunction()->getName())
+                    continue;
             $persons->add($pfe->getPerson());
         }
+        return $persons;
     }
 
     public function setConfirmed()

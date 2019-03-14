@@ -2,13 +2,15 @@
 
 namespace CrewCallBundle\Controller;
 
-use CrewCallBundle\Entity\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
+use CrewCallBundle\Entity\Event;
+use CrewCallBundle\Entity\PersonFunctionEvent;
 
 /**
  * Event controller.
@@ -107,10 +109,19 @@ class EventController extends CommonController
         if (!$event->isDone())
             $confirmForm = $this->createConfirmForm($event)->createView();
 
+        $em = $this->getDoctrine()->getManager();
+        $funcrepo = $em->getRepository('CrewCallBundle:FunctionEntity');
+        $contact = $funcrepo->findOneByName('Contact');
+        $pfe = new PersonFunctionEvent();
+        $pfe->setEvent($event);
+        $pfe->setFunction($contact);
+        $add_contact_form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe);
+
         return $this->render('event/show.html.twig', array(
             'event' => $event,
             'last_shift' => !empty($event->getShifts()) ? $event->getShifts()->last() : false,
             'delete_form' => $deleteForm->createView(),
+            'add_contact_form' => $add_contact_form->createView(),
             'confirm_form' => $confirmForm
         ));
     }
@@ -259,8 +270,62 @@ class EventController extends CommonController
     }
 
     /**
-     * Calendar for event
+     * Creates a new PersonFunctionEvent entity.
+     * But it's only the Contact role here. Simplicity for now.
+     * Pure REST/AJAX.
      *
+     * @Route("/{id}/add_contact", name="event_add_contact", methods={"GET", "POST"})
+     */
+    public function addContactAction(Request $request, Event $event, $access)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $pfe = new PersonFunctionEvent();
+        $pfe->setEvent($event);
+        $form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($pfe);
+            $em->flush($pfe);
+
+            if ($this->isRest($access)) {
+                return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
+            } else {
+                return $this->redirectToRoute('event_show', array('id' => $event->getId()));
+            }
+        }
+
+        if ($this->isRest($access)) {
+            return $this->render('event/_new_pfe.html.twig', array(
+                'pfe' => $pfe,
+                'event' => $event,
+                'form' => $form->createView(),
+            ));
+        }
+    }
+
+    /**
+     * Removes a contactFunctionEvent entity.
+     * Pure REST/AJAX.
+     *
+     * @Route("/{id}/remove_contact", name="event_remove_contact", methods={"GET", "DELETE", "POST"})
+     */
+    public function removeContactAction(Request $request, PersonFunctionEvent $pfe, $access)
+    {
+        $event = $pfe->getEvent();
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($pfe);
+        $em->flush($pfe);
+        if ($this->isRest($access)) {
+            return new JsonResponse(array("status" => "OK"),
+                Response::HTTP_OK);
+        }
+        return $this->redirectToRoute('event_show',
+            array('id' => $event->getId()));
+    }
+
+    /**
      * @Route("/search", name="event_search", methods={"GET"})
      */
     public function searchAction(Request $request, $access)

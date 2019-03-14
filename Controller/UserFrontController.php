@@ -512,6 +512,9 @@ error_log(print_r($json_data, true));
             $eventparent = $event->getParent();
             $location = $event->getLocation();
             $organization = $event->getOrganization();
+            $contacts = $event->getPersons('Contact');
+            if (count($contacts) <1 && $eventparent)
+                $contacts = $eventparent->getPersons('Contact');
             $confirm_notes = [];
             $checks = [];
             $all_events = [$event];
@@ -552,14 +555,29 @@ error_log(print_r($json_data, true));
                 'id' => $event->getId(),
                 'location' => [
                     'name' => $location->getName(),
-                    'address' => (string)$location->getAddress()
                 ],
                 'organization' => [
                     'name' => $organization->getName(),
                 ],
+                'contacts' => [],
                 'checks' => $checks,
                 'confirm_notes' => $confirm_notes
             ];
+            if ($address = $location->getAddress()) {
+                $eventarr['location']['address'] = [
+                    'address_line_1' => $address->getAddressLine1(),
+                    'address_line_2' => $address->getAddressLine2(),
+                    'postal_code'    => $address->getPostalCode(),
+                    'postal_name'    => $address->getPostalName(),
+                    'country_code'   => $address->getCountryCode()
+                ];
+            }
+            foreach ($contacts as $contact) {
+                $eventarr['contacts'][] = [
+                    'name' => (string)$contact,
+                    'mobile_phone_number' => $contact->getMobilePhoneNumber(),
+                ];
+            }
             $this->eventcache[$event->getId()] = $eventarr;
         }
         return $this->eventcache[$event->getId()];

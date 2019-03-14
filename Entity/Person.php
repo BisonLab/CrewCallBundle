@@ -27,8 +27,12 @@ class Person extends BaseUser
 
     /**
      * Override FOSUserBundle User base class default role.
+     * Later you will notice that ROLE_USER is default on creation.
+     * But if I have that default here it will always be added and that makes
+     * it impossible to have ROLE_PERSON which is a lot more restricted than
+     * ROLE_USER
      */
-    const ROLE_DEFAULT = 'ROLE_USER';
+    const ROLE_DEFAULT = 'ROLE_PERSON';
 
     /**
      * @ORM\Id

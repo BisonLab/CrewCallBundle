@@ -192,6 +192,17 @@ function openStateChange() {
                 </td>
             </tr>
 {% endif %}
+{% if person.personfunctionevents | length > 0 %}
+            <tr>
+                <th>Events</th>
+                <td>
+                {% for pfe in person.personfunctionevents %}
+                {{ pfe.event }} ({{ pfe.function }})<br>
+                {% endfor %}
+                </ul>
+                </td>
+            </tr>
+{% endif %}
             <tr>
                 <th>
                     <a href="#" id="popLogSummary_person_{{ person.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('person', {{ person.id }});"> Edit History </a><br>

@@ -1,6 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% include 'CrewCallBundle:event:handling.html.twig' %}
+
+<div id="add_contact_popover" class="hidden">
+{{ form_start(add_contact_form, {action:path('event_add_contact', {'access': 'ajax', 'id': event.id }), 'attr': {'id':'addContactForm'}}) }}
+{{ form_widget(add_contact_form) }}
+<input type="hidden" name="username" id="username">
+<input id="submitAddExistingPerson" type="submit" value="Add" />
+{{ form_end(add_contact_form) }}
+</div>
 
 <div class="col-sm-4" id="eventLeft">
     <h1>{{ event }}</h1>
@@ -21,6 +30,18 @@
                 <td>{{ event.location.name }}</td>
             </tr>
 {% endif %}
+            <tr>
+                <th>Contacts</th>
+                <td>
+{% for c in event.persons("Contact") %}
+   {{ c }} - {{ c.mobilephonenumber }}<br />
+{% endfor %}
+    <div id="addContact" style="float: left">
+    <a href="#" id="addContactLink" onClick="openAddContact();">Add</a>
+    </div>
+
+                </td>
+            </tr>
             <tr>
                 <th>Start</th>
                 <td>{% if event.start %}{{ event.start|date('Y-m-d H:i:s') }}{% endif %}</td>

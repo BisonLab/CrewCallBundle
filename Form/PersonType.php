@@ -38,7 +38,8 @@ class PersonType extends AbstractType
                             'Person (Can not log in)' => 'ROLE_PERSON',
                             'Ordinary user' => 'ROLE_USER',
                             'Admin' => 'ROLE_ADMIN'
-                            )
+                            ),
+                    'preferred_choices' => 'ROLE_USER'
                 )
             )
             // ->add('attributes')
