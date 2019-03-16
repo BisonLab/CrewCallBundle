@@ -5,13 +5,12 @@
 
     <p><a href="{{ path('event_new') }}"><button class="btn btn-primary">Create a new event</button></a></p>
 
-    <table id="sortable_table" class="table table-striped table-bordered table-sm">
+    <table id="sortable_table" class="table table-striped table-sm">
         <thead class="thead-inverse">
             <tr>
+                <th>When</th>
                 <th>Main Event</th>
                 <th>Location</th>
-                <th>Start</th>
-                <th>End</th>
                 <th>State</th>
                 <th>Amounts</th>
                 <th>Actions</th>
@@ -20,6 +19,16 @@
         <tbody>
         {% for event in events %}
             <tr>
+                <td data-order="{{ event.start | date('U')}}" >
+                    {{ event.start|date('Y-m-d H:i') }}
+                    {% if event.end %}
+                        {%  if event.end | date('Y-m-d') == event.start | date('Y-m-d') %}
+                        {{ event.end|date('H:i') }}
+                        {% else %}
+                            {{ event.end | date('Y-m-d H:i') }}
+                        {% endif %}
+                    {% endif %}
+                </td>
                 <td>
                 <a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.mainevent }}</a>
                 {% for child in event.children %}
@@ -27,14 +36,13 @@
                 {% endfor %}
                 </td>
                 <td>{{ event.location }}</td>
-                <td data-order="{{ event.start | date('U')}}" >{% if event.start %}{{ event.start|date('Y-m-d H:i') }}{% endif %}</td>
-                <td data-order="{{ event.end | date('U')}}" >{% if event.end %}{{ event.end|date('Y-m-d H:i') }}{% endif %}</td>
                 <td>{{ event.state }}</td>
                 <td>
-                Need totally: {{ event.totalamountneeded }}<br>
-                {% for state, amount in event.jobsamountbystate %}
-                {{ state }}: {{ amount }}<br>
-                {% endfor %}
+                {% set amounts = event.jobsamountbystate %}
+                <span class="ccAmount ccNeeded">{{ event.totalamountneeded }}</span>
+                <span class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
+                <span class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
+                <span class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
                 </td>
                 <td>
                 <a href="{{ path('event_show', { 'id': event.id }) }}">show</a><br>
