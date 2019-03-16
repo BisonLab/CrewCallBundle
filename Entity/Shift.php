@@ -45,7 +45,7 @@ class Shift
     /**
      * @var DateTime
      *
-     * @ORM\Column(name="endtime", type="datetime", nullable=true)
+     * @ORM\Column(name="endtime", type="datetime", nullable=false)
      * @Gedmo\Versioned
      */
     private $end;
@@ -350,7 +350,11 @@ class Shift
      */
     public function getJobsAmountByState($state = null)
     {
-        $amounts = array();
+        $amounts = [
+            'INTERESTED' => 0,
+            'ASSIGNED' => 0,
+            'CONFIRMED' => 0,
+            ];
         foreach ($this->getJobs() as $job) {
             $s = $job->getState();
             if (!isset($amounts[$s]))

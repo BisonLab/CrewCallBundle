@@ -25,10 +25,12 @@ class ShiftType extends AbstractType
     {
         $builder
            ->add('start', DateTimeType::class, array(
+                'required' => true,
                 'label' => "Start",
                 'date_widget' => "single_text",
                 'time_widget' => "single_text"))
            ->add('end', DateTimeType::class, array(
+                'required' => true,
                 'label' => "End",
                 'date_widget' => "single_text",
                 'time_widget' => "single_text"))
