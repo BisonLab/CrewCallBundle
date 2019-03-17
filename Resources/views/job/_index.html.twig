@@ -1,6 +1,6 @@
 {% include 'CrewCallBundle:joblog:handling.html.twig' %}
 {% macro list_joblogs(jobloglist) %}
-    <table class="table table-bordered table-sm">
+    <table class="table  table-sm">
     <th>In</th><th>Out</th>
     {% for elem in jobloglist %}
     <tr>
@@ -17,19 +17,7 @@
 {% import _self as jlmacros %}
 
 {% if jobs.count > 0 %}
-<table id="jobTable" class="table table-bordered table-sm">
-    <thead>
-        <tr>
-            <th>Person</th>
-            <th>State</th>
-            {% if shift.start < date() %}
-                <th>Time Sheet
-                  <br><a href="#" id="addJobLog_shift_{{ shift.id }}" data-html="true" onClick="grabNewJobLogForm('shift', {{ shift.id }});">Add in / out for all jobs</a>
-                </th>
-            {% endif %}
-            <th>Actions</th>
-        </tr>
-    </thead>
+<table id="jobTable" class="table table-striped table-sm">
     <tbody>
     {% for job in jobs %}
         <tr>
@@ -53,7 +41,7 @@
             </td>
             <td>
                 {{ job.state }}
-                {% if job.statechanged %}<br>{{ job.statechanged|date('Y-m-d H:i') }}{% endif %}
+                {% if job.statechanged %}<br>{{ job.statechanged|date('d M H:i') }}{% endif %}
             {% if job.shift.start < date() %}
                 <br><a role="button" class="btn-sm btn-primary" href="#" onClick="setStateOnJob({{shift.id}}, 'COMPLETED', {{ job.shift.id }});">Complete</a>
             </td>
@@ -86,7 +74,7 @@
  </table>
 {% endif %}
 {% if sos.count > 0 %}
-<table id="shiftOrgTable" class="table table-bordered table-sm">
+<table id="shiftOrgTable" class="table  table-sm">
         <thead>
             <tr>
                 <th>Organization</th>
@@ -109,9 +97,3 @@
     {% endif %}
     </tbody>
 </table>
-    <div id="newShiftOrganization_{{ shift.id }}">
-    <a href="#" onClick="grabNewShiftOrganizationForm({{ shift.id }});">Add crew from an organization</a><br>
-    </div>
-    <div id="newJob{{ shift.id }}">
-    <a href="#" onClick="grabNewJobForm({{shift.id}});">Add person</a>
-    </div>

@@ -1,11 +1,18 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Locations list</h1>
+    <div class="row">
+    <div class="col-sm-6">
+    <h1>Locations</h1>
+    </div>
+    <div class="col-sm-4">
+    </div>
+    <div class="col-sm-1" style="margin-top: 10px;">
+    <a href="{{ path('location_new') }}"><button class="btn btn-dark mt-4 ml-3">New Location</button></a>
+    </div>
+    </div>
 
-    <p><a href="{{ path('location_new') }}"><button class="btn btn-primary">Create a new location</button></a></p>
-
-        <table id="sortable_table" class="table table-striped table-bordered table-sm">
+        <table id="sortable_table" class="table table-striped  table-sm">
         <thead class="thead-inverse">
             <tr>
                 <th>Name</th>

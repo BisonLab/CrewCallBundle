@@ -1,5 +1,5 @@
 {% macro list_joblogs(jobloglist) %}
-    <table class="table table-bordered table-sm">
+    <table class="table  table-sm">
     <th>What</th><th>In</th><th>Out</th>
     {% for elem in jobloglist %}
     <tr>
@@ -10,7 +10,7 @@
     {% endfor %}
     </table>
 {% endmacro %}
-<table class="table table-bordered table-sm">
+<table class="table  table-sm">
     <tr>
     <th>Hours this week</th>
     <td>{{ summary.week_hours }}</td>
@@ -37,7 +37,7 @@
 {{ jlmacros.list_joblogs(joblogs) }}
 
 <h3>State changes</h3>
-<table class="table table-bordered table-sm">
+<table class="table  table-sm">
 <th>What</th><th>From</th><th>To</th><th>Days</th>
 {% for elem in person.states %}
 <tr>

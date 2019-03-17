@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Shifts list</h1>
+    <h1>Shifts</h1>
 {% include 'CrewCallBundle:shift:_index.html.twig' with { 'shifts': shifts}  %}
     <ul>
         <li>
-            <a href="{{ path('shift_new') }}">Create a new shift</a>
+            <a href="{{ path('shift_new') }}">Add Shift</a>
         </li>
     </ul>
 {% endblock %}
