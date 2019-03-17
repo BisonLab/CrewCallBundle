@@ -48,6 +48,7 @@ class EventController extends CommonController
 
         return $this->render('event/index.html.twig', array(
             'events' => $events,
+            'past' => $request->get('past'),
         ));
     }
 

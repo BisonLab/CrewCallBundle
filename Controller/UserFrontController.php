@@ -277,9 +277,9 @@ class UserFrontController extends CommonController
      */
     public function signupShiftAction(Request $request, Shift $shift)
     {
-        if (!$token = $request->request->get('_csrf_token')) {
-            $json_data = json_decode($request->getContent(), true);
+        $json_data = json_decode($request->getContent(), true);
 error_log(print_r($json_data, true));
+        if (!$token = $request->request->get('_csrf_token')) {
             $token = $json_data['_csrf_token'];
         }
 

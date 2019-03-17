@@ -14,6 +14,21 @@
 <div class="col-sm-4" id="eventLeft">
     <h1>{{ event }}</h1>
 
+    <div class="dropdown">
+      <button class="glyphicon glyphicon-list" id='eventburger' type="button" data-toggle="dropdown">
+      <span></span>
+      </button>
+    <ul class="dropdown-menu dropdown-menu-right">
+{% if event.parent %}
+        <li>  <a class="btn btn-primary btn-block" href="{{ path('event_show', { 'id': event.parent.id }) }}">Back to {{ event.parent.name }}</a></li>
+{% endif %}
+    <li><a href="{{ path('event_new', {'parent': event.id}) }}">New sub event</a></li>
+    <li><a href="{{ path('event_clone', {'event': event.id}) }}">Create a copy with new start date</a></li>
+    <li><a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a></li>
+    <li><a href="#" id="popLogSummary_event_{{ event.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('event', {{ event.id }});"> Changes </a></li>
+    </ul>
+    </div>
+
     <table class="showTable">
         <tbody>
             <tr>
@@ -78,32 +93,6 @@
                 </td>
             </tr>
 {% endif %}
-{% if event.parent %}
-            <tr>
-                <th>&nbsp;</th>
-                <td>
-          <a class="btn btn-primary btn-block" href="{{ path('event_show', { 'id': event.parent.id }) }}">Back to {{ event.parent.name }}</a>
-                </td>
-            </tr>
-{% endif %}
-            <tr>
-                <th>&nbsp;</th>
-                <td>
-            <a class="btn btn-primary btn-block" href="{{ path('event_new', {'parent': event.id}) }}">New sub event</a>
-                </td>
-            </tr>
-            <tr>
-                <th>&nbsp;</th>
-                <td>
-            <a class="btn btn-primary btn-block" href="{{ path('event_clone', {'event': event.id}) }}">Create a copy with new start date</a>
-                </td>
-            </tr>
-            <tr>
-                <th>&nbsp;</th>
-                <td>
-            <a class="btn btn-primary btn-block" href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a>
-                </td>
-            </tr>
 {% if not event.booked %}
             <tr>
                 <th>&nbsp;</th>
@@ -114,12 +103,6 @@
                 </td>
             </tr>
 {% endif %}
-            <tr>
-                <th>&nbsp;</th>
-                <td>
-                   <a href="#" id="popLogSummary_event_{{ event.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('event', {{ event.id }});"> Changes </a><br>
-                </td>
-            </tr>
             <tr>
                 <th>&nbsp;</th>
             </tr>
