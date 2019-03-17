@@ -3,23 +3,25 @@
 {% block title %}CrewCall Dashboard{% endblock %}
 {% block body %}
 
-{% set newrow = true %}
+{% set newrow = false %}
+{% set colcount = 0 %}
+<div class="row">
 {% for dash in dashboarder.dashboards(app.user) %}
 
-{% if newrow == true %}
-<div class="row">
-{% set newrow = false %}
-{% else %}
-{% set newrow = true %}
+{% set colcount = colcount + dash.cols %}
+
+{% if colcount > 12 %}
+    {% set newrow = true %}
+    {% set colcount = 0 %}
+    {% if loop.index > 1 %}
+    </div> <!-- endrow -->
+    {% endif %}
+    <div class="row">
 {% endif %}
 
-<div class="col-sm-6">
-{{ dash | raw }}
+<div class="col-sm-{{ dash.cols }}">
+{{ dash.content | raw }}
 </div>
-
-{% if newrow == true %}
-</div> <!-- row -->
-{% endif %}
 
 {% endfor %}
 {% if newrow == false %}
