@@ -30,7 +30,7 @@ class Dashboarder
 
     public function dashboards(Person $user)
     {
-        $dashes = array();
+        $dashes = [];
         foreach ($this->config['roles'] as $role => $elems) {
             if (in_array($role, $user->getRoles())) {
                 $dashes += $elems;
@@ -39,21 +39,25 @@ class Dashboarder
         }
         // And here, go through functions when you have something for them.
 
-        $dashboards = array();
-        foreach ($dashes as $function) {
+        $dashboards = [];
+        foreach ($dashes as $function => $dash) {
+            $dash['dashie'] = $function;
             $cust_class = '\CustomBundle\Lib\Dashboarder\\' . $function;
             $crew_class = '\CrewCallBundle\Lib\Dashboarder\\' . $function;
             if (class_exists($cust_class)) {
                 $cc = new $cust_class($this->router,
                     $this->entitymanager,
                     $this->twig);
-                $dashboards[] = $cc->dashize($user);
+                $dash['content'] = $cc->dashize($user) ?: "";
             } elseif (class_exists($crew_class)) {
                 $cc = new $crew_class($this->router,
                     $this->entitymanager,
                     $this->twig);
-                $dashboards[] = $cc->dashize($user);
+                $dash['content'] = $cc->dashize($user) ?: "";
+            } else {
+                continue;
             }
+            $dashboards[] = $dash;
         }
         return $dashboards;
     }
