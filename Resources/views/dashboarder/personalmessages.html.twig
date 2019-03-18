@@ -35,7 +35,7 @@ function setStateOnMessage(message_id, state) {
 {% if is_granted('show', note) %}
 <div id="personnote_{{ note.id}}">
 <strong>{{ note.subject }}</strong>
-<pre wrap>
+<pre wrap class="ccNotesText">
 {{ note.body }}
 </pre>
 <a href="#" onClick="return setStateOnMessage({{ note.id }}, 'ARCHIVED');"><button>Read it!</button></a>

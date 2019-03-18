@@ -78,9 +78,71 @@ class UserFrontController extends CommonController
             'firstname' => $user->getFirstName(),
             'lastname' => $user->getLastName(),
         ];
+        return new JsonResponse($retarr, 200);
+    }
 
-//        $retarr['jobs'] = $this->meJobs($request, true);
-//        $retarr['messages'] = $this->meMessages($request, true);
+    /**
+     * Everything, and maybe more.
+     *
+     * @Route("/me_profile", name="uf_me_profile", methods={"GET"})
+     */
+    public function meProfileAction(Request $request)
+    {
+        $user = $this->getUser();
+        $sakonnin_files = $this->container->get('sakonnin.files');
+        $pfiles = $sakonnin_files->getFilesForContext([
+                'file_tyle' => 'ProfilePicture',
+                'system' => 'crewcall',
+                'object_name' => 'person',
+                'external_id' => $user->getId()
+            ]);
+        $profile_picture_url = null;
+        if (count($pfiles) > 0) {
+            $router = $this->container->get('router');
+            $profile_picture_url = $router->generate('file_thumbnail', [
+                'id' => $pfiles[0]->getId(), 'x' => 200, 'y' => 200]);
+        }
+
+        $retarr = [
+            'firstname' => $user->getFirstName(),
+            'lastname' => $user->getLastName(),
+            'diets' => $user->getDietsLabels(),
+            'email' => $user->getEmail(),
+            'mobile_phone_number' => $user->getMobilePhoneNumber(),
+            'mobile_phone_number' => $user->getMobilePhoneNumber(),
+            'profile_picture_url' => $profile_picture_url,
+            'address' => [],
+            'functions' => [],
+        ];
+        if ($address = $user->getAddress()) {
+            $retarr['address'] = [
+                'address_line_1' => $address->getAddressLine1(),
+                'address_line_2' => $address->getAddressLine2(),
+                'postal_code'    => $address->getPostalCode(),
+                'postal_name'    => $address->getPostalName(),
+                'country_code'   => $address->getCountryCode()
+            ];
+        }
+        foreach ($user->getStates() as $ps) {
+            if ($ps->getState() == "ACTIVE") continue;
+            $retarr['absense'][] = [
+                'reason' => ucfirst(strtolower($ps->getState())),
+                'state' => $ps->getState(),
+                'from_date' => $ps->getFromDate()->format('Y-m-d'),
+                'to_date' => $ps->getToDate()->format('Y-m-d'),
+            ];
+        }
+        foreach ($user->getPersonFunctions() as $pf) {
+            $retarr['functions'][] = (string)$pf;
+        }
+        foreach ($user->getPersonFunctionOrganizations() as $pfo) {
+            $retarr['roles'][] = [
+                'function' => (string)$pfo->getFunction(),
+                'function_type' => $pfo->getFunction()->getFunctionType(),
+                'organization' => (string)$pfo->getOrganization(),
+                'description' => (string)$pfo,
+            ];
+        }
         return new JsonResponse($retarr, 200);
     }
 
@@ -287,6 +349,29 @@ error_log(print_r($json_data, true));
             return new JsonResponse(["ERRROR" => "No luck"], Response::HTTP_FORBIDDEN);
         }
 
+        if (!$comment = $request->request->get('comment')) {
+            $comment = $json_data['comment'] ?? null;
+        }
+
+        if ($comment) {
+error_log("Comment . " . $comment);
+            $sm = $this->get('sakonnin.messages');
+
+            $message_context = [
+                'system' => 'dabaru',
+                'object_name' => 'job',
+                'external_id' => $external_id,
+            ];
+
+            $sm->postMessage(array(
+                'body' => $comment,
+                'message_type' => 'JobComment',
+                'to_type' => "NONE",
+                'from_type' => "NONE",
+            ), $message_context);
+
+        }
+
         $user = $this->getUser();
         $job = new Job();
         $job->setShift($shift);
@@ -308,6 +393,7 @@ error_log(print_r($json_data, true));
             $json_data = json_decode($request->getContent(), true);
             $token = $json_data['_csrf_token'];
         }
+error_log(print_r($json_data, true));
         if (!$this->isCsrfTokenValid('delete-interest', $token)) {
             return new JsonResponse(["ERRROR" => "No luck"], Response::HTTP_FORBIDDEN);
         }
@@ -320,6 +406,7 @@ error_log(print_r($json_data, true));
         if ($job->getPerson() !== $user)
             return new JsonResponse(["ERRROR" => "No luck"], Response::HTTP_FORBIDDEN);
 
+error_log("Deleting " . (string)$job);
         $em = $this->getDoctrine()->getManager();
         $em->remove($job);
         $em->flush($job);
@@ -383,6 +470,28 @@ error_log(print_r($json_data, true));
         $response->headers->set('Content-Type', 'text/calendar; charset=utf-8');
         $response->headers->set('Content-Disposition', 'attachment; filename="cal.ics"');
         return $response;
+    }
+
+    /**
+     * The time log per person.
+     *
+     * @Route("/me_joblog", name="uf_me_joblog", methods={"GET"})
+     */
+    public function jobLogAction(Request $request)
+    {
+        $handler = $this->get('crewcall.joblogs');
+        $job = null;
+        $options['summary_only'] = $request->get('summary_only');
+        $options['from_date'] = $request->get('from_date');
+        $options['to_date'] = $request->get('to_date');
+
+        $person = $this->getUser();
+        $logs = $handler->getJobLogsForPerson($person, $options);
+
+        return new JsonResponse([
+                'joblogs' => $logs['joblogs'],
+                'summary' => $logs['summary'],
+            ], Response::HTTP_OK);
     }
 
     public function jobsForPersonAsArray(Person $person, $options = array())

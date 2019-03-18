@@ -12,13 +12,13 @@
     {% for shift in shifts %}
         <tr>
             <td data-order="{{ shift.start | date('U')}}" >
-                    {{ shift.start|date('d M H:i') }}
-                    <span class="glyphicon glyphicon-arrow-right"></span> 
-                    {%  if shift.end | date('Y-m-d') == shift.start | date('Y-m-d') %}
-                    {{ shift.end|date('H:i') }}
-                    {% else %}
-                        {{ shift.end | date('d M H:i') }}
-                    {% endif %}
+                {{ shift.start|date('d M H:i') }}
+                <span class="glyphicon glyphicon-arrow-right"></span> 
+                {%  if shift.end | date('Y-m-d') == shift.start | date('Y-m-d') %}
+                {{ shift.end|date('H:i') }}
+                {% else %}
+                    {{ shift.end | date('d M H:i') }}
+                {% endif %}
             <td>
             {{ shift.function }}<br>
             at {{ shift.event.name }}

@@ -16,6 +16,10 @@ class SmsHandler
         $this->container = $container;
     }
 
+    /*
+     * Returning null on missing code and wrong sender instead of throwing
+     * exceptions. Rather have silence than 500 errors.
+     */
     public function execute($options = array())
     {
         $sm = $this->container->get('sakonnin.messages');
@@ -25,7 +29,7 @@ class SmsHandler
         $body = str_replace($codeword, "", strtolower($message->getBody()));
 
         if (!preg_match("/\s(\w{6})\s/", $body, $umatch))
-            throw new \InvalidArgumentException("uCode not found");
+            return null;
         $ucode = $umatch[1];
 
         // Gotta find the Job related to the code
@@ -33,7 +37,7 @@ class SmsHandler
 
         // Does the job exist?
         if (!$job = $em->getRepository('CrewCallBundle:Job')->findOneBy(['ucode' => $ucode])) {
-            throw new \InvalidArgumentException("Code not found");
+            return null;
         }
         // The sender matches the job owner?
         $number_length = $this->container->getParameter('sakonnin.sms')['national_number_lenght'];
@@ -42,7 +46,7 @@ class SmsHandler
         $pnum = substr($person->getMobilePhoneNumber(), $number_length * -1);
 
         if ($snum != $pnum)
-            throw new \InvalidArgumentException("Sender is not receiver");
+            return null;
 
         // So, what will we be doing then?
         // For now, just look for "Confirm".

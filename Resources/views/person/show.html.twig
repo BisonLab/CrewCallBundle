@@ -100,8 +100,19 @@ function openStateChange() {
 </div>
 
 <div class="col-sm-4" id="personLeft">
+    {% set ppcontext = {
+                'file_tyle': 'ProfilePicture',
+                'system': 'crewcall',
+                'object_name': 'person',
+                'external_id': person.id
+        }
+    %}
+{% set profile_pictures = sakonnin_files.getFilesForContext(ppcontext) %}
+{% if profile_pictures.0 is defined %}
+{% set pfile = profile_pictures.0 %}
+<img id="img_{{pfile.id}}" data-zoom-image="{{ path('file_view', { 'id': pfile.id }) }}" src="{{ path('file_thumbnail', { 'id': pfile.id, 'x': 100, 'y': 100 }) }}">
+{% endif %}
     <h1>{{ person.fullname }}</h1>
-
     <table class="showTable">
         <tbody>
             <tr>
@@ -161,17 +172,25 @@ function openStateChange() {
 <a href="#" id="stateChangeLink" onClick="openStateChange();">Add</a><br>
                 </td>
             </tr>
+{% if person.personfunctionorganizations | length > 0 %}
             <tr>
-                <th>Attributes</th>
-                <td>{{ person.attributes | prettyprint }}</td>
+                <th>Roles</th>
+                <td>
+                {% for pfo in person.personfunctionorganizations %}
+                {{ pfo }}<br>
+                {% endfor %}
+                </ul>
+                </td>
             </tr>
+{% endif %}
             <tr>
-                <th>System roles</th>
-                <td>{{ person.roles | join(', ') }}</td>
-            </tr>
-            <tr>
-                <th>Login Enabled</th>
-                <td>{% if  person.enabled %}Yes{%else%}No{%endif%}</td>
+                <th>Can log into CrewCall</th>
+                <td>
+                {% if person.enabled %}
+                    Yes{% if is_granted("ROLE_ADMIN") %}, as admin.{% endif %}
+                {%else%}
+                    No
+                {%endif%}</td>
             </tr>
             <tr>
                 <th>Functions</th>
@@ -181,17 +200,6 @@ function openStateChange() {
                 {% endfor %}
                 </td>
             </tr>
-{% if person.personfunctionorganizations | length > 0 %}
-            <tr>
-                <th>Organizations</th>
-                <td>
-                {% for pfo in person.personfunctionorganizations %}
-                {{ pfo.organization }} ({{ pfo.function }})<br>
-                {% endfor %}
-                </ul>
-                </td>
-            </tr>
-{% endif %}
 {% if person.personfunctionevents | length > 0 %}
             <tr>
                 <th>Events</th>
@@ -203,6 +211,10 @@ function openStateChange() {
                 </td>
             </tr>
 {% endif %}
+            <tr>
+                <th>Attributes</th>
+                <td>{{ person.attributes | prettyprint }}</td>
+            </tr>
             <tr>
                 <th>
                     <a href="#" id="popLogSummary_person_{{ person.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('person', {{ person.id }});"> Changes </a><br>
@@ -256,8 +268,7 @@ function openStateChange() {
     <thead class="thead-inverse">
         <tr>
             <th>Event</th>
-            <th>Start</th>
-            <th>End</th>
+            <th>When</th>
             <th>What</th>
             <th>Response</th>
             <th>Actions</th>
@@ -272,15 +283,31 @@ function openStateChange() {
         {% endif %}
         <tr>
             <td>
-            {{ job.id }}
-            {{ job.overlap }}
             <a href="#" id="popSummary_event_{{ job.event.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
             {{ shift.event }}
             </td>
-            <td class="{{ c_class }}" data-order="{{ shift.start | date('U')}}" >{% if shift.start %}{{ shift.start|date('d M H:i') }}{% endif %}</td>
-            <td class="{{ c_class }}" data-order="{{ shift.end | date('U')}}" >{% if shift.end %}{{ shift.end|date('d M H:i') }}{% endif %}</td>
+            <td class="{{ c_class }}" data-order="{{ shift.start | date('U')}}" >
+                {{ shift.start|date('d M H:i') }}
+                <span class="glyphicon glyphicon-arrow-right"></span> 
+                {%  if shift.end | date('Y-m-d') == shift.start | date('Y-m-d') %}
+                {{ shift.end|date('H:i') }}
+                {% else %}
+                    {{ shift.end | date('d M H:i') }}
+                {% endif %}
+            </td>
             <td>{{ shift.function }}</td>
-            <td>{{ job.state }}</td>
+            <td>{{ job.state }}
+    {% set jclogcontext = {
+                'system': 'crewcall',
+                'object_name': 'job',
+                'external_id': job.id
+        }
+    %}
+    {% if sakonnin_messages.contexthasmessages(jclogcontext) %}
+                <a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': jclogcontext.system, 'object_name': jclogcontext.object_name, 'external_id': jclogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
+    {% endif %}
+            {% if job.statechanged %}<br>{{ job.statechanged|date('d M H:i') }}{% endif %}
+            </td>
             <td>
             {% if not job.booked %}
                 {% if job.state != "ASSIGNED" %}

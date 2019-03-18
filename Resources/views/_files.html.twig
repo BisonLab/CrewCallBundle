@@ -12,20 +12,27 @@
 {% for sfile in sakonnin_files.getFilesForContext(filecontext) %}
        <tr>
         <td>
-{% if sfile.filetype == "IMAGE" %}
+{% if sfile.thumbnailable %}
 <img id="img_{{sfile.id}}" data-zoom-image="{{ path('file_view', { 'id': sfile.id }) }}" src="{{ path('file_thumbnail', { 'id': sfile.id, 'x': 30, 'y': 30 }) }}">
 <script>
 $("#img_{{sfile.id}}").ezPlus({
     zoomWindowPosition: 16
 });
 </script>
-        {{ sfile.name }}
 {% endif %}
+        {{ sfile.name }}
         </td>
         <td>{{ sfile.filetype }}</td>
         <td>{{ sfile.createdat|date('Y-m-d H:i:s') }}</td>
-        <td><a href="{{ path('file_download', { 'id': sfile.id }) }}">download</a>
-        <a href="{{ path('file_show', { 'id': sfile.id }) }}">metadata</a></td>
+        <td><a href="{{ path('file_download', { 'id': sfile.id }) }}">Download</a>
+        <a href="{{ path('file_show', { 'id': sfile.id }) }}">Metadata</a>
+        {% set delete_form = sakonnin_files.getdeleteform(sfile, {'create_view': true}) %}
+        {{ form_start(delete_form)}}
+        {{ form_rest(delete_form)}}
+        <input type="hidden" name="back" value="{{ app.request.uri }}">
+        <input type="submit" name="Delete" value="Delete">
+        {{ form_end(delete_form)}}
+        </td>
        </tr>
 {% endfor %}
    </tbody>

@@ -3,7 +3,9 @@
 {% block title %}Frontend development{% endblock %}
 {% block body %}
 
-<a href="#" onClick="return grabMe();"><button>Jobslist</button> </a>
+<a href="#" onClick="return grabMeProfile();"><button>Profile</button> </a>
+<a href="#" onClick="return grabMeJobs();"><button>Jobslist</button> </a>
+<a href="#" onClick="return grabJobLog();"><button>Job logs</button> </a>
 <a href="#" onClick="return hitMe();"><button>Log to console</button> </a>
 <pre id="playpart">
 </pre>
@@ -62,7 +64,7 @@ function createCancelButton(item, index) {
     console.log(cancelbuttons.html());
 }
 
-function grabMe() {
+function grabMeJobs() {
     url = "{{ path('uf_me_jobs')}}";
     $.ajax({
         beforeSend: function(req) {
@@ -82,6 +84,44 @@ function grabMe() {
             cont['assigned'].forEach(createConfirmButton);
             cont['opportunities'].forEach(createSignupButton);
             cont['interested'].forEach(createCancelButton);
+      }).fail(function(xhr, status, error) {
+            errmsg = "Blaeh\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function grabMeProfile() {
+    url = "{{ path('uf_me_profile')}}";
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "GET",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            $("#playpart").html(JSON.stringify(cont, undefined, 2));
+      }).fail(function(xhr, status, error) {
+            errmsg = "Blaeh\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function grabJobLog() {
+    url = "{{ path('uf_me_joblog')}}";
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "GET",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            $("#playpart").html(JSON.stringify(cont, undefined, 2));
       }).fail(function(xhr, status, error) {
             errmsg = "Blaeh\n";
             errmsg = errmsg + xhr.responseText + "\n";

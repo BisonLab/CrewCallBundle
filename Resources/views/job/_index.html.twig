@@ -41,6 +41,15 @@
             </td>
             <td>
                 {{ job.state }}
+    {% set jclogcontext = {
+                'system': 'crewcall',
+                'object_name': 'job',
+                'external_id': job.id
+        }
+    %}
+    {% if sakonnin_messages.contexthasmessages(jclogcontext) %}
+                <a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': jclogcontext.system, 'object_name': jclogcontext.object_name, 'external_id': jclogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
+    {% endif %}
                 {% if job.statechanged %}<br>{{ job.statechanged|date('d M H:i') }}{% endif %}
             {% if job.shift.start < date() %}
                 <br><a role="button" class="btn-sm btn-primary" href="#" onClick="setStateOnJob({{shift.id}}, 'COMPLETED', {{ job.shift.id }});">Complete</a>

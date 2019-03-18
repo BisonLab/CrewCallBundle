@@ -179,6 +179,6 @@ class PersonFunctionOrganization
 
     public function __toString()
     {
-        return $this->getFunction()->getName();
+        return $this->getFunction()->getName() . " at " . $this->getOrganization()->getName();
     }
 }

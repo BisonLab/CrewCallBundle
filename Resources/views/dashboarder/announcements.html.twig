@@ -2,7 +2,7 @@
 {% if is_granted('show', message) %}
 <div id="announcements">
 <h3>{{ message.subject }}</h3>
-<pre wrap>
+<pre wrap class="ccNotesText">
 {{ message.body }}
 </pre>
 </div>
