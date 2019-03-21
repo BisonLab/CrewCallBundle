@@ -28,13 +28,23 @@
                 <td>{{ organization.officeemail }}</td>
             </tr>
             <tr>
+                <th>Address</th>
+                <td>{{ cc_addressing.compose(organization.visitaddress, 'html') | raw }}</td>
+            </tr>
+            <tr>
+                <th>Postal Address</th>
+                <td>{{ cc_addressing.compose(organization.postaladdress, 'html') | raw }}</td>
+            </tr>
+            <tr>
                 <th>State</th>
                 <td>{{ organization.state }}</td>
             </tr>
+{#
             <tr>
                 <th>Attributes</th>
                 <td>{{ organization.attributes | prettyprint}}</td>
             </tr>
+#}
         </tbody>
     </table>
 

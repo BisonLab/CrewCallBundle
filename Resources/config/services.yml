@@ -41,6 +41,11 @@ services:
         public: true
         arguments: ['%crewcall.dashboarder%','@router', "@doctrine.orm.entity_manager", "@twig"]
 
+    crewcall.addressing:
+        class: CrewCallBundle\Service\Addressing
+        public: true
+        arguments: ['%locale%','%addressing%']
+
     crewcall_retriever:
         alias: crewcall.retriever
 

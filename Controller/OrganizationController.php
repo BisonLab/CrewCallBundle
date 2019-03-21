@@ -43,7 +43,9 @@ class OrganizationController extends CommonController
     public function newAction(Request $request)
     {
         $organization = new Organization();
-        $form = $this->createForm('CrewCallBundle\Form\OrganizationType', $organization);
+        $addressing = $this->container->get('crewcall.addressing');
+        $address_elements = $addressing->getFormElementList($organization->getVisitAddress());
+        $form = $this->createForm('CrewCallBundle\Form\OrganizationType', $organization, ['address_elements' => $address_elements]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -83,7 +85,9 @@ class OrganizationController extends CommonController
     public function editAction(Request $request, Organization $organization)
     {
         $deleteForm = $this->createDeleteForm($organization);
-        $editForm = $this->createForm('CrewCallBundle\Form\OrganizationType', $organization);
+        $addressing = $this->container->get('crewcall.addressing');
+        $address_elements = $addressing->getFormElementList($organization->getVisitAddress());
+        $editForm = $this->createForm('CrewCallBundle\Form\OrganizationType', $organization, ['address_elements' => $address_elements]);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {

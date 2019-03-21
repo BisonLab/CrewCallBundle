@@ -41,16 +41,18 @@
             </td>
             <td>
                 {{ job.state }}
-    {% set jclogcontext = {
-                'system': 'crewcall',
-                'object_name': 'job',
-                'external_id': job.id
-        }
-    %}
-    {% if sakonnin_messages.contexthasmessages(jclogcontext) %}
-                <a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': jclogcontext.system, 'object_name': jclogcontext.object_name, 'external_id': jclogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
-    {% endif %}
-                {% if job.statechanged %}<br>{{ job.statechanged|date('d M H:i') }}{% endif %}
+                {% if job.statechanged %}{{ job.statechanged|date('d M H:i') }}{% endif %}
+{% set jobcontext = {
+            'message_types': ['JobComment', 'InformCheck'],
+            'order': 'DESC',
+            'system': 'crewcall',
+            'object_name': 'job',
+            'external_id': job.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(jobcontext) %}
+    <br>{{ note.createdAt | date('d M') }}: <pre>{{ note.body }}</pre>
+{% endfor %}
             {% if job.shift.start < date() %}
                 <br><a role="button" class="btn-sm btn-primary" href="#" onClick="setStateOnJob({{shift.id}}, 'COMPLETED', {{ job.shift.id }});">Complete</a>
             </td>
@@ -67,15 +69,15 @@
             {% endif %}
             <td>
             {% if not job.booked %}
+              <a role="button" class="btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
                 {% if job.state != "ASSIGNED" %}
-              <a role="button" class="btn-sm btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
+              <a role="button" class="btn-sm ccAssigned" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
                 {% endif %}
-              <a role="button" class="btn-sm btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
               <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'DENIED', {{ job.shift.id }});">Deny</a>
             {% else %}
               <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Release</a>
             {% endif %}
-            <br><a href="#" id="popLogSummary_job_{{ job.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('job', {{ job.id }});"> Changes </a>
+            <a href="#" id="popLogSummary_job_{{ job.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('job', {{ job.id }});"> Changes </a>
             </td>
         </tr>
     {% endfor %}
@@ -106,3 +108,7 @@
     {% endif %}
     </tbody>
 </table>
+    <div id="newShiftOrganization_{{ shift.id }}">
+    </div>
+    <div id="newJob{{ shift.id }}">
+    </div>

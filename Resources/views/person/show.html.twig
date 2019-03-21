@@ -110,7 +110,7 @@ function openStateChange() {
 {% set profile_pictures = sakonnin_files.getFilesForContext(ppcontext) %}
 {% if profile_pictures.0 is defined %}
 {% set pfile = profile_pictures.0 %}
-<img id="img_{{pfile.id}}" data-zoom-image="{{ path('file_view', { 'id': pfile.id }) }}" src="{{ path('file_thumbnail', { 'id': pfile.id, 'x': 100, 'y': 100 }) }}">
+<img id="img_{{pfile.id}}" data-zoom-image="{{ path('file_view', { 'id': pfile.id }) }}" src="{{ path('file_thumbnail', { 'id': pfile.fileid, 'x': 100, 'y': 100 }) }}">
 {% endif %}
     <h1>{{ person.fullname }}</h1>
     <table class="showTable">
@@ -149,15 +149,11 @@ function openStateChange() {
             </tr>
             <tr>
                 <th>Address</th>
-                <td>
-                    {{ person.address }}
-                </td>
+                <td>{{ cc_addressing.compose(person.address, 'html') | raw }}</td>
             </tr>
             <tr>
                 <th>Postal Address</th>
-                <td>
-                    {{ person.postaladdress }}
-                </td>
+                <td>{{ cc_addressing.compose(person.postaladdress, 'html') | raw }}</td>
             </tr>
             <tr>
                 <th>State</th>
@@ -297,16 +293,19 @@ function openStateChange() {
             </td>
             <td>{{ shift.function }}</td>
             <td>{{ job.state }}
-    {% set jclogcontext = {
-                'system': 'crewcall',
-                'object_name': 'job',
-                'external_id': job.id
-        }
-    %}
-    {% if sakonnin_messages.contexthasmessages(jclogcontext) %}
-                <a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': jclogcontext.system, 'object_name': jclogcontext.object_name, 'external_id': jclogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
-    {% endif %}
-            {% if job.statechanged %}<br>{{ job.statechanged|date('d M H:i') }}{% endif %}
+            {# No reason to add confirm check here, it's kinda explicist 
+                'message_types': ['JobComment', 'ConfirmCheck', 'InformCheck'], #}
+{% set jobcontext = {
+            'message_types': ['JobComment', 'InformCheck'],
+            'order': 'DESC',
+            'system': 'crewcall',
+            'object_name': 'job',
+            'external_id': job.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(jobcontext) %}
+    {{ note.createdAt | date('Y-m-d') }}: <pre>{{ note.body }}</pre>
+{% endfor %}
             </td>
             <td>
             {% if not job.booked %}

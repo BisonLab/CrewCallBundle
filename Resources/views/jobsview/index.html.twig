@@ -82,7 +82,7 @@
 <a href="#" onClick="return grabJobList();"><button>Grab</button> </a>
 <a href="#" onClick="return printTableContent();"><button id="printbutton">Print</button></a>
 {# TODO: Replace this with a configuration option with all the available tabe columns and show/hide/false to decide if the colums shall be available at all, shown by default or hidden. #}
-{% for val in ['Person', 'Mobile', 'Start', 'Event', 'Function', 'State', 'Hours', 'Move', 'Select'] %}
+{% for val in ['Person', 'Mobile', 'Start', 'Event', 'Function', 'State', 'Comments', 'Hours', 'Move', 'Select'] %}
 <input id="jwcheck_{{ val }}" type="checkbox" onClick='checkChecked("{{ val }}");' checked>{{ val }}</input>
 {% endfor %}
 

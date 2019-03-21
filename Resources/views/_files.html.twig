@@ -13,7 +13,7 @@
        <tr>
         <td>
 {% if sfile.thumbnailable %}
-<img id="img_{{sfile.id}}" data-zoom-image="{{ path('file_view', { 'id': sfile.id }) }}" src="{{ path('file_thumbnail', { 'id': sfile.id, 'x': 30, 'y': 30 }) }}">
+<img id="img_{{sfile.id}}" data-zoom-image="{{ path('file_view', { 'id': sfile.id }) }}" src="{{ path('uf_file', { 'id': sfile.fileid, 'x': 30, 'y': 30 }) }}">
 <script>
 $("#img_{{sfile.id}}").ezPlus({
     zoomWindowPosition: 16

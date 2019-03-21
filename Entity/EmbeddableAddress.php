@@ -5,15 +5,13 @@ namespace CrewCallBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-use CommerceGuys\Addressing\Address as CGAddress;
-
 /**
  * Address
  *
  * I'm trying to find some generic address handling, like conoutry dependans
- * forms and address labels. The CommerceGuys \ Addressing seems to do this job.
- * At least some of it. The other candidate was sylius/addressing-bundle but
- * it's not ready for Symfony 3 yet.
+ * forms and address labels. The CommerceGuys \ Addressing seems to do this
+ * job.  At least some of it. The other candidate was sylius/addressing-bundle
+ * but it's not ready for Symfony 3 yet.
  *
  * Both are somewhat confusing, since they seem to mean that a stored address
  * shall contain person names or organization. I am going to use this as an
@@ -22,7 +20,7 @@ use CommerceGuys\Addressing\Address as CGAddress;
  *
  * So, we'll find out how successful this is. I'll stick to the Address model
  * from CommerceGuys anyway. It is for Drupal and we'll find out how useful it
- * is quite soon. Have time to replace it all later anyway.
+ * is quite soon.
  *
  * @ORM\Embeddable()
  */
@@ -358,30 +356,22 @@ class EmbeddableAddress
         return $this->locale;
     }
 
+    /**
+     * Pondered about __get and ArrayAccess and making all properties public,
+     * but this is the easy way out.
+     */
+    public function get($property)
+    {
+        if (property_exists($this, $property))
+            return $this->$property;
+        return null;
+    }
+
+
+    // Maybe try to inject some configureable thingie here? Use the
+    // Addressing service instead if you want specific format.
     public function __toString()
     {
         return $this->addressLine1 . ", " . $this->postalName;
     }
-
-    // Should I add the name stuff from person/location/organization?
-    // That would give me a complete form.
-    public function getCGAddress()
-    {
-        return new CGAddress(
-            $this->countryCode,
-            $this->administrativeArea,
-            $this->locality,
-            $this->dependentLocality,
-            $this->postalCode,
-            $this->sortingCode,
-            $this->addressLine1,
-            $this->addressLine2,
-            $this->organization,
-            '',
-            '',
-            '',
-            $this->locale
-        );
-    }
-
 }

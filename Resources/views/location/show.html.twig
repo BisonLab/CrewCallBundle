@@ -20,7 +20,7 @@
             </tr>
             <tr>
                 <th>Address</th>
-                <td>{{ location.address | prettyprint }}</td>
+                <td>{{ cc_addressing.compose(location, 'html') | raw }}</td>
             </tr>
         </tbody>
     </table>

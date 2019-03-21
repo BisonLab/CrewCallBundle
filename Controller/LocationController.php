@@ -39,7 +39,9 @@ class LocationController extends CommonController
     public function newAction(Request $request)
     {
         $location = new Location();
-        $form = $this->createForm('CrewCallBundle\Form\LocationType', $location);
+        $addressing = $this->container->get('crewcall.addressing');
+        $address_elements = $addressing->getFormElementList($location);
+        $form = $this->createForm('CrewCallBundle\Form\LocationType', $location, ['address_elements' => $address_elements]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -63,10 +65,8 @@ class LocationController extends CommonController
      */
     public function showAction(Location $location)
     {
+        $addressing = $this->container->get('crewcall.addressing');
         $deleteForm = $this->createDeleteForm($location);
-
-dump($location->getAddress());
-dump($location->getAddress()->getPostalCode());
         return $this->render('location/show.html.twig', array(
             'location' => $location,
             'delete_form' => $deleteForm->createView(),
@@ -81,7 +81,9 @@ dump($location->getAddress()->getPostalCode());
     public function editAction(Request $request, Location $location)
     {
         $deleteForm = $this->createDeleteForm($location);
-        $editForm = $this->createForm('CrewCallBundle\Form\LocationType', $location);
+        $addressing = $this->container->get('crewcall.addressing');
+        $address_elements = $addressing->getFormElementList($location);
+        $editForm = $this->createForm('CrewCallBundle\Form\LocationType', $location, ['address_elements' => $address_elements]);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {

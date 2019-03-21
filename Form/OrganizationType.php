@@ -26,8 +26,8 @@ class OrganizationType extends AbstractType
             ->add('state', ChoiceType::class, array(
               'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Organization')))
             // ->add('attributes')
-            ->add('visit_address', AddressType::class)
-            ->add('postal_address', AddressType::class)
+            ->add('visit_address', AddressType::class, ['address_elements' => $options['address_elements']])
+            ->add('postal_address', AddressType::class, ['address_elements' => $options['address_elements']])
            ;
     }
     
@@ -37,7 +37,8 @@ class OrganizationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CrewCallBundle\Entity\Organization'
+            'data_class' => 'CrewCallBundle\Entity\Organization',
+            'address_elements' => []
         ));
     }
 

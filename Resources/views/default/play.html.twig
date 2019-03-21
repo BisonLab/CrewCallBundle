@@ -6,6 +6,7 @@
 <a href="#" onClick="return grabMeProfile();"><button>Profile</button> </a>
 <a href="#" onClick="return grabMeJobs();"><button>Jobslist</button> </a>
 <a href="#" onClick="return grabJobLog();"><button>Job logs</button> </a>
+<a href="#" onClick="return grabFileslist();"><button>Files</button> </a>
 <a href="#" onClick="return hitMe();"><button>Log to console</button> </a>
 <pre id="playpart">
 </pre>
@@ -113,6 +114,25 @@ function grabMeProfile() {
 
 function grabJobLog() {
     url = "{{ path('uf_me_joblog')}}";
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "GET",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            $("#playpart").html(JSON.stringify(cont, undefined, 2));
+      }).fail(function(xhr, status, error) {
+            errmsg = "Blaeh\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function grabFileslist() {
+    url = "{{ path('uf_me_files')}}";
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");

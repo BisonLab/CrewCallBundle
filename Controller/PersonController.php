@@ -114,7 +114,9 @@ class PersonController extends CommonController
     public function newAction(Request $request)
     {
         $person = new Person();
-        $form = $this->createForm('CrewCallBundle\Form\PersonType', $person);
+        $addressing = $this->container->get('crewcall.addressing');
+        $address_elements = $addressing->getFormElementList($person);
+        $form = $this->createForm('CrewCallBundle\Form\PersonType', $person, ['address_elements' => $address_elements]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -181,8 +183,11 @@ class PersonController extends CommonController
     public function editAction(Request $request, Person $person)
     {
         $deleteForm = $this->createDeleteForm($person);
-        $editForm = $this->createForm('CrewCallBundle\Form\PersonType', $person);
+        $addressing = $this->container->get('crewcall.addressing');
+        $address_elements = $addressing->getFormElementList($person);
+        $editForm = $this->createForm('CrewCallBundle\Form\PersonType', $person, ['address_elements' => $address_elements]);
         $editForm->remove('plainPassword');
+        // $addressing->addToForm($editForm, $person);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {

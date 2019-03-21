@@ -5,6 +5,7 @@ namespace CrewCallBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 use CrewCallBundle\Entity\EmbeddableAddress;
 
@@ -15,6 +16,11 @@ class AddressType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        foreach($options['address_elements'] as $elem) {
+            // If it guesses, addresslines wil be texareas and that I will not
+            $builder->add($elem, TextType::class, ['required'=>false]);
+        }
+/*
         $builder
             ->add('countryCode')
             ->add('addressLine1')
@@ -27,6 +33,7 @@ class AddressType extends AbstractType
             ->add('administrativeArea')
             ->add('locale')
             ;
+*/
     }
     
     /**
@@ -35,7 +42,8 @@ class AddressType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => EmbeddableAddress::class
+            'data_class' => EmbeddableAddress::class,
+            'address_elements' => []
         ));
     }
 }

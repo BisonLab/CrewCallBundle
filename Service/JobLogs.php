@@ -45,13 +45,19 @@ class JobLogs
         $first_of_year      = new \DateTime(date('Y-01-01'));
         $first_of_last_year = new \DateTime(date('Y-01-01'));
         $first_of_last_year->modify('-1 year');
-        $joblogs = array();
+        $joblogs = [];
+        $joblog_array = [];
         foreach ($person->getJobs() as $job) {
             foreach ($job->getJobLogs() as $jl) {
                 // TODO: Check state. I guess "COMPLETED" is the one to use.
                 $joblogs[] = $jl;
                 $in  = $jl->getIn();
                 $out = $jl->getOut();
+                $joblog_array[] = [
+                    'in' => $in->format("Y-m-d H:i"),
+                    'out' => $out->format("Y-m-d H:i"),
+                    'job' => (string)$jl->getShift()
+                ];
                 // DateTime interval does NOT work. Stupidly enough.
                 $minutes = ($out->getTimeStamp() - $in->getTimeStamp()) / 60;
                 $summary['total'] += $minutes;
@@ -79,7 +85,11 @@ class JobLogs
         $summary['year_hours']      = $this->mToHm($summary['year']);
         $summary['last_year_hours'] = $this->mToHm($summary['last_year']);
         $summary['total_hours']     = $this->mToHm($summary['total']);
-        return array('joblogs' => $joblogs, 'summary' => $summary);
+        return [
+            'joblog_array' => $joblog_array,
+            'joblogs' => $joblogs,
+            'summary' => $summary
+            ];
     }
     
     private function mToHm($minutes)

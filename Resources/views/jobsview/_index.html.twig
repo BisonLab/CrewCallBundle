@@ -7,6 +7,7 @@
             <th class="jwEvent">Event</th>
             <th class="jwFunction">Function</th>
             <th class="jwState">State</th>
+            <th class="jwComments">Comments</th>
             <th class="jwMove">Move</th>
             <th class="jwHours">Hours</th>
             <th class="jwSelect">Select</th>
@@ -49,6 +50,19 @@
             <td class="jwState">
                 {{ job.state }} {% if job.statechanged %}{{ job.statechanged | date('Y-m-d H:i') }}{% endif %}
             </td>
+            <td class="jwComments">
+{% set jobcontext = {
+            'message_types': ['JobComment', 'InformCheck'],
+            'order': 'DESC',
+            'system': 'crewcall',
+            'object_name': 'job',
+            'external_id': job.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(jobcontext) %}
+    {{ note.body }}<br>
+{% endfor %}
+            </td>
             <td class="jwMove">
 <select class="move_job_to" name="{{job.id}}">
 <option value="">{{ job.shift }} {{ job.start | date("H:i") }}</option>
@@ -87,6 +101,9 @@
             <td class="jwState">
                 {{ so.state }}<br>{{ so.amount }} people.
             </td>
+            <td class="jwComments">
+            &nbsp;
+            </td>
             <td class="jwMove">
             &nbsp;
             </td>
@@ -107,6 +124,7 @@
             <td class="jwEvent">&nbsp;</td>
             <td class="jwFunction">{% for function, count in count_by_function %}{{ function }}: {{ count }}<br>{% endfor %}</td>
             <td class="jwState">{% for state, count in count_by_state %}{{ state }}: {{ count }}<br>{% endfor %}</td>
+            <td class="jwComments">&nbsp;</td>
             <td class="jwMove">&nbsp;</td>
             <td class="jwHours">&nbsp;</td>
             <td class="jwSelect"><span id="jobs_selected_count">Selected: 0</span></td>

@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
@@ -90,6 +91,7 @@ class UserFrontController extends CommonController
     {
         $user = $this->getUser();
         $sakonnin_files = $this->container->get('sakonnin.files');
+        $addressing = $this->container->get('crewcall.addressing');
         $pfiles = $sakonnin_files->getFilesForContext([
                 'file_tyle' => 'ProfilePicture',
                 'system' => 'crewcall',
@@ -99,8 +101,8 @@ class UserFrontController extends CommonController
         $profile_picture_url = null;
         if (count($pfiles) > 0) {
             $router = $this->container->get('router');
-            $profile_picture_url = $router->generate('file_thumbnail', [
-                'id' => $pfiles[0]->getId(), 'x' => 200, 'y' => 200]);
+            $profile_picture_url = $router->generate('uf_file', [
+                'id' => $pfiles[0]->getFileId(), 'x' => 200, 'y' => 200]);
         }
 
         $retarr = [
@@ -115,17 +117,12 @@ class UserFrontController extends CommonController
             'functions' => [],
         ];
         if ($address = $user->getAddress()) {
-            $retarr['address'] = [
-                'address_line_1' => $address->getAddressLine1(),
-                'address_line_2' => $address->getAddressLine2(),
-                'postal_code'    => $address->getPostalCode(),
-                'postal_name'    => $address->getPostalName(),
-                'country_code'   => $address->getCountryCode()
-            ];
+            $retarr['address'] = $addressing->compose($address);
+            $retarr['address_flat'] = $addressing->compose($address, 'flat');
         }
         foreach ($user->getStates() as $ps) {
             if ($ps->getState() == "ACTIVE") continue;
-            $retarr['absense'][] = [
+            $retarr['absence'][] = [
                 'reason' => ucfirst(strtolower($ps->getState())),
                 'state' => $ps->getState(),
                 'from_date' => $ps->getFromDate()->format('Y-m-d'),
@@ -349,29 +346,6 @@ error_log(print_r($json_data, true));
             return new JsonResponse(["ERRROR" => "No luck"], Response::HTTP_FORBIDDEN);
         }
 
-        if (!$comment = $request->request->get('comment')) {
-            $comment = $json_data['comment'] ?? null;
-        }
-
-        if ($comment) {
-error_log("Comment . " . $comment);
-            $sm = $this->get('sakonnin.messages');
-
-            $message_context = [
-                'system' => 'dabaru',
-                'object_name' => 'job',
-                'external_id' => $external_id,
-            ];
-
-            $sm->postMessage(array(
-                'body' => $comment,
-                'message_type' => 'JobComment',
-                'to_type' => "NONE",
-                'from_type' => "NONE",
-            ), $message_context);
-
-        }
-
         $user = $this->getUser();
         $job = new Job();
         $job->setShift($shift);
@@ -380,6 +354,51 @@ error_log("Comment . " . $comment);
         $em = $this->getDoctrine()->getManager();
         $em->persist($job);
         $em->flush($job);
+
+        if (!$comment = $request->request->get('comment')) {
+            $comment = $json_data['comment'] ?? null;
+        }
+        if ($comment) {
+            $sm = $this->get('sakonnin.messages');
+
+            $message_context = [
+                'system' => 'crewcall',
+                'object_name' => 'job',
+                'external_id' => $job->getId(),
+            ];
+
+error_log("Adding comment");
+            $sm->postMessage(array(
+                'body' => $comment,
+                'message_type' => 'JobComment',
+                'to_type' => "NONE",
+                'from_type' => "NONE",
+            ), $message_context);
+        }
+        if (!$checks = $request->request->get('checks')) {
+            $checks = $json_data['checks'] ?? array();
+        }
+        foreach ($checks as $check_data) {
+            $sm = $this->get('sakonnin.messages');
+            $shift_check = $sm->getMessages([
+                'id' => $check_data['id']
+                ]);
+
+            $message_context = [
+                'system' => 'crewcall',
+                'object_name' => 'job',
+                'external_id' => $job->getId(),
+            ];
+error_log("Adding check");
+
+            $sm->postMessage(array(
+                'message_type' => $shift_check->getMessageType()->getName(),
+                'body' => $shift_check->getBody(),
+                'state' => "CHECKED",
+                'to_type' => "NONE",
+                'from_type' => "NONE",
+            ), $message_context);
+        }
         return new JsonResponse(["OK" => "Well done"], Response::HTTP_OK);
     }
 
@@ -489,10 +508,72 @@ error_log("Deleting " . (string)$job);
         $logs = $handler->getJobLogsForPerson($person, $options);
 
         return new JsonResponse([
-                'joblogs' => $logs['joblogs'],
+                'jobslog' => $logs['joblog_array'],
                 'summary' => $logs['summary'],
             ], Response::HTTP_OK);
     }
+
+    /**
+     * Profilepicture
+     *
+     * @Route("/{id}/file", name="uf_file", methods={"GET"})
+     */
+    public function fileAction(Request $request, $id)
+    {
+        $sf = $this->container->get('sakonnin.files');
+        $sfile = $sf->getFiles(['fileid' => $id]);
+        if (!$sfile)
+            return new JsonResponse([
+                'ERROR'=> 'Not found'], Response::HTTP_NOT_FOUND);
+
+        if ($sfile->getThumbnailable() && $x = $request->get('y')) {
+            $y = $request->get('x') ?: $y;
+            // TODO: Add access control.
+            // Gotta get the thumbnail then.
+            $thumbfile = $sf->getThumbnailFilename($sfile, $x, $y);
+            $response = new BinaryFileResponse($thumbfile);
+        } else {
+            $filename = $sf->getStoredFileName($sfile);
+            $response = new BinaryFileResponse($filename);
+        }
+        return $response;
+    }
+
+    /**
+     * Everything, and maybe more.
+     *
+     * @Route("/me_files", name="uf_me_files", methods={"GET"})
+     */
+    public function meFiles(Request $request)
+    {
+        $user = $this->getUser();
+        $sakonnin_files = $this->container->get('sakonnin.files');
+        $addressing = $this->container->get('crewcall.addressing');
+        $sfiles = $sakonnin_files->getFilesForContext([
+                'system' => 'crewcall',
+                'object_name' => 'person',
+                'external_id' => $user->getId()
+            ]);
+        $fileslist = [];
+        foreach($sfiles as $sfile) {
+            $f = [];
+            $router = $this->container->get('router');
+            $f['url'] = $router->generate('uf_file', [
+                'id' => $sfile->getFileId()]);
+            $f['name'] = $sfile->getName();
+            $f['file_type'] = $sfile->getFileType();
+            $f['description'] = $sfile->getDescription() ?: "None";
+            $fileslist[] = $f;
+        }
+        return new JsonResponse([
+                'files' => $fileslist,
+            ], Response::HTTP_OK);
+    }
+
+
+    /**
+     * Helpers
+     */
 
     public function jobsForPersonAsArray(Person $person, $options = array())
     {
@@ -673,13 +754,9 @@ error_log("Deleting " . (string)$job);
                 'confirm_notes' => $confirm_notes
             ];
             if ($address = $location->getAddress()) {
-                $eventarr['location']['address'] = [
-                    'address_line_1' => $address->getAddressLine1(),
-                    'address_line_2' => $address->getAddressLine2(),
-                    'postal_code'    => $address->getPostalCode(),
-                    'postal_name'    => $address->getPostalName(),
-                    'country_code'   => $address->getCountryCode()
-                ];
+                $addressing = $this->container->get('crewcall.addressing');
+                $eventarr['location']['address'] = $addressing->compose($address);
+                $eventarr['location']['address_flat'] = $addressing->compose($address, 'flat');
             }
             foreach ($contacts as $contact) {
                 $eventarr['contacts'][] = [

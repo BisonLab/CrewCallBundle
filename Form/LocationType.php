@@ -18,7 +18,7 @@ class LocationType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
-            ->add('address', AddressType::class)
+            ->add('address', AddressType::class, ['address_elements' => $options['address_elements']])
             ->add('parent')
         ;
     }
@@ -29,7 +29,8 @@ class LocationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CrewCallBundle\Entity\Location'
+            'data_class' => 'CrewCallBundle\Entity\Location',
+            'address_elements' => []
         ));
     }
 
