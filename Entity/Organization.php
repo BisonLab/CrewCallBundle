@@ -115,6 +115,7 @@ class Organization
     {
         $this->person_function_organizations = new ArrayCollection();
         $this->contexts = new ArrayCollection();
+        $this->events = new ArrayCollection();
         $this->visit_address = new EmbeddableAddress();
         $this->postal_address = new EmbeddableAddress();
     }
@@ -351,6 +352,16 @@ class Organization
         foreach ($this->getPersonFunctionOrganizations() as $pfo) {
             $persons += $pfo->getPersons();
         } 
+    }
+
+    /**
+     * Get events
+     *
+     * @return objects 
+     */
+    public function getEvents()
+    {
+        return $this->events;
     }
 
     /**

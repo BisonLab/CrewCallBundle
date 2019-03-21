@@ -2,7 +2,7 @@
 
 {% block body %}
 {% include 'CrewCallBundle:organization:handling.html.twig' %}
-<div class="col-sm-5" id="orgLeft">
+<div class="col-sm-3" id="orgLeft">
     <h1>{{ organization.name }}</h1>
 
     <table class="showTable">
@@ -63,17 +63,18 @@
     </ul>
 </div>
 
-<div class="col-sm-7" id="eventRight">
+<div class="col-sm-9" id="eventRight">
   <ul class="nav nav-tabs">
-{#
+
   <li class="active">
-  <a href="#shiftstab" data-toggle="tab">Shifts</a>
+  <a href="#eventstab" data-toggle="tab">Events</a>
   </li>
+{#
   <li>
   <a href="#caltab" data-toggle="tab">Calendar</a>
   </li>
 #}
-  <li class="active">
+  <li>
   <a href="#peopletab" data-toggle="tab">People</a>
   </li>
   <li>
@@ -86,6 +87,12 @@
 
   <div class="tab-content ">
     <div class="tab-pane active" id="peopletab">
+    {% include 'CrewCallBundle:event:_index.html.twig' with { 'events': organization.events, 'past': true } %}
+    </div
+ </div
+
+  <div class="tab-content ">
+    <div class="tab-pane" id="peopletab">
 
 <table id="apTable" class="table  table-sm">
     <thead>

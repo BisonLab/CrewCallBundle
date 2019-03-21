@@ -99,7 +99,7 @@ function openStateChange() {
 {{ form(state_form) }}
 </div>
 
-<div class="col-sm-4" id="personLeft">
+<div class="col-sm-3" id="personLeft">
     {% set ppcontext = {
                 'file_type': 'ProfilePicture',
                 'system': 'crewcall',
@@ -242,7 +242,7 @@ function openStateChange() {
         </tbody>
     </table>
 </div>
-<div class="col-sm-8" id="personRight">
+<div class="col-sm-9" id="personRight">
 
 <div id="rightTabMenu">
     <ul class="nav nav-tabs">
@@ -348,24 +348,6 @@ function openStateChange() {
   <div class="tab-pane" id="notestab">
     <p>
     {% set mconf = {'mconfig': {
-            'formname': 'adminpersonmessage',
-            'reload_after_post': true,
-            'subject': "",
-            'to_type': "NONE",
-            'from_type': "NONE",
-            'message_type': 'PersonNote',
-            'submit': 'Save',
-            'context': {
-                'system': 'crewcall',
-                'object_name': 'person',
-                'external_id': person.id
-                }
-            }
-        }
-    %}
-    {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <a href="#" onClick='createMessage("adminpersonmessage");'>Add a note for person</a><br />
-    {% set mconf = {'mconfig': {
             'formname': 'adminpersonnote',
             'reload_after_post': true,
             'subject': "",
@@ -383,26 +365,7 @@ function openStateChange() {
         }
     %}
     {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <a href="#" onClick='createMessage("adminpersonnote");'>Add a note for admins</a><br />
-    {% set mconf = {'mconfig': {
-            'formname': 'importansnote',
-            'reload_after_post': true,
-            'subject': "",
-            'to_type': "NONE",
-            'from_type': "NONE",
-            'expire_field': true,
-            'message_type': 'ImportantNote',
-            'submit': 'Save',
-            'context': {
-                'system': 'crewcall',
-                'object_name': 'person',
-                'external_id': person.id
-                }
-            }
-        }
-    %}
-    {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <a href="#" onClick='createMessage("adminpersonnote");'>Add an <strong>important</strong> note for admins</a><br />
+        <a href="#" onClick='createMessage("adminpersonnote");'>Add a note</a><br />
     </p>
 {% set mlogcontext = {
             'message_group': 'Notes',

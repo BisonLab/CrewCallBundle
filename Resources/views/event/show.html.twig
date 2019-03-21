@@ -11,7 +11,7 @@
 {{ form_end(add_contact_form) }}
 </div>
 
-<div class="col-sm-4" id="eventLeft">
+<div class="col-sm-3" id="eventLeft">
     <h1>{{ event }}</h1>
 
     <div class="dropdown">
@@ -39,10 +39,20 @@
                 <th>Description</th>
                 <td>{{ event.description }}</td>
             </tr>
+{% if event.organization is not null %}
+            <tr>
+                <th>Organization</th>
+                <td>
+                    <a href="{{ path('organization_show', { 'id': event.organization.id }) }}">{{ event.organization.name }}</a>
+                </td>
+            </tr>
+{% endif %}
 {% if event.location is not null %}
             <tr>
                 <th>Location</th>
-                <td>{{ event.location.name }}</td>
+                <td>
+                    <a href="{{ path('organization_show', { 'id': event.location.id }) }}">{{ event.location.name }}</a>
+                </td>
             </tr>
 {% endif %}
             <tr>
@@ -110,7 +120,7 @@
     </table>
 </div>
 
-<div class="col-sm-8" id="eventRight">
+<div class="col-sm-9" id="eventRight">
   <ul class="nav nav-tabs">
   <li class="active">
   <a href="#shiftstab" data-toggle="tab">Shifts</a>
