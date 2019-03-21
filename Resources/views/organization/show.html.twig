@@ -87,7 +87,7 @@
 
   <div class="tab-content ">
     <div class="tab-pane active" id="peopletab">
-    {% include 'CrewCallBundle:event:_index.html.twig' with { 'events': organization.events, 'past': true } %}
+    {% include 'CrewCallBundle:event:_index.html.twig' with { 'events': organization.events('ASC'), 'sorted': true, 'past': true } %}
     </div
  </div
 

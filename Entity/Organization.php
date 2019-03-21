@@ -359,8 +359,22 @@ class Organization
      *
      * @return objects 
      */
-    public function getEvents()
+    public function getEvents($sort_order = null)
     {
+        if ($sort_order == "ASC") {
+            $iterator = $this->events->getIterator();
+            $iterator->uasort(function ($a, $b) {
+                return ($a->getStart()->format("U") < $b->getStart()->format("U")) ? -1 : 1;
+            });
+            return new ArrayCollection(iterator_to_array($iterator));
+        }
+        if ($sort_order == "DESC") {
+            $iterator = $this->events->getIterator();
+            $iterator->uasort(function ($a, $b) {
+                return ($a->getStart()->format("U") > $b->getStart()->format("U")) ? -1 : 1;
+            });
+            return new ArrayCollection(iterator_to_array($iterator));
+        }
         return $this->events;
     }
 

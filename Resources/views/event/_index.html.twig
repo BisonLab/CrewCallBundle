@@ -1,0 +1,65 @@
+{% block body %}
+    
+    {% if sorted is not defined %}
+    <table id="sortable_table" class="table table-striped table-sm">
+    {% else %}
+        <table class="table table-striped table-sm">
+    {% endif %}
+        <thead class="thead-inverse">
+            <tr>
+                <th>When</th>
+                <th>Event</th>
+                <th>Location</th>
+                <th>State</th>
+                <th>Amounts</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if past is not null %}
+            {% set dateformat = 'd M Y H:i' %}
+        {% else %}
+            {% set dateformat = 'd M H:i' %}
+        {% endif %}
+        {% for event in events if event.parent is null %}
+            <tr>
+                <td data-order="{{ event.start | date('U')}}" >
+                    {{ event.start|date(dateformat) }}
+                    {% if event.end %}
+                        <span class="glyphicon glyphicon-arrow-right"></span> 
+                        {%  if event.end | date('Y-m-d') == event.start | date('Y-m-d') %}
+                        {{ event.end|date('H:i') }}
+                        {% else %}
+                            {{ event.end | date(dateformat) }}
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                <a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.mainevent }}</a>
+                </td>
+                <td>{{ event.location }}</td>
+                <td>{{ event.state }}</td>
+                <td>
+                {% set amounts = event.jobsamountbystate %}
+                <span class="ccAmount ccNeeded">{{ event.totalamountneeded }}</span>
+                <span class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
+                <span class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
+                <span class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
+                </td>
+                <td>
+                <div class="dropdown">
+                  <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
+                  <span></span>
+                  </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                <li><a href="{{ path('event_show', { 'id': event.id }) }}">show</a></li>
+                <li><a href="{{ path('event_edit', { 'id': event.id }) }}">edit</a></li>
+                </ul>
+                </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
