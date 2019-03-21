@@ -93,7 +93,7 @@ class UserFrontController extends CommonController
         $sakonnin_files = $this->container->get('sakonnin.files');
         $addressing = $this->container->get('crewcall.addressing');
         $pfiles = $sakonnin_files->getFilesForContext([
-                'file_tyle' => 'ProfilePicture',
+                'file_type' => 'ProfilePicture',
                 'system' => 'crewcall',
                 'object_name' => 'person',
                 'external_id' => $user->getId()

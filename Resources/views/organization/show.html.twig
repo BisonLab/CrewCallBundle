@@ -156,6 +156,7 @@
 
     <div class="tab-pane" id="filestab">
         {% set sfconf = {'sfconfig': {
+                'file_type': "DOCUMENT",
                 'context': {
                     'system': 'crewcall',
                     'object_name': 'organization',
@@ -166,12 +167,12 @@
         %}
         {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
         <p><br>
-          <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
+          <a href="#" onClick="uploadFile(); return false;">Add a file</a><br />
         </p>
         {% set filecontext = {
-                    'system': 'crewcall',
-                    'object_name': 'organization',
-                    'external_id': organization.id
+                'system': 'crewcall',
+                'object_name': 'organization',
+                'external_id': organization.id
             }
         %}
         {% include 'CrewCallBundle::_files.html.twig' with filecontext %}

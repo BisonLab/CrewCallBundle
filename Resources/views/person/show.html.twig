@@ -101,16 +101,30 @@ function openStateChange() {
 
 <div class="col-sm-4" id="personLeft">
     {% set ppcontext = {
-                'file_tyle': 'ProfilePicture',
+                'file_type': 'ProfilePicture',
                 'system': 'crewcall',
                 'object_name': 'person',
                 'external_id': person.id
         }
     %}
 {% set profile_pictures = sakonnin_files.getFilesForContext(ppcontext) %}
-{% if profile_pictures.0 is defined %}
+{% if profile_pictures | length > 0 %}
 {% set pfile = profile_pictures.0 %}
-<img id="img_{{pfile.id}}" data-zoom-image="{{ path('file_view', { 'id': pfile.id }) }}" src="{{ path('file_thumbnail', { 'id': pfile.fileid, 'x': 100, 'y': 100 }) }}">
+<img id="img_{{pfile.id}}" src="{{ path('file_thumbnail', { 'id': pfile.fileid, 'x': 100, 'y': 100 }) }}">
+{% else %}
+    {% set sfconf = {'sfconfig': {
+            'file_type': "ProfilePicture",
+            'description': "ProfilePicture",
+            'context': {
+                'system': 'crewcall',
+                'object_name': 'person',
+                'external_id': person.id
+                }
+            }
+        }
+    %}
+    {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
+          <a href="#" onClick="uploadFile(); return false;">Add profile picture</a><br />
 {% endif %}
     <h1>{{ person.fullname }}</h1>
     <table class="showTable">
@@ -415,6 +429,7 @@ function openStateChange() {
     <p>
     <br/>
     {% set sfconf = {'sfconfig': {
+            'file_type': "DOCUMENT",
             'context': {
                 'system': 'crewcall',
                 'object_name': 'person',
@@ -424,14 +439,13 @@ function openStateChange() {
         }
     %}
     {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-          <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
+          <a href="#" onClick="uploadFile(); return false;">Add a file</a><br />
         </p>
     {% set filecontext = {
-                'system': 'crewcall',
-                'object_name': 'person',
-                'external_id': person.id
-        }
-    %}
+        'system': 'crewcall',
+        'object_name': 'person',
+        'external_id': person.id
+      } %}
     {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
   </div>
   <div class="tab-pane" id="functab">

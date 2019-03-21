@@ -89,6 +89,7 @@
 
   <div class="tab-pane" id="filestab">
     {% set sfconf = {'sfconfig': {
+            'file_type': "DOCUMENT",
             'context': {
                 'system': 'crewcall',
                 'object_name': 'location',
@@ -103,9 +104,9 @@
       <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
     </p>
     {% set filecontext = {
-                'system': 'crewcall',
-                'object_name': 'location',
-                'external_id': location.id
+        'system': 'crewcall',
+        'object_name': 'location',
+        'external_id': location.id
         }
     %}
     {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
