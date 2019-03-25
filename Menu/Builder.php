@@ -34,9 +34,6 @@ class Builder implements ContainerAwareInterface
         $menu = $factory->createItem('root');
 
         $menu->addChild('Dashboard', array('route' => 'homepage'));
-        $menu->addChild('My Jobs', array('route' => 'user_me'));
-        $menu->addChild('My Calendar', array('route' => 'user_me_calendar'));
-
         if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             $eventsmenu = $menu->addChild('Events');
             $eventsmenu->addChild('List', array('route' => 'event_index'));
@@ -44,19 +41,9 @@ class Builder implements ContainerAwareInterface
             $eventsmenu->addChild('Add new event', array('route' => 'event_new'));
             $eventsmenu->addChild('Calendar', array('route' => 'event_calendar'));
 
-            $peoplemenu = $menu->addChild('People');
-            $em = $this->container->get('doctrine')->getManager();
-            $peoplemenu->addChild('All', array('route' => 'person_index'));
-            foreach (ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType') as $ftname => $ftarr) {
-                // Spot the ugliness.
-                $peoplemenu->addChild($ftarr['label'] . "s",
-                    array('route' => 'person_function_type',
-                    'routeParameters' => array('function_type' => $ftname)));
-            }
-            if ($this->container->getParameter('allow_registration')) {
-                $peoplemenu->addChild('Applicants', array('route' => 'person_applicants'));
-            }
-            $peoplemenu->addChild('Add person', array('route' => 'person_new'));
+            $crewmenu = $menu->addChild("Crew",
+                array('route' => 'person_function_type',
+                'routeParameters' => array('function_type' => "CREW")));
             $menu->addChild('Organizations', array('route' => 'organization_index'));
             $menu->addChild('Locations', array('route' => 'location_index'));
 
@@ -65,15 +52,31 @@ class Builder implements ContainerAwareInterface
             $adminmenu->addChild('Report generator', array('route' => 'reports'));
             $adminmenu->addChild('Mail and SMS templates',
                 array('route' => 'sakonnintemplate_index'));
+/*
+ * Not any more, for now. Replaced with a Todo dashie
             $sakonnin = $this->container->get('sakonnin.messages');
             $amt = $sakonnin->getMessageType('Announcements');
             $adminmenu->addChild('Announcements',
                 array('route' => 'message_messagetype',
                 'routeParameters' => array('id' => $amt->getId())));
+*/
             $adminmenu->addChild('Message Types',
                 array('route' => 'messagetype'));
             $adminmenu->addChild('Playfront', array('route' => 'frontplay'));
             $adminmenu->addChild('Mobilefront', array('uri' => '/public/userfront/'));
+                $peoplemenu = $adminmenu->addChild('People');
+                $em = $this->container->get('doctrine')->getManager();
+                $peoplemenu->addChild('All', array('route' => 'person_index'));
+                foreach (ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType') as $ftname => $ftarr) {
+                    // Spot the ugliness.
+                    $peoplemenu->addChild($ftarr['label'] . "s",
+                        array('route' => 'person_function_type',
+                        'routeParameters' => array('function_type' => $ftname)));
+                }
+                if ($this->container->getParameter('allow_registration')) {
+                    $peoplemenu->addChild('Applicants', array('route' => 'person_applicants'));
+                }
+                $peoplemenu->addChild('Add person', array('route' => 'person_new'));
             $menu->addChild('Jobs view', array('route' => 'jobsview_index'));
         }
         $options['menu']      = $menu;
@@ -95,14 +98,22 @@ class Builder implements ContainerAwareInterface
         $options['menu']      = $menu;
         $options['container'] = $this->container;
 
+
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $username = $user->getUserName();
+
         $menu = $this->common_builder->userMenu($factory, $options);
+        $usermenu = $menu[$username];
+        $usermenu->addChild('My Jobs', array('route' => 'user_me'));
+        $usermenu->addChild('My Calendar', array('route' => 'user_me_calendar'));
+
         if ($this->container->getParameter('enable_personal_messaging')) {
-            $menu = $this->sakonnin_builder->messageMenu($factory, $options);
+            $usermenu = $this->sakonnin_builder->messageMenu($factory, $options);
             if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-                $pmmenu = $menu['Messages']->addChild('Write PM and send SMS', array('uri' => '#'));
+                $pmmenu = $usermenu['Messages']->addChild('Write PM and send SMS', array('uri' => '#'));
                 $pmmenu->setLinkAttribute('onclick', 'createPmMessage("PMSMS")');
             } else {
-                $menu['Messages']->removeChild('Message History');
+                $usermenu['Messages']->removeChild('Message History');
             }
         }
 

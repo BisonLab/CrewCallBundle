@@ -888,6 +888,20 @@ class Person extends BaseUser
         $this->contexts->removeElement($contexts);
     }
 
+    /**
+     * Overrding roles. Need only one role at a time.
+     */
+    public function setSystemRole($systemRole)
+    {
+        $this->setRoles([$systemRole]);
+        return $this;
+    }
+
+    public function getSystemRole()
+    {
+        return current($this->getRoles());
+    }
+
     public function __toString()
     {
         return $this->getFullName();

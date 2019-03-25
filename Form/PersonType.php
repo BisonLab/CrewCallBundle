@@ -29,16 +29,11 @@ class PersonType extends AbstractType
             ->add('mobile_phone_number')
             ->add('home_phone_number')
             ->add('state', ChoiceType::class, array('choices' => ExternalEntityConfig::getStatesAsChoicesFor('Person')))
-            ->add('roles', ChoiceType::class,
+            ->add('system_role', ChoiceType::class,
                 array(
                     'expanded'  => true,
-                    'multiple' =>  true,
-                    'choices' =>
-                        array(
-                            'Person (Can not log in)' => 'ROLE_PERSON',
-                            'Ordinary user' => 'ROLE_USER',
-                            'Admin' => 'ROLE_ADMIN'
-                            ),
+                    'multiple' =>  false,
+                    'choices' => ExternalEntityConfig::getSystemRolesAsChoices(),
                     'preferred_choices' => 'ROLE_USER'
                 )
             )

@@ -12,9 +12,13 @@ namespace CrewCallBundle\Lib;
 
 class ExternalEntityConfig
 {
-    protected static $states = array();
-    protected static $types = array();
+    protected static $states       = [];
+    protected static $types        = [];
+    protected static $system_roles = [];
 
+    /*
+     * Types:
+     */
     public static function setTypesConfig($types)
     {
         self::$types = $types;
@@ -25,6 +29,49 @@ class ExternalEntityConfig
         return self::$types;
     }
 
+    public static function getTypesFor($thingie, $type)
+    {
+        if (!isset(self::$types[$thingie])) return array();
+        return isset(self::$types[$thingie][$type]) ? self::$types[$thingie][$type] : array();
+    }
+
+    public static function getTypesAsChoicesFor($thingie, $type)
+    {
+        $types = self::getTypesFor($thingie, $type);
+        $choices = array();
+        foreach ($types as $type => $params) {
+            if (!$params['chooseable']) continue;
+            $choices[$params['label']] = $type;
+        }
+        return $choices;
+    }
+
+    /*
+     * System roles:
+     */
+    public static function setSystemRoles($system_roles)
+    {
+        self::$system_roles = $system_roles;
+    }
+
+    public static function getSystemRoles()
+    {
+        return self::$system_roles;
+    }
+
+    public static function getSystemRolesAsChoices()
+    {
+        $choices = array();
+        foreach (self::$system_roles as $system_role => $params) {
+            if (!$params['chooseable']) continue;
+            $choices[$params['label']] = $system_role;
+        }
+        return $choices;
+    }
+
+    /*
+     * States:
+     */
     public static function setStatesConfig($states)
     {
         self::$states = $states;
@@ -69,22 +116,5 @@ class ExternalEntityConfig
     {
         $states = self::getStatesFor($thingie);
         return array_combine(array_keys($states), array_keys($states));
-    }
-
-    public static function getTypesFor($thingie, $type)
-    {
-        if (!isset(self::$types[$thingie])) return array();
-        return isset(self::$types[$thingie][$type]) ? self::$types[$thingie][$type] : array();
-    }
-
-    public static function getTypesAsChoicesFor($thingie, $type)
-    {
-        $types = self::getTypesFor($thingie, $type);
-        $choices = array();
-        foreach ($types as $type => $params) {
-            if (!$params['chooseable']) continue;
-            $choices[$params['label']] = $type;
-        }
-        return $choices;
     }
 }

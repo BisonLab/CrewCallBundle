@@ -16,6 +16,7 @@ class CrewCallBundle extends Bundle
     {
         ExternalEntityConfig::setStatesConfig($this->container->getParameter('app.states')[(string)$this]);
         ExternalEntityConfig::setTypesConfig($this->container->getParameter('app.types')[(string)$this]);
+        ExternalEntityConfig::setSystemRoles($this->container->getParameter('crewcall.system_roles'));
     }
 
     /* Concept pulled from KnpMenuBundle */
