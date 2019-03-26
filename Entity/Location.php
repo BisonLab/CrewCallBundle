@@ -59,6 +59,14 @@ class Location
     private $state = "OPEN";
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="phone_number", type="string", length=20, nullable=true)
+     * @Gedmo\Versioned
+     */
+    private $phone_number;
+
+    /**
      * @ORM\Embedded(class="EmbeddableAddress")
      */
     private $address;
@@ -162,6 +170,29 @@ class Location
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set phone_number
+     *
+     * @param string $phone_number
+     * @return Location
+     */
+    public function setPhoneNumber($phone_number)
+    {
+        $this->phone_number = $phone_number;
+
+        return $this;
+    }
+
+    /**
+     * Get phone_number
+     *
+     * @return string 
+     */
+    public function getPhoneNumber()
+    {
+        return $this->phone_number;
     }
 
     /**
