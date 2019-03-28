@@ -52,14 +52,18 @@ class Builder implements ContainerAwareInterface
             $adminmenu->addChild('Report generator', array('route' => 'reports'));
             $adminmenu->addChild('Mail and SMS templates',
                 array('route' => 'sakonnintemplate_index'));
-/*
- * Not any more, for now. Replaced with a Todo dashie
+
             $sakonnin = $this->container->get('sakonnin.messages');
-            $amt = $sakonnin->getMessageType('Announcements');
-            $adminmenu->addChild('Announcements',
-                array('route' => 'message_messagetype',
-                'routeParameters' => array('id' => $amt->getId())));
-*/
+            // Do we have a message for the front page?
+            $anns = $sakonnin->getMessageType('Front page not logged in');
+
+            if (count($anns->getMessages()) > 0) {
+                $fpm = $anns->getMessages()[0];
+                $adminmenu->addChild('Edit front page message',
+                    array('route' => 'message_edit',
+                    'routeParameters' => array('id' => $fpm->getId())));
+            }
+
             $adminmenu->addChild('Message Types',
                 array('route' => 'messagetype'));
             $adminmenu->addChild('Playfront', array('route' => 'frontplay'));
