@@ -55,13 +55,17 @@ class Builder implements ContainerAwareInterface
 
             $sakonnin = $this->container->get('sakonnin.messages');
             // Do we have a message for the front page?
-            $anns = $sakonnin->getMessageType('Front page not logged in');
+            $fpnl_type = $sakonnin->getMessageType('Front page not logged in');
 
-            if (count($anns->getMessages()) > 0) {
-                $fpm = $anns->getMessages()[0];
+            if (count($fpnl_type->getMessages()) > 0) {
+                $fpm = $fpnl_type->getMessages()[0];
                 $adminmenu->addChild('Edit front page message',
                     array('route' => 'message_edit',
                     'routeParameters' => array('id' => $fpm->getId())));
+            } else {
+                $admin->addChild('Add front page message (not logged in)',
+                    array('route' => 'message_new',
+                    'routeParameters' => array('message_type' => $fpnl_type)));
             }
 
             $adminmenu->addChild('Message Types',
