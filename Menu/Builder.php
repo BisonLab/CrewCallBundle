@@ -63,7 +63,7 @@ class Builder implements ContainerAwareInterface
                     array('route' => 'message_edit',
                     'routeParameters' => array('id' => $fpm->getId())));
             } else {
-                $admin->addChild('Add front page message (not logged in)',
+                $adminmenu->addChild('Add front page message (not logged in)',
                     array('route' => 'message_new',
                     'routeParameters' => array('message_type' => $fpnl_type)));
             }
