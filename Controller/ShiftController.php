@@ -3,6 +3,7 @@
 namespace CrewCallBundle\Controller;
 
 use CrewCallBundle\Entity\Shift;
+use CrewCallBundle\Entity\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,41 +20,43 @@ use CrewCallBundle\Lib\ExternalEntityConfig;
 class ShiftController extends CommonController
 {
     /**
-     * Lists all shift entities.
+     * Lists all shift entities in an event.
      *
      * @Route("/", name="shift_index", methods={"GET"})
      */
     public function indexAction(Request $request, $access)
     {
         $em = $this->getDoctrine()->getManager();
-        $shifts = array();
+
         // If this has a event set here, it's not an invalid create attempt.
         if ($event_id = $request->get('event')) {
-            $em = $this->getDoctrine()->getManager();
-            if ($event = $em->getRepository('CrewCallBundle:Event')->find($event_id)) {
-                $shifts = $event->getAllShifts();
-            }
-        } else {
-            // To be honest,I don't think having this at all is a good idea :=)
-            // Who wants a list of absolutely all shifts? Gotta filter on 
-            // something somehow. Some day.
-            $shifts = $em->getRepository('CrewCallBundle:Shift')
-                ->findAll(array('start' => 'ASC'));
+            $event = $em->getRepository('CrewCallBundle:Event')->find($event_id);
         }
-        // Again, ajax-centric. But maybe return json later.
+        if (!$event)
+            return $this->returnNotFound($request, "No event");
+
+        $events = [$event];
+        if (count($event->getChildren()) > 0)
+            $events = array_merge($events, $event->getChildren()->toArray());
+
+        // This looks very very weird, but is a relic from how I listed shifts
+        // before and the feature it provides (Which is to make "Add shift"
+        // usee the times from the lat shift in the list) should be remained.
+        // TODO is to do this in a smarter fashion. (And for every event/child
+        $last_shift = end($events)->getShifts()->last();
+
+        // Again, ajax/html-centric. But maybe return json later.
         if ($this->isRest($access)) {
             return $this->render('shift/_index.html.twig', array(
                 'statechoices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift'),
-                'event' => $event,
-                'last_shift' => $shifts->last(),
-                'shifts' => $shifts
+                'events' => $events,
+                'last_shift' => $last_shift,
             ));
         }
         return $this->render('shift/index.html.twig', array(
            'statechoices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift'),
-            'event' => $event,
-            'last_shift' => $shifts->last(),
-            'shifts' => $shifts,
+            'events' => $events,
+            'last_shift' => $last_shift,
         ));
     }
 
