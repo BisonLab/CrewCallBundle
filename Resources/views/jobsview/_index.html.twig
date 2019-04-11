@@ -3,7 +3,7 @@
         <tr>
             <th class="jwPerson">Person</th>
             <th class="jwMobile">Mobile</th>
-            <th class="jwStart">Start</th>
+            <th class="jwTime">Time</th>
             <th class="jwEvent">Event</th>
             <th class="jwFunction">Function</th>
             <th class="jwState">State</th>
@@ -37,10 +37,10 @@
             <td class="jwMobile">
                 {{ job.person.mobilephonenumber }}
             </td>
-            <td class="jwStart">
-                {{ job.start | date("Y-m-d H:i") }}
+            <td class="jwTime">
+                {{ job.start | date("H:i") }} -> {{ job.end | date("H:i") }}
             </td>
-            <td>
+            <td class="jwEvent">
             <a href="#" id="popSummary_event_{{ job.event.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
                 {{ job.event.name }}
             </td>
@@ -48,7 +48,7 @@
                 {{ job.function.name }}
             </td>
             <td class="jwState">
-                {{ job.state }} {% if job.statechanged %}{{ job.statechanged | date('Y-m-d H:i') }}{% endif %}
+                {{ job.state }} {# {% if job.statechanged %}{{ job.statechanged | date('Y-m-d H:i') }}{% endif %} #}
             </td>
             <td class="jwComments">
 {% set jobcontext = {
@@ -65,9 +65,12 @@
             </td>
             <td class="jwMove">
 <select class="move_job_to" name="{{job.id}}">
-<option value="">{{ job.shift }} {{ job.start | date("H:i") }}</option>
-{% for o in cc_jobs.opportunitiesforperson(job.person, {'from': job.shift.event.start, 'to': job.shift.event.end }) %}
-<option value="{{ o.id}}">{{ o }} {{ o.start | date("Y-m-d H:i") }} {{ o.end | date("H:i") }}</option>
+<option class="cc{{ job.state }}" value="">{{ job.shift }} {{ job.start | date("H:i") }} -> {{ job.end | date("H:i") }}</option>
+{% set current_job_id = job.id %}
+{% for j in cc_jobs.jobsforperson(job.person, {'from': job.shift.event.start, 'to': job.shift.event.end }) %}
+{% if j.id != current_job_id %}
+<option class="cc{{ j.state }}" value="{{ j.id }}">{{ j.shift }} {{ j.start | date("H:i") }} {{ j.end | date("H:i") }}</option>
+{% endif %}
 {% endfor %}
 </select>
             </td>
@@ -88,9 +91,10 @@
             <td class="jwMobile">
                 {{ so.organization.officephonenumber }}
             </td>
-            <td class="jwStart">
+            <td class="jwTime">
                 {{ so.shift.start | date("Y-m-d H:i") }}
             </td>
+                {{ so.shift.start | date("H:i") }} -> {{ so.shift.end | date("H:i") }}
             <td>
             <a href="#" id="popSummary_event_{{ so.shift.event.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ so.shift.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
                 {{ so.shift.event.name }}
@@ -120,7 +124,7 @@
         <tr>
             <td class="jwPerson">&nbsp;</td>
             <td class="jwMobile">&nbsp;</td>
-            <td class="jwStart">&nbsp;</td>
+            <td class="jwTime">&nbsp;</td>
             <td class="jwEvent">&nbsp;</td>
             <td class="jwFunction">{% for function, count in count_by_function %}{{ function }}: {{ count }}<br>{% endfor %}</td>
             <td class="jwState">{% for state, count in count_by_state %}{{ state }}: {{ count }}<br>{% endfor %}</td>

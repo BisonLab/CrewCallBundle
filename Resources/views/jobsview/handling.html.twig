@@ -2,6 +2,7 @@
 
 $(document).ready(function() {
     $( '#jwcheck_Hours' ).attr('checked', false)
+    $( '#jwcheck_Time' ).attr('checked', false)
 
     $( "#filter_username" ).autocomplete({
       source: "{{ path('user_search', {'access': 'ajax'}) }}",

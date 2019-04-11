@@ -41,7 +41,6 @@
             </td>
             <td>
                 {{ job.state }}
-                {% if job.statechanged %}{{ job.statechanged|date('d M H:i') }}{% endif %}
 {% set jobcontext = {
             'message_types': ['JobComment', 'InformCheck'],
             'order': 'DESC',
@@ -54,7 +53,9 @@
     <br>{{ note.createdAt | date('d M') }}: <pre>{{ note.body }}</pre>
 {% endfor %}
             {% if job.shift.start < date() %}
+{# Better be a selectbox or just not at jobs at all, just event or shift.
                 <br><a role="button" class="btn-sm btn-primary" href="#" onClick="setStateOnJob({{shift.id}}, 'COMPLETED', {{ job.shift.id }});">Complete</a>
+#}
             </td>
                 <td id="jobLogTable_{{ job.id }}">
                 {% if job.joblogs | length > 0  %}
@@ -62,7 +63,9 @@
                 {% else %}
                     &nbsp;
                 {% endif %}
-                    <a role="button" class="btn-sm btn-primary" href="#" id="addJobLog_{{ job.id }}" data-html="true" onClick="grabNewJobLogForm({{ job.id }}, {{ job.shift.id }});">Add</a>
+                {% if job.booked  %}
+                    <a role="button" class="btn-sm btn-primary" href="#" id="addJobLog_{{ job.id }}" data-html="true" onClick="grabNewJobLogForm({{ job.id }}, {{ job.shift.id }});">Add Hours</a>
+                {% endif %}
                 </td>
             {% else %}
             </td>
