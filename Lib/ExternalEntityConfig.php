@@ -63,7 +63,6 @@ class ExternalEntityConfig
     {
         $choices = array();
         foreach (self::$system_roles as $system_role => $params) {
-            if (!$params['chooseable']) continue;
             $choices[$params['label']] = $system_role;
         }
         return $choices;
