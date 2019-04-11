@@ -110,15 +110,6 @@ class Person extends BaseUser
     private $postal_address;
 
     /**
-     * @var string $state
-     *
-     * @ORM\Column(name="state", type="string", length=40, nullable=true)
-     * @Gedmo\Versioned
-     * @Assert\Choice(callback = "getStatesList")
-     */
-    private $state;
-
-    /**
      * This is for the non-connected functions. (Skills)
      * @ORM\OneToMany(targetEntity="PersonFunction", mappedBy="person", cascade={"persist", "remove"}, orphanRemoval=true)
      */
