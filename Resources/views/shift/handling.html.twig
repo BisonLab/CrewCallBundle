@@ -45,11 +45,11 @@ function submitNewShiftForm(event_id) {
     return false;
 }
 
-function grabNewShiftForm(event_id = false, last_shift_id = false) {
+function grabNewShiftForm(event_id = false, from_shift_id = false) {
     old_html = $( "#newShift" ).html();
     url = "{{ path('shift_new', { 'access': 'ajax' }) }}";
-    if (last_shift_id) {
-        url = url + "?from_shift=" + last_shift_id;
+    if (from_shift_id) {
+        url = url + "?from_shift=" + from_shift_id;
     } else if (event_id) {
         url = url + "?event=" + event_id;
     }

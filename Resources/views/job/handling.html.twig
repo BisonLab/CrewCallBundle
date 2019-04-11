@@ -6,12 +6,16 @@ function grabJobList(shift_id) {
     $.get(url, function( data ) {
         $( "#jobTable_" + shift_id ).html(data);
         $( "#jobList_" + shift_id ).show();
+        $( "#plus_job_list_" + shift_id ).hide();
+        $( "#minus_job_list_" + shift_id ).show();
     });
     return false;
 }
 
 function hideJobList(shift_id) {
     $( "#jobList_" + shift_id ).hide();
+    $( "#plus_job_list_" + shift_id ).show();
+    $( "#minus_job_list_" + shift_id ).hide();
 }
 
 function setStateOnJob(job_id, state, shift_id) {
