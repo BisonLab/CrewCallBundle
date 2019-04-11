@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(name="crewcall_person_function", uniqueConstraints={@ORM\UniqueConstraint(name="person_function_idx", columns={"person_id", "function_id"})})
- * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\PersonFunctionOrganizationRepository")
+ * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\PersonFunctionRepository")
  * @Gedmo\Loggable
  */
 class PersonFunction
@@ -69,6 +69,7 @@ class PersonFunction
 
     public function setPerson(Person $person = null)
     {
+/*
         if ($this->person !== null) {
             $this->person->removePersonFunction($this);
         }
@@ -76,7 +77,7 @@ class PersonFunction
         if ($person !== null) {
             $person->addPersonFunction($this);
         }
-
+ */
         $this->person = $person;
         return $this;
     }

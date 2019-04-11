@@ -119,9 +119,8 @@ class Person extends BaseUser
     private $state;
 
     /**
-     * This is for the non-connected functions.
-     * @ORM\OneToMany(targetEntity="PersonFunction", mappedBy="person",
-     * cascade={"remove"})
+     * This is for the non-connected functions. (Skills)
+     * @ORM\OneToMany(targetEntity="PersonFunction", mappedBy="person", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $person_functions;
 
@@ -694,6 +693,7 @@ class Person extends BaseUser
     public function addPersonFunction(\CrewCallBundle\Entity\PersonFunction $personFunction)
     {
         $this->person_functions[] = $personFunction;
+        $personFunction->setPerson($this);
 
         return $this;
     }
@@ -706,6 +706,7 @@ class Person extends BaseUser
     public function removePersonFunction(\CrewCallBundle\Entity\PersonFunction $personFunction)
     {
         $this->person_functions->removeElement($personFunction);
+        $personFunction->setPerson(null);
     }
 
     /**

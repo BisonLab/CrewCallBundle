@@ -74,6 +74,8 @@ class CreateBaseDataCommand extends ContainerAwareCommand
                 $mt->setForwardFunction($type['forward_function']);
             if (isset($type['security_model']))
                 $mt->setSecurityModel($type['security_model']);
+            $mt->setExpungeMethod("DELETE");
+            $mt->setExpireMethod("ARCHIVE");
             $this->sakonnin_em->persist($mt);
             if ($parent) {
                 $output->writeln("Setting parent " 

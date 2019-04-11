@@ -41,8 +41,8 @@ class PersonFunctionController extends CommonController
         }
          
         $pf = new PersonFunction();
-        $pf->setPerson($person);
         $pf->setFunction($function);
+        $person->addPersonFunction($pf);
         if ($from_date = $request->request->get('from_date')) {
             $pf->setFromDate(new \DateTime($from_date));
         } else {

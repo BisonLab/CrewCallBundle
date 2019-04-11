@@ -22,12 +22,4 @@ class LocationRepository extends \Doctrine\ORM\EntityRepository
 
         return $qb->getQuery()->getResult();
     }
-
-    public function getOneByContext($system, $object_name, $external_id)
-    {
-        return $this->_getOneByContext($this->_entityName . "Context",
-            $system,
-            $object_name,
-            $external_id);
-    }
 }

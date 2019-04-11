@@ -104,9 +104,9 @@ class FunctionEntityController extends CommonController
                 if (!in_array($hf, $pfs)) {
                     $function = $em->getRepository('CrewCallBundle:FunctionEntity')->find($hf);
                     $pf = new PersonFunction();
-                    $pf->setPerson($person);
                     $pf->setFunction($function);
                     $pf->setFromDate(new \DateTime());
+                    $person->addPersonFunction($pf);
                     $em->persist($pf);
                 }
             }
