@@ -83,7 +83,7 @@ function openStateChange() {
     content = $("#change_state_popover").html();
     $( "#stateChangeLink" ).popover({
         html: true,
-        placement: 'left',
+        placement: 'bottom',
         title: 'State change <a href="#" class="close" data-dismiss="alert">&times;</a>',
         content: content
     });
@@ -94,10 +94,6 @@ function openStateChange() {
 }
 
 </script>
-
-<div id="change_state_popover" class="hidden">
-{{ form(state_form) }}
-</div>
 
 <div class="col-sm-3" id="personLeft">
     {% set ppcontext = {
@@ -126,7 +122,7 @@ function openStateChange() {
     {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
           <a href="#" onClick="uploadFile(); return false;">Add profile picture</a><br />
 {% endif %}
-    <h1>{{ person.fullname }}</h1>
+    <h1>{{ person.fullname }} {{ person.state }}</h1>
     <table class="showTable">
         <tbody>
             <tr>
@@ -168,19 +164,6 @@ function openStateChange() {
             <tr>
                 <th>Postal Address</th>
                 <td>{{ cc_addressing.compose(person.postaladdress, 'html') | raw }}</td>
-            </tr>
-            <tr>
-                <th>State</th>
-                <td>
-                {% for state in person.states({'last_and_next': true}) %}
-                {{ state.state }}
-                {% if state.fromdate %}{{ state.fromdate | date('Y-m-d') }}{% endif %}
-                ->
-                {% if state.todate %}{{ state.todate | date('Y-m-d') }}{% endif %}
-                <br>
-                {% endfor %}
-<a href="#" id="stateChangeLink" onClick="openStateChange();">Add</a><br>
-                </td>
             </tr>
 {% if person.personfunctionorganizations | length > 0 %}
             <tr>
@@ -268,6 +251,9 @@ function openStateChange() {
 -->
     <li>
     <a href="#hourstab" data-toggle="tab"  onClick="grabJobLogSummary();">Hours</a>
+    </li>
+    <li>
+    <a href="#absencetab" data-toggle="tab"  onClick="grabJobLogSummary();">Absence</a>
     </li>
     </ul>
 
@@ -420,6 +406,30 @@ function openStateChange() {
 -->
   <div class="tab-pane" id="hourstab">
   </div>
+
+  <div class="tab-pane" id="absencetab">
+
+    <div id="change_state_popover" class="hidden">
+    <a href="#" id="stateChangeLink" onClick="openStateChange();">Add</a><br>
+    </div>
+
+
+    <table class="table  table-sm">
+    <th>What</th><th>From</th><th>To</th><th>Days</th>
+    {% for pstate in person.states if pstate.state != "ACTIVE" %}
+    <tr>
+    <td>{{ pstate.state }}</td>
+    <td>{% if pstate.fromdate is not null %}{{ pstate.fromdate | date("Y-m-d") }}{% else %}&nbsp;{% endif %}</td>
+    <td>{% if pstate.todate is not null %}{{ pstate.todate | date("Y-m-d") }}{% else %}&nbsp;{% endif %}</td>
+    <td>{{ pstate.days }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+
+    <h3>Add</h3>
+    {{ form(state_form) }}
+
+   </div>
 
   </div>
 </div>

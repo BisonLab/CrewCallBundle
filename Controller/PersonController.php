@@ -31,7 +31,7 @@ use CrewCallBundle\Lib\ExternalEntityConfig;
 class PersonController extends CommonController
 {
     /**
-     * Lists all person entities.
+     * Lists absolutely all person entities.
      *
      * @Route("/", name="person_index", methods={"GET"})
      */
@@ -40,12 +40,8 @@ class PersonController extends CommonController
         $em = $this->getDoctrine()->getManager();
 
         $people = $em->getRepository('CrewCallBundle:Person')->findAll();
-
-        $fe_repo = $em->getRepository('CrewCallBundle:FunctionEntity');
-        $functions = $fe_repo->findAll(['name' => 'ASC']);
         return $this->render('person/index.html.twig', array(
             'people' => $people,
-            'functions' => $functions,
         ));
     }
 
@@ -62,7 +58,17 @@ class PersonController extends CommonController
         $fid = $request->get('function_id');
         if (!$functionEntity = $fe_repo->find($fid))
             return $this->returnNotFound($request, 'No function to filter');
-        $people = $functionEntity->getPeople();
+        // Looks stupid, and is. Should be a repo action with filters.
+        if ($request->get('all')) {
+            $people = $functionEntity->getPeople();
+        } else {
+            $people = [];
+            foreach ($functionEntity->getPeople() as $p) {
+                if (in_array($p->getState(), ExternalEntityConfig::getActiveStatesFor('Person')))
+                    $people[] = $p;
+            }
+        }
+
         $functions = $fe_repo->findBy(['function_type'
             => $functionEntity->getFunctionType()], ['name' => 'ASC']);
         return $this->render('person/index.html.twig', array(
@@ -80,13 +86,38 @@ class PersonController extends CommonController
     public function listByFunctionTypeAction(Request $request, $function_type)
     {
         $em = $this->getDoctrine()->getManager();
-        $people = $em->getRepository('CrewCallBundle:Person')
-            ->findByFunctionType($function_type);
+
+        // Ok, implementing this here aswell.
+        $people = [];
+        if ($fid = $request->get('function_id')) {
+            $fe_repo = $em->getRepository('CrewCallBundle:FunctionEntity');
+            if (!$functionEntity = $fe_repo->find($fid))
+                return $this->returnNotFound($request, 'No function to filter');
+            $people = $functionEntity->getPeople();
+        } else {
+            $people = $em->getRepository('CrewCallBundle:Person')
+                ->findByFunctionType($function_type);
+        }
+
+        // Pure laziness I presume, but there are not that many people and
+        // since I collect them in different ways above here, it's simple.
+        // (OK, lazy)
+        if (!$request->get('all')) {
+            $parr = [];
+            foreach ($people as $p) {
+                if (in_array($p->getState(), ExternalEntityConfig::getActiveStatesFor('Person')))
+                    $parr[] = $p;
+            }
+            $people = $parr;
+        }
+
         $functions = $em->getRepository('CrewCallBundle:FunctionEntity')
             ->findByFunctionType($function_type);
         return $this->render('person/index.html.twig', array(
             'people' => $people,
-            'function_type' => ucfirst(strtolower($function_type)),
+            'function_type' => $function_type,
+            'all' => $request->get('all') ?? null,
+            'functionEntity' => $functionEntity ?? null,
             'functions' => $functions,
         ));
     }

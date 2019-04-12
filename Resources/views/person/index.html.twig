@@ -21,33 +21,39 @@ function get_selected_persons() {
     {% if functionEntity is defined %}
     <h1>People with {{ functionEntity }}</h1>
     {% elseif function_type is defined %}
-    <h1>{{ function_type }}s</h1>
+    <h1>{{ function_type | capitalize }}</h1>
     {% else %}
     <h1>People</h1>
     {% endif %}
-<table border="0">
-<tr>
-<!--
-<td>
-    <a href="{{ path('person_new') }}"><button class="btn btn-primary">Create a new person</button></a>
-</td>
--->
-<td>
+<div class="row">
+<div class="col-sm-8">
+{% if functions is defined %}
+{% if function_type is defined %}
+   <form action="{{ path('person_function_type', {'function_type': function_type}) }}" method="GET">
+{% else %}
    <form action="{{ path('person_function') }}" method="GET">
+{% endif %}
 <label>Function</label>
 <select name="function_id">
     <option value="">All</option>
     {% for elem in functions %}
-    <option value="{{ elem.id }}" {% if functionEntity is defined and elem.id == functionEntity.id %}selected{% endif %}>{{ elem.name }}</option>
+    <option value="{{ elem.id }}" {% if functionEntity is not null and elem.id == functionEntity.id %}selected{% endif %}>{{ elem.name }}</option>
     {% endfor %}
 </select>
-</td>
-<td>
-    <button class="btn btn-default" type="submit">Filter</button>
+    <button class="btn btn-default" type="submit">Show</button>
+{% if all is not null %}
+    <input type="checkbox" name="all" CHECKED>Include non-active</input>
+{% else %}
+    <input type="checkbox" name="all">Include non-active</input>
+{% endif %}
     </form>
-</td>
-</tr>
-</table>
+{% endif %}
+</div>
+<div class="col-sm-2">
+</div>
+<div class="col-sm-2">
+    <a href="{{ path('person_new') }}"><button class="btn btn-primary">Add a new person</button></a>
+</div>
 
         <table id="sortable_table" class="table table-striped  table-sm">
         <thead class="thead-inverse">
