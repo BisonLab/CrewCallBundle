@@ -432,14 +432,20 @@ class Person extends BaseUser
         }
 
         // Find out if we have to inject the state or whatever.
+        // Before is the current one relative to the from date of the new state.
         $before = null;
         $after  = null;
         foreach ($this->person_states as $ps) {
             // Get rid of oldies and Too newdies
-            if ($ps->getToDate() !== null && $ps->getToDate() < $newstate->getFromDate()) {
+            if ($ps->getToDate() !== null
+                    && $ps->getToDate() < $newstate->getFromDate()) {
                 continue;
             }
-            if ($ps->getFromDate() > $newstate->getToDate()) {
+
+            // New state in the future after this period?
+            // This could be the "After" one, but it does not count since it's
+            // not within the period we are setting this.
+            if ($newstate->getToDate() && $ps->getFromDate() > $newstate->getToDate()) {
                 continue;
             }
 
@@ -457,7 +463,9 @@ class Person extends BaseUser
                 $after = $ps;
             }
         }
+
         $this->addState($newstate);
+        // Do we have to insert the new state into the before?
         if ($before && $before === $after) {
             $afterstate = new PersonState();
             $afterstate->setState($before->getState());
@@ -468,7 +476,7 @@ class Person extends BaseUser
         } elseif ($after) {
             $afterdate = clone($newstate->getToDate());
             $after->setFromDate($afterdate->modify("+1 day"));
-        } elseif ($before) {
+        } elseif ($before && $newstate->getToDate()) {
             $afterstate = new PersonState();
             $afterstate->setState($before->getState());
             $afterdate = clone($newstate->getToDate());
