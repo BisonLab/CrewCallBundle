@@ -9,6 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 use CrewCallBundle\Lib\ExternalEntityConfig;
+
 /**
  * FunctionEntity
  *
@@ -482,14 +483,20 @@ class FunctionEntity
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getPeople()
+    public function getPeople($active_only = true)
     {
         $people = new ArrayCollection();
         foreach ($this->person_functions as $pf) {
+            if ($active_only && !in_array($pf->getPerson()->getState(),
+                    ExternalEntityConfig::getActiveStatesFor('Person')))
+                continue;
             if (!$people->contains($pf->getPerson()))
                 $people->add($pf->getPerson());
         }
         foreach ($this->person_function_organizations as $pfo) {
+            if ($active_only && !in_array($pfo->getPerson()->getState(),
+                    ExternalEntityConfig::getActiveStatesFor('Person')))
+                continue;
             if (!$people->contains($pfo->getPerson()))
                 $people->add($pfo->getPerson());
         }
@@ -510,10 +517,11 @@ class FunctionEntity
     {
         // The simplest one.
         if (empty($options))
-            return $this->personfunctions->count() + $this->personfunctionorganizations->count();
+            return $this->personfunctions->count()
+                + $this->personfunctionorganizations->count();
         if (isset($options['by_state'])) {
             $states = [];
-            foreach ($this->getPeople() as $p) {
+            foreach ($this->getPeople(false) as $p) {
                 if (!isset($states[$p->getState()]))
                     $states[$p->getState()] = 1;
                 else
