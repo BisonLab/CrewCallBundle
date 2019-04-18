@@ -76,7 +76,7 @@
   </ul>
 
   <div class="tab-content ">
-    <div class="tab-pane active" id="peopletab">
+    <div class="tab-pane active" id="eventstab">
     {% include 'CrewCallBundle:event:_index.html.twig' with { 'events': organization.events('ASC'), 'sorted': true, 'past': true } %}
     </div
  </div
@@ -153,7 +153,7 @@
 
     <div class="tab-pane" id="filestab">
         {% set sfconf = {'sfconfig': {
-                'file_type': "DOCUMENT",
+                'file_type': "AUTO",
                 'context': {
                     'system': 'crewcall',
                     'object_name': 'organization',
