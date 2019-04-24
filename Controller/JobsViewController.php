@@ -55,7 +55,7 @@ class JobsViewController extends CommonController
         // Future must include current.
         $future_events = $eventrepo->findEvents(['future' => true,
             'parents_only' => true]);
-        $functions = $functionrepo->findByFunctionType('CREW');
+        $functions = $functionrepo->findByFunctionType('SKILL');
         $event_states = Event::getStatesList();
         $shift_states = Shift::getStatesList();
         $job_states   = Job::getStatesList();
