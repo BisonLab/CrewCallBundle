@@ -30,7 +30,11 @@ function setStateOnJob(job_id, state, shift_id) {
         type: "POST",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            grabJobList(shift_id);
+            if ($( "#jobTable_" + shift_id ).length) {
+                grabJobList(shift_id);
+            } else {
+                parent.location.reload();
+            }
       }).fail(function(xhr, status, error) {
             errmsg = "Failed changing state\n";
             errmsg = errmsg + xhr.responseText + "\n";
