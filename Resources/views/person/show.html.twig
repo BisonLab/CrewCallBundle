@@ -180,7 +180,7 @@ function openStateChange() {
                 <th>Can log into CrewCall</th>
                 <td>
                 {% if person.enabled %}
-                    Yes{% if is_granted("ROLE_ADMIN") %}, as admin.{% endif %}
+                    Yes{% if "ROLE_ADMIN" in person.roles %}, as admin.{% endif %}
                 {%else%}
                     No
                 {%endif%}</td>
