@@ -32,7 +32,7 @@ function setStateOnJob(job_id, state, shift_id) {
       }).done( function( cont, textStatus, xhr ) {
             grabJobList(shift_id);
       }).fail(function(xhr, status, error) {
-            errmsg = "Failed chaning state\n";
+            errmsg = "Failed changing state\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });
