@@ -48,7 +48,11 @@ class Builder implements ContainerAwareInterface
             $menu->addChild('Locations', array('route' => 'location_index'));
 
             $adminmenu = $menu->addChild('Admin Stuff', array('route' => ''));
-            $adminmenu->addChild('Functions', array('route' => 'function_index'));
+            foreach (ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType') as $ftname => $ftarr) {
+                $adminmenu->addChild('Manage ' . $ftarr['plural'],
+                    array('route' => 'function_index',
+                    'routeParameters' => array('function_type' => $ftname)));
+            }
             $adminmenu->addChild('Report generator', array('route' => 'reports'));
             $adminmenu->addChild('Mail and SMS templates',
                 array('route' => 'sakonnintemplate_index'));
@@ -70,21 +74,17 @@ class Builder implements ContainerAwareInterface
 
             $adminmenu->addChild('Message Types',
                 array('route' => 'messagetype'));
+            foreach (ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType') as $ftname => $ftarr) {
+                $adminmenu->addChild("People with " . $ftarr['plural'],
+                    array('route' => 'person_function_type',
+                    'routeParameters' => array('function_type' => $ftname)));
+            }
+            $adminmenu->addChild('Applicants', array('route' => 'person_applicants'));
+            // Not sure I need it, reapply in custom if you need it.
+            // $adminmenu->addChild('Add person', array('route' => 'person_new'));
+
             $adminmenu->addChild('Playfront', array('route' => 'frontplay'));
             $adminmenu->addChild('Mobilefront', array('uri' => '/public/userfront/'));
-                $peoplemenu = $adminmenu->addChild('People');
-                $em = $this->container->get('doctrine')->getManager();
-                $peoplemenu->addChild('All', array('route' => 'person_index'));
-                foreach (ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType') as $ftname => $ftarr) {
-                    // Spot the ugliness.
-                    $peoplemenu->addChild($ftarr['label'] . "s",
-                        array('route' => 'person_function_type',
-                        'routeParameters' => array('function_type' => $ftname)));
-                }
-                if ($this->container->getParameter('allow_registration')) {
-                    $peoplemenu->addChild('Applicants', array('route' => 'person_applicants'));
-                }
-                $peoplemenu->addChild('Add person', array('route' => 'person_new'));
             $menu->addChild('Jobs view', array('route' => 'jobsview_index'));
         }
         $options['menu']      = $menu;

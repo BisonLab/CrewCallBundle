@@ -5,7 +5,12 @@
 
     <div class="row">
     <div class="col-sm-6">
-    <h1>Functions</h1>
+{% if function__type_plural is defined %}
+    <h1>{{ function__type_plural }}</h1>
+{% else %}
+    <h1>Functions / Roles</h1>
+{% endif %}
+
     </div>
     <div class="col-sm-4">
     </div>
@@ -18,7 +23,6 @@
         <thead class="thead-inverse">
             <tr>
                 <th>Name</th>
-                <th>Type</th>
                 <th>Descriptions</th>
                 <th>State</th>
                 <th>People</th>
@@ -26,9 +30,8 @@
             </tr>
         </thead>
         <tbody>
-        {% for functionEntity in functionEntities %}
+        {% for functionEntity in functionEntities if function__type is not defined or functionEntity.function__type == function__type %}
         <td><a href="{{ path('function_show', { 'id': functionEntity.id }) }}">{{ functionEntity.name }}</a></td>
-        <td>{{ functionEntity.functiontypelabel }}</td>
         <td>{{ functionEntity.description }}</td>
         <td>{{ functionEntity.state }}</td>
         <td>

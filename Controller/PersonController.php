@@ -111,11 +111,16 @@ class PersonController extends CommonController
             $people = $parr;
         }
 
+        $ftypes = ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType');
+        $function_type_plural = $ftypes[$function_type]['plural'];
+        $function_type_label = $ftypes[$function_type]['label'];
         $functions = $em->getRepository('CrewCallBundle:FunctionEntity')
             ->findByFunctionType($function_type);
         return $this->render('person/index.html.twig', array(
             'people' => $people,
             'function_type' => $function_type,
+            'function_type_plural' => $function_type_plural,
+            'function_type_label' => $function_type_label,
             'all' => $request->get('all') ?? null,
             'functionEntity' => $functionEntity ?? null,
             'functions' => $functions,

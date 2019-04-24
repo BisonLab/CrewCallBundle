@@ -18,22 +18,26 @@ function get_selected_persons() {
 }
 </script>
 
-    {% if functionEntity is defined %}
-    <h1>People with {{ functionEntity }}</h1>
-    {% elseif function_type is defined %}
-    <h1>{{ function_type | capitalize }}</h1>
+    {% if function_type_plural is defined %}
+        <h1>Peple with {{ function_type_plural }}</h1>
+    {% elseif functionEntity is defined and functionEntity is not null %}
+        <h1>People with {{ functionEntity }}</h1>
+        {% set function_type = null %}
+        {% set function_type_label = "Function" %}
     {% else %}
-    <h1>People</h1>
+        <h1>People</h1>
+        {% set function_type = null %}
+        {% set function_type_label = "Function" %}
     {% endif %}
 <div class="row">
 <div class="col-sm-8">
 {% if functions is defined %}
-{% if function_type is defined %}
+{% if function_type is not null %}
    <form action="{{ path('person_function_type', {'function_type': function_type}) }}" method="GET">
 {% else %}
    <form action="{{ path('person_function') }}" method="GET">
 {% endif %}
-<label>Function</label>
+<label>{{ function_type_label }}</label>
 <select name="function_id">
     <option value="">All</option>
     {% for elem in functions %}
@@ -72,7 +76,8 @@ function get_selected_persons() {
             <tr>
                 <td><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.username }}</a></td>
                 <td>{{ person.fullname }}</td>
-                <td>{% for f in person.personfunctions %} {{ f.function.name }},{% endfor %}</td>
+                <td>
+                    {% for f in person.functions(function_type) %} {{ f.name }},{% endfor %}</td>
                 <td>{{ person.mobilephonenumber }}</td>
                 <td {% if person.occupied({'reasons': true}) %}class="cc_warn"{% endif %}>
                 {{ person.state }}

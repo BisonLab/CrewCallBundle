@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
+use CrewCallBundle\Lib\ExternalEntityConfig;
 use CrewCallBundle\Entity\FunctionEntity;
 use CrewCallBundle\Entity\PersonFunction;
 
@@ -24,13 +25,19 @@ class FunctionEntityController extends CommonController
      *
      * @Route("/", name="function_index", methods={"GET"})
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $function_type = $request->get('function_type') ?: "SKILL";
 
-        $functionEntities = $em->getRepository('CrewCallBundle:FunctionEntity')->findAll();
+        $functionEntities = $em->getRepository('CrewCallBundle:FunctionEntity')->findBy(['function_type' => $function_type]);
+
+        $ftypes = ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType');
+        $function_type_plural = $ftypes[$function_type]['plural'];
 
         return $this->render('functionentity/index.html.twig', array(
+            'function_type_plural' => $function_type_plural,
+            'function_type' => $function_type,
             'functionEntities' => $functionEntities,
         ));
     }

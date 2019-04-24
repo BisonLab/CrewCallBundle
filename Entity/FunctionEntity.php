@@ -251,7 +251,6 @@ class FunctionEntity
      */
     public function getFunctionTypeLabel()
     {
-        $labels = array();
         $ftypes = ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType');
         return $ftypes[$this->function_type]['label'];
     }

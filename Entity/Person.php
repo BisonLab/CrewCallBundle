@@ -819,6 +819,47 @@ class Person extends BaseUser
     }
 
     /**
+     * Get all distinct functions the person has
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFunctions($function_type = null)
+    {
+        $functions = new ArrayCollection();
+        foreach ($this->getPersonFunctions() as $pf) {
+            $f = $pf->getFunction();
+            if ($function_type && $f->getFunctionType() != $function_type)
+                continue;
+            if (!$functions->contains($f))
+                $functions->add($f);
+        }
+        foreach ($this->getPersonFunctionEvents() as $pfe) {
+            $f = $pfe->getFunction();
+            if ($function_type && $f->getFunctionType() != $function_type)
+                continue;
+            if (!$functions->contains($f))
+                $functions->add($f);
+        }
+        /*
+        foreach ($this->getPersonFunctionLocations() as $pfl) {
+            $f = $pfl->getFunction();
+            if ($function_type && $f->getFunctionType() != $function_type)
+                continue;
+            if (!$functions->contains($f))
+                $functions->add($f);
+        }
+        */
+        foreach ($this->getPersonFunctionOrganizations() as $pfo) {
+            $f = $pfo->getFunction();
+            if ($function_type && $f->getFunctionType() != $function_type)
+                continue;
+            if (!$functions->contains($f))
+                $functions->add($f);
+        }
+        return $functions;
+    }
+
+    /**
      * Add job
      *
      * @param \CrewCallBundle\Entity\Job $job
