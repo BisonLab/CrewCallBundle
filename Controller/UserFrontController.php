@@ -144,10 +144,10 @@ class UserFrontController extends CommonController
     }
 
     /**
-     * Messages part
-     * @Route("/me_messages", name="uf_me_messages", methods={"GET"})
+     * Notes
+     * @Route("/me_notes", name="uf_me_notes", methods={"GET"})
      */
-    public function meMessages(Request $request, $as_array = false)
+    public function meNotes(Request $request, $as_array = false)
     {
         $user = $this->getUser();
         $sakonnin = $this->container->get('sakonnin.messages');
@@ -160,21 +160,6 @@ class UserFrontController extends CommonController
         ];
         $pnotes = [];
         foreach ($sakonnin->getMessagesForContext($pncontext) as $m) {
-            $pnotes[] = [
-                'subject' => $m->getSubject(),
-                'body' => $m->getBody(),
-                'date' => $m->getCreatedAt(),
-                'message_type' => (string)$m->getMessageType(),
-                'archive_url' => $this->generateUrl('message_state', [
-                    'access' => 'ajax',
-                    'state' => 'ARCHIVED',
-                    'id' => $m->getId()
-                    ],
-                    UrlGeneratorInterface::ABSOLUTE_URL)
-                ];
-        }
-
-        foreach ($sakonnin->getMessagesForUser($user, ['state' => 'UNREAD']) as $m) {
             $pnotes[] = [
                 'subject' => $m->getSubject(),
                 'body' => $m->getBody(),
@@ -205,6 +190,39 @@ class UserFrontController extends CommonController
             'personal' => $pnotes,
             'general' => $gnotes,
             ];
+
+        if ($as_array)
+            return $retarr;
+        return new JsonResponse($retarr, 200);
+    }
+
+    /**
+     * Messages part
+     * @Route("/me_messages", name="uf_me_messages", methods={"GET"})
+     */
+    public function meMessages(Request $request, $as_array = false)
+    {
+        $user = $this->getUser();
+        $sakonnin = $this->container->get('sakonnin.messages');
+        $pmessages = [];
+
+        foreach ($sakonnin->getMessagesForUser($user, ['state' => 'UNREAD']) as $m) {
+            $pmessages[] = [
+                'subject' => $m->getSubject(),
+                'body' => $m->getBody(),
+                'date' => $m->getCreatedAt(),
+                'message_type' => (string)$m->getMessageType(),
+                'archive_url' => $this->generateUrl('message_state', [
+                    'access' => 'ajax',
+                    'state' => 'ARCHIVED',
+                    'id' => $m->getId()
+                    ],
+                    UrlGeneratorInterface::ABSOLUTE_URL)
+                ];
+        }
+        $retarr = [
+            'personal' => $pmessages,
+        ];
 
         if ($as_array)
             return $retarr;
