@@ -34,9 +34,11 @@ class FunctionEntityController extends CommonController
 
         $ftypes = ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType');
         $function_type_plural = $ftypes[$function_type]['plural'];
+        $function_type_label = $ftypes[$function_type]['label'];
 
         return $this->render('functionentity/index.html.twig', array(
             'function_type_plural' => $function_type_plural,
+            'function_type_label' => $function_type_label,
             'function_type' => $function_type,
             'functionEntities' => $functionEntities,
         ));
@@ -132,6 +134,13 @@ class FunctionEntityController extends CommonController
     public function newAction(Request $request)
     {
         $functionEntity = new Functionentity();
+        if ($function_type = $request->get('function_type')) {
+            $functionEntity->setFunctionType($function_type);
+            $ftypes = ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType');
+            $function_type_label = $ftypes[$function_type]['label'];
+        } else {
+            $function_type_label = null;
+        }
         $form = $this->createForm('CrewCallBundle\Form\FunctionEntityType', $functionEntity);
         $form->handleRequest($request);
 
@@ -145,6 +154,8 @@ class FunctionEntityController extends CommonController
 
         return $this->render('functionentity/new.html.twig', array(
             'functionEntity' => $functionEntity,
+            'function_type' => $function_type,
+            'function_type_label' => $function_type_label,
             'form' => $form->createView(),
         ));
     }

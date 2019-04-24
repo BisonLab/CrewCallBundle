@@ -1,16 +1,26 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% if function_type_label is not null %}
+    <h1>New {{ function_type_label }}</h1>
+<script>
+$(document).ready(function() {
+    $("#crewcallbundle_functionentity_function_type").hide();
+    $("#crewcallbundle_functionentity_function_type").prev().hide();
+});
+</script>
+{% else %}
     <h1>New Function</h1>
+{% endif %}
 
     {{ form_start(form) }}
         {{ form_widget(form) }}
         <input type="submit" value="Create" />
     {{ form_end(form) }}
+{% if function_type is not null %}
+    <a href="{{ path('function_index', {'function_type': function_type}) }}"><button>Cancel</button></a>
+{% else %}
+    <a href="{{ path('function_index') }}"><button>Cancel</button></a>
+{% endif %}
 
-    <ul>
-        <li>
-            <a href="{{ path('function_index') }}">Cancel</a>
-        </li>
-    </ul>
 {% endblock %}

@@ -5,8 +5,8 @@
 
     <div class="row">
     <div class="col-sm-6">
-{% if function__type_plural is defined %}
-    <h1>{{ function__type_plural }}</h1>
+{% if function_type_plural is defined %}
+    <h1>{{ function_type_plural }}</h1>
 {% else %}
     <h1>Functions / Roles</h1>
 {% endif %}
@@ -15,7 +15,11 @@
     <div class="col-sm-4">
     </div>
     <div class="col-sm-1" style="margin-top: 10px;">
+{% if function_type is defined %}
+    <a href="{{ path('function_new', {'function_type': function_type}) }}"><button class="btn btn-dark mt-4 ml-3">New {{ function_type_label }}</button></a>
+{% else %}
     <a href="{{ path('function_new') }}"><button class="btn btn-dark mt-4 ml-3">New Function</button></a>
+{% endif %}
     </div>
     </div>
 
@@ -30,7 +34,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for functionEntity in functionEntities if function__type is not defined or functionEntity.function__type == function__type %}
+        {% for functionEntity in functionEntities if function_type is not defined or functionEntity.functiontype == function_type %}
         <td><a href="{{ path('function_show', { 'id': functionEntity.id }) }}">{{ functionEntity.name }}</a></td>
         <td>{{ functionEntity.description }}</td>
         <td>{{ functionEntity.state }}</td>

@@ -1,21 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Function edit</h1>
+    <h1>Edit {{ functionEntity.name }}</h1>
 
     {{ form_start(edit_form) }}
         {{ form_widget(edit_form) }}
         <input type="submit" value="Save" />
     {{ form_end(edit_form) }}
 
-    <ul>
-        <li>
-            <a href="{{ path('function_index') }}">Cancel</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    <a href="{{ path('function_show', {'id': functionEntity.id}) }}"><button>Cancel</button></a>
+    {{ form_start(delete_form) }}
+        <input type="submit" value="Delete">
+    {{ form_end(delete_form) }}
 {% endblock %}
