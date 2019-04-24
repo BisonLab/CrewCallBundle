@@ -24,11 +24,25 @@ class CreateBaseDataCommand extends ContainerAwareCommand
             'parent' => 'Notes',
             'security_model' => 'ADMIN_ONLY',
             'description' => "Note only admins can read"),
+        'ConfirmNote' => array(
+            'parent' => 'Notes',
+            'security_model' => 'ALL_READ',
+            'description' => "Note a workes has to ACK before asking for a specific job"),
         'PMSMS' => array(
             'parent' => 'Messages',
             'security_model' => 'PRIVATE',
             'forward_function' => 'smscopy',
             'description' => "PM with SMS copy"),
+        'Checks' => array(
+            'description' => 'Checkbox items'),
+        'ConfirmCheck' => array(
+            'parent' => 'Checks',
+            'security_model' => 'ALL_READ',
+            'description' => "Checkbox you must confirm"),
+        'InformCheck' => array(
+            'parent' => 'Checks',
+            'security_model' => 'ALL_READ',
+            'description' => " 	Checkbox for added intormation"),
     );
 
     protected function configure()
