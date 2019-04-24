@@ -97,6 +97,8 @@ class Addressing
             return $html;
         } elseif ($format == "flat") {
             return $address_flat;
+        } elseif ($format == "line") {
+            return implode(" ", $address_flat);
         } else {
             return $address_lines;
         }
