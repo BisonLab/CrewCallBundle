@@ -158,6 +158,9 @@ class OrganizationController extends CommonController
     {
         $em = $this->getDoctrine()->getManager();
         $pfo = new PersonFunctionOrganization();
+        // Default-hack
+        if ($contact = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneBy(['name' => 'Contact']))
+            $pfo->setFunction($contact);
         $pfo->setOrganization($organization);
         $form = $this->createForm('CrewCallBundle\Form\ExistingPersonOrganizationType', $pfo);
         $form->handleRequest($request);
