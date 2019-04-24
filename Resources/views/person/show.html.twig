@@ -293,7 +293,7 @@ function openStateChange() {
             </td>
             <td>{{ shift.function }}</td>
             <td>{{ job.state }}
-            {# No reason to add confirm check here, it's kinda explicist 
+{# No reason to add confirm check here, it's kinda explicist 
                 'message_types': ['JobComment', 'ConfirmCheck', 'InformCheck'], #}
 {% set jobcontext = {
             'message_types': ['JobComment', 'InformCheck'],
@@ -308,14 +308,14 @@ function openStateChange() {
 {% endfor %}
             </td>
             <td>
-            {% if not job.booked %}
-                {% if job.state != "ASSIGNED" %}
-              <a role="button" class="btn-sm btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
-                {% endif %}
-              <a role="button" class="btn-sm btn-success" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
-              <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'DENIED', {{ job.shift.id }});">Deny</a>
-            {% else %}
+            {% if job.state == "CONFIRMED" %}
               <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Release</a>
+            {% elseif job.state == "ASSIGNED" %}
+              <a role="button" class="btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
+              <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Release</a>
+            {% else %}
+              <a role="button" class="btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
+              <a role="button" class="btn-sm ccAssigned" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
             {% endif %}
             </td>
         </tr>
