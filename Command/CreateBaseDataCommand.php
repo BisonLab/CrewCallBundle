@@ -18,25 +18,31 @@ class CreateBaseDataCommand extends ContainerAwareCommand
     private $message_types = array(
         'PersonNote' => array(
             'parent' => 'Notes',
+            'base_type' => 'NOTE',
             'security_model' => 'ADMIN_RW_USER_R',
             'description' => "Note about a person the person and admins can read."),
         'AdminNote' => array(
             'parent' => 'Notes',
+            'base_type' => 'NOTE',
             'security_model' => 'ADMIN_ONLY',
             'description' => "Note only admins can read"),
         'ConfirmNote' => array(
             'parent' => 'Notes',
+            'base_type' => 'NOTE',
             'security_model' => 'ALL_READ',
             'description' => "Note a workes has to ACK before asking for a specific job"),
         'PMSMS' => array(
             'parent' => 'Messages',
+            'base_type' => 'MESSAGE',
             'security_model' => 'PRIVATE',
             'forward_function' => 'smscopy',
             'description' => "PM with SMS copy"),
         'Checks' => array(
+            'base_type' => 'CHECK',
             'description' => 'Checkbox items'),
         'ConfirmCheck' => array(
             'parent' => 'Checks',
+            'base_type' => 'CHECK',
             'security_model' => 'ALL_READ',
             'description' => "Checkbox you must confirm"),
         'InformCheck' => array(
@@ -59,6 +65,8 @@ class CreateBaseDataCommand extends ContainerAwareCommand
         $output->writeln('First, message types.');
         $this->_messageTypes($input, $output);
         $output->writeln('OK Done.');
+
+        // And then, add assign-sms and confirm-sms sakonnin templates
     }
 
     private function _messageTypes(InputInterface $input, OutputInterface $output)
@@ -78,6 +86,8 @@ class CreateBaseDataCommand extends ContainerAwareCommand
             $mt = new MessageType();
 
             $mt->setName($name);
+            if (isset($type['base_type']))
+                $mt->setBaseType($type['base_type']);
             if (isset($type['description']))
                 $mt->setDescription($type['description']);
             if (isset($type['callback_function']))
