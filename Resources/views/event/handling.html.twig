@@ -1,33 +1,5 @@
 <script>
 function openAddContact() {
-    $( "#crewcallbundle_pfe_event" ).prev().hide();
-    $( "#crewcallbundle_pfe_event" ).hide();
-    $( "#crewcallbundle_pfe_function" ).prev().hide();
-    $( "#crewcallbundle_pfe_function" ).hide();
-    $( "#crewcallbundle_pfe_person" ).prev().hide();
-
-    content = $("#add_contact_popover").html();
-    $( "#addContactLink" ).popover({
-        html: true,
-        placement: 'right',
-        title: 'Add contact <a href="#" class="close" data-dismiss="alert">&times;</a>',
-        content: content
-    });
-    $( "#addContactLink" ).popover("show");
-
-    $( "#crewcallbundle_pfe_person" ).autocomplete({
-      source: "{{ path('user_search', {'access': 'ajax'}) }}",
-      minLength: 2,
-      select: function( event, ui ) {
-        $( "#addContactForm #crewcallbundle_pfe_person" ).val(ui.item.value);
-        $( "#addContactForm #username" ).val(ui.item.username);
-      }
-    });
-
-    $( "#crewcallbundle_pfe_person" ).prev().hide();
-
-    $(document).on("click", ".popover .close" , function(){
-        $(this).parents(".popover").popover('hide');
-    });
+    $( "#add_contact_popover_content" ).removeClass("hidden");
 }
 </script>

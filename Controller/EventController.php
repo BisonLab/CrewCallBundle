@@ -112,17 +112,24 @@ class EventController extends CommonController
 
         $em = $this->getDoctrine()->getManager();
         $funcrepo = $em->getRepository('CrewCallBundle:FunctionEntity');
-        $contact = $funcrepo->findOneByName('Contact');
         $pfe = new PersonFunctionEvent();
         $pfe->setEvent($event);
-        $pfe->setFunction($contact);
-        $add_contact_form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe);
+        if ($contact = $funcrepo->findOneByName('Contact'))
+            $pfe->setFunction($contact);
+        // Gotta find all available persons
+        // $persons = new ArrayCollection();
+        // Just gettable from organization for now, have to add location later.
+        $persons = $event->getOrganization()->getPersons();
+        $add_contact_form = null;
+        if (count($persons) > 0) {
+            $add_contact_form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe, ['persons' => $persons])->createView();
+        }
 
         return $this->render('event/show.html.twig', array(
             'event' => $event,
             'last_shift' => !empty($event->getShifts()) ? $event->getShifts()->last() : false,
             'delete_form' => $deleteForm->createView(),
-            'add_contact_form' => $add_contact_form->createView(),
+            'add_contact_form' => $add_contact_form,
             'confirm_form' => $confirmForm
         ));
     }
@@ -282,7 +289,14 @@ class EventController extends CommonController
         $em = $this->getDoctrine()->getManager();
         $pfe = new PersonFunctionEvent();
         $pfe->setEvent($event);
-        $form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe);
+
+        $persons = $event->getOrganization()->getPersons();
+        $add_contact_form = null;
+        if (count($persons) > 0) {
+            $form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe, ['persons' => $persons]);
+        } else {
+            $form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe);
+        }
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

@@ -348,10 +348,12 @@ class Organization
      */
     public function getPersons()
     {
-        $persons = array();
+        $persons = new ArrayCollection();
         foreach ($this->getPersonFunctionOrganizations() as $pfo) {
-            $persons += $pfo->getPersons();
+            if (!$persons->contains($pfo->getPerson()))
+                $persons->add($pfo->getPerson());
         } 
+        return $persons;
     }
 
     /**

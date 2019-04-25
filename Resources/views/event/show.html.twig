@@ -3,14 +3,6 @@
 {% block body %}
 {% include 'CrewCallBundle:event:handling.html.twig' %}
 
-<div id="add_contact_popover" class="hidden">
-{{ form_start(add_contact_form, {action:path('event_add_contact', {'access': 'ajax', 'id': event.id }), 'attr': {'id':'addContactForm'}}) }}
-{{ form_widget(add_contact_form) }}
-<input type="hidden" name="username" id="username">
-<input id="submitAddExistingPerson" type="submit" value="Add" />
-{{ form_end(add_contact_form) }}
-</div>
-
 <div class="col-sm-3" id="eventLeft">
 {% if event.parent %}
     <h1>
@@ -65,12 +57,21 @@
             <tr>
                 <th>Contacts</th>
                 <td>
-{% for c in event.persons("Contact") %}
-   {{ c }} - {{ c.mobilephonenumber }}<br />
+{% for pfe in event.personfunctionevents() %}
+   {{ pfe.person }}{% if pfe.person.mobilephonenumber %} - {{ pfe.person.mobilephonenumber }}{% endif %}
+   <a role="button" class="btn-sm btn-danger" href="{{ path('event_remove_contact', { 'id': pfe.id }) }}">Remove</a>
+<br />
 {% endfor %}
-    <div id="addContact" style="float: left">
+{% if add_contact_form is not null %}
     <a href="#" id="addContactLink" onClick="openAddContact();">Add</a>
-    </div>
+<div id="add_contact_popover_content" class="hidden">
+    {{ form_start(add_contact_form, { 'action': path('event_add_contact', {'id': event.id }), 'attr': {'id':'addContactForm'}}) }}
+    {{ form_widget(add_contact_form) }}
+    <input type="hidden" name="username" id="username">
+    <input id="submitAddExistingPerson" type="submit" value="Add" />
+    {{ form_end(add_contact_form) }}
+</div>
+{% endif %}
 
                 </td>
             </tr>

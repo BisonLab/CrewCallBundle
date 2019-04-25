@@ -21,17 +21,18 @@ class PersonEventType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-           ->add('person', UsernameFormType::class, array(
+           ->add('person', EntityType::class, array(
+                    'class' => 'CrewCallBundle:Person',
                     'label' => "Person",
+                    'choices' => $options['persons'],
                     'required' => true
                 ))
-           ->add('event', EntityType::class, array(
-                    'class' => 'CrewCallBundle:Event',
-                    'required' => true,
-                ))
-           ->add('function', EntityType::class, array(
-                    'class' => 'CrewCallBundle:FunctionEntity',
-                    'required' => true,
+           ->add('function', EntityType::class,
+               array('class' => 'CrewCallBundle:FunctionEntity',
+                   'query_builder' => function(EntityRepository $er) use ($options) {
+                       $er->setReturnQb(true);
+                       return $er->findByFunctionGroup('Event');
+                   },
                ))
         ;
     }
@@ -42,6 +43,7 @@ class PersonEventType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
+            'persons' => [],
             'data_class' => 'CrewCallBundle\Entity\PersonFunctionEvent'
         ));
     }
