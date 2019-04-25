@@ -151,7 +151,6 @@ class OrganizationController extends CommonController
 
     /**
      * Creates a new personFunctionOrganization entity.
-     * Pure REST/AJAX.
      *
      * @Route("/{id}/add_person", name="organization_add_person", methods={"GET", "POST"})
      */

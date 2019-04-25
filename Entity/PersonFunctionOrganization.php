@@ -75,7 +75,7 @@ class PersonFunctionOrganization
     public function setPerson(Person $person = null)
     {
         if ($this->person !== null) {
-            $this->person->removeOrganizationFunction($this);
+            $this->person->removePersonFunctionOrganization($this);
         }
 
         if ($person !== null) {

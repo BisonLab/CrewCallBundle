@@ -120,6 +120,10 @@ class EventController extends CommonController
         // $persons = new ArrayCollection();
         // Just gettable from organization for now, have to add location later.
         $persons = $event->getOrganization()->getPersons();
+        foreach ($event->getLocation()->getPersons() as $p) {
+            if (!$persons->contains($p))
+                $persons->add($p);
+        }
         $add_contact_form = null;
         if (count($persons) > 0) {
             $add_contact_form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe, ['persons' => $persons])->createView();
@@ -291,6 +295,10 @@ class EventController extends CommonController
         $pfe->setEvent($event);
 
         $persons = $event->getOrganization()->getPersons();
+        foreach ($event->getLocation()->getPersons() as $p) {
+            if (!$persons->contains($p))
+                $persons->add($p);
+        }
         $add_contact_form = null;
         if (count($persons) > 0) {
             $form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe, ['persons' => $persons]);
@@ -318,6 +326,7 @@ class EventController extends CommonController
                 'form' => $form->createView(),
             ));
         }
+        return $this->redirectToRoute('event_show', array('id' => $event->getId()));
     }
 
     /**

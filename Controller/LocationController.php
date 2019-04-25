@@ -2,11 +2,16 @@
 
 namespace CrewCallBundle\Controller;
 
-use CrewCallBundle\Entity\Location;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
+
+use CrewCallBundle\Entity\Location;
+use CrewCallBundle\Entity\PersonFunctionLocation;
+use CrewCallBundle\Entity\Person;
 
 /**
  * Location controller.
@@ -97,6 +102,103 @@ class LocationController extends CommonController
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
+    }
+
+    /**
+     * Creates a new personFunctionLocation entity.
+     *
+     * @Route("/{id}/add_person", name="location_add_person", methods={"GET", "POST"})
+     */
+    public function addPersonAction(Request $request, Location $location, $access)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $pfl = new PersonFunctionLocation();
+        // Default-hack
+        $pfl->setLocation($location);
+
+        $exists_form = $this->createForm('CrewCallBundle\Form\ExistingPersonLocationType', $pfl);
+        $exists_form->handleRequest($request);
+
+        $new_form = $this->createForm('CrewCallBundle\Form\NewPersonLocationType');
+        $new_form->handleRequest($request);
+
+        if ($exists_form->isSubmitted() && $exists_form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($pfl);
+            $em->flush($pfl);
+
+            if ($this->isRest($access)) {
+                return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
+            } else {
+                return $this->redirectToRoute('location_show', array('id' => $location->getId()));
+            }
+        }
+
+        if ($new_form->isSubmitted() && $new_form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $person = new Person();
+            $person->setState("EXTERNAL");
+            $new_form_data = $new_form->getData();
+            $person->setMobilePhoneNumber($new_form_data['mobile_phone_number']);
+            // Yeah, always contact. Need a default. Using just mobile phone is
+            // tempting aswell.
+            $username = "CONTACT" . (string)$person->getMobilePhoneNumber();
+            $person->setUsername($username);
+            $person->setEmail($new_form_data['email']);
+            $person->setFirstName($new_form_data['first_name']);
+            $person->setLastName($new_form_data['last_name']);
+            $person->setPlainPassword(sprintf("%16x", rand()));
+
+            $em->persist($person);
+            $pfl->setPerson($person);
+            $pfl->setFunction($new_form_data['function']);
+            $pfl->setLocation($new_form_data['location']);
+
+            $em->persist($person);
+            $em->persist($pfl);
+            $em->flush();
+
+            if ($this->isRest($access)) {
+                return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
+            } else {
+                return $this->redirectToRoute('location_show', array('id' => $location->getId()));
+            }
+        }
+
+        if ($contact = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneBy(['name' => 'Contact'])) {
+            $exists_form->get('function')->setData($contact);
+            $new_form->get('function')->setData($contact);
+        }
+        $new_form->get('location')->setData($location);
+
+        if ($this->isRest($access)) {
+            return $this->render('location/_new_pfl.html.twig', array(
+                'pfl' => $pfl,
+                'location' => $location,
+                'exists_form' => $exists_form->createView(),
+                'new_form' => $new_form->createView(),
+            ));
+        }
+    }
+
+    /**
+     * Removes a personFunctionLocation entity.
+     * Pure REST/AJAX.
+     *
+     * @Route("/{id}/remove_person", name="location_remove_person", methods={"GET", "DELETE", "POST"})
+     */
+    public function removePersonAction(Request $request, PersonFunctionLocation $pfl, $access)
+    {
+        $location = $pfl->getLocation();
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($pfl);
+        $em->flush($pfl);
+        if ($this->isRest($access)) {
+            return new JsonResponse(array("status" => "OK"),
+                Response::HTTP_OK);
+        }
+        return $this->redirectToRoute('location_show',
+            array('id' => $location->getId()));
     }
 
     /**

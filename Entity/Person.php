@@ -132,6 +132,12 @@ class Person extends BaseUser
     private $person_function_events;
 
     /**
+     * And again!
+     * @ORM\OneToMany(targetEntity="PersonFunctionLocation", mappedBy="person", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $person_function_locations;
+
+    /**
      * This is for the actual jobs.
      * @ORM\OneToMany(targetEntity="Job", mappedBy="person", fetch="EXTRA_LAZY", cascade={"remove"})
      */
@@ -156,6 +162,7 @@ class Person extends BaseUser
         parent::__construct();
         // your own logic
         $this->person_function_organizations = new ArrayCollection();
+        $this->person_function_locations = new ArrayCollection();
         $this->person_function_events = new ArrayCollection();
         $this->person_functions = new ArrayCollection();
         $this->contexts  = new ArrayCollection();
@@ -820,6 +827,40 @@ class Person extends BaseUser
     }
 
     /**
+     * Add personFunctionLocation
+     *
+     * @param \CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation
+     *
+     * @return Person
+     */
+    public function addPersonFunctionLocation(\CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation)
+    {
+        $this->person_function_locations[] = $personFunctionLocation;
+
+        return $this;
+    }
+
+    /**
+     * Remove personFunctionLocation
+     *
+     * @param \CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation
+     */
+    public function removePersonFunctionLocation(\CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation)
+    {
+        $this->person_function_locations->removeElement($personFunctionLocation);
+    }
+
+    /**
+     * Get personFunctionLocations
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPersonFunctionLocations()
+    {
+        return $this->person_function_locations;
+    }
+
+    /**
      * Get all distinct functions the person has
      *
      * @return \Doctrine\Common\Collections\Collection
@@ -841,7 +882,6 @@ class Person extends BaseUser
             if (!$functions->contains($f))
                 $functions->add($f);
         }
-        /*
         foreach ($this->getPersonFunctionLocations() as $pfl) {
             $f = $pfl->getFunction();
             if ($function_type && $f->getFunctionType() != $function_type)
@@ -849,7 +889,6 @@ class Person extends BaseUser
             if (!$functions->contains($f))
                 $functions->add($f);
         }
-        */
         foreach ($this->getPersonFunctionOrganizations() as $pfo) {
             $f = $pfo->getFunction();
             if ($function_type && $f->getFunctionType() != $function_type)

@@ -3,7 +3,7 @@
 {% block body %}
 {% include 'CrewCallBundle:event:handling.html.twig' %}
 
-<div class="col-sm-3" id="eventLeft">
+<div class="col-sm-4" id="eventLeft">
 {% if event.parent %}
     <h1>
     <a href="{{ path('event_show', {'id': event.parent.id}) }}">{{ event.parent }}</a> -> {{ event.name }}
@@ -50,7 +50,7 @@
             <tr>
                 <th>Location</th>
                 <td>
-                    <a href="{{ path('organization_show', { 'id': event.location.id }) }}">{{ event.location.name }}</a>
+                    <a href="{{ path('location_show', { 'id': event.location.id }) }}">{{ event.location.name }}</a>
                 </td>
             </tr>
 {% endif %}
@@ -128,7 +128,7 @@
     </table>
 </div>
 
-<div class="col-sm-9" id="eventRight">
+<div class="col-sm-8" id="eventRight">
   <ul class="nav nav-tabs">
   <li class="active">
   <a href="#shiftstab" data-toggle="tab">Shifts</a>

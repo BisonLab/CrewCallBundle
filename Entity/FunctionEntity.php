@@ -104,6 +104,11 @@ class FunctionEntity
     private $person_function_organizations;
 
     /**
+     * @ORM\OneToMany(targetEntity="PersonFunctionLocation", mappedBy="function", cascade={"remove"})
+     */
+    private $person_function_locations;
+
+    /**
      * @ORM\OneToMany(targetEntity="PersonFunctionEvent", mappedBy="function", cascade={"remove"})
      */
     private $person_function_events;
@@ -395,6 +400,40 @@ class FunctionEntity
     public function getPersonFunctionOrganizations()
     {
         return $this->person_function_organizations;
+    }
+
+    /**
+     * Add personFunctionLocation
+     *
+     * @param \CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation
+     *
+     * @return Person
+     */
+    public function addPersonFunctionLocation(\CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation)
+    {
+        $this->person_function_locations[] = $personFunctionLocation;
+
+        return $this;
+    }
+
+    /**
+     * Remove personFunctionLocation
+     *
+     * @param \CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation
+     */
+    public function removePersonFunctionLocation(\CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation)
+    {
+        $this->person_function_locations->removeElement($personFunctionLocation);
+    }
+
+    /**
+     * Get personFunctionLocations
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPersonFunctionLocations()
+    {
+        return $this->person_function_locations;
     }
 
     /**

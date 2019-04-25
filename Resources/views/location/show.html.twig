@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% include 'CrewCallBundle:location:handling.html.twig' %}
 <div class="col-sm-3">
     <h1>{{ location }}</h1>
 
@@ -44,6 +45,12 @@
 <div class="col-sm-9" id="eventRight">
   <ul id="tabRight" class="nav nav-tabs">
   <li class="active">
+  <a href="#eventstab" data-toggle="tab">Events</a>
+  </li>
+  <li>
+  <a href="#peopletab" data-toggle="tab">People</a>
+  </li>
+  <li>
   <a href="#notestab" data-toggle="tab">Notes</a>
   </li>
   <li>
@@ -51,8 +58,48 @@
   </li>
   </ul>
 
-  <div class="tab-content ">
-    <div class="tab-pane active" id="notestab">
+<div class="tab-content">
+    <div class="tab-pane active" id="eventstab">
+    {% include 'CrewCallBundle:event:_index.html.twig' with { 'events': location.events('ASC'), 'sorted': true, 'past': true } %}
+    </div>
+
+  <div class="tab-pane" id="peopletab">
+
+    <div id="addExistingPerson" style="float: left">
+    <a href="#" onClick="grabAddExistingPersonForm();"><button>Add person</button></a><br>
+    </div>
+
+    <table id="apTable" class="table table-sm">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Function</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pfl in location.personfunctionlocations %}
+        <tr>
+        <td>
+            <a href="{{ path('person_show', { 'id': pfl.person.id }) }}">
+            {{ pfl.person }}
+            </a>
+        </td>
+        <td>{{ pfl.person.email }}</td>
+        <td>{{ pfl.person.mobilephonenumber }}</td>
+        <td>{{ pfl.function }}</td>
+        <td>
+            <a role="button" class="btn-sm btn-danger" href="{{ path('location_remove_person', { 'id': pfl.id }) }}">Remove</a>
+        </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+ </div>
+
+    <div class="tab-pane" id="notestab">
       {% set mconf = {'mconfig': {
               'formname': 'locationnote',
               'reload_after_post': true,

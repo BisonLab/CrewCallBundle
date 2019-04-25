@@ -1,0 +1,64 @@
+<script>
+function grabAddExistingPersonForm() {
+    url = "{{ path('location_add_person', { 'access': 'ajax', 'id': location.id }) }}";
+    $.get(url, function( data ) {
+        $( "#addExistingPerson" ).html(data);
+        $( "#crewcallbundle_pfl_location").hide();
+        $( "#crewcallbundle_pfl_location").prev().hide();
+        $( "#crewcallbundle_add_new_person_loc_location").hide();
+        $( "#crewcallbundle_add_new_person_loc_location").prev().hide();
+        $( "#submitAddExistingPerson").hide();
+        $( "#pfl_notfound" ).hide();
+        $( "#addExistingPersonForm" ).submit(function( event ) {
+            event.preventDefault();
+            submitAddExistingPersonForm();
+        });
+        $( "#crewcallbundle_pfl_person" ).autocomplete({
+          source: "{{ path('user_search', {'access': 'ajax', 'value_with_email': true }) }}",
+          minLength: 2,
+          response: function(event, ui) {
+            if (ui.content.length === 0) {
+                $("#pfl_notfound").show();
+            } else {
+                $("#pfl_notfound").hide();
+            }
+          },
+          select: function(event, ui) {
+                $("#submitAddExistingPerson").show();
+                $( "#addExistingPersonForm #crewcallbundle_pfl_person" ).val(ui.item.value);
+                $( "#addExistingPersonForm #username" ).val(ui.item.username);
+          }
+         });
+    });
+    return false;
+}
+
+function submitAddExistingPersonForm() {
+    username = $( "#addExistingPersonForm #username" ).val();
+    $( "#addExistingPersonForm #crewcallbundle_pfl_person" ).val(username);
+    formData = $( "#addExistingPersonForm" ).serialize();
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('location_add_person', { 'access': 'ajax', 'id': location.id }) }}",
+        data: formData,
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 201) {
+                // Gotta reload. Easiest way to recount everything.
+                parent.location.reload();
+            } else {
+                $( "#addPerson" ).html(xhr.responseText);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Failed adding person\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+</script>

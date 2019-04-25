@@ -97,6 +97,11 @@ class Location
     private $events;
 
     /**
+     * @ORM\OneToMany(targetEntity="PersonFunctionLocation", mappedBy="location", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $person_function_locations;
+
+    /**
      * @ORM\OneToMany(targetEntity="LocationContext", mappedBy="owner", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
      */
     private $contexts;
@@ -106,6 +111,7 @@ class Location
         $this->children = new ArrayCollection();
         $this->address = new EmbeddableAddress();
         $this->events  = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->person_function_locations = new ArrayCollection();
         $this->contexts = new ArrayCollection();
     }
 
@@ -318,6 +324,70 @@ class Location
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /*
+     * The big "Does this work or not" is wether this getter should include
+     * *all* functions. Alas also those in the person_* tables. I say "Yes", but
+     * then it's not that easy to handle these functions in picker-forms.
+     */
+    public function getPersonFunctionLocations()
+    {
+        return $this->person_function_locations;
+    }
+
+    public function addPersonFunctionLocation(PersonFunctionLocation $pfo)
+    {
+        if (!$this->person_function_locations->contains($pfo)) {
+            $this->person_function_locations->add($pfo);
+        }
+        return $this;
+    }
+
+    public function removePersonFunctionLocation(PersonFunctionLocation $pfo)
+    {
+        if ($this->person_function_locations->contains($pfo)) {
+            $this->person_function_locations->removeElement($pfo);
+        }
+        return $this;
+    }
+
+    /*
+     * The downside of this "helper" is that we don't see the function, aka
+     * what they do in the location.
+     */
+    public function getPersons()
+    {
+        $persons = new ArrayCollection();
+        foreach ($this->getPersonFunctionLocations() as $pfo) {
+            if (!$persons->contains($pfo->getPerson()))
+                $persons->add($pfo->getPerson());
+        } 
+        return $persons;
+    }
+
+    /**
+     * Get events
+     *
+     * @return objects 
+     */
+    public function getEvents($sort_order = null)
+    {
+        if ($sort_order == "ASC") {
+            $iterator = $this->events->getIterator();
+            $iterator->uasort(function ($a, $b) {
+                return ($a->getStart()->format("U") < $b->getStart()->format("U")) ? -1 : 1;
+            });
+            return new ArrayCollection(iterator_to_array($iterator));
+        }
+        if ($sort_order == "DESC") {
+            $iterator = $this->events->getIterator();
+            $iterator->uasort(function ($a, $b) {
+                return ($a->getStart()->format("U") > $b->getStart()->format("U")) ? -1 : 1;
+            });
+            return new ArrayCollection(iterator_to_array($iterator));
+        }
+        return $this->events;
     }
 
     /**
