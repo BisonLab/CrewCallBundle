@@ -1,10 +1,12 @@
 <script>
 function grabAddExistingPersonForm() {
-    url = "{{ path('organization_add_existing_person', { 'access': 'ajax', 'id': organization.id }) }}";
+    url = "{{ path('organization_add_person', { 'access': 'ajax', 'id': organization.id }) }}";
     $.get(url, function( data ) {
         $( "#addExistingPerson" ).html(data);
         $( "#crewcallbundle_pfo_organization").hide();
         $( "#crewcallbundle_pfo_organization").prev().hide();
+        $( "#crewcallbundle_add_new_person_org_organization").hide();
+        $( "#crewcallbundle_add_new_person_org_organization").prev().hide();
         $( "#submitAddExistingPerson").hide();
         $( "#pfo_notfound" ).hide();
         $( "#addExistingPersonForm" ).submit(function( event ) {
@@ -23,7 +25,6 @@ function grabAddExistingPersonForm() {
           },
           select: function(event, ui) {
                 $("#submitAddExistingPerson").show();
-console.log(ui.item);
                 $( "#addExistingPersonForm #crewcallbundle_pfo_person" ).val(ui.item.value);
                 $( "#addExistingPersonForm #username" ).val(ui.item.username);
           }
@@ -36,15 +37,12 @@ function submitAddExistingPersonForm() {
     username = $( "#addExistingPersonForm #username" ).val();
     $( "#addExistingPersonForm #crewcallbundle_pfo_person" ).val(username);
     formData = $( "#addExistingPersonForm" ).serialize();
-console.log("Submitting");
-console.log(username);
-console.log(formData);
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");
         },
         type: "POST",
-        url: "{{ path('organization_add_existing_person', { 'access': 'ajax', 'id': organization.id }) }}",
+        url: "{{ path('organization_add_person', { 'access': 'ajax', 'id': organization.id }) }}",
         data: formData,
         dataType: "text",
         async: true,
@@ -63,61 +61,4 @@ console.log(formData);
     return false;
 }
 
-{#
-function grabAddNewPersonForm() {
-    url = "{{ path('organization_add_new_person', { 'access': 'ajax', 'id': organization.id }) }}";
-    $.get(url, function( data ) {
-        $( "#addNewPerson" ).html(data);
-        $( "#crewcallbundle_pfo_organization").hide();
-        $( "#crewcallbundle_pfo_organization").prev().hide();
-        $( "#pfo_notfound" ).hide();
-        $( "#addNewPerson" ).submit(function( event ) {
-            event.preventDefault();
-            submitAddNewPersonForm();
-        });
-        $( "#crewcallbundle_pfo_person" ).autocomplete({
-          source: "{{ path('user_search', {'access': 'ajax'}) }}",
-          minLength: 2,
-          response: function(event, ui) {
-            if (ui.content.length === 0) {
-                $("#pfo_notfound").show();
-            } else {
-                $("#pfo_notfound").hide();
-                $( "#addNewPersonForm #crewcallbundle_pfo_person" ).val(ui.item.value);
-                $( "#addNewPersonForm #username" ).val(ui.item.username);
-            }
-          }
-         });
-    });
-    return false;
-}
-
-function submitAddNewPersonForm() {
-    username = $( "#addNewPersonForm #username" ).val();
-    $( "#addNewPersonForm #crewcallbundle_pfo_person" ).val(username);
-    formData = $( "#addNewPersonForm" ).serialize();
-    $.ajax({
-        beforeSend: function(req) {
-          req.setRequestHeader("Accept", "application/json");
-        },
-        type: "POST",
-        url: "{{ path('organization_add_new_person', { 'access': 'ajax', 'id': organization.id }) }}",
-        data: formData,
-        dataType: "text",
-        async: true,
-      }).done( function( cont, textStatus, xhr ) {
-            if (xhr.status == 201) {
-                // Gotta reload. Easiest way to recount everything.
-                parent.location.reload();
-            } else {
-                $( "#addPerson" ).html(xhr.responseText);
-            }
-      }).fail(function(xhr, status, error) {
-            errmsg = "Failes adding person\n";
-            errmsg = errmsg + xhr.responseText + "\n";
-            alert(errmsg);
-    });
-    return false;
-}
-#}
 </script>

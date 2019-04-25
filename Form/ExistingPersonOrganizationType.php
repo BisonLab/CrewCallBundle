@@ -21,7 +21,7 @@ class ExistingPersonOrganizationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-           ->add('person', UsernameFormType::class, array('label' => "Person", 'required' => true))
+           ->add('person', UsernameFormType::class, array('label' => "Search person, name or email address", 'required' => true))
            ->add('organization', EntityType::class,
                array('class' => 'CrewCallBundle:Organization'))
            ->add('function', EntityType::class,

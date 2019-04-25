@@ -11,6 +11,7 @@ use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 use CrewCallBundle\Entity\Organization;
 use CrewCallBundle\Entity\PersonFunctionOrganization;
+use CrewCallBundle\Entity\Person;
 
 /**
  * Organization controller.
@@ -152,20 +153,22 @@ class OrganizationController extends CommonController
      * Creates a new personFunctionOrganization entity.
      * Pure REST/AJAX.
      *
-     * @Route("/{id}/add_exitsting_person", name="organization_add_existing_person", methods={"GET", "POST"})
+     * @Route("/{id}/add_person", name="organization_add_person", methods={"GET", "POST"})
      */
-    public function addExistingPersonAction(Request $request, Organization $organization, $access)
+    public function addPersonAction(Request $request, Organization $organization, $access)
     {
         $em = $this->getDoctrine()->getManager();
         $pfo = new PersonFunctionOrganization();
         // Default-hack
-        if ($contact = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneBy(['name' => 'Contact']))
-            $pfo->setFunction($contact);
         $pfo->setOrganization($organization);
-        $form = $this->createForm('CrewCallBundle\Form\ExistingPersonOrganizationType', $pfo);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $exists_form = $this->createForm('CrewCallBundle\Form\ExistingPersonOrganizationType', $pfo);
+        $exists_form->handleRequest($request);
+
+        $new_form = $this->createForm('CrewCallBundle\Form\NewPersonOrganizationType');
+        $new_form->handleRequest($request);
+
+        if ($exists_form->isSubmitted() && $exists_form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($pfo);
             $em->flush($pfo);
@@ -177,11 +180,49 @@ class OrganizationController extends CommonController
             }
         }
 
+        if ($new_form->isSubmitted() && $new_form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $person = new Person();
+            $person->setState("EXTERNAL");
+            $new_form_data = $new_form->getData();
+            $person->setMobilePhoneNumber($new_form_data['mobile_phone_number']);
+            // Yeah, always contact. Need a default. Using just mobile phone is
+            // tempting aswell.
+            $username = "CONTACT" . (string)$person->getMobilePhoneNumber();
+            $person->setUsername($username);
+            $person->setEmail($new_form_data['email']);
+            $person->setFirstName($new_form_data['first_name']);
+            $person->setLastName($new_form_data['last_name']);
+            $person->setPlainPassword(sprintf("%16x", rand()));
+
+            $em->persist($person);
+            $pfo->setPerson($person);
+            $pfo->setFunction($new_form_data['function']);
+            $pfo->setOrganization($new_form_data['organization']);
+
+            $em->persist($person);
+            $em->persist($pfo);
+            $em->flush();
+
+            if ($this->isRest($access)) {
+                return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
+            } else {
+                return $this->redirectToRoute('organization_show', array('id' => $organization->getId()));
+            }
+        }
+
+        if ($contact = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneBy(['name' => 'Contact'])) {
+            $exists_form->get('function')->setData($contact);
+            $new_form->get('function')->setData($contact);
+        }
+        $new_form->get('organization')->setData($organization);
+
         if ($this->isRest($access)) {
             return $this->render('organization/_new_pfo.html.twig', array(
                 'pfo' => $pfo,
                 'organization' => $organization,
-                'form' => $form->createView(),
+                'exists_form' => $exists_form->createView(),
+                'new_form' => $new_form->createView(),
             ));
         }
     }

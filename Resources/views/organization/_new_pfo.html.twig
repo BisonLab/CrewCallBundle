@@ -1,6 +1,17 @@
-<div id="pfo_notfound">No results found</div>
-{{ form_start(form, {action:path('organization_add_existing_person', {'access': 'ajax', 'id': organization.id }), 'attr': {'id':'addExistingPersonForm'}}) }}
-    {{ form_widget(form) }}
-    <input type="hidden" name="username" id="username">
-    <input id="submitAddExistingPerson" type="submit" value="Add" />
-{{ form_end(form) }}
+<div class="row">
+    <div class="col-sm-6">
+    {{ form_start(exists_form, {action:path('organization_add_person', {'access': 'ajax', 'id': organization.id }), 'attr': {'id':'addExistingPersonForm'}}) }}
+        {{ form_widget(exists_form) }}
+        <input type="hidden" name="username" id="username">
+        <input id="submitAddExistingPerson" type="submit" value="Add" />
+    {{ form_end(exists_form) }}
+    </div>
+
+    <div id="pfo_notfound" class="col-sm-6">
+        <strong>No results found, add a new person</strong>
+        {{ form_start(new_form, {action:path('organization_add_person', {'id': organization.id }), 'attr': {'id':'addNewPersonForm'}}) }}
+            {{ form_widget(new_form) }}
+            <input id="submitAddNewPerson" type="submit" value="Create and add" />
+        {{ form_end(new_form) }}
+    </div>
+</div>

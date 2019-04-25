@@ -40,10 +40,10 @@
 
     <ul>
         <li>
-           <a href="#" id="popLogSummary_organization_{{ organization.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('organization', {{ organization.id }});"> Changes </a><br>
+           <a href="#" id="popLogSummary_organization_{{ organization.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('organization', {{ organization.id }});"><button>Changes</button></a><br>
         </li>
         <li>
-            <a href="{{ path('organization_edit', { 'id': organization.id }) }}">Edit</a>
+            <a href="{{ path('organization_edit', { 'id': organization.id }) }}"><button>Edit</button></a>
         </li>
         <li>
             {{ form_start(delete_form) }}

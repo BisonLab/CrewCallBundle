@@ -157,6 +157,7 @@ class Person extends BaseUser
         // your own logic
         $this->person_function_organizations = new ArrayCollection();
         $this->person_function_events = new ArrayCollection();
+        $this->person_functions = new ArrayCollection();
         $this->contexts  = new ArrayCollection();
         $this->jobs  = new ArrayCollection();
         $this->person_states  = new ArrayCollection();
