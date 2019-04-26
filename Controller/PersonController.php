@@ -204,9 +204,10 @@ class PersonController extends CommonController
         $states = $person->getStates();
         
         $calitems = array_merge(
-            $calendar->toFullCalendarArray($jobs, $this->getUser()),
-            $calendar->toFullCalendarArray($states, $this->getUser())
+            $calendar->toFullCalendarArray($jobs, $person),
+            $calendar->toFullCalendarArray($states, $person)
         );
+        $calitems = $calendar->toFullCalendarSummary($jobs, $person);
         // Not liked by OWASP since we just return an array.
         return new JsonResponse($calitems, Response::HTTP_OK);
     }

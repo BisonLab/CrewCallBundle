@@ -476,9 +476,9 @@ error_log("Deleting " . (string)$job);
         $to_t   = strtotime($to);
         // 20 days and above? Summary it is.        
         if (($to_t - $from_t) > 1728000) {
-            $calitems = $calendar->toFullCalendarSummary($jobs, $this->getUser());
+            $calitems = $calendar->toFullCalendarSummary($jobs, $user);
         } else {
-            $calitems = $calendar->toFullCalendarArray($jobs);
+            $calitems = $calendar->toFullCalendarArray($jobs, $user);
         }
         return new JsonResponse($calitems, Response::HTTP_OK);
     }
