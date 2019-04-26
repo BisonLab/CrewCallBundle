@@ -65,13 +65,26 @@ class Builder implements ContainerAwareInterface
 
             if (count($fpnl_type->getMessages()) > 0) {
                 $fpm = $fpnl_type->getMessages()[0];
-                $adminmenu->addChild('Edit front page message',
+                $adminmenu->addChild('Edit login page message',
                     array('route' => 'message_edit',
                     'routeParameters' => array('id' => $fpm->getId())));
             } else {
-                $adminmenu->addChild('Add front page message (not logged in)',
+                $adminmenu->addChild('Add login page message',
                     array('route' => 'message_new',
                     'routeParameters' => array('message_type' => $fpnl_type)));
+            }
+
+            $fpl_type = $sakonnin->getMessageType('Front page logged in');
+
+            if (count($fpl_type->getMessages()) > 0) {
+                $fpm = $fpl_type->getMessages()[0];
+                $adminmenu->addChild('Edit front page announcement',
+                    array('route' => 'message_edit',
+                    'routeParameters' => array('id' => $fpm->getId())));
+            } else {
+                $adminmenu->addChild('Add front page announcement',
+                    array('route' => 'message_new',
+                    'routeParameters' => array('message_type' => $fpl_type)));
             }
 
             $adminmenu->addChild('Message Types',
