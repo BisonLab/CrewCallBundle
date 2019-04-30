@@ -755,6 +755,7 @@ error_log("Deleting " . (string)$job);
             $eventarr = [
                 'name' => (string)$event,
                 'id' => $event->getId(),
+                'description' => $event->getDescription(),
                 'location' => [
                     'name' => $location->getName(),
                 ],
