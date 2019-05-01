@@ -13,6 +13,7 @@ function setStateOnMessage(message_id, state) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             $('#sakonninmessage_' + message_id).hide();
+console.log("State set");
       }).fail(function(xhr, status, error) {
             errmsg = "Failed changing state\n";
             errmsg = errmsg + xhr.responseText + "\n";

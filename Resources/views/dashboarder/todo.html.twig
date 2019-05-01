@@ -3,8 +3,8 @@
 <h3>Todo</h3>
 <div id="todo">
 {% for message in sakonnin_messages.messagetype('TODO').messages if message.state == "UNCHECKED" %}
+  {% if is_granted('show', message) %}
   <div id="sakonninmessage_{{ message.id}}">
-    {% if is_granted('show', message) %}
         {% if message.subject is not empty %}
             <h3>{{ message.subject }}</h3>
         {% endif %}
@@ -13,7 +13,6 @@
         {{ message.body }}
         <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'CHECKED');"><button>Done!</button></a><br>
         </pre>
-    {% endif %}
     {% if is_granted('edit', message) %}
         <div class="col-sm-1">
         <a href="#" onClick='grabEditMessageForm({{ message.id }});'><button class="dabatdbutton">Edit</button></a>
@@ -21,6 +20,7 @@
     {% endif %}
     </div>
   </div>
+ {% endif %}
 {% endfor %}
 </div>
     {% set mconf = {'mconfig': {

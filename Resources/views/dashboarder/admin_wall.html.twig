@@ -2,8 +2,8 @@
 {% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' with { 'reload_after_post': true, 'title': "Edit Admin Wall" } %}
 <div id="admin_wall">
 {% for message in sakonnin_messages.messagetype('Admin Wall').messages if message.state == "SHOW" or message.state == "UNREAD" %}
+  {% if is_granted('show', message) %}
   <div id="sakonninmessage_{{ message.id}}">
-    {% if is_granted('show', message) %}
     {% if message.subject is not empty %}
         <h3>{{ message.subject }}</h3>
     {% endif %}
@@ -11,7 +11,6 @@
     <pre wrap class="ccNotesText col-sm-10">
     {{ message.body }}
     </pre>
-    {% endif %}
       <div class="col-sm-1">
         <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');"><button>Archive</button></a><br>
         {% if is_granted('edit', message) %}
@@ -20,6 +19,7 @@
       </div>
     </div>
  </div>
+ {% endif %}
 {% endfor %}
       {% set mconf = {'mconfig': {
               'formname': 'c_adminwall',

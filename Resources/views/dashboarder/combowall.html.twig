@@ -1,0 +1,124 @@
+{% include 'CrewCallBundle:dashboarder:handling.html.twig' %}
+{% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' with { 'reload_after_post': true } %}
+<div id="combowall">
+{% set criterias = {
+    'message_types': ['Admin Wall', 'TODO'],
+    'states': ['UNREAD', 'UNCHECKED', 'CHECKED', 'SHOW'],
+    }
+%}
+{% for message in sakonnin_messages.messages(criterias) %}
+    {% if is_granted('show', message) %}
+     {% if message.messagetype == "TODO" %}
+       <div id="sakonninmcheck{{ message.id}}">
+     {% else %}
+       <div id="sakonninmessage_{{ message.id}}">
+     {% endif %}
+      <div class="row">
+<pre wrap class="ccNotesText col-sm-9">
+{{ message.body }}
+</pre>
+        
+        <div class="col-sm-1">
+        {% if message.messagetype == "TODO" %}
+            <label class="cc_switch">
+              <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState({{ message.id }}, this)" />
+              <span class="cc_slider round"></span>
+            </label><br>
+        {% else %}
+            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');"><button>Archive</button></a><br>
+        {% endif %}
+        {% if is_granted('edit', message) %}
+            <a href="#" onClick='grabEditMessageForm({{ message.id }});'><button class="dabatdbutton">Edit</button></a>
+        {% endif %}
+        </div>
+    </div>
+  </div>
+ {% endif %}
+{% endfor %}
+</div>
+<script type="text/javascript">
+
+function setCheckboxState(message_id, elem) {
+    if (elem.checked) {
+        setStateOnMessage(message_id, "CHECKED");
+    } else {
+        setStateOnMessage(message_id, "UNCHECKED");
+    }
+}
+
+$(document).ready(function() {
+    $( "#message_data_message_type" ).val({{ sakonnin_messages.messagetype('Admin Wall').id }});
+} );
+
+function createCombo() {
+    $( "#createcombo" ).modal();
+    return false;
+}
+
+function submitComboForm() {
+    formdata = $( "#createcomboform" ).serialize();
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('message_create', { 'access': 'ajax' }) }}",
+        data: $( "#createcomboform" ).serialize(),
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            $( "#createcombo" ).modal("hide");
+            parent.location.reload();
+      }).fail(function(xhr, status, error) {
+            errmsg = "Combo sending failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+function setMessageType(elem) {
+    if (elem.checked) {
+        $( "#message_data_message_type" ).val({{ sakonnin_messages.messagetype('TODO').id }});
+    } else {
+        $( "#message_data_message_type" ).val({{ sakonnin_messages.messagetype('Admin Wall').id }});
+    }
+}
+</script>
+
+<div class="modal fade" id="createcombo" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Add another</h4>
+      </div>
+      <div class="modal-body">
+        {% set mform = sakonnin_messages.getCreateForm({
+            'message_data': {},
+            'create_view': true,
+            'formname': 'combowall'
+         }) %}
+
+        <label class="cc_switch">
+        <input type="checkbox" id="mtypecheck" onChange="setMessageType(this)" />
+        <span class="cc_slider round"></span>
+        </label>
+        <strong>Todo</strong>
+
+        <form id="createcomboform" method="POST" action="{{ path('message_create', { 'access': 'ajax' }) }}" onSubmit="return submitComboForm();">
+        {{ form_row(mform.body)}} 
+<span class="hidden">
+        {{ form_row(mform.message_type)}} 
+</span>
+        {{ form_row(mform.expire_at)}} 
+        <input type="submit" name="submit" value="Save">
+        {{ form_widget(mform._token)}} 
+        </form>
+    </div>
+  </div>
+ </div>
+</div>
+
+<a href="#" onClick='createCombo();'><button>Add another</button></a>
+</div>
