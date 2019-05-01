@@ -1,0 +1,23 @@
+<script>
+/* This must be overkill from h*/
+function setStateOnMessage(message_id, state) {
+    cheat_url = "{{ path('message_state', { 'id': 0, 'state': 'NONE', 'access': 'ajax' }) }}";
+    c_url = cheat_url.replace("0", message_id);
+    url = c_url.replace("NONE", state);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "POST",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            $('#sakonninmessage_' + message_id).hide();
+      }).fail(function(xhr, status, error) {
+            errmsg = "Failed changing state\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+</script>

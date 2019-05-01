@@ -1,26 +1,4 @@
-<script>
-/* This must be overkill from h*/
-function setStateOnMessage(message_id, state) {
-    cheat_url = "{{ path('message_state', { 'id': 0, 'state': 'NONE', 'access': 'ajax' }) }}";
-    c_url = cheat_url.replace("0", message_id);
-    url = c_url.replace("NONE", state);
-    $.ajax({
-        beforeSend: function(req) {
-          req.setRequestHeader("Accept", "application/json");
-        },
-        url: url,
-        type: "POST",
-        async: true,
-      }).done( function( cont, textStatus, xhr ) {
-            $('#personnote_' + message_id).hide();
-      }).fail(function(xhr, status, error) {
-            errmsg = "Failed changing state\n";
-            errmsg = errmsg + xhr.responseText + "\n";
-            alert(errmsg);
-    });
-    return false;
-}
-</script>
+{% include 'CrewCallBundle:dashboarder:handling.html.twig' %}
 {% set mlogcontext = {
             'system': 'crewcall',
             'object_name': 'person',
@@ -33,7 +11,7 @@ function setStateOnMessage(message_id, state) {
 <h3>Messages to you</h3>
 {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
 {% if is_granted('show', note) %}
-<div id="personnote_{{ note.id}}">
+<div id="sakonninmessage_{{ note.id}}">
 <strong>{{ note.subject }}</strong>
 <pre wrap class="ccNotesText">
 {{ note.body }}
@@ -43,7 +21,7 @@ function setStateOnMessage(message_id, state) {
 {% endif %}
 {% endfor %}
 {% for note in sakonnin_messages.MessagesForUser(app.user, {'state': 'UNREAD'}) %}
-<div id="personnote_{{ note.id}}">
+<div id="sakonninmessage_{{ note.id}}">
 <strong>{{ note.subject }}</strong>
 <pre wrap>
 {{ note.body }}

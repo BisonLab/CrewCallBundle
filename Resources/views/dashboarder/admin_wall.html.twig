@@ -1,20 +1,40 @@
-{% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' with { 'reload_after_post': true } %}
+{% include 'CrewCallBundle:dashboarder:handling.html.twig' %}
+{% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' with { 'reload_after_post': true, 'title': "Edit Admin Wall" } %}
 <div id="admin_wall">
-{% for message in sakonnin_messages.messagetype('Admin Wall').messages if message.state == "SHOW" %}
-{% if is_granted('show', message) %}
-{% if message.subject is not empty %}
-    <h3>{{ message.subject }}</h3>
-{% endif %}
-<div class="row">
-<pre wrap class="ccNotesText col-sm-11">
-{{ message.body }}
-</pre>
-{% endif %}
-{% if is_granted('edit', message) %}
-<div class="col-sm-1">
-<a href="#" onClick='grabEditMessageForm({{ message.id }});'><button class="dabatdbutton">Edit</button></a>
-</div>
-{% endif %}
-</div>
+{% for message in sakonnin_messages.messagetype('Admin Wall').messages if message.state == "SHOW" or message.state == "UNREAD" %}
+  <div id="sakonninmessage_{{ message.id}}">
+    {% if is_granted('show', message) %}
+    {% if message.subject is not empty %}
+        <h3>{{ message.subject }}</h3>
+    {% endif %}
+    <div class="row">
+    <pre wrap class="ccNotesText col-sm-10">
+    {{ message.body }}
+    </pre>
+    {% endif %}
+      <div class="col-sm-1">
+        <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');"><button>Archive</button></a><br>
+        {% if is_granted('edit', message) %}
+        <a href="#" onClick='grabEditMessageForm({{ message.id }});'><button class="dabatdbutton">Edit</button></a>
+        {% endif %}
+      </div>
+    </div>
+ </div>
 {% endfor %}
+      {% set mconf = {'mconfig': {
+              'formname': 'c_adminwall',
+              'reload_after_post': true,
+              'subject': "",
+              'state': "SHOW",
+              'to_type': false,
+              'from_type': false,
+              'to_field': false,
+              'from_field': false,
+              'message_type': 'Admin Wall',
+              'context': null
+              }
+          }
+      %}
+{% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+<a href="#" onClick='createMessage("c_adminwall");'><button>Add another</button></a>
 </div>

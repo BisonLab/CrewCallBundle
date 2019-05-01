@@ -1,2 +1,36 @@
+{% include 'CrewCallBundle:dashboarder:handling.html.twig' %}
+{% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' with { 'reload_after_post': true } %}
 <h3>Todo</h3>
-<p>Nothing yet</p>
+<div id="todo">
+{% for message in sakonnin_messages.messagetype('TODO').messages if message.state == "UNCHECKED" %}
+  <div id="sakonninmessage_{{ message.id}}">
+    {% if is_granted('show', message) %}
+        {% if message.subject is not empty %}
+            <h3>{{ message.subject }}</h3>
+        {% endif %}
+      <div class="row">
+        <pre wrap class="ccNotesText col-sm-11">
+        {{ message.body }}
+        <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'CHECKED');"><button>Done!</button></a><br>
+        </pre>
+    {% endif %}
+    {% if is_granted('edit', message) %}
+        <div class="col-sm-1">
+        <a href="#" onClick='grabEditMessageForm({{ message.id }});'><button class="dabatdbutton">Edit</button></a>
+        </div>
+    {% endif %}
+    </div>
+  </div>
+{% endfor %}
+</div>
+    {% set mconf = {'mconfig': {
+            'formname': 'todocheck',
+            'reload_after_post': true,
+            'message_type': 'TODO',
+            'submit': 'Save'
+            }
+        }
+    %}
+{% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
+<a href="#" onClick='createCheck("todocheck");'><button>Add another</button></a>
+</div>
