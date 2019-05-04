@@ -309,7 +309,7 @@ class Location
      *
      * @return Location
      */
-    public function setAddress(EmbeddableAddress $Address)
+    public function setAddress(EmbeddableAddress $address)
     {
         $this->address = $address;
 
