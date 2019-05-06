@@ -693,7 +693,7 @@ error_log("Deleting " . (string)$job);
                     'id' => $shift->getId(),
                     'function' => (string)$shift->getFunction(),
                     'start_date' => $shift->getStart()->format("Y-m-d H:i"),
-                    'start_string' => $shift->getStart()->format("d M H:i"),
+                    'start_string' => $shift->getStart()->format("d.m.y H:i"),
                     'end_date' => $shift->getEnd()->format("Y-m-d H:i"),
                     'end_string' => $shift->getEnd()->format("d M H:i"),
                 ],
