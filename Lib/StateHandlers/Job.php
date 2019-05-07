@@ -22,6 +22,7 @@ class Job
                 'job'    => $job,
                 'event'  => $job->getEvent(),
                 'person' => $job->getPerson(),
+                'function' => $job->getFunction(),
             );
             if ($to == "CONFIRMED")
                 $template = 'confirm-sms';
