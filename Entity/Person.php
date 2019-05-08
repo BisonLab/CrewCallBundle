@@ -609,8 +609,6 @@ class Person extends BaseUser
      */
     public function getEnabled()
     {
-        // TODO: Make this work again.
-            return true;
         if (in_array($this->getState(),
                 ExternalEntityConfig::getEnableLoginStatesFor('Person'))) {
             return true;
