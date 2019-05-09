@@ -229,6 +229,11 @@ class Person extends BaseUser
         $this->full_name =  $this->getFirstName() . " " . $this->getLastName();
     }
 
+    public function getName()
+    {
+        return $this->full_name ?: $this->getUserName();
+    }
+
     public function getFullName()
     {
         return $this->full_name ?: $this->getUserName();
