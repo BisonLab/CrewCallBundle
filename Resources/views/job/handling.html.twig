@@ -59,7 +59,7 @@ function grabNewJobForm(shift_id) {
             submitNewJobForm(shift_id);
         });
         $( "#crewcallbundle_job_person" ).autocomplete({
-          source: "{{ path('user_search', {'access': 'ajax'}) }}",
+          source: "{{ path('person_search', {'state': "ACTIVE", 'access': 'ajax'}) }}",
           minLength: 2,
           select: function( event, ui ) {
             $( "#newJobForm #crewcallbundle_job_person" ).val(ui.item.value);

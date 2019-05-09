@@ -5,7 +5,7 @@ $(document).ready(function() {
     $( '#jwcheck_Time' ).attr('checked', false)
 
     $( "#filter_username" ).autocomplete({
-      source: "{{ path('user_search', {'access': 'ajax'}) }}",
+      source: "{{ path('person_search', {'access': 'ajax'}) }}",
       minLength: 2,
       select: function( event, ui ) {
         $( "#filter_username" ).val(ui.item.label);

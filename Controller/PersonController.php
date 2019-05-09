@@ -467,4 +467,85 @@ class PersonController extends CommonController
         $userManager->updateUser($person);
         return $this->redirectToRoute('person_show', array('id' => $person->getId()));
     }
+
+    /**
+     * @Route("/search", name="person_search", methods={"GET"})
+     */
+    public function searchPersonAction(Request $request, $access)
+    {
+        if (!$term = $request->query->get("term"))
+            $term = $request->query->get("username");
+
+        // Gotta be able to handle two-letter usernames.
+        if (strlen($term) > 1) {
+            $userManager = $this->container->get('fos_user.user_manager');
+            /* No searching for users in the manager. */
+            // $users = $userManager->findUserByUsername($term);
+            $class = $userManager->getClass();
+            $em = $this->getDoctrine()->getManagerForClass($class);
+            $repo = $em->getRepository($class);
+            $result = array();
+            $q = $repo->createQueryBuilder('u')
+                ->where('lower(u.usernameCanonical) LIKE :term')
+                ->orWhere('lower(u.emailCanonical) LIKE :term')
+                ->setParameter('term', strtolower($term) . '%');
+            if (property_exists($class, 'full_name')) {
+                $q->orWhere('lower(u.full_name) LIKE :full_name')
+                ->setParameter('full_name', '%' . strtolower($term) . '%');
+            }
+            if (property_exists($class, 'mobile_phone_number')) {
+                $q->orWhere('lower(u.mobile_phone_number) LIKE :mobile_phone_number')
+                ->setParameter('mobile_phone_number', '%' . strtolower($term) . '%');
+            }
+            if (property_exists($class, 'phone_number')) {
+                $q->orWhere('lower(u.phone_number) LIKE :phone_number')
+                ->setParameter('phone_number', '%' . strtolower($term) . '%');
+            }
+            if (property_exists($class, 'state')) {
+                if (!$states = $request->query->get("states"))
+                    $states = [];
+                if ($state = $request->query->get("state"))
+                    $states[] = $state;
+                $q->andWhere('u.state) in (:states)')
+                    ->setParameter('states', $states);
+            }
+
+            if ($users = $q->getQuery()->getResult()) {
+                foreach ($users as $user) {
+                    // TODO: Add full name.
+                    $res = array(
+                        'userid' => $user->getId(),
+                        'value' => $user->getUserName(),
+                        'email' => $user->getEmail(),
+                        'label' => $user->getUserName(),
+                        'username' => $user->getUserName(),
+                    );
+                    // Override if full name exists.
+                    if (property_exists($user, 'full_name') 
+                            && $user->getFullName()) {
+                        $res['label'] = $user->getFullName();
+                        $res['value'] = $user->getFullName();
+                    }
+                    if ($request->get("value_with_email")) {
+                        $res['value'] = $res['value'] . " - " . $user->getEmail();
+                        $res['label'] = $res['label'] . " - " . $user->getEmail();
+                    }
+                    $result[] = $res;
+                }        
+            }
+        } else {
+            $result = "Too little information provided for a viable search";
+        }
+
+        if ($this->isRest($access)) {
+            // Format for autocomplete.
+            return $this->returnRestData($request, $result);
+        }
+
+        $params = array(
+            'entities'      => $users,
+        );
+        return $this->render('BisonLabCommonBundle:User:index.html.twig',
+            $params);
+    }
 }
