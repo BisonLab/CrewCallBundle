@@ -45,7 +45,7 @@ function get_selected_persons() {
     {% endfor %}
 </select>
     <button class="btn btn-default" type="submit">Show</button>
-{% if all is not null %}
+{% if all is defined and all is not null %}
     <input type="checkbox" name="all" CHECKED>Include non-active</input>
 {% else %}
     <input type="checkbox" name="all">Include non-active</input>
@@ -79,7 +79,7 @@ function get_selected_persons() {
                 <td>
                     {% for f in person.functions(function_type) %} {{ f.name }},{% endfor %}</td>
                 <td>{{ person.mobilephonenumber }}</td>
-                <td {% if person.occupied({'reasons': true}) %}class="cc_warn"{% endif %}>
+                <td>
                 {{ person.state }}
                 </td>
 {#

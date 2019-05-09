@@ -60,10 +60,10 @@ class PersonController extends CommonController
             return $this->returnNotFound($request, 'No function to filter');
         // Looks stupid, and is. Should be a repo action with filters.
         if ($request->get('all')) {
-            $people = $functionEntity->getPeople();
+            $people = $functionEntity->getPeople(false);
         } else {
             $people = [];
-            foreach ($functionEntity->getPeople() as $p) {
+            foreach ($functionEntity->getPeople(false) as $p) {
                 if (in_array($p->getState(), ExternalEntityConfig::getActiveStatesFor('Person')))
                     $people[] = $p;
             }
@@ -93,7 +93,7 @@ class PersonController extends CommonController
             $fe_repo = $em->getRepository('CrewCallBundle:FunctionEntity');
             if (!$functionEntity = $fe_repo->find($fid))
                 return $this->returnNotFound($request, 'No function to filter');
-            $people = $functionEntity->getPeople();
+            $people = $functionEntity->getPeople(false);
         } else {
             $people = $em->getRepository('CrewCallBundle:Person')
                 ->findByFunctionType($function_type);
@@ -172,7 +172,7 @@ class PersonController extends CommonController
     /**
      * Finds and displays a person entity.
      *
-     * @Route("/{id}", name="person_show", methods={"GET"})
+     * @Route("/{id}/show", name="person_show", methods={"GET"})
      */
     public function showAction(Person $person)
     {
@@ -320,7 +320,7 @@ class PersonController extends CommonController
     /**
      * Finds and returns the jobs for a person.
      *
-     * @Route("/{id}", name="person_jobs", methods={"GET"})
+     * @Route("/{id}/jobs", name="person_jobs", methods={"GET"})
      */
     public function showJobsAction(Request $request, $access, Person $person)
     {
@@ -501,17 +501,21 @@ class PersonController extends CommonController
                 $q->orWhere('lower(u.phone_number) LIKE :phone_number')
                 ->setParameter('phone_number', '%' . strtolower($term) . '%');
             }
-            if (property_exists($class, 'state')) {
-                if (!$states = $request->query->get("states"))
-                    $states = [];
-                if ($state = $request->query->get("state"))
-                    $states[] = $state;
-                $q->andWhere('u.state) in (:states)')
-                    ->setParameter('states', $states);
+            if (property_exists($class, 'phone_number')) {
+                $q->orWhere('lower(u.phone_number) LIKE :phone_number')
+                ->setParameter('phone_number', '%' . strtolower($term) . '%');
             }
 
+            $people = [];
             if ($users = $q->getQuery()->getResult()) {
                 foreach ($users as $user) {
+                    // Here comes the difference from commonbundle:
+                    // Filtering here, since I already go through them.
+                    if ($request->query->get("enabled")) {
+                        if (!$user->getEnabled())
+                            continue;
+                    }
+
                     // TODO: Add full name.
                     $res = array(
                         'userid' => $user->getId(),
@@ -526,11 +530,13 @@ class PersonController extends CommonController
                         $res['label'] = $user->getFullName();
                         $res['value'] = $user->getFullName();
                     }
-                    if ($request->get("value_with_email")) {
+                    if ($request->get("value_with_all")) {
                         $res['value'] = $res['value'] . " - " . $user->getEmail();
                         $res['label'] = $res['label'] . " - " . $user->getEmail();
+                        $res['value'] = $res['value'] . " - " . $user->getMobilePhoneNumber();
+                        $res['label'] = $res['label'] . " - " . $user->getMobilePhoneNumber();
                     }
-                    $result[] = $res;
+                    $people[] = $res;
                 }        
             }
         } else {
@@ -539,11 +545,11 @@ class PersonController extends CommonController
 
         if ($this->isRest($access)) {
             // Format for autocomplete.
-            return $this->returnRestData($request, $result);
+            return $this->returnRestData($request, $people);
         }
 
-        $params = array(
-            'entities'      => $users,
+        $people = array(
+            'entities' => $people,
         );
         return $this->render('BisonLabCommonBundle:User:index.html.twig',
             $params);

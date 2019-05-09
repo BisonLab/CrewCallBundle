@@ -92,7 +92,7 @@ class Builder implements ContainerAwareInterface
             foreach (ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType') as $ftname => $ftarr) {
                 $adminmenu->addChild("People with " . $ftarr['plural'],
                     array('route' => 'person_function_type',
-                    'routeParameters' => array('function_type' => $ftname)));
+                    'routeParameters' => array('all' => true, 'function_type' => $ftname)));
             }
             $adminmenu->addChild('Applicants', array('route' => 'person_applicants'));
             // Not sure I need it, reapply in custom if you need it.

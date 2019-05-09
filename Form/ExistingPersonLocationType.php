@@ -21,7 +21,7 @@ class ExistingPersonLocationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-           ->add('person', UsernameFormType::class, array('label' => "Search person, name or email address", 'required' => true))
+           ->add('person', UsernameFormType::class, array('label' => "Search with name, phone number or email address", 'required' => true))
            ->add('location', EntityType::class,
                array('class' => 'CrewCallBundle:Location'))
            ->add('function', EntityType::class,

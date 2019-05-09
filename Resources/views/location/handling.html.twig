@@ -14,7 +14,7 @@ function grabAddExistingPersonForm() {
             submitAddExistingPersonForm();
         });
         $( "#crewcallbundle_pfl_person" ).autocomplete({
-          source: "{{ path('person_search', {'access': 'ajax', 'value_with_email': true }) }}",
+          source: "{{ path('person_search', {'access': 'ajax', 'value_with_all': true }) }}",
           minLength: 2,
           response: function(event, ui) {
             if (ui.content.length === 0) {

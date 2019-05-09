@@ -11,6 +11,7 @@ class PersonRepository extends \Doctrine\ORM\EntityRepository
 
     public function findByFunctionType($function_type)
     {
+        $found = new \Doctrine\Common\Collections\ArrayCollection();
         $qb = $this->_em->createQueryBuilder();
         $qb->select('p')
             ->from($this->_entityName, 'p')
@@ -18,7 +19,9 @@ class PersonRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('pf.function', 'f')
             ->where("f.function_type = :function_type")
             ->setParameter("function_type", $function_type);
-        $pfs = $qb->getQuery()->getResult();
+        foreach ($qb->getQuery()->getResult() as $per) {
+            $found->add($per);
+        }
 
         $qb2 = $this->_em->createQueryBuilder();
         $qb2->select('p')
@@ -27,9 +30,26 @@ class PersonRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('pf.function', 'f')
             ->where("f.function_type = :function_type")
             ->setParameter("function_type", $function_type);
+        foreach ($qb2->getQuery()->getResult() as $per) {
+            if ($found->contains($per))
+                continue;
+            $found->add($per);
+        }
 
-        return new \Doctrine\Common\Collections\ArrayCollection(
-            array_merge($pfs, $qb2->getQuery()->getResult()));
+        $qb3 = $this->_em->createQueryBuilder();
+        $qb3->select('p')
+            ->from($this->_entityName, 'p')
+            ->innerJoin('p.person_function_locations', 'pf')
+            ->innerJoin('pf.function', 'f')
+            ->where("f.function_type = :function_type")
+            ->setParameter("function_type", $function_type);
+        foreach ($qb3->getQuery()->getResult() as $per) {
+            if ($found->contains($per))
+                continue;
+            $found->add($per);
+        }
+
+        return $found;
     }
 
     /* This is very common for all repos. Could be in a trait aswell. */
