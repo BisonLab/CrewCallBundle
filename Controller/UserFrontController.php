@@ -385,7 +385,6 @@ error_log(print_r($json_data, true));
                 'external_id' => $job->getId(),
             ];
 
-error_log("Adding comment");
             $sm->postMessage(array(
                 'body' => $comment,
                 'message_type' => 'JobComment',
@@ -407,7 +406,6 @@ error_log("Adding comment");
                 'object_name' => 'job',
                 'external_id' => $job->getId(),
             ];
-error_log("Adding check");
 
             $sm->postMessage(array(
                 'message_type' => $shift_check->getMessageType()->getName(),
