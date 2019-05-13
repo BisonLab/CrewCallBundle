@@ -1,18 +1,50 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% include 'CrewCallBundle:event:handling.html.twig' %}
     
-    <div class="row">
-    <div class="col-sm-6">
-    <h1>Events</h1>
-    </div>
-    <div class="col-sm-4">
-    </div>
-    <div class="col-sm-1" style="margin-top: 10px;">
-    <a href="{{ path('event_new') }}"><button class="btn btn-dark mt-4 ml-3">New Event</button></a>
-    </div>
-    </div>
+<div class="row">
 
-{% include 'CrewCallBundle:event:_index.html.twig' %}
+ <div class="col-sm-6">
+  <h1>Events</h1>
+ </div>
+
+ <div class="col-sm-4">
+ </div>
+
+ <div class="col-sm-1" style="margin-top: 10px;">
+   <a href="{{ path('event_new') }}"><button class="btn btn-dark mt-4 ml-3">New Event</button></a>
+ </div>
+
+</div>
+
+<ul class="nav nav-tabs">
+    <li class="active">
+    <a href="#ongoingtab" data-toggle="tab">Ongoing</a>
+    </li>
+    <li>
+    <a href="#upcomingtab" data-toggle="tab" onClick="return grabEvents('upcoming');">Upcoming</a>
+    </li>
+    <li>
+    <a href="#pasttab" data-toggle="tab" onClick="return grabEvents('past');">Past</a>
+    </li>
+{# To be decided later
+    <li>
+    <a href="#calendartab" data-toggle="tab" onClick="return grabEventCalendar();">Calendar</a>
+    </li>
+#}
+</ul>
+
+<div class="tab-content ">
+  <div class="tab-pane active" id="ongoingtab">
+    {% include 'CrewCallBundle:event:_index.html.twig' %}
+  </div>
+  <div class="tab-pane active" id="upcomingtab">
+    <div id="upcomingcontent"></div>
+  </div>
+  <div class="tab-pane active" id="pasttab">
+    <div id="pastcontent"></div>
+  </div>
+</div>
 
 {% endblock %}

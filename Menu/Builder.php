@@ -35,11 +35,7 @@ class Builder implements ContainerAwareInterface
 
         $menu->addChild('Dashboard', array('route' => 'homepage'));
         if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-            $eventsmenu = $menu->addChild('Events');
-            $eventsmenu->addChild('List', array('route' => 'event_index'));
-            $eventsmenu->addChild('List old events', array('route' => 'event_index', 'routeParameters' => array('past' => 'true')));
-            $eventsmenu->addChild('Add new event', array('route' => 'event_new'));
-            $eventsmenu->addChild('Calendar', array('route' => 'event_calendar'));
+            $eventsmenu = $menu->addChild('Events', array('route' => 'event_index'));
 
             // Todo: Use system_role, if they can log in (ROLE_USER and
             // ROLE_ADMIN), they should be here.

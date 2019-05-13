@@ -24,31 +24,44 @@ class EventController extends CommonController
      *
      * @Route("/", name="event_index", methods={"GET"})
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, $access)
     {
         $em = $this->getDoctrine()->getManager();
         $eventrepo = $em->getRepository('CrewCallBundle:Event');
 
         if ($request->get('past')) {
-            // Use this?
-/*
             $events = $eventrepo->findEvents(['past' => true,
                 'parents_only' => true]);
- */
-            // Or this? Not decided yet
-            $qb = $em->createQueryBuilder();
-            $qb->select('e')
-                 ->from('CrewCallBundle:Event', 'e')
-                 ->where('e.end < :today')
-                 ->setParameter('today', new \DateTime(), \Doctrine\DBAL\Types\Type::DATETIME);
-            $events = $qb->getQuery()->getResult();
+        } elseif ($request->get('upcoming')) {
+            $events = $eventrepo->findEvents(['future' => true,
+                'parents_only' => true]);
         } else {
-            $events = $eventrepo->findEvents(['future' => true, 'parents_only' => true]);
+            $events = $eventrepo->findEvents(['ongoing' => true,
+                'parents_only' => true]);
+        }
+
+        if ($this->isRest($access)) {
+            if ($access == "ajax")
+                return $this->render('event/_index.html.twig', array(
+                    'events'  => $events,
+                    'past'    => $request->get('past'),
+                    'upcoming'=> $request->get('upcoming'),
+                    'ongoing' => $request->get('ongoing'),
+                ));
+            else
+                return $this->returnRestData($request, [
+                    'events'  => $events,
+                    'past'    => $request->get('past'),
+                    'upcoming'=> $request->get('upcoming'),
+                    'ongoing' => $request->get('ongoing'),
+                ]);
         }
 
         return $this->render('event/index.html.twig', array(
-            'events' => $events,
-            'past' => $request->get('past'),
+            'events'  => $events,
+            'past'    => $request->get('past'),
+            'upcoming'=> $request->get('upcoming'),
+            'ongoing' => $request->get('ongoing'),
         ));
     }
 

@@ -39,18 +39,26 @@ class EventRepository extends \Doctrine\ORM\EntityRepository
         $order = "ASC";
         if (isset($options['past'])) {
             $qb->andWhere('e.end < :today')
-                ->setParameter('today', new \DateTime(), \Doctrine\DBAL\Types\Type::DATETIME);
+               ->setParameter('today', new \DateTime(),
+                    \Doctrine\DBAL\Types\Type::DATETIME);
             $order = "DESC";
-            // And we have to set from to something in the past if it's not
+            // And we have to set from to something in the past unless it's 
             // set already.
             if (!isset($options['from']))
-                $options['from'] = '2018-01-01';
+                $options['from'] = '2019-01-01';
         }
 
         if (isset($options['future'])) {
             $today = new \DateTime();
             $qb->andWhere('e.end > :yesterday')
                 ->setParameter('yesterday', new \DateTime('yesterday'),
+                    \Doctrine\DBAL\Types\Type::DATETIME);
+        }
+
+        if (isset($options['ongoing'])) {
+            $qb->andWhere('e.end >= :today')
+               ->andWhere('e.start <= :today')
+               ->setParameter('today', new \DateTime(),
                     \Doctrine\DBAL\Types\Type::DATETIME);
         }
 

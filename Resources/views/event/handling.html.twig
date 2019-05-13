@@ -2,4 +2,24 @@
 function openAddContact() {
     $( "#add_contact_popover_content" ).removeClass("hidden");
 }
+
+function grabEvents(what) {
+    url = "{{ path('event_index', {'access': 'ajax' }) }}" 
+        + "?" + what +"=true";
+    if (what == "past") {
+        search = true;
+    } else {
+        search = false;
+    }
+    $.get(url, function( data ) {
+        $( "#" + what + "content" ).html(data);
+    }).done(function() {
+        $( "#" + what + "table").dataTable({
+            "order": [[ 1, "asc" ]],
+            "paging": false,
+            "searching": search
+            });
+    });
+    return false;
+}
 </script>

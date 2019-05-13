@@ -1,6 +1,11 @@
 {% block body %}
     
-    {% if sorted is not defined %}
+    {# hacks, blame laziness #}
+    {% if upcoming  %}
+    <table id="upcomingtable" class="table table-striped table-sm">
+    {% elseif past  %}
+    <table id="pasttable" class="table table-striped table-sm">
+    {% elseif sorted is not defined %}
     <table id="sortable_table" class="table table-striped table-sm">
     {% else %}
         <table class="table table-striped table-sm">
