@@ -1,7 +1,11 @@
 <script src="{{ asset('public/moment/min/moment.min.js') }}"></script>
 <script src="{{ asset('public/fullcalendar/dist/fullcalendar.js') }}"></script>
 <script src="{{ asset('public/fullcalendar/dist/gcal.js') }}"></script>
-<script src="{{ asset('public/fullcalendar/dist/locale/en-gb.js') }}"></script>
+{% if fullcalendar_locale == "all" %}
+<script src="{{ asset('public/fullcalendar/dist/locale-all.js') }}"></script>
+{% else %}
+<script src="{{ asset('public/fullcalendar/dist/locale/' ~ fullcalendar_locale ~ '.js') }}"></script>
+{% endif %}
 
 <script>
 $(function () {
