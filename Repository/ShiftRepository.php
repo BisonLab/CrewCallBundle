@@ -24,10 +24,15 @@ class ShiftRepository extends \Doctrine\ORM\EntityRepository
         }
 
         $qb = $this->_em->createQueryBuilder();
+        // We want to include running shifts. In case of late needs.
         $qb->select('s')
             ->from($this->_entityName, 's')
-            ->where('s.start >= :from')
-            ->setParameter('from', $from);
+            ->where(
+                $qb->expr()->orX(
+                    $qb->expr()->gte('s.start', ':from'),
+                    $qb->expr()->between(':from', 's.start', 's.end')
+               ) )
+           ->setParameter('from', $from);
 
         if (isset($options['to'])) {
             if ($options['to'] instanceof \DateTime )
@@ -69,8 +74,14 @@ class ShiftRepository extends \Doctrine\ORM\EntityRepository
             if ($from < new \DateTime())
                 $from = new \DateTime();
         }
-        $qb->andWhere('s.start >= :from')
+        // We want to include running shifts. In case of late needs.
+        $qb->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->gte('s.start', ':from'),
+                    $qb->expr()->between(':from', 's.start', 's.end')
+               ) )
            ->setParameter('from', $from);
+
 
         if (isset($options['to'])) {
             if ($options['to'] instanceof \DateTime )
