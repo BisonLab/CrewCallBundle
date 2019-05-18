@@ -19,7 +19,7 @@ function get_selected_persons() {
 </script>
 
     {% if function_type_plural is defined %}
-        <h1>Peple with {{ function_type_plural }}</h1>
+        <h1>People with {{ function_type_plural }}</h1>
     {% elseif functionEntity is defined and functionEntity is not null %}
         <h1>People with {{ functionEntity }}</h1>
         {% set function_type = null %}
