@@ -71,26 +71,6 @@ class FunctionEntity
      */
     private $function_type;
 
-    /* 
-     * This is for grouping the functions. Hopefully just one group and one
-     * subgroup.
-     *
-     * I could instead do a group table with childs and parents and so on and
-     * then connect these functions against one or the other.  And I may well
-     * do that if this ends up being too odd for the users or code.
-     */
-    /**
-     * @ORM\OneToMany(targetEntity="FunctionEntity", mappedBy="parent", cascade={"remove"})
-     */
-    private $children;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="FunctionEntity", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_function_id", referencedColumnName="id")
-     * @Gedmo\Versioned
-     */
-    private $parent;
-
     /**
      * This is for the non-connected functions.
      * @ORM\OneToMany(targetEntity="PersonFunction", mappedBy="function",
@@ -272,67 +252,6 @@ class FunctionEntity
     {
         return ExternalEntityConfig::getTypesAsChoicesFor('FunctionEntity', 'FunctionType');
     }
-
-    /**
-     * Add child
-     *
-     * @param \CrewCallBundle\Entity\FunctionEntity $child
-     * @return FunctionEntity
-     */
-    public function addChild(\CrewCallBundle\Entity\FunctionEntity $child)
-    {
-        $this->children[] = $child;
-        $child->setParent($this);
-
-        return $this;
-    }
-
-    /**
-     * Remove children
-     *
-     * @param \CrewCallBundle\Entity\FunctionEntity $child
-     */
-    public function removeChild(\CrewCallBundle\Entity\FunctionEntity $child)
-    {
-        $this->children->removeElement($child);
-    }
-
-    /**
-     * Get children
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-/*
-    public function getChildren()
-    {
-        return $this->children;
-    }
- */
-
-    /**
-     * Set parent
-     *
-     * @param \CrewCallBundle\Entity\FunctionEntity $parent
-     * @return FunctionEntity
-     */
-    public function setParent(\CrewCallBundle\Entity\FunctionEntity $parent = null)
-    {
-        $this->parent = $parent;
-
-        return $this;
-    }
-
-    /**
-     * Get parent
-     *
-     * @return \CrewCallBundle\Entity\FunctionEntity 
-     */
-/*
-    public function getParent()
-    {
-        return $this->parent;
-    }
- */
 
     /**
      * Add personFunction
