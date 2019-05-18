@@ -208,14 +208,14 @@ class FunctionEntityController extends CommonController
     {
         $form = $this->createDeleteForm($functionEntity);
         $form->handleRequest($request);
+        $function_type = $functionEntity->getFunctionType();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($functionEntity);
             $em->flush($functionEntity);
         }
-
-        return $this->redirectToRoute('function_index');
+        return $this->redirectToRoute('function_index', ['function_type' => $function_type ]);
     }
 
     /**
