@@ -20,6 +20,8 @@ use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 use CrewCallBundle\Entity\Person;
 use CrewCallBundle\Entity\PersonState;
+use CrewCallBundle\Entity\PersonFunction;
+use CrewCallBundle\Entity\PersonFunctionOrganization;
 use CrewCallBundle\Entity\FunctionEntity;
 use CrewCallBundle\Lib\ExternalEntityConfig;
 
@@ -144,20 +146,50 @@ class PersonController extends CommonController
 
     /**
      * Creates a new person entity.
+     * This is only used when you add a crewmember. People with roles
+     * will be created on the Organization or Location controller.
      *
-     * @Route("/new", name="person_new", methods={"GET", "POST"})
+     * @Route("/new_crewmember", name="person_new_crewmember", methods={"GET", "POST"})
      */
-    public function newAction(Request $request)
+    public function newCrewmemberAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         $person = new Person();
+        $person->addRole('ROLE_USER');
         $addressing = $this->container->get('crewcall.addressing');
         $address_elements = $addressing->getFormElementList($person);
-        $form = $this->createForm('CrewCallBundle\Form\PersonType', $person, ['address_elements' => $address_elements]);
+        $internal_organization_config = $this->container->getParameter('internal_organization');
+        $first_org = $em->getRepository('CrewCallBundle:Organization')->findOneBy(array('name' => $internal_organization_config['name']));
+        $first_role = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneBy(array('name' => $internal_organization_config['default_role']));
+
+        $form = $this->createForm('CrewCallBundle\Form\NewPersonType',
+            $person, [
+               'address_elements' => $address_elements,
+               'organization' => $first_org,
+               'role' => $first_role,
+               'internal_organization_config' => $internal_organization_config,
+            ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $form_data = $form->getData();
+            $pf = new PersonFunction();
+            $pf->setPerson($person);
+            $pf->setFunction($form->get('function')->getData());
+
+            $pfo = new PersonFunctionOrganization();
+            if ($internal_organization_config['allow_external_crew']) {
+                $pfo->setPerson($person);
+                $pfo->setOrganization($form->get('organization')->getData());
+                $pfo->setFunction($form->get('role')->getData());
+            } else {
+                $pfo->setPerson($person);
+                $pfo->setOrganization($first_org);
+                $pfo->setFunction($first_role);
+            }
             $em->persist($person);
+            $em->persist($pf);
+            $em->persist($pfo);
             $em->flush($person);
 
             return $this->redirectToRoute('person_show', array('id' => $person->getId()));

@@ -165,12 +165,26 @@ function openStateChange() {
                 <th>Postal Address</th>
                 <td>{{ cc_addressing.compose(person.postaladdress, 'html') | raw }}</td>
             </tr>
-{% if person.personfunctionorganizations | length > 0 %}
+{% if person.personfunctionorganizations | length > 0 or person.personfunctionlocations | length > 0 %}
             <tr>
                 <th>Roles</th>
                 <td>
                 {% for pfo in person.personfunctionorganizations %}
                 {{ pfo }}<br>
+                {% endfor %}
+                {% for pfl in person.personfunctionlocations %}
+                {{ pfl }}<br>
+                {% endfor %}
+                </ul>
+                </td>
+            </tr>
+{% endif %}
+{% if person.personfunctionevents | length > 0 %}
+            <tr>
+                <th>Events</th>
+                <td>
+                {% for pfe in person.personfunctionevents %}
+                {{ pfe.event }} ({{ pfe.function }})<br>
                 {% endfor %}
                 </ul>
                 </td>
@@ -193,17 +207,6 @@ function openStateChange() {
                 {% endfor %}
                 </td>
             </tr>
-{% if person.personfunctionevents | length > 0 %}
-            <tr>
-                <th>Events</th>
-                <td>
-                {% for pfe in person.personfunctionevents %}
-                {{ pfe.event }} ({{ pfe.function }})<br>
-                {% endfor %}
-                </ul>
-                </td>
-            </tr>
-{% endif %}
             <tr>
                 <th>Attributes</th>
                 <td>{{ person.attributes | prettyprint }}</td>

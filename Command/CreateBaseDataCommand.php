@@ -8,14 +8,29 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use BisonLab\SakonninBundle\Entity\MessageType;
+use BisonLab\SakonninBundle\Entity\SakonninTemplate;
+
+use CrewCallBundle\Entity\FunctionEntity;
+use CrewCallBundle\Entity\Organization;
 
 class CreateBaseDataCommand extends ContainerAwareCommand
 {
     /*
-     * Mainly notes here.
-     * Some other message types are inserted from Sakonnin itself.
+     * Replacing the base data insert in Sakonnin.
      */
     private $message_types = array(
+       'Email' => array(
+                'description' => 'Emails'
+                ),
+       'Messages' => array(
+                'description' => 'Messaging'
+                ),
+       'Notes' => array(
+                'description' => 'Notes'
+                ),
+       'Announcements' => array(
+                'description' => 'Announcements'
+                ),
         'PersonNote' => array(
             'parent' => 'Notes',
             'base_type' => 'NOTE',
@@ -30,13 +45,19 @@ class CreateBaseDataCommand extends ContainerAwareCommand
             'parent' => 'Notes',
             'base_type' => 'NOTE',
             'security_model' => 'ALL_READ',
-            'description' => "Note a workes has to ACK before asking for a specific job"),
+            'description' => "Note a crewmember has to ACK before asking for a specific job"),
         'PMSMS' => array(
             'parent' => 'Messages',
             'base_type' => 'MESSAGE',
             'security_model' => 'PRIVATE',
             'forward_function' => 'smscopy',
             'description' => "PM with SMS copy"),
+        'SMS' => array(
+            'parent' => 'Messages',
+            'base_type' => 'MESSAGE',
+            'security_model' => 'PRIVATE',
+            'forward_function' => 'smscodehandle',
+            'description' => "Receiving SMSes"),
         'Checks' => array(
             'base_type' => 'CHECK',
             'description' => 'Checkbox items'),
@@ -47,8 +68,26 @@ class CreateBaseDataCommand extends ContainerAwareCommand
             'description' => "Checkbox you must confirm"),
         'InformCheck' => array(
             'parent' => 'Checks',
+            'base_type' => 'CHECK',
             'security_model' => 'ALL_READ',
-            'description' => " 	Checkbox for added intormation"),
+            'description' => "Checkbox for added information"),
+        'TODO' => array(
+            'parent' => 'Checks',
+            'base_type' => 'CHECK',
+            'security_model' => 'ADMIN_ONLY',
+            'description' => "For the TODO list"),
+           'Front page logged in' => array(
+                'parent' => 'Announcements',
+                'base_type' => 'NOTE',
+                'security_model' => 'ALL_READ',
+                'description' => "Front page Announcement for logged in users"
+                ),
+           'Front page not logged in' => array(
+                'parent' => 'Announcements',
+                'base_type' => 'NOTE',
+                'security_model' => 'ALL_READ',
+                'description' => "Front page Announcement for not yet0logged in users"
+                ),
     );
 
     protected function configure()
@@ -66,7 +105,26 @@ class CreateBaseDataCommand extends ContainerAwareCommand
         $this->_messageTypes($input, $output);
         $output->writeln('OK Done.');
 
+        $internal_organization_config = $this->getContainer->getParameter('internal_organization');
+        $org = new Organization();
+        $org->setName($internal_organization_config['name']);
+        $em->persist($org);
+        $role = new FunctionEntity();
+        $role->setName($internal_organization_config['default_role']);
+        $role->setFunctionType('ROLE');
+        $em->persist($role);
+
         // And then, add assign-sms and confirm-sms sakonnin templates
+        $asms = new SakonninTemplate();
+        $asms->setName('assign-sms');
+        $asms->setTemplate('Hello {{ person.firstname }}, please confirm the following job: {{ event.name }}. At: {{ event.location.name }}, {{ job.start | date("d.m.y") }} {{ job.start | date("H:i") }}, estimated finish time {{ job.end | date("d.m.y H:i") }}. Function: {{ function }}. Log into Crew Call to confirm');
+        $csms = new SakonninTemplate();
+        $csms->setName('confirm-sms');
+        $csms->setTemplate('Thank you for confirming {{ event.name }} at {{ event.location.name }}, {{ job.start | date("d.m.yH:i")}}, estimated finish time {{ job.end | date("d.m.yH:i") }}. Function: {{ function }}. Have a nice day.');
+
+        $this->sakonnin_em->persist($asms);
+        $this->sakonnin_em->persist($csms);
+        $this->sakonnin_em->flush;
     }
 
     private function _messageTypes(InputInterface $input, OutputInterface $output)
