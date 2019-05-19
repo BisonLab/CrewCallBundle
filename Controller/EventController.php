@@ -290,8 +290,8 @@ class EventController extends CommonController
             // Not liked by OWASP since we just return an array.
             return new JsonResponse($calitems, Response::HTTP_OK);
         }
-        return $this->render('event/calendar.html.twig', array(
-        ));
+
+        return $this->render('event/calendar.html.twig', array());
     }
 
     /**
