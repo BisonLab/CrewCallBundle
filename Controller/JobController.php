@@ -67,12 +67,13 @@ class JobController extends CommonController
         $job->setState($state);
         
         $em = $this->getDoctrine()->getManager();
-        if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, array('booked' => true))) {
-            return new Response("Can not set job to a booked state because it will overlap with " . (string)current($overlap)->getShift(), Response::HTTP_CONFLICT);
-        }
 
         $em->persist($job);
         $em->flush($job);
+
+        if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, array('booked' => true))) {
+            return new Response("You have now double booked with the other job being " . (string)current($overlap)->getShift(), Response::HTTP_CONFLICT);
+        }
 
         if ($this->isRest($access)) {
             return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
