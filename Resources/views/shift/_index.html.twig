@@ -20,9 +20,8 @@
                     {{ shift.end | date('d M H:i') }}
                 {% endif %}
             <td>
-            {{ shift.function }}<br>
-            at {{ shift.event.name }}
-            <a href="#" id="popSummary_event_{{ shift.event.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ shift.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            {{ shift.function }}
+            <a href="#" id="popSummary_event_{{ shift.event.id }}{{ shift.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ shift.event.id }}, {{ shift.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
             </td>
 
             <td>
