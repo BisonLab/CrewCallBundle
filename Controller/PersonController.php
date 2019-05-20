@@ -272,34 +272,6 @@ class PersonController extends CommonController
     }
 
     /**
-     * Change password on a Person.
-     *
-     * @Route("/{id}/change_password", name="person_change_password")
-     */
-    public function changePasswordAction(Request $request, Person $person)
-    {
-        // Yup, disabled. Probably to be removed totally.
-        return $this->redirectToRoute('person_show', array('id' => $person->getId()));
-        
-        $form = $this->createChangePasswordForm($person);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $userManager = $this->get('fos_user.user_manager');
-            $password = $form->getData()['plainpassword'];
-            $person->setPlainPassword($password);
-            $userManager->updateUser($person);
-            return $this->redirectToRoute('person_show', array('id' => $person->getId()));
-        } else {
-            return $this->render('person/edit.html.twig', array(
-                'person' => $person,
-                'edit_form' => $form->createView(),
-                'delete_form' => null,
-        ));
-        }
-    }
-
-    /**
      * Deletes a person entity.
      *
      * @Route("/{id}", name="person_delete", methods={"DELETE"})

@@ -7,9 +7,13 @@
 <a href="#" onClick="return grabMeJobs();"><button>Jobslist</button> </a>
 <a href="#" onClick="return grabJobLog();"><button>Job logs</button> </a>
 <a href="#" onClick="return grabFileslist();"><button>Files</button> </a>
+<a href="#" onClick="return grabMePassword();"><button>Password Form</button> </a>
 <a href="#" onClick="return hitMe();"><button>Log to console</button> </a>
 <pre id="playpart">
 </pre>
+
+<div id="playparthtml">
+</div>
 
 <p id="confbuttons">
 </p>
@@ -142,6 +146,25 @@ function grabFileslist() {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             $("#playpart").html(JSON.stringify(cont, undefined, 2));
+      }).fail(function(xhr, status, error) {
+            errmsg = "Blaeh\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function grabMePassword() {
+    url = "{{ path('uf_me_password')}}";
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "GET",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            $("#playparthtml").html(cont);
       }).fail(function(xhr, status, error) {
             errmsg = "Blaeh\n";
             errmsg = errmsg + xhr.responseText + "\n";

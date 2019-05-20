@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 use CrewCallBundle\Entity\Person;
@@ -578,6 +579,30 @@ error_log("Deleting " . (string)$job);
         return new JsonResponse([
                 'files' => $fileslist,
             ], Response::HTTP_OK);
+    }
+
+    /**
+     * Get change password form
+     * @Route("/me_password", name="uf_me_password", methods={"GET", "POST"})
+     */
+    public function mePassword(Request $request)
+    {
+        $user = $this->getUser();
+        
+        $form = $this->createForm("FOS\UserBundle\Form\Type\ChangePasswordFormType");
+        $form->add('Change password', SubmitType::class);
+        $form->setData($user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $userManager = $this->get('fos_user.user_manager');
+            $userManager->updateUser($user);
+            return new JsonResponse(["OK" => "Well done"], Response::HTTP_OK);
+        }
+
+        return $this->render('userfront/_password.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
 
