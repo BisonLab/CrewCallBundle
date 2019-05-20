@@ -105,26 +105,30 @@ class CreateBaseDataCommand extends ContainerAwareCommand
         $this->_messageTypes($input, $output);
         $output->writeln('OK Done.');
 
-        $internal_organization_config = $this->getContainer->getParameter('internal_organization');
+        $internal_organization_config = $this->getContainer()->getParameter('internal_organization');
         $org = new Organization();
         $org->setName($internal_organization_config['name']);
-        $em->persist($org);
+        $this->em->persist($org);
         $role = new FunctionEntity();
         $role->setName($internal_organization_config['default_role']);
         $role->setFunctionType('ROLE');
-        $em->persist($role);
+        $this->em->persist($role);
+        $this->em->flush();
 
         // And then, add assign-sms and confirm-sms sakonnin templates
         $asms = new SakonninTemplate();
         $asms->setName('assign-sms');
         $asms->setTemplate('Hello {{ person.firstname }}, please confirm the following job: {{ event.name }}. At: {{ event.location.name }}, {{ job.start | date("d.m.y") }} {{ job.start | date("H:i") }}, estimated finish time {{ job.end | date("d.m.y H:i") }}. Function: {{ function }}. Log into Crew Call to confirm');
+        $asms->setLangCode('en');
+
         $csms = new SakonninTemplate();
         $csms->setName('confirm-sms');
         $csms->setTemplate('Thank you for confirming {{ event.name }} at {{ event.location.name }}, {{ job.start | date("d.m.yH:i")}}, estimated finish time {{ job.end | date("d.m.yH:i") }}. Function: {{ function }}. Have a nice day.');
+        $csms->setLangCode('en');
 
         $this->sakonnin_em->persist($asms);
         $this->sakonnin_em->persist($csms);
-        $this->sakonnin_em->flush;
+        $this->sakonnin_em->flush();
     }
 
     private function _messageTypes(InputInterface $input, OutputInterface $output)
@@ -154,10 +158,9 @@ class CreateBaseDataCommand extends ContainerAwareCommand
                 $mt->setCallbackType($type['callback_type']);
             if (isset($type['forward_function']))
                 $mt->setForwardFunction($type['forward_function']);
-            if (isset($type['security_model']))
-                $mt->setSecurityModel($type['security_model']);
             $mt->setExpungeMethod($type['expunge_method'] ?? "DELETE");
             $mt->setExpireMethod($type['expire_method'] ?? "DELETE");
+            $mt->setSecurityModel($type['security_model'] ?? "PRIVATE");
 
             $this->sakonnin_em->persist($mt);
             if ($parent) {
