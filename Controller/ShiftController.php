@@ -35,28 +35,14 @@ class ShiftController extends CommonController
         if (!$event)
             return $this->returnNotFound($request, "No event");
 
-        $events = [$event];
-        if (count($event->getChildren()) > 0)
-            $events = array_merge($events, $event->getChildren()->toArray());
-
-        // This looks very very weird, but is a relic from how I listed shifts
-        // before and the feature it provides (Which is to make "Add shift"
-        // usee the times from the lat shift in the list) should be remained.
-        // TODO is to do this in a smarter fashion. (And for every event/child
-        $last_shift = end($events)->getShifts()->last();
-
         // Again, ajax/html-centric. But maybe return json later.
         if ($this->isRest($access)) {
             return $this->render('shift/_index.html.twig', array(
-                'statechoices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift'),
-                'events' => $events,
-                'last_shift' => $last_shift,
+                'event' => $event,
             ));
         }
         return $this->render('shift/index.html.twig', array(
-           'statechoices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift'),
-            'events' => $events,
-            'last_shift' => $last_shift,
+            'event' => $event,
         ));
     }
 

@@ -1,26 +1,23 @@
 <script>
-var old_html = '';
-
+$(document).ready(function() {
+    $( ".jobList" ).each(function() {
+        $(this).hide();
+    });
+});
 
 function grabShiftList(event_id) {
     url = "{{ path('shift_index', {'access': 'ajax' }) }}" 
         + "?event=" + event_id;
     $.get(url, function( data ) {
-        $( "#shiftList" ).html(data);
+        $( "#shiftList_" + event_id).html(data);
     }).done(function() {
-        $( ".jobList" ).each(function() {
+        $( "#shiftList_" + event_id + " .jobList" ).each(function() {
             $(this).hide();
         });
-/* Not really working. Having odd TRs in the table 
-        $( "#shiftTable" ).dataTable({
-            "order": [[ 1, "asc" ]],
-            "paging": false,
-            "searching": false
-            });
-*/
     });
     return false;
 }
+
 function submitNewShiftForm(event_id) {
     $.ajax({
         beforeSend: function(req) {
@@ -33,9 +30,10 @@ function submitNewShiftForm(event_id) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             if (xhr.status == 201) {
-                parent.location.reload();
+                grabShiftList(event_id);
+                $( "#shiftModal" ).modal('hide');
             } else {
-                $( "#newShift" ).html(xhr.responseText);
+                $( "#shiftModalBody" ).html(xhr.responseText);
             }
       }).fail(function(xhr, status, error) {
             errmsg = "Failed adding shift\n";
@@ -46,16 +44,21 @@ function submitNewShiftForm(event_id) {
 }
 
 function grabNewShiftForm(event_id = false, from_shift_id = false) {
-    old_html = $( "#newShift" ).html();
     url = "{{ path('shift_new', { 'access': 'ajax' }) }}";
     if (from_shift_id) {
         url = url + "?from_shift=" + from_shift_id;
     } else if (event_id) {
         url = url + "?event=" + event_id;
+    } else {
+        // Nothing useful to connect the shift on.
+        alert("Can not add shift, no event to add it to");
+        return false;
     }
     $.get(url, function( data ) {
-        $( "#newShift" ).html(data);
-        /* My JS-fu is bad. I'm quite sure I should be able to set the
+        $( "#shiftModalBody" ).html(data);
+        $( "#shiftModal" ).modal();
+        /*
+         * My JS-fu is bad. I'm quite sure I should be able to set the
          * submitNewShiftForm function directly, but then it woule be called
          * immediately.  Aka, I have to read up on this..
          */
@@ -75,10 +78,12 @@ function grabNewShiftForm(event_id = false, from_shift_id = false) {
     return false;
 }
 
-function submitEditShiftForm(shift_id) {
-    /* Looks odd?
+function submitEditShiftForm(shift_id, event_id) {
+    /* 
+     * Looks odd?
      * The option is to make the controller action not use the ID in
-     * the URL. I may change to that later. */
+     * the URL. I may change to that later.
+     */
     orgurl = "{{ path('shift_edit', { 'access': 'ajax' }) }}";
     url = orgurl.replace("0", shift_id);
     $.ajax({
@@ -91,9 +96,9 @@ function submitEditShiftForm(shift_id) {
         dataType: "text",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-        $( "#editShift" ).html("");
+        $( "#shiftModal" ).modal('hide');
         // Cheating with twig.
-        grabShiftList({{ event.id }});
+        grabShiftList(event_id);
       }).fail(function(xhr, status, error) {
             errmsg = "Failed saving the shift\n";
             errmsg = errmsg + xhr.responseText + "\n";
@@ -102,15 +107,15 @@ function submitEditShiftForm(shift_id) {
     return false;
 }
 
-function grabEditShiftForm(shift_id) {
+function grabEditShiftForm(shift_id, event_id) {
     orgurl = "{{ path('shift_edit', { 'access': 'ajax' }) }}";
     url = orgurl.replace("0", shift_id);
     $.get(url, function( data ) {
-        $( "#editShift_"+shift_id ).html(data);
-        $( "#jobList_" + shift_id ).show();
+        $( "#shiftModalBody" ).html(data);
+        $( "#shiftModal" ).modal();
         $( "#editShiftForm" ).submit(function( event ) {
             event.preventDefault();
-            submitEditShiftForm(shift_id);
+            submitEditShiftForm(shift_id, event_id);
         });
     });
     return false;
@@ -141,22 +146,16 @@ function deleteShift(shift_id) {
     return false;
 }
 
-jQuery(document).ready(function() {
-    grabShiftList({{ event.id }});
-    return false;
-});
-
 </script>
-<div id="shiftList">
-</div>
-
-<div id="newShift">
-{% if last_shift %}
-<a href="#" onClick="grabNewShiftForm(false, {{ last_shift.id }});">Add shift</a>
-{% else %}
-<a href="#" onClick="grabNewShiftForm({{ event.id }});">Add shift</a>
-{% endif %}
-</div>
-
 <div id="editShift">
 </div>
+
+<div class="modal fade" id="shiftModal" role="dialog" tabindex='-1'>
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-body" id="shiftModalBody">
+      </div>
+    </div>
+  </div>
+</div> <!-- / modal -->

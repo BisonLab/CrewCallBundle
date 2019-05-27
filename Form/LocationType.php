@@ -5,8 +5,10 @@ namespace CrewCallBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use CrewCallBundle\Form\AddressType;
+use CrewCallBundle\Lib\ExternalEntityConfig;
 
 class LocationType extends AbstractType
 {
@@ -18,6 +20,8 @@ class LocationType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
+            ->add('state', ChoiceType::class, array(
+              'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Location')))
             ->add('address', AddressType::class, ['address_elements' => $options['address_elements']])
             ->add('parent')
         ;
