@@ -1,0 +1,232 @@
+<div class="row"> 
+  <div class="col-sm-4"> 
+    <table class="showTable">
+        <tbody>
+            <tr>
+                <th>Description</th>
+                <td>{{ event.description }}</td>
+            </tr>
+{% if event.organization is not null %}
+            <tr>
+                <th>Organization</th>
+                <td>
+                    <a href="{{ path('organization_show', { 'id': event.organization.id }) }}">{{ event.organization.name }}</a>
+                </td>
+            </tr>
+{% endif %}
+{% if event.location is not null %}
+            <tr>
+                <th>Location</th>
+                <td>
+                    <a href="{{ path('location_show', { 'id': event.location.id }) }}">{{ event.location.name }}</a>
+                </td>
+            </tr>
+{% endif %}
+            <tr>
+                <th>Contacts</th>
+                <td>
+{% for pfe in event.personfunctionevents() %}
+   {{ pfe.person }}{% if pfe.person.mobilephonenumber %} - {{ pfe.person.mobilephonenumber }}{% endif %}
+   <a role="button" class="btn-sm btn-danger" href="{{ path('event_remove_contact', { 'id': pfe.id }) }}">Remove</a>
+<br />
+{% endfor %}
+{% if add_contact_form is not null %}
+    <a href="#" id="addContactLink" onClick="openAddContact();">Add</a>
+<div id="add_contact_popover_content" class="hidden">
+    {{ form_start(add_contact_form, { 'action': path('event_add_contact', {'id': event.id }), 'attr': {'id':'addContactForm'}}) }}
+    {{ form_widget(add_contact_form) }}
+    <input type="hidden" name="username" id="username">
+    <input id="submitAddExistingPerson" type="submit" value="Add" />
+    {{ form_end(add_contact_form) }}
+</div>
+{% endif %}
+
+                </td>
+            </tr>
+            <tr>
+                <th>&nbsp;</th>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <th>&nbsp;</th>
+            </tr>
+        </tbody>
+    </table>
+  </div>
+  <div class="col-sm-4"> 
+      <ul class="nav nav-tabs">
+      <li class="active">
+      <li>
+      <a href="#notestab_{{ event.id }}" data-toggle="tab">Notes / Checks</a>
+      </li>
+      <li>
+      <a href="#filestab_{{ event.id }}" data-toggle="tab">Files</a>
+      </li>
+      </ul>
+
+      <div class="tab-content ">
+
+      <div class="tab-pane" id="notestab_{{ event.id }}">
+        <br>
+        <p>
+        {% set mconf = {'mconfig': {
+                'formname': 'eventconfirmnote',
+                'reload_after_post': true,
+                'subject': "",
+                'to_type': "NONE",
+                'from_type': "NONE",
+                'message_type': 'ConfirmNote',
+                'submit': 'Save',
+                'context': {
+                    'system': 'crewcall',
+                    'object_name': 'event',
+                    'external_id': event.id
+                    }
+                }
+            }
+        %}
+        {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+        <a href="#" onClick='createMessage("eventconfirmnote");'>Add a must confirm note</a><br />
+        {% set mconf = {'mconfig': {
+                'formname': 'eventconfirmcheck',
+                'reload_after_post': true,
+                'message_type': 'ConfirmCheck',
+                'submit': 'Save',
+                'context': {
+                    'system': 'crewcall',
+                    'object_name': 'event',
+                    'external_id': event.id
+                    }
+                }
+            }
+        %}
+        {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
+        <a href="#" onClick='createCheck("eventconfirmcheck");'>Add a must confirm checkbox</a><br />
+        {% set mconf = {'mconfig': {
+                'formname': 'eventinformheck',
+                'reload_after_post': true,
+                'message_type': 'InformCheck',
+                'submit': 'Save',
+                'context': {
+                    'system': 'crewcall',
+                    'object_name': 'event',
+                    'external_id': event.id
+                    }
+                }
+            }
+        %}
+        {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
+        <a href="#" onClick='createCheck("eventinformheck");'>Add an information checkbox</a><br />
+        </p>
+        <p>
+        {% set mlogcontext = {
+                    'system': 'crewcall',
+                    'object_name': 'event',
+                    'message_group': 'Notes',
+                    'external_id': event.id
+            }
+        %}
+        {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+            <strong>{{ note.subject }}</strong> ({{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }})
+            <pre>{{ note.body }}</pre>
+            {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
+            <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
+            {{ form_start(mdelform) }}
+            {{ form_rest(mdelform) }}
+            <input class="dabatdbutton" type="submit" name="submit" value="Delete">
+            </form>
+            <br>
+        {% endfor %}
+        <p><br>
+        {% set mlogcontext = {
+                    'system': 'crewcall',
+                    'object_name': 'event',
+                    'message_types': ['ConfirmCheck', 'InformCheck'],
+                    'external_id': event.id
+            }
+        %}
+        {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+            {{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}
+            <ul>
+            <li>{{ note.body }}</li>
+            </ul>
+            {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
+            <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
+            {{ form_start(mdelform) }}
+            {{ form_rest(mdelform) }}
+            <input class="dabatdbutton" type="submit" name="submit" value="Delete">
+            </form>
+            <br>
+        {% endfor %}
+      </div>
+
+      <div class="tab-pane" id="filestab_{{ event.id }}">
+        {% set sfconf = {'sfconfig': {
+                'context': {
+                    'system': 'crewcall',
+                    'object_name': 'event',
+                    'external_id': event.id
+                    }
+                }
+            }
+        %}
+        {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
+            <p>
+            <br>
+              <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
+            </p>
+        {% set filecontext = {
+                    'system': 'crewcall',
+                    'object_name': 'event',
+                    'external_id': event.id
+            }
+        %}
+        {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
+      </div>
+  </div>
+
+  </div>
+  <div class="col-sm-4" align="right"> 
+    <div class="dropdown">
+      <button class="glyphicon glyphicon-list" id='eventburger' type="button" data-toggle="dropdown">
+      <span></span>
+      </button>
+    <ul class="dropdown-menu dropdown-menu-right">
+    {% if event.parent %}
+        <li>  <a class="btn btn-primary btn-block" href="{{ path('event_show', { 'id': event.parent.id }) }}">Back to {{ event.parent.name }}</a></li>
+    {% else %}
+    <li><a href="{{ path('event_new', {'parent': event.id}) }}">New sub event</a></li>
+    {% endif %}
+    <li><a href="{{ path('event_clone', {'event': event.id}) }}">Create a copy with new start date</a></li>
+    <li><a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a></li>
+    <li><a href="#" id="popLogSummary_event_{{ event.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('event', {{ event.id }});"> Changes </a></li>
+    </ul>
+    </div>
+    {% if event.shifts | length > 0 %}
+            {% set last_shift = event.shifts | last %}
+            <a href="#" onClick="grabNewShiftForm({{ event.id }}, {{ last_shift.id }});">Add shift</a>
+    {% else %}
+            <a href="#" onClick="grabNewShiftForm({{ event.id }});">Add shift</a>
+    {% endif %}
+    {% if confirm_form is not null %}
+        {{ form_start(confirm_form) }}
+    {% if event.booked and event.shifts | length > 0 %}
+        <input class="btn btn-success" type="submit" value="Open all shifts">
+    {% elseif not event.booked %}
+        <input class="btn btn-success" type="submit" value="Confirm event and open all shifts">
+    {% endif %}
+       {{ form_end(confirm_form) }}
+    {% endif %}
+    {% if not event.booked %}
+        {{ form_start(delete_form) }}
+            <input class="btn btn-danger btn-block" type="submit" value="Delete">
+        {{ form_end(delete_form) }}
+    {% endif %}
+
+   </div> <!-- col-sm-2 -->
+</div> <!-- / row -->
+
+<div id="shiftList_{{ event.id}}">
+  {% include 'CrewCallBundle:shift:_index.html.twig' with { 'event': event}  %}
+</div>

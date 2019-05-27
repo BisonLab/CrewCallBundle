@@ -1,6 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% include 'CrewCallBundle:job:handling.html.twig' %}
+{% include 'CrewCallBundle:shiftorganization:handling.html.twig' %}
+
     <h1>Shifts</h1>
+
 {% include 'CrewCallBundle:shift:_index.html.twig' %}
 {% endblock %}
