@@ -169,6 +169,17 @@ class Job
     }
 
     /**
+     * Get state label
+     *
+     * @return string 
+     */
+    public function getStateLabel($state = null)
+    {
+        $state = $state ?: $this->getState();
+        return ExternalEntityConfig::getStatesFor('Job')[$state]['label'];
+    }
+
+    /**
      * Get states
      *
      * @return array 

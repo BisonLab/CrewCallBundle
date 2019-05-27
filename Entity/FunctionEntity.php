@@ -192,6 +192,17 @@ class FunctionEntity
     }
 
     /**
+     * Get state label
+     *
+     * @return string 
+     */
+    public function getStateLabel($state = null)
+    {
+        $state = $state ?: $this->getState();
+        return ExternalEntityConfig::getStatesFor('FunctionEntity')[$state]['label'];
+    }
+
+    /**
      * Get states and a list of them.
      *
      * @return array 

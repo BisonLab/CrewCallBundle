@@ -177,9 +177,10 @@ class Shift
      *
      * @return string 
      */
-    public function getStateLabel()
+    public function getStateLabel($state = null)
     {
-        return ExternalEntityConfig::getStatesFor('Shift')[$this->state]['label'];
+        $state = $state ?: $this->getState();
+        return ExternalEntityConfig::getStatesFor('Shift')[$state]['label'];
     }
 
     /**

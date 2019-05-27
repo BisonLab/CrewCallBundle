@@ -303,6 +303,17 @@ class Organization
     }
 
     /**
+     * Get state label
+     *
+     * @return string 
+     */
+    public function getStateLabel($state = null)
+    {
+        $state = $state ?: $this->getState();
+        return ExternalEntityConfig::getStatesFor('Organization')[$state]['label'];
+    }
+
+    /**
      * Get states
      *
      * @return array 

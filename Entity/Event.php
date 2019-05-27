@@ -229,6 +229,17 @@ class Event
     }
 
     /**
+     * Get state label
+     *
+     * @return string 
+     */
+    public function getStateLabel($state = null)
+    {
+        $state = $state ?: $this->getState();
+        return ExternalEntityConfig::getStatesFor('Event')[$state]['label'];
+    }
+
+    /**
      * Get states and a list of them.
      *
      * @return array 

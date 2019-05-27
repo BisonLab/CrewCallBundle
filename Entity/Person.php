@@ -535,6 +535,17 @@ class Person extends BaseUser
     }
 
     /**
+     * Get state label
+     *
+     * @return string 
+     */
+    public function getStateLabel($state = null)
+    {
+        $state = $state ?: $this->getState();
+        return ExternalEntityConfig::getStatesFor('Person')[$state]['label'];
+    }
+
+    /**
      * Get current state
      * Should use criterias or querybuilder calls for efficiency.
      * But array/doctrine-collection criterias is not really good on dates and
