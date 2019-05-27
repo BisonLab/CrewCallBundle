@@ -173,6 +173,16 @@ class Shift
     }
 
     /**
+     * Get state label
+     *
+     * @return string 
+     */
+    public function getStateLabel()
+    {
+        return ExternalEntityConfig::getStatesFor('Shift')[$this->state]['label'];
+    }
+
+    /**
      * Get states
      *
      * @return array 
@@ -407,6 +417,11 @@ class Shift
             $booked += $so->getAmount();
         }
         return $booked;
+    }
+
+    public function isOpen()
+    {
+        return in_array($this->getState(), ExternalEntityConfig::getOpenStatesFor('Shift'));
     }
 
     /**

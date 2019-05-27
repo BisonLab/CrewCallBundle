@@ -531,8 +531,7 @@ class Event
             $child->setConfirmed();
         }
         foreach ($this->getShifts() as $shift) {
-            if ($shift->getState() == "REGISTERED")
-                $shift->setState('CONFIRMED');
+            $shift->setState('OPEN');
         }
     }
 

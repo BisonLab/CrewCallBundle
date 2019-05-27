@@ -89,7 +89,7 @@ class Organization
      * @Gedmo\Versioned
      * @Assert\Choice(callback = "getStatesList")
      */
-    private $state;
+    private $state = "ACTIVE";
 
     /**
      * @ORM\OneToMany(targetEntity="PersonFunctionOrganization", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=true)

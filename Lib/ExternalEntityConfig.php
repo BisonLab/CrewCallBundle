@@ -101,6 +101,11 @@ class ExternalEntityConfig
         return isset(self::$states[$thingie]) ? self::$states[$thingie]['booked_states'] : self::$states['default']['booked_states'];
     }
 
+    public static function getOpenStatesFor($thingie)
+    {
+        return self::$states[$thingie]['open_states'] ?? [];
+    }
+
     public static function getDoneStatesFor($thingie)
     {
         return isset(self::$states[$thingie]) ? self::$states[$thingie]['done_states'] : self::$states['default']['done_states'];
@@ -114,6 +119,10 @@ class ExternalEntityConfig
     public static function getStatesAsChoicesFor($thingie)
     {
         $states = self::getStatesFor($thingie);
-        return array_combine(array_keys($states), array_keys($states));
+        $choices = array();
+        foreach ($states as $state => $params) {
+            $choices[$params['label']] = $state;
+        }
+        return $choices;
     }
 }

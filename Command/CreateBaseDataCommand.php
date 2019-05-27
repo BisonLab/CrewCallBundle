@@ -76,18 +76,23 @@ class CreateBaseDataCommand extends ContainerAwareCommand
             'base_type' => 'CHECK',
             'security_model' => 'ADMIN_ONLY',
             'description' => "For the TODO list"),
-           'Front page logged in' => array(
-                'parent' => 'Announcements',
-                'base_type' => 'NOTE',
-                'security_model' => 'ALL_READ',
-                'description' => "Front page Announcement for logged in users"
-                ),
-           'Front page not logged in' => array(
-                'parent' => 'Announcements',
-                'base_type' => 'NOTE',
-                'security_model' => 'ALL_READ',
-                'description' => "Front page Announcement for not yet0logged in users"
-                ),
+        'Admin Wall' => array(
+            'parent' => 'Notes',
+            'base_type' => 'NOTE',
+            'security_model' => 'ADMIN_ONLY',
+            'description' => "Admin wall notes"),
+        'Front page logged in' => array(
+            'parent' => 'Announcements',
+            'base_type' => 'NOTE',
+            'security_model' => 'ALL_READ',
+            'description' => "Front page Announcement for logged in users"
+            ),
+        'Front page not logged in' => array(
+            'parent' => 'Announcements',
+            'base_type' => 'NOTE',
+            'security_model' => 'ALL_READ',
+            'description' => "Front page Announcement for not yet0logged in users"
+            ),
     );
 
     protected function configure()
@@ -108,10 +113,12 @@ class CreateBaseDataCommand extends ContainerAwareCommand
         $internal_organization_config = $this->getContainer()->getParameter('internal_organization');
         $org = new Organization();
         $org->setName($internal_organization_config['name']);
+        $org->setState("ACTIVE");
         $this->em->persist($org);
         $role = new FunctionEntity();
         $role->setName($internal_organization_config['default_role']);
         $role->setFunctionType('ROLE');
+        $role->setState("VISIBLE");
         $this->em->persist($role);
         $this->em->flush();
 
