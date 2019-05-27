@@ -36,11 +36,11 @@
     {% endif %}
             {{ job.person }}
     {% if reason %}
-        <br>{{ reason.state }}
+        <br>{{ reason.statelabel }}
     {% endif %}
             </td>
             <td>
-                {{ job.state }}
+                {{ job.statelabel }}
 {% set jobcontext = {
             'message_types': ['JobComment', 'InformCheck'],
             'order': 'DESC',
@@ -102,7 +102,7 @@
           <tr>
             <td>{{ so.organization }}</td>
             <td>{{ so.amount }}</td>
-            <td>{{ so.state }}</td>
+            <td>{{ so.statelabel }}</td>
             <td>
               <a role="button" class="btn-sm btn-danger" href="#" onClick="deleteShiftOrganization({{so.id}});">Delete</a>
             </td>

@@ -681,6 +681,7 @@ class Person extends BaseUser
             $occupied = true;
             $reasons['stateobj'] = $stateobj;
             $reasons['state'] = $state;
+            $reasons['statelabel'] = $stateobj->getStateLabel();
         }
 
         /*

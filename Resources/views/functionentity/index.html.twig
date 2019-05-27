@@ -37,7 +37,7 @@
         {% for functionEntity in functionEntities if function_type is not defined or functionEntity.functiontype == function_type %}
         <td><a href="{{ path('function_show', { 'id': functionEntity.id }) }}">{{ functionEntity.name }}</a></td>
         <td>{{ functionEntity.description }}</td>
-        <td>{{ functionEntity.state }}</td>
+        <td>{{ functionEntity.statelabel }}</td>
         <td>
         {% for state, amount in functionEntity.countpeople({ 'by_state': true }) %}
         {{ state }}: {{ amount }}<br/>

@@ -193,10 +193,8 @@
       <span></span>
       </button>
     <ul class="dropdown-menu dropdown-menu-right">
-    {% if event.parent %}
-        <li>  <a class="btn btn-primary btn-block" href="{{ path('event_show', { 'id': event.parent.id }) }}">Back to {{ event.parent.name }}</a></li>
-    {% else %}
-    <li><a href="{{ path('event_new', {'parent': event.id}) }}">New sub event</a></li>
+    {% if not event.parent %}
+        <li><a href="{{ path('event_new', {'parent': event.id}) }}">New sub event</a></li>
     {% endif %}
     <li><a href="{{ path('event_clone', {'event': event.id}) }}">Create a copy with new start date</a></li>
     <li><a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a></li>
@@ -212,15 +210,15 @@
     {% if confirm_form is not null %}
         {{ form_start(confirm_form) }}
     {% if event.booked and event.shifts | length > 0 %}
-        <input class="btn btn-success" type="submit" value="Open all shifts">
+        <input class="btn-small btn-success" type="submit" value="Open all shifts">
     {% elseif not event.booked %}
-        <input class="btn btn-success" type="submit" value="Confirm event and open all shifts">
+        <input class="btn-small btn-success" type="submit" value="Confirm event and open all shifts">
     {% endif %}
        {{ form_end(confirm_form) }}
     {% endif %}
     {% if not event.booked %}
         {{ form_start(delete_form) }}
-            <input class="btn btn-danger btn-block" type="submit" value="Delete">
+            <input class="btn-small btn-danger" type="submit" value="Delete">
         {{ form_end(delete_form) }}
     {% endif %}
 

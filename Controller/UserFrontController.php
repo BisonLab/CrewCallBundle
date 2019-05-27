@@ -268,8 +268,6 @@ class UserFrontController extends CommonController
             'state' => $state
             ];
 
- error_log("From: " . $from->format('Y-m-d') . " To:" . $to->format('Y-m-d') . " State:" . $state . " Month:" . $month);
-
         // There is no real state for opportunities, logically.
         if (!$state || $state == 'OPPORTUNITIES') {
             $signuptoken = $csrfman->getToken('signup-shift')->getValue();
@@ -356,7 +354,6 @@ class UserFrontController extends CommonController
     public function signupShiftAction(Request $request, Shift $shift)
     {
         $json_data = json_decode($request->getContent(), true);
-error_log(print_r($json_data, true));
         if (!$token = $request->request->get('_csrf_token')) {
             $token = $json_data['_csrf_token'];
         }
@@ -429,7 +426,6 @@ error_log(print_r($json_data, true));
             $json_data = json_decode($request->getContent(), true);
             $token = $json_data['_csrf_token'];
         }
-error_log(print_r($json_data, true));
         if (!$this->isCsrfTokenValid('delete-interest', $token)) {
             return new JsonResponse(["ERRROR" => "No luck"], Response::HTTP_FORBIDDEN);
         }
@@ -442,7 +438,6 @@ error_log(print_r($json_data, true));
         if ($job->getPerson() !== $user)
             return new JsonResponse(["ERRROR" => "No luck"], Response::HTTP_FORBIDDEN);
 
-error_log("Deleting " . (string)$job);
         $em = $this->getDoctrine()->getManager();
         $em->remove($job);
         $em->flush($job);
@@ -592,17 +587,44 @@ error_log("Deleting " . (string)$job);
         $form = $this->createForm("FOS\UserBundle\Form\Type\ChangePasswordFormType");
         $form->add('Change password', SubmitType::class);
         $form->setData($user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $userManager = $this->get('fos_user.user_manager');
-            $userManager->updateUser($user);
-            return new JsonResponse(["OK" => "Well done"], Response::HTTP_OK);
+        $errors = [];
+        if ($data = json_decode($request->getContent(), true)) {
+error_log(print_r($request->getContent(), true));
+            $form->submit($data);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $userManager = $this->get('fos_user.user_manager');
+                $userManager->updateUser($user);
+                return new JsonResponse(["OK" => "Well done"], Response::HTTP_OK);
+            }
+            $errors = $this->handleFormErrors($form);
+error_log(print_r($errors, true));
         }
 
-        return $this->render('userfront/_password.html.twig', array(
-            'form' => $form->createView(),
-        ));
+        $form = $form->createView();
+        $csrfman = $this->get('security.csrf.token_manager');
+        $csrfToken = $csrfman->getToken('change_password')->getValue();
+        if (count($errors) > 0) {
+            return new JsonResponse([
+                "ERROR" => [
+                    "errors" => $errors,
+                    "fos_user_change_password" => [
+                        "_token" => $csrfToken,
+                        "current_password" => "",
+                        "plainPassword" => ["first" => "", "second" => "" ]
+                        ]
+                    ]
+                ],
+                Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JsonResponse([
+            "fos_user_change_password" => [
+                "_token" => $csrfToken,
+                "current_password" => "",
+                "plainPassword" => ["first" => "", "second" => "" ]
+                ],
+            ],
+            Response::HTTP_OK);
     }
 
 

@@ -43,7 +43,7 @@
                 <a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.mainevent }}</a>
                 </td>
                 <td>{{ event.location }}</td>
-                <td>{{ event.state }}</td>
+                <td>{{ event.statelabel }}</td>
                 <td>
                 {% set amounts = event.jobsamountbystate %}
                 <span class="ccAmount ccNeeded">{{ event.totalamountneeded }}</span>

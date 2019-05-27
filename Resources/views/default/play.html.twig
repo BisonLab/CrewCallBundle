@@ -164,7 +164,8 @@ function grabMePassword() {
         type: "GET",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            $("#playparthtml").html(cont);
+            /*$("#playparthtml").html(cont); */
+             $("#playpart").html(JSON.stringify(cont, undefined, 2));
       }).fail(function(xhr, status, error) {
             errmsg = "Blaeh\n";
             errmsg = errmsg + xhr.responseText + "\n";

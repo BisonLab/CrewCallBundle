@@ -122,7 +122,7 @@ function openStateChange() {
     {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
           <a href="#" onClick="uploadFile(); return false;">Add profile picture</a><br />
 {% endif %}
-    <h1>{{ person.fullname }} {{ person.state }}</h1>
+    <h1>{{ person.fullname }} {{ person.statelabel }}</h1>
     <table class="showTable">
         <tbody>
             <tr>
@@ -295,7 +295,7 @@ function openStateChange() {
                 {% endif %}
             </td>
             <td>{{ shift.function }}</td>
-            <td>{{ job.state }}
+            <td>{{ job.statelabel }}
 {# No reason to add confirm check here, it's kinda explicist 
                 'message_types': ['JobComment', 'ConfirmCheck', 'InformCheck'], #}
 {% set jobcontext = {
@@ -421,7 +421,7 @@ function openStateChange() {
     <th>What</th><th>From</th><th>To</th><th>Days</th>
     {% for pstate in person.states if pstate.state != "ACTIVE" %}
     <tr>
-    <td>{{ pstate.state }}</td>
+    <td>{{ pstate.statelabel }}</td>
     <td>{% if pstate.fromdate is not null %}{{ pstate.fromdate | date("Y-m-d") }}{% else %}&nbsp;{% endif %}</td>
     <td>{% if pstate.todate is not null %}{{ pstate.todate | date("Y-m-d") }}{% else %}&nbsp;{% endif %}</td>
     <td>{{ pstate.days }}</td>

@@ -31,7 +31,7 @@
     {% endif %}
             {{ job.person }}
     {% if reason %}
-        <br>{{ reason.state }}
+        <br>{{ reason.statelabel }}
     {% endif %}
             </td>
             <td class="jwMobile">
@@ -48,7 +48,7 @@
                 {{ job.function.name }}
             </td>
             <td class="jwState">
-                {{ job.state }} {# {% if job.statechanged %}{{ job.statechanged | date('Y-m-d H:i') }}{% endif %} #}
+                {{ job.statelabel }} {# {% if job.statechanged %}{{ job.statechanged | date('Y-m-d H:i') }}{% endif %} #}
             </td>
             <td class="jwComments">
 {% set jobcontext = {
@@ -103,7 +103,7 @@
                 {{ so.shift.function.name }}
             </td>
             <td class="jwState">
-                {{ so.state }}<br>{{ so.amount }} people.
+                {{ so.statelabel }}<br>{{ so.amount }} people.
             </td>
             <td class="jwComments">
             &nbsp;
