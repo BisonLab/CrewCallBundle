@@ -57,7 +57,6 @@
   <div class="col-sm-4"> 
       <ul class="nav nav-tabs">
       <li class="active">
-      <li>
       <a href="#notestab_{{ event.id }}" data-toggle="tab">Notes / Checks</a>
       </li>
       <li>
@@ -67,7 +66,7 @@
 
       <div class="tab-content ">
 
-      <div class="tab-pane" id="notestab_{{ event.id }}">
+      <div class="tab-pane active" id="notestab_{{ event.id }}">
         <br>
         <p>
         {% set mconf = {'mconfig': {
@@ -188,39 +187,34 @@
 
   </div>
   <div class="col-sm-4" align="right"> 
-    <div class="dropdown">
-      <button class="glyphicon glyphicon-list" id='eventburger' type="button" data-toggle="dropdown">
-      <span></span>
-      </button>
-    <ul class="dropdown-menu dropdown-menu-right">
-    {% if not event.parent %}
-        <li><a href="{{ path('event_new', {'parent': event.id}) }}">New sub event</a></li>
-    {% endif %}
-    <li><a href="{{ path('event_clone', {'event': event.id}) }}">Create a copy with new start date</a></li>
-    <li><a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a></li>
-    <li><a href="#" id="popLogSummary_event_{{ event.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('event', {{ event.id }});"> Changes </a></li>
-    </ul>
-    </div>
+    <ul>
     {% if event.shifts | length > 0 %}
             {% set last_shift = event.shifts | last %}
             <a href="#" onClick="grabNewShiftForm({{ event.id }}, {{ last_shift.id }});">Add shift</a>
     {% else %}
             <a href="#" onClick="grabNewShiftForm({{ event.id }});">Add shift</a>
     {% endif %}
-    {% if confirm_form is not null %}
-        {{ form_start(confirm_form) }}
-    {% if event.booked and event.shifts | length > 0 %}
-        <input class="btn-small btn-success" type="submit" value="Open all shifts">
-    {% elseif not event.booked %}
-        <input class="btn-small btn-success" type="submit" value="Confirm event and open all shifts">
+        <li><a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a></li>
+        <li><a href="#" id="popLogSummary_event_{{ event.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('event', {{ event.id }});"> Changes </a></li>
+    {% if not event.done %}
+        <li><a href="#" onClick="return submitConfirmForm({{ event.id}});">
+        {% if event.booked and event.shifts | length > 0 %}
+            Open all shifts
+        {% elseif not event.booked %}
+            Confirm event and open all shifts
+        {% endif %}
+        </a></li>
     {% endif %}
-       {{ form_end(confirm_form) }}
-    {% endif %}
+
     {% if not event.booked %}
-        {{ form_start(delete_form) }}
-            <input class="btn-small btn-danger" type="submit" value="Delete">
-        {{ form_end(delete_form) }}
+        <li>
+        <li><a href="#" onClick="return submitDeleteForm({{ event.id}});">
+        Delete
+        </a>
+        </li>
     {% endif %}
+
+    </ul>
 
    </div> <!-- col-sm-2 -->
 </div> <!-- / row -->

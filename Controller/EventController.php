@@ -82,7 +82,10 @@ class EventController extends CommonController
             $em->persist($event);
             $em->flush($event);
 
-            return $this->redirectToRoute('event_show', array('id' => $event->getId()));
+            if ($event->getParent())
+                return $this->redirectToRoute('event_show', array('id' => $event->getParent()->getId()));
+            else
+                return $this->redirectToRoute('event_show', array('id' => $event->getId()));
         }
 
         // If this has a parent set here, it's not an invalid create attempt.
@@ -118,11 +121,6 @@ class EventController extends CommonController
      */
     public function showAction(Event $event)
     {
-        $deleteForm = $this->createDeleteForm($event);
-        $confirmForm = null;
-        if (!$event->isDone())
-            $confirmForm = $this->createConfirmForm($event)->createView();
-
         $em = $this->getDoctrine()->getManager();
         $funcrepo = $em->getRepository('CrewCallBundle:FunctionEntity');
         $pfe = new PersonFunctionEvent();
@@ -142,12 +140,14 @@ class EventController extends CommonController
             $add_contact_form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe, ['persons' => $persons])->createView();
         }
 
+        $deleteForm  = $this->createDeleteForm($event);
+        $confirmForm = $this->createConfirmForm($event);
         return $this->render('event/show.html.twig', array(
             'event' => $event,
             'last_shift' => !empty($event->getShifts()) ? $event->getShifts()->last() : false,
             'delete_form' => $deleteForm->createView(),
             'add_contact_form' => $add_contact_form,
-            'confirm_form' => $confirmForm
+            'confirm_form' => $confirmForm->createView(),
         ));
     }
 
@@ -180,18 +180,26 @@ class EventController extends CommonController
      *
      * @Route("/{id}/delete", name="event_delete", methods={"DELETE"})
      */
-    public function deleteAction(Request $request, Event $event)
+    public function deleteAction(Request $request, Event $event, $access)
     {
         $form = $this->createDeleteForm($event);
         $form->handleRequest($request);
+        $parent = $event->getParent();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($event);
             $em->flush($event);
         }
+        if ($this->isRest($access)) {
+            return new Response("Deleted", Response::HTTP_OK);
+        }
 
-        return $this->redirectToRoute('event_index');
+        if ($parent)
+            return $this->redirectToRoute('event_show',
+                array('id' => $parent->getId()));
+        else
+            return $this->redirectToRoute('event_index');
     }
 
     /**
@@ -199,7 +207,7 @@ class EventController extends CommonController
      *
      * @Route("/{id}/confirm", name="event_confirm", methods={"POST"})
      */
-    public function confirmAction(Request $request, Event $event)
+    public function confirmAction(Request $request, Event $event, $access)
     {
         $form = $this->createConfirmForm($event);
         $form->handleRequest($request);
@@ -207,6 +215,9 @@ class EventController extends CommonController
             $event->setConfirmed();
             $em = $this->getDoctrine()->getManager();
             $em->flush();
+        }
+        if ($this->isRest($access)) {
+            return new Response("OK", Response::HTTP_OK);
         }
         return $this->redirectToRoute('event_show', array('id' => $event->getId()));
     }

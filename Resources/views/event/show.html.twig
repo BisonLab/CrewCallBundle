@@ -6,8 +6,8 @@
 {% include 'CrewCallBundle:job:handling.html.twig' %}
 {% include 'CrewCallBundle:shiftorganization:handling.html.twig' %}
 
-{# No need to do accordion if there is no sub events #}
-{% if event.children | length == 0 %}
+<div class="row">
+  <div class="col-sm-6">
     {% if event.parent %}
         <h1>
         <a href="{{ path('event_show', {'id': event.parent.id}) }}">{{ event.parent }}</a> -> {{ event.name }}
@@ -15,6 +15,17 @@
     {% else %}
         <h1>{{ event.name }}</h1>
     {% endif %}
+  </div>
+  <div class="col-sm-6" align="right">
+    {% if not event.parent %}
+        <a href="{{ path('event_new', {'parent': event.id}) }}"><button>New sub event</button></a>
+        <a href="{{ path('event_clone', {'event': event.id}) }}"><button>Create a copy with new start date</button></a>
+    {% endif %}
+  </div>
+</div> <!-- / row -->
+
+{# No need to do accordion if there is no sub events #}
+{% if event.children | length == 0 %}
     <table class="showTable">
         <tbody>
             <tr>
