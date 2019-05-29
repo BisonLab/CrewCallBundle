@@ -67,6 +67,7 @@ function submitConfirmForm(event_id) {
 }
 </script>
 
+{% if confirm_form is defined %}
 <div class="hidden">
 <form id="confirmEventForm" method="POST">
 {{ form_widget(confirm_form) }}
@@ -75,3 +76,4 @@ function submitConfirmForm(event_id) {
 {{ form_widget(delete_form) }}
 {{ form_end(delete_form) }}
 </div>
+{% endif %}
