@@ -7,17 +7,10 @@
         {{ form_widget(edit_form) }}
         <input type="submit" value="Save" />
     {{ form_end(edit_form) }}
-
-    <ul>
-        <li>
-            <a href="{{ path('person_index') }}">Cancel</a>
-        </li>
+    <a href="{{ path('person_index') }}"><button>Cancel</button></a><br>
 {% if delete_form %}
-        <li>
             {{ form_start(delete_form) }}
                 <input type="submit" value="Delete">
             {{ form_end(delete_form) }}
-        </li>
 {% endif %}
-    </ul>
 {% endblock %}

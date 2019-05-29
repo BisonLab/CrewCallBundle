@@ -15,18 +15,9 @@
             </tr>
         </tbody>
     </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('job_index') }}">Cancel</a>
-        </li>
-        <li>
-            <a href="{{ path('job_edit', { 'id': job.id }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    <a href="{{ path('job_index') }}"><button>Cancel</button></a><br>
+    <a href="{{ path('job_edit', { 'id': job.id }) }}"><button>Edit</button></a><br>
+    {{ form_start(delete_form) }}
+        <input type="submit" value="Delete">
+    {{ form_end(delete_form) }}
 {% endblock %}

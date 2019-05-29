@@ -7,10 +7,5 @@
         {{ form_widget(form) }}
         <input type="submit" value="Create" />
     {{ form_end(form) }}
-
-    <ul>
-        <li>
-            <a href="{{ path('location_index') }}">Cancel</a>
-        </li>
-    </ul>
+    <a href="{{ path('location_index') }}"><button>Cancel</button></a>
 {% endblock %}
