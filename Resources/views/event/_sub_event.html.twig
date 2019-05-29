@@ -70,7 +70,7 @@
         <br>
         <p>
         {% set mconf = {'mconfig': {
-                'formname': 'eventconfirmnote',
+                'formname': 'eventconfirmnote_' ~ event.id,
                 'reload_after_post': true,
                 'subject': "",
                 'to_type': "NONE",
@@ -86,9 +86,9 @@
             }
         %}
         {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <a href="#" onClick='createMessage("eventconfirmnote");'>Add a must confirm note</a><br />
+        <a href="#" onClick='createMessage("eventconfirmnote_{{ event.id }}");'>Add a must confirm note</a><br />
         {% set mconf = {'mconfig': {
-                'formname': 'eventconfirmcheck',
+                'formname': 'eventconfirmcheck_' ~ event.id,
                 'reload_after_post': true,
                 'message_type': 'ConfirmCheck',
                 'submit': 'Save',
@@ -101,9 +101,9 @@
             }
         %}
         {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
-        <a href="#" onClick='createCheck("eventconfirmcheck");'>Add a must confirm checkbox</a><br />
+        <a href="#" onClick='createCheck("eventconfirmcheck_{{ event.id }}");'>Add a must confirm checkbox</a><br />
         {% set mconf = {'mconfig': {
-                'formname': 'eventinformheck',
+                'formname': 'eventinformheck_' ~ event.id,
                 'reload_after_post': true,
                 'message_type': 'InformCheck',
                 'submit': 'Save',
@@ -116,7 +116,7 @@
             }
         %}
         {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
-        <a href="#" onClick='createCheck("eventinformheck");'>Add an information checkbox</a><br />
+        <a href="#" onClick='createCheck("eventinformheck_{{ event.id }}");'>Add an information checkbox</a><br />
         </p>
         <p>
         {% set mlogcontext = {
@@ -162,6 +162,8 @@
 
       <div class="tab-pane" id="filestab_{{ event.id }}">
         {% set sfconf = {'sfconfig': {
+                'formname': 'eventfiles_' ~ event.id,
+                'reload_after_post': true,
                 'context': {
                     'system': 'crewcall',
                     'object_name': 'event',
@@ -173,7 +175,7 @@
         {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
             <p>
             <br>
-              <a href="#" onClick="uploadFile(); return false;">Add a document or image</a><br />
+              <a href="#" onClick="uploadFile('eventfiles_{{ event.id }}'); return false;">Add a document or image</a><br />
             </p>
         {% set filecontext = {
                     'system': 'crewcall',
