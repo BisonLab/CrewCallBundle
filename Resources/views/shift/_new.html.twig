@@ -2,7 +2,6 @@
 {% form_theme form 'form_div_layout.html.twig' %}
 {{ form_start(form, {'action': path('shift_new', {'access': 'ajax'}), 'attr': {'id':'newShiftForm', 'class': 'ccCompactForm'}}) }}
 <fieldset>
-<legend>New shift</legend>
     <label>Start
     {{ form_widget(form.start) }}
     </label>

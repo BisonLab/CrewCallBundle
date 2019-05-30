@@ -119,7 +119,7 @@ class ShiftOrganizationController extends CommonController
 
             if ($this->isRest($access)) {
                 // No content, well, sortof.
-                return new JsonResponse(array("status" => "OK"), Response::HTTP_NO_CONTENT);
+                return new JsonResponse(array("status" => "OK"), Response::HTTP_OK);
             } else {
                 return $this->redirectToRoute('shiftorganization_show', array('id' => $shiftOrganization->getId()));
             }

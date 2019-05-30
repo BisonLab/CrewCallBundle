@@ -1,7 +1,6 @@
 {% form_theme edit_form 'form_div_layout.html.twig' %}
 {{ form_start(edit_form, { 'action': path('shift_edit', {'access': 'ajax'}), 'attr': {'id':'editShiftForm', 'class': 'ccCompactForm'}}) }}
 <fieldset>
-<legend>Edit {{ shift }}</legend>
     <label>Start
     {{ form_widget(edit_form.start) }}
     </label>

@@ -105,13 +105,10 @@
             <td>{{ so.statelabel }}</td>
             <td>
               <a role="button" class="btn-sm btn-danger" href="#" onClick="deleteShiftOrganization({{so.id}});">Delete</a>
+              <a role="button" class="btn-sm btn-success" href="#" onClick="grabEditShiftOrganizationForm({{ so.id }});">Edit</a>
             </td>
           </tr>
         {% endfor %}
     {% endif %}
     </tbody>
 </table>
-    <div id="newShiftOrganization_{{ shift.id }}">
-    </div>
-    <div id="newJob{{ shift.id }}">
-    </div>

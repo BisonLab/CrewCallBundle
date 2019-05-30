@@ -8,6 +8,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use CrewCallBundle\Lib\ExternalEntityConfig;
+
 /**
  * This is the "An organization provides five roadies" equivalent of Job, which
  * is the connection between one individual and a function in a shift.

@@ -45,9 +45,12 @@ function grabNewShiftOrganizationForm(shift_id) {
         url = url + "?shift=" + shift_id;
     }
     $.get(url, function( data ) {
-        $( "#newShiftOrganization_"+shift_id ).html(data);
-        $( "#crewcallbundle_shiftorganization_shift").hide();
-        $( "#newShiftOrganization_"+shift_id ).submit(function( event ) {
+        $( "#soModalBody" ).html(data);
+        $( "#soModalTitle" ).html("Add crew from org");
+        $( "#soModal" ).modal();
+        $( "#newShiftOrganizationForm #crewcallbundle_shiftorganization_shift").prev().hide();
+        $( "#newShiftOrganizationForm #crewcallbundle_shiftorganization_shift").hide();
+        $( "#newShiftOrganizationForm" ).submit(function( event ) {
             event.preventDefault();
             submitNewShiftOrganizationForm(shift_id);
         });
@@ -68,8 +71,8 @@ function submitEditShiftOrganizationForm(shift_id) {
         dataType: "text",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-        $( "#editShiftOrganization_"+shift_id ).html("");
-        grabShiftOrganizationList(shift_id);
+        // Gotta recount
+        parent.location.reload();
       }).fail(function(xhr, status, error) {
             errmsg = "Failed saving\n";
             errmsg = errmsg + xhr.responseText + "\n";
@@ -82,7 +85,9 @@ function grabEditShiftOrganizationForm(shift_id) {
     orgurl = "{{ path('shiftorganization_edit', { 'access': 'ajax' }) }}";
     url = orgurl.replace("0", shift_id);
     $.get(url, function( data ) {
-        $( "#editShiftOrganization_"+shift_id ).html(data);
+        $( "#soModalBody" ).html(data);
+        $( "#soModalTitle" ).html("Edit");
+        $( "#soModal" ).modal();
         $( "#editShiftOrganizationForm" ).submit(function( event ) {
             event.preventDefault();
             submitEditShiftOrganizationForm(shift_id);
@@ -117,3 +122,16 @@ function deleteShiftOrganization(so_id) {
 }
 
 </script>
+<div class="modal fade" id="soModal" role="dialog" tabindex='-1'>
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title" id="soModalTitle"></h4>
+      </div>
+      <div class="modal-body" id="soModalBody">
+      </div>
+    </div>
+  </div>
+</div> <!-- / modal -->

@@ -1,5 +1,6 @@
 {% form_theme form 'form_div_layout.html.twig' %}
 {{ form_start(form, {action:path('job_new', {'access': 'ajax'}), 'attr': {'id':'newJobForm', 'class': 'ccCompactForm'}}) }}
+<fieldset>
     <input type="hidden" name="username" id="username">
     <label>Person
     {{ form_widget(form.person) }}
@@ -10,5 +11,6 @@
     <label>&nbsp;
     <input id="submitNewJob" type="submit" value="Add" />
     </label>
+</fieldset>
 {#     <input id="submitNewJob" type="submit" value="Add"  onclick="this.value='Adding';this.disabled=true" /> #}
 {{ form_end(form) }}

@@ -46,8 +46,8 @@
         <ul class="dropdown-menu dropdown-menu-right">
           <li><a href="#" onClick="grabJobList({{ shift.id }});">Jobs</a></li>
           <li><a href="#" onClick="grabEditShiftForm({{ shift.id }}, {{ shift.event.id }});">Edit</a></li>
-          <li><a href="#" onClick="grabJobList({{ shift.id }}); grabNewJobForm({{shift.id}});">Add person</a></li>
-          <li><a href="#" onClick="grabJobList({{ shift.id }}); grabNewShiftOrganizationForm({{shift.id}});">Add crew from an organization</a></li>
+          <li><a href="#" onClick="grabNewJobForm({{shift.id}});">Add person</a></li>
+          <li><a href="#" onClick="grabNewShiftOrganizationForm({{shift.id}});">Add crew from an organization</a></li>
 {% set mlogcontext = {
             'system': 'crewcall',
             'object_name': 'shift',
@@ -57,6 +57,27 @@
 {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
          <li><a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a></li>
 {% endif %}
+        <li><a href="#" onClick='createMessage("shiftnote_{{ shift.id }}");'>Add a note</a></li>
+          <li><a href="#" onClick='createCheck("shiftconfirmcheck_{{ shift.id }}");'>Add a must confirm checkbox</a></li>
+
+          <li><a href="#" id="popLogSummary_shift_{{ shift.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('shift', {{ shift.id }});">Changes</a></li>
+          <li><a href="#" onClick="deleteShift({{ shift.id }});">Delete</a></li>
+        </ul>
+        </div>
+      </td>
+    </tr>
+    <tr class="jobList" id="jobList_{{ shift.id }}">
+    <td colspan="6">
+    <div style="float: right">
+    <a href="#" onClick="hideJobList({{ shift.id }});"><span class="glyphicon glyphicon-remove-circle"/></a>
+    </div>
+    <br>
+    <div id="jobTable_{{ shift.id }}">
+    </div>
+    <div id="editShift_{{ shift.id }}" style="float: left">
+    </div>
+    </td>
+    </tr>
 {% set mconf = {'mconfig': {
         'formname': 'shiftnote_' ~ shift.id,
         'reload_after_post': true,
@@ -75,9 +96,8 @@
     }
 %}
 {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <li><a href="#" onClick='createMessage("shiftnote_{{ shift.id }}");'>Add a note</a></li>
 {% set mconf = {'mconfig': {
-        'formname': 'shiftconfirmcheck',
+        'formname': 'shiftconfirmcheck_' ~ shift.id,
         'reload_after_post': true,
         'message_type': 'ConfirmCheck',
         'submit': 'Save',
@@ -90,26 +110,6 @@
     }
 %}
 {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
-          <li><a href="#" onClick='createCheck("shiftconfirmcheck");'>Add a must confirm checkbox</a></li>
-
-          <li><a href="#" id="popLogSummary_shift_{{ shift.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('shift', {{ shift.id }});"> Changes</a></li>
-          <li><a href="#" onClick="deleteShift({{ shift.id }});">Delete</a></li>
-        </ul>
-        </div>
-      </td>
-    </tr>
-    <tr class="jobList" id="jobList_{{ shift.id }}">
-    <td colspan="6">
-    <div style="float: right">
-    <a href="#" onClick="hideJobList({{ shift.id }});"><span class="glyphicon glyphicon-remove-circle"/></a>
-    </div>
-    <br>
-    <div id="jobTable_{{ shift.id }}">
-    </div>
-    <div id="editShift_{{ shift.id }}" style="float: left">
-    </div>
-    </td>
-    </tr>
 {% endfor %}
 </tbody>
 </table>

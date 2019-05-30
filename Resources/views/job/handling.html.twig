@@ -30,11 +30,8 @@ function setStateOnJob(job_id, state, shift_id) {
         type: "POST",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            if ($( "#jobTable_" + shift_id ).length) {
-                grabJobList(shift_id);
-            } else {
-                parent.location.reload();
-            }
+        // Gotta recount
+        parent.location.reload();
       }).fail(function(xhr, status, error) {
             errmsg = "Warning!\n";
             errmsg = errmsg + xhr.responseText + "\n";
@@ -54,23 +51,31 @@ function grabNewJobForm(shift_id) {
         url = url + "?shift=" + shift_id;
     }
     $.get(url, function( data ) {
-        $( "#newJob"+shift_id ).html(data);
-        $( "#jobList_" + shift_id ).show();
-        $( "#newShiftOrganization_"+shift_id).hide();
-        $( "#crewcallbundle_job_shift").prev().hide();
-        $( "#crewcallbundle_job_shift").hide();
-        $( "#newJob"+shift_id ).submit(function( event ) {
+        $( "#jobModalBody" ).html(data);
+        $( "#jobModalTitle" ).html("Add Person on job");
+        $( "#newJobForm #crewcallbundle_job_shift").prev().hide();
+        $( "#newJobForm #crewcallbundle_job_shift").hide();
+        $( "#newJobForm").submit(function( event ) {
             event.preventDefault();
             submitNewJobForm(shift_id);
         });
-        $( "#crewcallbundle_job_person" ).autocomplete({
-          source: "{{ path('person_search', {'enabled': true, 'access': 'ajax'}) }}",
+        $( "#newJobForm #crewcallbundle_job_person" ).autocomplete({
+          source: "{{ path('person_search', {'enabled': true, 'access': 'ajax','value_with_all': true }) }}",
           minLength: 2,
+          response: function(event, ui) {
+            if (ui.content.length === 0) {
+                console.log("Nei");
+            } else {
+                console.log(ui.content);
+            }
+          },
           select: function( event, ui ) {
             $( "#newJobForm #crewcallbundle_job_person" ).val(ui.item.value);
             $( "#newJobForm #username" ).val(ui.item.username);
           }
          });
+        $( "#jobModal" ).modal('show');
+        $( "#newJobForm #crewcallbundle_job_person" ).autocomplete("option", "appendTo", "#newJobForm");
     });
     return false;
 }
@@ -93,7 +98,7 @@ function submitNewJobForm(shift_id) {
                 // Gotta reload. Easiest way to recount everything.
                 parent.location.reload();
             } else {
-                $( "#newJob"+shift_id ).html(xhr.responseText);
+                $( "#jobModalBody" ).html(xhr.responseText);
             }
       }).fail(function(xhr, status, error) {
             errmsg = "Failed adding new job\n";
@@ -103,3 +108,17 @@ function submitNewJobForm(shift_id) {
     return false;
 }
 </script>
+
+<div class="modal fade" id="jobModal" role="dialog" tabindex='-1'>
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title" id="jobModalTitle"></h4>
+      </div>
+      <div class="modal-body" id="jobModalBody">
+      </div>
+    </div>
+  </div>
+</div> <!-- / modal -->

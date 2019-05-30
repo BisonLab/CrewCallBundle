@@ -34,6 +34,7 @@ function submitNewShiftForm(event_id) {
                 $( "#shiftModal" ).modal('hide');
             } else {
                 $( "#shiftModalBody" ).html(xhr.responseText);
+                $( "#shiftModalTitle" ).html("Add Shift");
             }
       }).fail(function(xhr, status, error) {
             errmsg = "Failed adding shift\n";
@@ -56,6 +57,7 @@ function grabNewShiftForm(event_id = false, from_shift_id = false) {
     }
     $.get(url, function( data ) {
         $( "#shiftModalBody" ).html(data);
+        $( "#shiftModalTitle" ).html("Add Shift");
         $( "#shiftModal" ).modal();
         /*
          * My JS-fu is bad. I'm quite sure I should be able to set the
@@ -112,6 +114,7 @@ function grabEditShiftForm(shift_id, event_id) {
     url = orgurl.replace("0", shift_id);
     $.get(url, function( data ) {
         $( "#shiftModalBody" ).html(data);
+        $( "#shiftModalTitle" ).html("Edit Shift");
         $( "#shiftModal" ).modal();
         $( "#editShiftForm" ).submit(function( event ) {
             event.preventDefault();
@@ -154,6 +157,10 @@ function deleteShift(shift_id) {
   <div class="modal-dialog">
     <!-- Modal content-->
     <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title" id="shiftModalTitle"></h4>
+      </div>
       <div class="modal-body" id="shiftModalBody">
       </div>
     </div>
