@@ -16,6 +16,7 @@ services:
 
     crewcall.retriever:
         class: CrewCallBundle\Service\CrewCallRetriever
+        public: true
         arguments: ["@doctrine.orm.entity_manager"]
 
     crewcall.calendar:
