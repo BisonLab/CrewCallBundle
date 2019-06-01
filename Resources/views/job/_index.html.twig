@@ -7,8 +7,8 @@
     <td>{{ elem.in | date("Y-m-d H:i") }}</td>
     <td>{{ elem.out | date("Y-m-d H:i") }}</td>
     <td>
-    <a href="#" id="editJobLog_{{ elem.id }}" data-html="true" onClick="grabEditJobLogForm({{ elem.id }}, {{ elem.job.shift.id }});">Edit</a><br>
-    <a href="#" id="deleteJobLog_{{ elem.id }}" data-html="true" onClick="deleteJobLog({{ elem.id }}, {{ elem.job.shift.id }});">Delete</a><br>
+    <a href="#!" id="editJobLog_{{ elem.id }}" data-html="true" onClick="grabEditJobLogForm({{ elem.id }}, {{ elem.job.shift.id }});">Edit</a><br>
+    <a href="#!" id="deleteJobLog_{{ elem.id }}" data-html="true" onClick="deleteJobLog({{ elem.id }}, {{ elem.job.shift.id }});">Delete</a><br>
     </td>
     </tr>
     {% endfor %}
@@ -32,7 +32,7 @@
         }
     %}
     {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-                <a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
+                <a href="#" class="noscrolla" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
     {% endif %}
             {{ job.person }}
     {% if reason %}
@@ -105,7 +105,7 @@
             <td>{{ so.statelabel }}</td>
             <td>
               <a role="button" class="btn-sm btn-danger" href="#" onClick="deleteShiftOrganization({{so.id}});">Delete</a>
-              <a role="button" class="btn-sm btn-success" href="#" onClick="grabEditShiftOrganizationForm({{ so.id }});">Edit</a>
+              <a role="button" class="btn-sm btn-success" href="#" class="noscrolla" onClick="grabEditShiftOrganizationForm({{ so.id }});">Edit</a>
             </td>
           </tr>
         {% endfor %}

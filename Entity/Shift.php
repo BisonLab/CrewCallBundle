@@ -422,6 +422,10 @@ class Shift
 
     public function isOpen()
     {
+        // Doesen't make sense to let crew register on a shift when the event
+        // is closed.
+        if (!$this->getEvent()->isOpen())
+            return false;
         return in_array($this->getState(), ExternalEntityConfig::getOpenStatesFor('Shift'));
     }
 

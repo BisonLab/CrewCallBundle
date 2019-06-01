@@ -83,7 +83,7 @@
 
     <div class="tab-pane" id="peopletab">
       <div id="addExistingPerson" style="float: left">
-      <a href="#" onClick="grabAddExistingPersonForm();"><button>Add person</button></a><br>
+      <a href="#" class="noscrolla" onClick="grabAddExistingPersonForm();"><button>Add person</button></a><br>
       </div>
     
       <table id="apTable" class="table  table-sm">
@@ -134,7 +134,7 @@
             %}
             {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
             <p><br>
-            <a href="#" onClick='createMessage("organizationnote");'>Add a note</a><br />
+            <a href="#" class="noscrolla" onClick='createMessage("organizationnote");'>Add a note</a><br />
             </p>
             {% set mlogcontext = {
                         'system': 'crewcall',
@@ -163,7 +163,7 @@
         %}
         {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
         <p><br>
-          <a href="#" onClick="uploadFile(); return false;">Add a file</a><br />
+          <a href="#" class="noscrolla" onClick="uploadFile(); return false;">Add a file</a><br />
         </p>
         {% set filecontext = {
                 'system': 'crewcall',

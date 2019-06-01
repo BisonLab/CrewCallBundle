@@ -594,6 +594,7 @@ class Event
 
     public function isFuture()
     {
+        // As long as it hasn't finished, it's in the fuiture.
         if ($this->getEnd())
             return $this->getEnd()->getTimestamp() > time();
         // Well, no end, then it's in the future.
@@ -602,6 +603,10 @@ class Event
     public function isBooked()
     {
         return in_array($this->getState(), ExternalEntityConfig::getBookedStatesFor('Event'));
+    }
+    public function isOpen()
+    {
+        return in_array($this->getState(), ExternalEntityConfig::getOpenStatesFor('Event'));
     }
     public function isActive()
     {
