@@ -589,7 +589,14 @@ class UserFrontController extends CommonController
         $form->setData($user);
         $errors = [];
         if ($data = json_decode($request->getContent(), true)) {
-error_log(print_r($request->getContent(), true));
+            // Hack, Angfular does not comply.
+            if (isset($data['first'])) {
+                $data['plainPassword'] = [];
+                $data['plainPassword']['first'] = $data['first'];
+                unset($data['first']);
+                $data['plainPassword']['second'] = $data['second'] ?: null;
+                unset($data['second']);
+            }
             $form->submit($data);
             if ($form->isSubmitted() && $form->isValid()) {
                 $userManager = $this->get('fos_user.user_manager');
@@ -597,7 +604,6 @@ error_log(print_r($request->getContent(), true));
                 return new JsonResponse(["OK" => "Well done"], Response::HTTP_OK);
             }
             $errors = $this->handleFormErrors($form);
-error_log(print_r($errors, true));
         }
 
         $form = $form->createView();
