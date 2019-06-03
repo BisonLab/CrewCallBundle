@@ -104,7 +104,7 @@ function get_selected_persons() {
                 }
             %}
 {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-            <br><a href="#" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>
+            <br><a href="#" class="noscrolla" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>
 {% endif %}
                 </td>
 #}
