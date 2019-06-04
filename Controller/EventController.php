@@ -141,13 +141,13 @@ class EventController extends CommonController
         }
 
         $deleteForm  = $this->createDeleteForm($event);
-        $confirmForm = $this->createConfirmForm($event);
+        $stateForm = $this->createStateForm($event);
         return $this->render('event/show.html.twig', array(
             'event' => $event,
             'last_shift' => !empty($event->getShifts()) ? $event->getShifts()->last() : false,
             'delete_form' => $deleteForm->createView(),
             'add_contact_form' => $add_contact_form,
-            'confirm_form' => $confirmForm->createView(),
+            'state_form' => $stateForm->createView(),
         ));
     }
 
@@ -165,7 +165,10 @@ class EventController extends CommonController
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('event_show', array('id' => $event->getId()));
+            if ($event->getParent())
+                return $this->redirectToRoute('event_show', array('id' => $event->getParent()->getId()));
+            else
+                return $this->redirectToRoute('event_show', array('id' => $event->getId()));
         }
 
         return $this->render('event/edit.html.twig', array(
@@ -205,14 +208,14 @@ class EventController extends CommonController
     /**
      * Sets "CONFIRMED" on the event and all shifts underneith.
      *
-     * @Route("/{id}/confirm", name="event_confirm", methods={"POST"})
+     * @Route("/{id}/state/{state}", name="event_state", methods={"POST"})
      */
-    public function confirmAction(Request $request, Event $event, $access)
+    public function stateAction(Request $request, Event $event, $state, $access)
     {
-        $form = $this->createConfirmForm($event);
+        $form = $this->createStateForm($event);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $event->setConfirmed();
+            $event->setState($state);
             $em = $this->getDoctrine()->getManager();
             $em->flush();
         }
@@ -434,10 +437,13 @@ class EventController extends CommonController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createConfirmForm(Event $event)
+    private function createStateForm(Event $event)
     {
+        // It looks like should add a state here, but I am going to act
+        // differently based on the state. And I am not ready to do that in
+        // the event entity, yet. (Hmm, but the state handler..)
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('event_confirm', array('id' => $event->getId())))
+            ->setAction($this->generateUrl('event_state', array('state' => "STATE", 'id' => $event->getId())))
             ->setMethod('POST')
             ->getForm()
         ;

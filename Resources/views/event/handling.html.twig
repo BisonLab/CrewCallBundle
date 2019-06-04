@@ -46,20 +46,21 @@ function submitDeleteForm(event_id) {
     return false;
 }
 
-function submitConfirmForm(event_id) {
-    confirmEventFormData = $( "#confirmEventForm" ).serialize();
-    url = "{{ path('event_confirm', { 'access': 'ajax', 'id': 'XXX' }) }}";
+function submitStateForm(event_id, state) {
+    stateEventFormData = $( "#stateEventForm" ).serialize();
+    url = "{{ path('event_state', { 'access': 'ajax', 'state': 'STATE', 'id': 'XXX' }) }}";
     url = url.replace('XXX', event_id);
+    url = url.replace('STATE', state);
     $.ajax({
         type: "POST",
         url: url,
-        data: confirmEventFormData,
+        data: stateEventFormData,
         dataType: "text",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             parent.location.reload();
       }).fail(function(xhr, status, error) {
-            errmsg = "Confirm failed\n";
+            errmsg = "It failed\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
     });
@@ -67,11 +68,11 @@ function submitConfirmForm(event_id) {
 }
 </script>
 
-{% if confirm_form is defined %}
+{% if state_form is defined %}
 <div class="hidden">
-<form id="confirmEventForm" method="POST">
-{{ form_widget(confirm_form) }}
-{{ form_end(confirm_form) }}
+<form id="stateEventForm" method="POST">
+{{ form_widget(state_form) }}
+{{ form_end(state_form) }}
 <form id="deleteEventForm" method="DELETE">
 {{ form_widget(delete_form) }}
 {{ form_end(delete_form) }}

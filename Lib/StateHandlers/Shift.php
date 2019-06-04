@@ -15,7 +15,7 @@ class Shift
         $this->sm = $sm;
     }
 
-    public function handle($shift, $from, $to)
+    public function handle(\CrewCallBundle\Entity\Shift $shift, $from, $to)
     {
         // Sigh, not working. This way to handle states is too limiting.
         if ($to == "COMPLETED") {

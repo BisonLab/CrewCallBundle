@@ -534,18 +534,6 @@ class Event
         return $persons;
     }
 
-    public function setConfirmed()
-    {
-        if (!$this->isBooked())
-            $this->setState('CONFIRMED');
-        foreach ($this->getChildren() as $child) {
-            $child->setConfirmed();
-        }
-        foreach ($this->getShifts() as $shift) {
-            $shift->setState('OPEN');
-        }
-    }
-
     public function getTotalAmountNeeded()
     {
         $amount = 0;

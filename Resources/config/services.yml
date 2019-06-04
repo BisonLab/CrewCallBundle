@@ -54,5 +54,4 @@ services:
         class: CrewCallBundle\EventListener\StateChangeListener
         arguments: ["@crewcall.statehandler"]
         tags:
-            - { name: doctrine.event_listener, event: preUpdate  }
-            - { name: doctrine.event_listener, event: postFlush  }
+            - { name: doctrine.event_listener, event: onFlush  }

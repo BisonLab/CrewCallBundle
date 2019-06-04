@@ -14,7 +14,7 @@ class Job
         $this->sm = $sm;
     }
 
-    public function handle($job, $from, $to)
+    public function handle(\CrewCallBundle\Entity\Job $job, $from, $to)
     {
         if ($to == "CONFIRMED" || $to == "ASSIGNED") {
             // Create a message.

@@ -420,6 +420,13 @@ class Shift
         return $booked;
     }
 
+    public function isBooked()
+    {
+        if (!$this->getEvent()->isBooked())
+            return false;
+        return in_array($this->getState(), ExternalEntityConfig::getBookedStatesFor('Shift'));
+    }
+
     public function isOpen()
     {
         // Doesen't make sense to let crew register on a shift when the event

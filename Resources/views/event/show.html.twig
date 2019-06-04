@@ -62,6 +62,11 @@
                 {{ event.end | date('d M H:i') }}
             {% endif %}
             <div class="state">
+                    {% if event.state == "READY" %}
+                        <span class="glyphicon glyphicon-ok"></span>
+                    {% else %}
+                        <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');"><span class="glyphicon glyphicon-unchecked"></span></a>
+                    {% endif %}
                 {{ event.statelabel }}
             </div>
           </div> <!-- / panel-heading -->
@@ -91,6 +96,11 @@
                     {{ child.end | date('d M H:i') }}
                 {% endif %}
                 <div class="state">
+                    {% if child.state == "READY" %}
+                        <span class="glyphicon glyphicon-ok"></span>
+                    {% else %}
+                        <a href="#" onClick="return submitStateForm({{ child.id }}, 'READY');"><span class="glyphicon glyphicon-unchecked"></span></a>
+                    {% endif %}
                     {{ child.statelabel }}
                 </div>
               </div> <!-- / panel-heading -->

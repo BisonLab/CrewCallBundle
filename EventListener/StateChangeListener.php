@@ -5,8 +5,7 @@ namespace CrewCallBundle\EventListener;
 use Doctrine\ORM\Events;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
-use Doctrine\ORM\Event\PostFlushEventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 
 class StateChangeListener
 {
@@ -28,21 +27,21 @@ class StateChangeListener
             );
     }
 
-    public function preUpdate(PreUpdateEventArgs $eventArgs)
-    {
-        // If state not changed, why bother?
-        if (!$eventArgs->hasChangedField('state'))
-            return true;
-
-        return $this->state_handler->handleStateChange(
-            $eventArgs->getEntity(),
-            $eventArgs->getOldValue('state'),
-            $eventArgs->getNewValue('state')
-            );
-    }
-
-    public function postFlush(PostFlushEventArgs $eventArgs)
+    public function onFlush(OnFlushEventArgs $eventArgs)
     {
         $em = $eventArgs->getEntityManager();
+        $uow = $em->getUnitOfWork();
+
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            foreach ($uow->getEntityChangeSet($entity) as $field => $values) {
+                if ($field != "state")
+                    continue;
+                $this->state_handler->handleStateChange(
+                    $entity,
+                    $values[0],
+                    $values[1]
+                    );
+            }
+        }
     }
 }
