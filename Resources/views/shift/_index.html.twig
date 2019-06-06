@@ -15,7 +15,6 @@
         <a href="#" id="popSummary_event_{{ shift.event.id }}{{ shift.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ shift.event.id }}, {{ shift.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
         </td>
         <td>
-        {{ shift.statelabel }}
         {% set amounts = shift.jobsamountbystate %}
         <span class="ccAmount ccNeeded">{{ shift.amount }}</span>
         <span class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
@@ -28,16 +27,12 @@
         {% endif %}
         </td>
         <td>
-        {# TODO: Make it float besides the hamburger, not over #}
-        {# TODO: And make it set open/closed/ready
-        {% if shift.event.state == "CONFIRMED" and shift.state != "CONFIRMED" %}
-        <form action="{{ path('shift_state', { 'id': shift.id }) }}" method="POST">
-        <input type="hidden" name="event" value="{{ shift.event.id }}">
-        <input type="hidden" name="state" value="CONFIRMED">
-        <input type="submit" value="Confirm">
-        </form>
-        {% endif %}
-        #}
+        <label class="cc_switch">
+          <input type="checkbox" id="shiftstatecheck_{{ shift.id }}" onChange="setStateOnShiftCheckbox({{ shift.id }}, {{ shift.event.id }}, this)" {% if shift.open %}checked{% endif %}/>
+          <span class="cc_slider round"></span>
+        </label><br>
+        </td>
+        <td>
         <div class="dropdown">
           <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
           <span></span>

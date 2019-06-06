@@ -205,13 +205,10 @@ class ShiftController extends CommonController
     /**
      * Sets a (new) state on the shift.
      *
-     * @Route("/{id}", name="shift_state", methods={"POST"})
+     * @Route("/{id}/state/{state}", name="shift_state", methods={"POST"})
      */
-    public function stateAction(Request $request, $access, Shift $shift)
+    public function stateAction(Request $request, Shift $shift, $state, $access)
     {
-        // Bloody good question here, because CSRF.
-        // This should add some sort of protection.
-        $state = $request->request->get('state');
         if ($state != $shift->getState()) {
             $shift->setState($state);
             $em = $this->getDoctrine()->getManager();

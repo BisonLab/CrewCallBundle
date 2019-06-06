@@ -124,6 +124,35 @@ function grabEditShiftForm(shift_id, event_id) {
     return false;
 }
 
+function setStateOnShiftCheckbox(shift_id, event_id, elem) {
+    if (elem.checked) {
+        setStateOnShift(shift_id, "OPEN", event_id);
+    } else {
+        setStateOnShift(shift_id, "CLOSED", event_id);
+    }
+}
+
+function setStateOnShift(shift_id, state, event_id) {
+    cheat_url = "{{ path('shift_state', { 'id': "XXX", 'state': 'NONE', 'access': 'ajax' }) }}";
+    c_url = cheat_url.replace("XXX", shift_id);
+    url = c_url.replace("NONE", state);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "POST",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+        grabShiftList(event_id);
+      }).fail(function(xhr, status, error) {
+            errmsg = "Warning!\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
 function deleteShift(shift_id) {
     cheat_url = "{{ path('shift_delete', { 'id': 0, 'access': 'ajax' }) }}";
     url = cheat_url.replace("0", shift_id);
