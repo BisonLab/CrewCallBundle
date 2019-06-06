@@ -22,11 +22,7 @@ class Event
         if ($to == "READY") {
             $uow = $this->em->getUnitOfWork();
             foreach ($event->getShifts() as $shift) {
-                // Do not touch unless booked. (It may be closed for some
-                // reason.)
-                if (!$shift->isBooked())
-                    continue;
-                $shift->setState("READY");
+                $shift->setState("CLOSED");
                 $meta = $this->em->getClassMetadata(get_class($shift));
                 $uow->computeChangeSet($meta, $shift);
                 $uow->computeChangeSets();

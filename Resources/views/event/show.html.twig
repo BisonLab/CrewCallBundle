@@ -38,7 +38,14 @@
             </tr>
             <tr>
                 <th>State</th>
-                <td>{{ event.statelabel }}</td>
+                <td>
+                    {% if event.state == "READY" %}
+                        <span class="glyphicon glyphicon-ok"></span>
+                    {% else %}
+                        <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');"><span class="glyphicon glyphicon-unchecked"></span></a>
+                    {% endif %}
+                {{ event.statelabel }}
+                </td>
             </tr>
         </tbody>
         </table>
