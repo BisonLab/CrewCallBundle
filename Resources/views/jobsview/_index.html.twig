@@ -18,8 +18,8 @@
         <tr id=jobRow_{{ job.id }}>
             {% set reason = job.person.occupied({'reasons': true}) %}
             <td class="jwPerson{% if reason %} cc_warn{% endif %}">
-            <a href="#" id="popSummary_person_jobs_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="popSummary('person_jobs', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
-            <a href="#" id="popSummary_person_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a href="#" id="popSummary_person_jobs_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('person_jobs', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
+            <a href="#" id="popSummary_person_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
     {% set mlogcontext = {
                 'system': 'crewcall',
                 'object_name': 'person',
@@ -27,7 +27,7 @@
         }
     %}
     {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-                <a href="#" class="noscrolla" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
+                <a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
     {% endif %}
             {{ job.person }}
     {% if reason %}
@@ -41,7 +41,7 @@
                 {{ job.start | date("H:i") }} -> {{ job.end | date("H:i") }}
             </td>
             <td class="jwEvent">
-            <a href="#" id="popSummary_event_{{ job.event.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a href="#" id="popSummary_event_{{ job.event.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
                 {{ job.event.name }}
             </td>
             <td class="jwFunction">
@@ -96,7 +96,7 @@
             </td>
                 {{ so.shift.start | date("H:i") }} -> {{ so.shift.end | date("H:i") }}
             <td>
-            <a href="#" id="popSummary_event_{{ so.shift.event.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ so.shift.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a href="#" id="popSummary_event_{{ so.shift.event.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('event', {{ so.shift.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
                 {{ so.shift.event.name }}
             </td>
             <td class="jwFunction">

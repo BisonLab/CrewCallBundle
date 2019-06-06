@@ -40,7 +40,7 @@
 
     <ul>
         <li>
-           <a href="#" id="popLogSummary_organization_{{ organization.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('organization', {{ organization.id }});"><button>Changes</button></a><br>
+           <a href="#" id="popLogSummary_organization_{{ organization.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('organization', {{ organization.id }});"><button>Changes</button></a><br>
         </li>
         <li>
             <a href="{{ path('organization_edit', { 'id': organization.id }) }}"><button>Edit</button></a>
@@ -83,7 +83,7 @@
 
     <div class="tab-pane" id="peopletab">
       <div id="addExistingPerson" style="float: left">
-      <a href="#" class="noscrolla" onClick="grabAddExistingPersonForm();"><button>Add person</button></a><br>
+      <a href="#" onClick="return grabAddExistingPersonForm();"><button>Add person</button></a><br>
       </div>
     
       <table id="apTable" class="table  table-sm">
@@ -134,7 +134,7 @@
             %}
             {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
             <p><br>
-            <a href="#" class="noscrolla" onClick='createMessage("organizationnote");'>Add a note</a><br />
+            <a href="#" onClick='return createMessage("organizationnote");'>Add a note</a><br />
             </p>
             {% set mlogcontext = {
                         'system': 'crewcall',
@@ -163,7 +163,7 @@
         %}
         {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
         <p><br>
-          <a href="#" class="noscrolla" onClick="uploadFile(); return false;">Add a file</a><br />
+          <a href="#" onClick="return uploadFile();">Add a file</a><br />
         </p>
         {% set filecontext = {
                 'system': 'crewcall',

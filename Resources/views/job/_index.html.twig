@@ -7,8 +7,8 @@
     <td>{{ elem.in | date("Y-m-d H:i") }}</td>
     <td>{{ elem.out | date("Y-m-d H:i") }}</td>
     <td>
-    <a href="#!" id="editJobLog_{{ elem.id }}" data-html="true" onClick="grabEditJobLogForm({{ elem.id }}, {{ elem.job.shift.id }});">Edit</a><br>
-    <a href="#!" id="deleteJobLog_{{ elem.id }}" data-html="true" onClick="deleteJobLog({{ elem.id }}, {{ elem.job.shift.id }});">Delete</a><br>
+    <a href="#!" id="editJobLog_{{ elem.id }}" data-html="true" onClick="return grabEditJobLogForm({{ elem.id }}, {{ elem.job.shift.id }});">Edit</a><br>
+    <a href="#!" id="deleteJobLog_{{ elem.id }}" data-html="true" onClick="return deleteJobLog({{ elem.id }}, {{ elem.job.shift.id }});">Delete</a><br>
     </td>
     </tr>
     {% endfor %}
@@ -23,8 +23,8 @@
         <tr>
             {% set reason = job.person.occupied({'reasons': true}) %}
             <td {% if reason %}class="cc_warn"{% endif %}>
-            <a href="#" id="popSummary_person_jobs_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="popSummary('person_jobs', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
-            <a href="#" id="popSummary_person_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a href="#" id="popSummary_person_jobs_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('person_jobs', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
+            <a href="#" id="popSummary_person_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
     {% set mlogcontext = {
                 'system': 'crewcall',
                 'object_name': 'person',
@@ -32,7 +32,7 @@
         }
     %}
     {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-                <a href="#" class="noscrolla" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
+                <a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
     {% endif %}
             {{ job.person }}
     {% if reason %}
@@ -64,7 +64,7 @@
                     &nbsp;
                 {% endif %}
                 {% if job.booked  %}
-                    <a role="button" class="btn-sm btn-primary" href="#" id="addJobLog_{{ job.id }}" data-html="true" onClick="grabNewJobLogForm({{ job.id }}, {{ job.shift.id }});">Add Hours</a>
+                    <a role="button" class="btn-sm btn-primary" href="#" id="addJobLog_{{ job.id }}" data-html="true" onClick="return grabNewJobLogForm({{ job.id }}, {{ job.shift.id }});">Add Hours</a>
                 {% endif %}
                 </td>
             {% else %}
@@ -80,7 +80,7 @@
               <a role="button" class="btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
               <a role="button" class="btn-sm ccAssigned" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
             {% endif %}
-            <a href="#" id="popLogSummary_job_{{ job.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('job', {{ job.id }});"> Changes </a>
+            <a href="#" id="popLogSummary_job_{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('job', {{ job.id }});"> Changes </a>
             </td>
         </tr>
     {% endfor %}
@@ -105,7 +105,7 @@
             <td>{{ so.statelabel }}</td>
             <td>
               <a role="button" class="btn-sm btn-danger" href="#" onClick="deleteShiftOrganization({{so.id}});">Delete</a>
-              <a role="button" class="btn-sm btn-success" href="#" class="noscrolla" onClick="grabEditShiftOrganizationForm({{ so.id }});">Edit</a>
+              <a role="button" class="btn-sm btn-success" href="#" onClick="return grabEditShiftOrganizationForm({{ so.id }});">Edit</a>
             </td>
           </tr>
         {% endfor %}

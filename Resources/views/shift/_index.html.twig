@@ -12,7 +12,7 @@
             {% endif %}
         <td>
         {{ shift.function }}
-        <a href="#" id="popSummary_event_{{ shift.event.id }}{{ shift.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ shift.event.id }}, {{ shift.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+        <a href="#" id="popSummary_event_{{ shift.event.id }}{{ shift.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('event', {{ shift.event.id }}, {{ shift.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
         </td>
         <td>
         {% set amounts = shift.jobsamountbystate %}
@@ -22,8 +22,8 @@
         <span class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
         {% if shift.registeredamount > 0 %}
         {# TODO: Toggle + and - #}
-        <a href="#" class="noscrolla" onClick="grabJobList({{ shift.id }});"><span id="plus_job_list_{{ shift.id }}" class="glyphicon glyphicon-plus" /></a>
-        <a href="#" class="noscrolla" onClick="hideJobList({{ shift.id }});"><span id="minus_job_list_{{ shift.id }}" class="collapse glyphicon glyphicon-minus" /></a>
+        <a href="#" onClick="return grabJobList({{ shift.id }});"><span id="plus_job_list_{{ shift.id }}" class="glyphicon glyphicon-plus" /></a>
+        <a href="#" onClick="return hideJobList({{ shift.id }});"><span id="minus_job_list_{{ shift.id }}" class="collapse glyphicon glyphicon-minus" /></a>
         {% endif %}
         </td>
         <td>
@@ -38,10 +38,10 @@
           <span></span>
           </button>
         <ul class="dropdown-menu dropdown-menu-right">
-          <li><a class="noscrolla" href="#" onClick="grabJobList({{ shift.id }});">Jobs</a></li>
-          <li><a href="#" class="noscrolla" onClick="grabEditShiftForm({{ shift.id }}, {{ shift.event.id }});">Edit</a></li>
-          <li><a href="#" class="noscrolla" onClick="grabNewJobForm({{shift.id}});">Add person</a></li>
-          <li><a class="noscrolla" href="#" onClick="grabNewShiftOrganizationForm({{shift.id}});">Add crew from an organization</a></li>
+          <li><a href="#" onClick="return grabJobList({{ shift.id }});">Jobs</a></li>
+          <li><a href="#" onClick="return grabEditShiftForm({{ shift.id }}, {{ shift.event.id }});">Edit</a></li>
+          <li><a href="#" onClick="return grabNewJobForm({{shift.id}});">Add person</a></li>
+          <li><a href="#" onClick="return grabNewShiftOrganizationForm({{shift.id}});">Add crew from an organization</a></li>
 {% set mlogcontext = {
             'system': 'crewcall',
             'object_name': 'shift',
@@ -49,12 +49,12 @@
     }
 %}
 {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-         <li><a href="#" class="noscrolla" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a></li>
+         <li><a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a></li>
 {% endif %}
-        <li><a href="#" class="noscrolla" onClick='createMessage("shiftnote_{{ shift.id }}");'>Add a note</a></li>
-          <li><a href="#!" class="noscrolla" onClick='createCheck("shiftconfirmcheck_{{ shift.id }}");'>Add a must confirm checkbox</a></li>
+        <li><a href="#" onClick='return createMessage("shiftnote_{{ shift.id }}");'>Add a note</a></li>
+          <li><a href="#" onClick='return createCheck("shiftconfirmcheck_{{ shift.id }}");'>Add a must confirm checkbox</a></li>
 
-          <li><a href="#" id="popLogSummary_shift_{{ shift.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('shift', {{ shift.id }});">Changes</a></li>
+          <li><a href="#" id="popLogSummary_shift_{{ shift.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('shift', {{ shift.id }});">Changes</a></li>
           <li><a href="#" onClick="deleteShift({{ shift.id }});">Delete</a></li>
         </ul>
         </div>
@@ -63,7 +63,7 @@
     <tr class="jobList" id="jobList_{{ shift.id }}">
     <td colspan="6">
     <div style="float: right">
-    <a href="#" class="noscrolla" onClick="hideJobList({{ shift.id }});"><span class="glyphicon glyphicon-remove-circle"/></a>
+    <a href="#" onClick="return hideJobList({{ shift.id }});"><span class="glyphicon glyphicon-remove-circle"/></a>
     </div>
     <br>
     <div id="jobTable_{{ shift.id }}">

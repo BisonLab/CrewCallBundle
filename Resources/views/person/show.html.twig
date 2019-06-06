@@ -120,7 +120,7 @@ function openStateChange() {
         }
     %}
     {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-          <a href="#" onClick="uploadFile(); return false;">Add profile picture</a><br />
+          <a href="#" onClick="return uploadFile();">Add profile picture</a><br />
 {% endif %}
     <h1>{{ person.fullname }}</h1>
     <h4>{{ person.statelabel }}</h4>
@@ -214,7 +214,7 @@ function openStateChange() {
             </tr>
             <tr>
                 <th>
-                    <a href="#" id="popLogSummary_person_{{ person.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('person', {{ person.id }});"> Changes </a><br>
+                    <a href="#" id="popLogSummary_person_{{ person.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('person', {{ person.id }});"> Changes </a><br>
                     <br>
                     <a href="{{ path('person_edit', { 'id': person.id }) }}">Edit</a>
                     <br>
@@ -246,18 +246,18 @@ function openStateChange() {
     <a href="#filestab" data-toggle="tab">Files</a>
     </li>
     <li>
-    <a href="#functab" data-toggle="tab" onClick="grabFunctionPickerTab();">Manage functions</a>
+    <a href="#functab" data-toggle="tab" onClick="return grabFunctionPickerTab();">Manage functions</a>
     </li>
 <!--
     <li>
-    <a href="#orgstab" data-toggle="tab"  onClick="grabOrganizationPickerTab();">Manage organizations</a>
+    <a href="#orgstab" data-toggle="tab"  onClick="return grabOrganizationPickerTab();">Manage organizations</a>
     </li>
 -->
     <li>
-    <a href="#hourstab" data-toggle="tab"  onClick="grabJobLogSummary();">Hours</a>
+    <a href="#hourstab" data-toggle="tab"  onClick="return grabJobLogSummary();">Hours</a>
     </li>
     <li>
-    <a href="#absencetab" data-toggle="tab"  onClick="grabJobLogSummary();">Absence</a>
+    <a href="#absencetab" data-toggle="tab"  onClick="return grabJobLogSummary();">Absence</a>
     </li>
     </ul>
 
@@ -283,7 +283,7 @@ function openStateChange() {
         {% endif %}
         <tr>
             <td>
-            <a href="#" id="popSummary_event_{{ job.event.id }}" data-toggle="popover" data-html="true" onClick="popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a href="#" id="popSummary_event_{{ job.event.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
             {{ shift.event }}
             </td>
             <td class="{{ c_class }}" data-order="{{ shift.start | date('U')}}" >
@@ -355,7 +355,7 @@ function openStateChange() {
         }
     %}
     {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <a href="#" onClick='createMessage("adminpersonnote");'>Add a note</a><br />
+        <a href="#" onClick='return createMessage("adminpersonnote");'>Add a note</a><br />
     </p>
 {% set mlogcontext = {
             'message_group': 'Notes',
@@ -368,7 +368,7 @@ function openStateChange() {
 {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
     <strong>{{ note.subject }}</strong> ({{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}). {% if note.expireat %}Expires {{ note.expireat | date('Y-m-d') }}{% endif %}
     <pre>{{ note.body }}</pre>
-    <a href="#" onClick='grabEditMessageForm({{ note.id }});'><button>Edit</button></a>
+    <a href="#" onClick='return grabEditMessageForm({{ note.id }});'><button>Edit</button></a>
     {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
     <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
     {{ form_start(mdelform) }}
@@ -392,7 +392,7 @@ function openStateChange() {
         }
     %}
     {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-          <a href="#" onClick="uploadFile(); return false;">Add a file</a><br />
+          <a href="#" onClick="return uploadFile();">Add a file</a><br />
         </p>
     {% set filecontext = {
         'system': 'crewcall',
@@ -414,7 +414,7 @@ function openStateChange() {
   <div class="tab-pane" id="absencetab">
 
     <div id="change_state_popover" class="hidden">
-    <a href="#" id="stateChangeLink" onClick="openStateChange();">Add</a><br>
+    <a href="#" id="stateChangeLink" onClick="return openStateChange();">Add</a><br>
     </div>
 
 

@@ -104,7 +104,7 @@ function get_selected_persons() {
                 }
             %}
 {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-            <br><a href="#" class="noscrolla" onClick="openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>
+            <br><a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>
 {% endif %}
                 </td>
 #}
@@ -119,7 +119,7 @@ function get_selected_persons() {
 <button class="dababutton" onClick="select_all_persons(true);">Select all</button>
 <button class="dababutton" onClick="select_all_persons(false);">Deselect all</button>
 </br>
-<button class="dababutton" id="message_popover_link" onClick="openMessagePopover(false);">Send a message</button>
+<button class="dababutton" id="message_popover_link" onClick="return openMessagePopover(false);">Send a message</button>
 </div>
 
 <div align="right">
