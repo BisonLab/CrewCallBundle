@@ -196,6 +196,7 @@
     {% else %}
             <a href="#" class="noscrolla" onClick="grabNewShiftForm({{ event.id }});">Add shift</a>
     {% endif %}
+        <li><a href="#" onClick="return openPrintEventWindow({{ event.id }});">Print</a></li>
         <li><a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a></li>
         <li><a href="#" id="popLogSummary_event_{{ event.id }}" data-toggle="popover" data-html="true" onClick="popLogSummary('event', {{ event.id }});"> Changes </a></li>
     {% if not event.done %}
@@ -204,6 +205,8 @@
             Open all shifts
         {% elseif not event.open and event.booked %}
             Reopen event and all shifts
+        {% else %}
+            Confirm and open event and all shifts
         {% endif %}
         </a></li>
     {% endif %}

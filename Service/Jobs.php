@@ -55,7 +55,7 @@ class Jobs
         foreach ($person->getPersonFunctions() as $pf) {
             $functions[] = $pf->getFunction();
         }
-        $options['booked'] = true;
+        $options['open'] = true;
         $shifts = $this->em->getRepository('CrewCallBundle:Shift')
             ->findUpcomingForFunctions($functions, $options);
 

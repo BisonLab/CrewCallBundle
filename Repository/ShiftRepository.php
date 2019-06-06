@@ -43,9 +43,9 @@ class ShiftRepository extends \Doctrine\ORM\EntityRepository
                ->setParameter('to', $to);
         }
 
-        // There are a few options here. Well, one for now, "booked".
-        if (isset($options['booked'])) {
-            $states = ExternalEntityConfig::getBookedStatesFor('Shift');
+        // There are a few options here. Well, one for now, "open".
+        if (isset($options['open'])) {
+            $states = ExternalEntityConfig::getOpenStatesFor('Shift');
             $qb->andWhere('s.state in (:states)')
                ->setParameter('states', $states);
         }

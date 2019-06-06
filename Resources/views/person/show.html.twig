@@ -122,7 +122,8 @@ function openStateChange() {
     {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
           <a href="#" onClick="uploadFile(); return false;">Add profile picture</a><br />
 {% endif %}
-    <h1>{{ person.fullname }} {{ person.statelabel }}</h1>
+    <h1>{{ person.fullname }}</h1>
+    <h4>{{ person.statelabel }}</h4>
     <table class="showTable">
         <tbody>
             <tr>

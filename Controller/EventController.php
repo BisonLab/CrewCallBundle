@@ -119,9 +119,16 @@ class EventController extends CommonController
      *
      * @Route("/{id}/show", name="event_show", methods={"GET"})
      */
-    public function showAction(Event $event)
+    public function showAction(Request $request, Event $event)
     {
         $em = $this->getDoctrine()->getManager();
+
+        if ($request->get('printable')) {
+            return $this->render('event/printable.html.twig', array(
+                'event' => $event,
+            ));
+        }
+
         $funcrepo = $em->getRepository('CrewCallBundle:FunctionEntity');
         $pfe = new PersonFunctionEvent();
         $pfe->setEvent($event);
@@ -135,6 +142,7 @@ class EventController extends CommonController
             if (!$persons->contains($p))
                 $persons->add($p);
         }
+
         $add_contact_form = null;
         if (count($persons) > 0) {
             $add_contact_form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe, ['persons' => $persons])->createView();

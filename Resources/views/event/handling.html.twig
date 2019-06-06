@@ -66,15 +66,41 @@ function submitStateForm(event_id, state) {
     });
     return false;
 }
+
+function openPrintEventWindow(event_id)
+{
+    url = "{{ path('event_show', { 'id': "XXX", 'printable': true }) }}";
+    url = url.replace('XXX', event_id);
+    w = popmeup(url);
+}
+
+function checkChecked(classname)
+{
+    if ( $( "#epcheck_" + classname ).is(":checked") ) {
+        $( ".ep" + classname ).show();
+    } else {
+        $( ".ep" + classname ).hide();
+    }
+}
+
+function printTableContent()
+{
+    // This may be a bit specific for my designs,
+    document.body.style.paddingTop = "0px";
+    $("#unprintableContent").hide();
+    window.print();
+    document.body.style.paddingTop = "";
+    $("#unprintableContent").show();
+}
 </script>
 
 {% if state_form is defined %}
-<div class="hidden">
-<form id="stateEventForm" method="POST">
-{{ form_widget(state_form) }}
-{{ form_end(state_form) }}
-<form id="deleteEventForm" method="DELETE">
-{{ form_widget(delete_form) }}
-{{ form_end(delete_form) }}
-</div>
+    <div class="hidden">
+    <form id="stateEventForm" method="POST">
+    {{ form_widget(state_form) }}
+    {{ form_end(state_form) }}
+    <form id="deleteEventForm" method="DELETE">
+    {{ form_widget(delete_form) }}
+    {{ form_end(delete_form) }}
+    </div>
 {% endif %}

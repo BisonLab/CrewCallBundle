@@ -41,7 +41,7 @@
                 <td>
                     {% if event.state == "READY" %}
                         <span class="glyphicon glyphicon-ok"></span>
-                    {% else %}
+                    {% elseif event.state == "OPEN" %}
                         <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');"><span class="glyphicon glyphicon-unchecked"></span></a>
                     {% endif %}
                     {{ event.statelabel }}
@@ -71,7 +71,7 @@
             <div class="state">
                     {% if event.state == "READY" %}
                         <span class="glyphicon glyphicon-ok"></span>
-                    {% else %}
+                    {% elseif event.state == "OPEN" %}
                         <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');"><span class="glyphicon glyphicon-unchecked"></span></a>
                     {% endif %}
                 {{ event.statelabel }}
@@ -105,7 +105,7 @@
                 <div class="state">
                     {% if child.state == "READY" %}
                         <span class="glyphicon glyphicon-ok"></span>
-                    {% else %}
+                    {% elseif event.state == "OPEN" %}
                         <a href="#" onClick="return submitStateForm({{ child.id }}, 'READY');"><span class="glyphicon glyphicon-unchecked"></span></a>
                     {% endif %}
                     {{ child.statelabel }}
