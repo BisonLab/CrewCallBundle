@@ -39,13 +39,15 @@ $(function () {
                 error: function () {}
             }
         ],
+
         eventRender: function(event, element) {
             element.popover({
-                title: event.popup_title,
-                content: event.popup_content,
                 html: true,
+                content: event.popup_content,
                 placement: 'auto top',
-                container: 'body'
+                container: 'body',
+                trigger: 'click',
+                title: event.popup_title + ' <a href="#" class="close" data-dismiss="alert" onClick="return closePopovers();"><span style="font-size: 15px" class="glyphicon glyphicon-remove-circle"></span></a>'
             });
         }
     });
@@ -63,5 +65,14 @@ $(function () {
    }
  */
 });
+
+function closePopovers() {
+    $( ".popover" ).each(function() {
+        $(this).popover('hide');
+    });
+    return false;
+}
+
 </script>
+<a href="#" onClick="return closePopovers();">Close popovers</a>
 <div id="calendar"></div>
