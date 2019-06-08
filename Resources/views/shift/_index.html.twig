@@ -26,10 +26,14 @@
         <span class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
         <span class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
         <span class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
+        </td>
+        <td align="right">
         {% if shift.registeredamount > 0 %}
         {# TODO: Toggle + and - #}
         <a href="#" onClick="return grabJobList({{ shift.id }});"><span id="plus_job_list_{{ shift.id }}" class="glyphicon glyphicon-plus" /></a>
         <a href="#" onClick="return hideJobList({{ shift.id }});"><span id="minus_job_list_{{ shift.id }}" class="collapse glyphicon glyphicon-minus" /></a>
+        {% else %}
+            &nbsp;
         {% endif %}
         </td>
         <td align="right">
