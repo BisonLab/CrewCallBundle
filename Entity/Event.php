@@ -109,6 +109,7 @@ class Event
      */
     /**
      * @ORM\OneToMany(targetEntity="Event", mappedBy="parent", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+     * @ORM\OrderBy({"start" = "ASC"})
      */
     private $children;
 
