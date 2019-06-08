@@ -107,6 +107,33 @@ function submitNewJobForm(shift_id) {
     });
     return false;
 }
+
+function popPersonJobs(person_id, job_id) {
+    url = "{{ path('summary_person_jobs_job', {'access': 'ajax' }) }}?job=" + job_id;
+    var popelement = "#popSummary_person_jobs_" + person_id + job_id;
+
+    res = $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'html'
+      }).done( function( contenthtml, textStatus, xhr ) {
+        $( popelement ).popover({
+            delay: 500,
+            html: true,
+            placement: "auto top",
+            content: contenthtml,
+            title: 'Jobs <a href="#" class="close" data-dismiss="alert"><span style="font-size: 15px" class="glyphicon glyphicon-remove-circle"></span></a>'
+        });
+        $( popelement ).popover("show");
+        $(document).on("click", ".popover .close" , function(){
+            $(this).parents(".popover").popover('hide');
+        });
+      }).fail( function( ) {
+        alert("Error grabbing summary");
+      });
+    return false;
+}
+
 </script>
 
 <div class="modal fade" id="jobModal" role="dialog" tabindex='-1'>

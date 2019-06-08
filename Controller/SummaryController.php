@@ -2,11 +2,14 @@
 
 namespace CrewCallBundle\Controller;
 
-use CrewCallBundle\Entity\Event;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
+
+use CrewCallBundle\Entity\Event;
+use CrewCallBundle\Entity\Person;
+use CrewCallBundle\Entity\Job;
 
 /**
  * Summary / Summarizer controller.
@@ -39,6 +42,40 @@ class SummaryController extends CommonController
         return $this->_show($request, $access, $entity, $id);
     }
 
+    /**
+     *
+     * @Route("/person_jobs_job", name="summary_person_jobs_job", methods={"GET"})
+     */
+    public function personJobsJobAction(Request $request, $access)
+    {
+        $em = $this->getDoctrine()->getManager();
+        if (!$job = $em->getRepository('CrewCallBundle:Job')->find($request->get("job")))
+            return $this->returnNotFound($request, 'Unable to find job.');
+        $options = [];
+        // I'll default today +2 days. Add options at will and need.
+        $options['from'] = $job->getStart()->setTime(0, 0);
+        $to = clone($job->getStart());
+        $options['to'] = $to->modify('+1 day');
+        $summary = [];
+        $person = $job->getPerson();
+        foreach($this->get('crewcall.jobs')->jobsForPerson(
+            $person, $options) as $job) {
+                $label = (string)$job . " at " . (string)$job->getEvent();
+                $value = $job->getStart()->format("d M H:i")
+                    . " -> " .
+                    $job->getEnd()->format("d M H:i")
+                    . "(" . $job->getState() . ")";
+                $summary[] = [
+                    'label' => $label,
+                    'value' => $value
+                    ];
+        }
+        if (count($summary) == 0)
+            $summary[] = ['label' => "No jobs for this period", 'value' => ""];
+        return $this->returnRestData($request, $summary,
+            array('html' => 'CrewCallBundle::summaryPopContent.html.twig'));
+    }
+
     private function _show($request, $access, $entity, $id)
     {
         $summary = null;
@@ -48,7 +85,7 @@ class SummaryController extends CommonController
             case 'person':
                 $entity = $em->getRepository('CrewCallBundle:Person')->find($id);
                 break;
-            // Feels wrong, but it's kinda effective and is reuse.
+            // Feels wrong, but it's kinda effective and is reuse. Only lists the jobs now +2 days.
             case 'person_jobs':
                 $entity = $em->getRepository('CrewCallBundle:Person')->find($id);
                 $summary = $this->personJobs($entity);

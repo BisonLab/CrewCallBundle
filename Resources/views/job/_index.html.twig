@@ -23,7 +23,7 @@
         <tr>
             {% set reason = job.person.occupied({'reasons': true}) %}
             <td {% if reason %}class="cc_warn"{% endif %}>
-            <a href="#" id="popSummary_person_jobs_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('person_jobs', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
+            <a href="#" id="popSummary_person_jobs_{{ job.person.id }}{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popPersonJobs({{ job.person.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
             <a href="#" id="popSummary_person_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
     {% set mlogcontext = {
                 'system': 'crewcall',
