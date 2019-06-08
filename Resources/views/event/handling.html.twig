@@ -1,6 +1,29 @@
 <script>
-function openAddContact() {
-    $( "#add_contact_popover_content" ).removeClass("hidden");
+function openAddContact(event_id) {
+    $( "#addContactModal" ).modal();
+
+    /* Yet another way to do this. Gotta standardize some day. */
+    $( "#addContactForm" ).submit(function( event ) {
+        event.preventDefault();
+        parent.location.reload();
+        url = "{{ path('event_add_contact', {'access': 'ajax', 'id': "XXX" }) }}".replace("XXX", event_id);
+        addContactFormData = $( "#addContactForm" ).serialize();
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: addContactFormData,
+            dataType: "text",
+            async: true,
+          }).done( function( cont, textStatus, xhr ) {
+                parent.location.reload();
+          }).fail(function(xhr, status, error) {
+                errmsg = "Adding contact failed\n";
+                errmsg = errmsg + xhr.responseText + "\n";
+                alert(errmsg);
+        });
+        return false;
+    });
+    return false;
 }
 
 function grabEvents(what) {
@@ -72,6 +95,7 @@ function openPrintEventWindow(event_id)
     url = "{{ path('event_show', { 'id': "XXX", 'printable': true }) }}";
     url = url.replace('XXX', event_id);
     w = popmeup(url);
+    return false;
 }
 
 function checkChecked(classname)
@@ -81,6 +105,7 @@ function checkChecked(classname)
     } else {
         $( ".ep" + classname ).hide();
     }
+    return false;
 }
 
 function printTableContent()

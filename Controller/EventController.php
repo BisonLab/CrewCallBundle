@@ -350,7 +350,10 @@ class EventController extends CommonController
             if ($this->isRest($access)) {
                 return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
             } else {
-                return $this->redirectToRoute('event_show', array('id' => $event->getId()));
+                if ($event->getParent())
+                    return $this->redirectToRoute('event_show', array('id' => $event->getParent()->getId()));
+                else
+                    return $this->redirectToRoute('event_show', array('id' => $event->getId()));
             }
         }
 
@@ -361,7 +364,10 @@ class EventController extends CommonController
                 'form' => $form->createView(),
             ));
         }
-        return $this->redirectToRoute('event_show', array('id' => $event->getId()));
+        if ($event->getParent())
+            return $this->redirectToRoute('event_show', array('id' => $event->getParent()->getId()));
+        else
+            return $this->redirectToRoute('event_show', array('id' => $event->getId()));
     }
 
     /**
@@ -380,8 +386,10 @@ class EventController extends CommonController
             return new JsonResponse(array("status" => "OK"),
                 Response::HTTP_OK);
         }
-        return $this->redirectToRoute('event_show',
-            array('id' => $event->getId()));
+        if ($event->getParent())
+            return $this->redirectToRoute('event_show', array('id' => $event->getParent()->getId()));
+        else
+            return $this->redirectToRoute('event_show', array('id' => $event->getId()));
     }
 
     /**

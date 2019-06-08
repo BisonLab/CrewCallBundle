@@ -31,16 +31,8 @@
 <br />
 {% endfor %}
 {% if add_contact_form is not null %}
-    <a href="#" id="addContactLink" onClick="return openAddContact();">Add</a>
-<div id="add_contact_popover_content" class="hidden">
-    {{ form_start(add_contact_form, { 'action': path('event_add_contact', {'id': event.id }), 'attr': {'id':'addContactForm'}}) }}
-    {{ form_widget(add_contact_form) }}
-    <input type="hidden" name="username" id="username">
-    <input id="submitAddExistingPerson" type="submit" value="Add" />
-    {{ form_end(add_contact_form) }}
-</div>
+    <a href="#" id="addContactLink" onClick="return openAddContact({{ event.id }});">Add</a>
 {% endif %}
-
                 </td>
             </tr>
             <tr>
