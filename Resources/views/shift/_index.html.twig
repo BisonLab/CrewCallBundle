@@ -14,7 +14,13 @@
         {{ shift.function }}
         <a href="#" id="popSummary_event_{{ shift.event.id }}{{ shift.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('event', {{ shift.event.id }}, {{ shift.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
         </td>
-        <td>
+        <td align="right">
+        <label class="cc_switch">
+          <input type="checkbox" id="shiftstatecheck_{{ shift.id }}" onChange="setStateOnShiftCheckbox({{ shift.id }}, {{ shift.event.id }}, this)" {% if shift.open %}checked{% endif %}/>
+          <span class="cc_slider round"></span>
+        </label><br>
+        </td>
+        <td align="right">
         {% set amounts = shift.jobsamountbystate %}
         <span class="ccAmount ccNeeded">{{ shift.amount }}</span>
         <span class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
@@ -26,13 +32,7 @@
         <a href="#" onClick="return hideJobList({{ shift.id }});"><span id="minus_job_list_{{ shift.id }}" class="collapse glyphicon glyphicon-minus" /></a>
         {% endif %}
         </td>
-        <td>
-        <label class="cc_switch">
-          <input type="checkbox" id="shiftstatecheck_{{ shift.id }}" onChange="setStateOnShiftCheckbox({{ shift.id }}, {{ shift.event.id }}, this)" {% if shift.open %}checked{% endif %}/>
-          <span class="cc_slider round"></span>
-        </label><br>
-        </td>
-        <td>
+        <td align="right">
         <div class="dropdown">
           <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
           <span></span>
@@ -54,7 +54,7 @@
         <li><a href="#" onClick='return createMessage("shiftnote_{{ shift.id }}");'>Add a note</a></li>
           <li><a href="#" onClick='return createCheck("shiftconfirmcheck_{{ shift.id }}");'>Add a must confirm checkbox</a></li>
 
-          <li><a href="#" id="popLogSummary_shift_{{ shift.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('shift', {{ shift.id }});">Changes</a></li>
+          <li><a href="#" id="popLogSummary_shift_{{ shift.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('shift', {{ shift.id }});">Changelog</a></li>
           <li><a href="#" onClick="deleteShift({{ shift.id }});">Delete</a></li>
         </ul>
         </div>

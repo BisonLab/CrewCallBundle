@@ -190,7 +190,7 @@
     {% endif %}
         <li><a href="#" onClick="return openPrintEventWindow({{ event.id }});">Print</a></li>
         <li><a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a></li>
-        <li><a href="#" id="popLogSummary_event_{{ event.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('event', {{ event.id }});"> Changes </a></li>
+        <li><a href="#" id="popLogSummary_event_{{ event.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('event', {{ event.id }});"> Changelog </a></li>
     {% if not event.done %}
         <li><a href="#" onClick="return submitStateForm({{ event.id}}, 'CONFIRMED');">
         {% if event.open and event.shifts | length > 0 %}

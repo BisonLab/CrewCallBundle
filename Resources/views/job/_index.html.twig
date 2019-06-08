@@ -70,7 +70,7 @@
             {% else %}
             </td>
             {% endif %}
-            <td>
+            <td align="right">
             {% if job.state == "CONFIRMED" %}
               <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
             {% elseif job.state == "ASSIGNED" %}
@@ -80,7 +80,7 @@
               <a role="button" class="btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
               <a role="button" class="btn-sm ccAssigned" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
             {% endif %}
-            <a href="#" id="popLogSummary_job_{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('job', {{ job.id }});"> Changes </a>
+            <a href="#" id="popLogSummary_job_{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('job', {{ job.id }});"> Changelog </a>
             </td>
         </tr>
     {% endfor %}
