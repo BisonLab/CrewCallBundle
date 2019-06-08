@@ -60,6 +60,9 @@ class Jobs
             ->findUpcomingForFunctions($functions, $options);
 
         foreach ($shifts as $sf) {
+            // If not open for registration, don't.
+            if (!$sf->isOpen())
+                continue;
             // Already in jobs?
             if (!$jobshift->contains($sf)) {
                 // Check if we have time overlap between already booked job and
