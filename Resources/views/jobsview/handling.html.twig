@@ -27,7 +27,7 @@ $(document).ready(function() {
  * It'll pull a form with all the filtering and grab a new job list
  * based on it.
  */
-function grabJobList() {
+function grabJobsViewList() {
     bare_url = "{{ path('jobsview_jobs')}}";
     filtersFormData = $( "#filtersForm" ).serialize();
     url = bare_url + "?" + filtersFormData;

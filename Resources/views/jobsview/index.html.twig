@@ -80,7 +80,7 @@
 <input type="date" value="{{ date() | date("Y-m-d") }}" name="to_date"/>
 
 </form>
-<a href="#" onClick="return grabJobList();"><button>Grab</button> </a>
+<a href="#" onClick="return grabJobsViewList();"><button>Grab</button> </a>
 <a href="#" onClick="return printTableContent();"><button id="printbutton">Print</button></a>
 {# TODO: Replace this with a configuration option with all the available tabe columns and show/hide/false to decide if the colums shall be available at all, shown by default or hidden. #}
 {% for val in ['Person', 'Mobile', 'Time', 'Event', 'Function', 'State', 'Comments', 'Hours', 'Move', 'Select'] %}
