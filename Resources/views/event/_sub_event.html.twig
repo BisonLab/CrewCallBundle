@@ -201,6 +201,9 @@
             Confirm and open event and all shifts
         {% endif %}
         </a></li>
+       {% if event.open %}
+        <li><a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</span></a></li>
+       {% endif %}
     {% endif %}
 
     {% if not event.booked %}
