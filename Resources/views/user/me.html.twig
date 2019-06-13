@@ -2,7 +2,7 @@
 
 {% block body %}
 {% if past %}
-{% set pastjobs = cc_jobs.jobsforperson(user, {'old': true }) %}
+{% set pastjobs = cc_jobs.jobsforperson(user, {'past': true }) %}
 {% if pastjobs|length > 0 %}
     <h2>Jobs</h2>
         <table class="table table-striped  table-sm">

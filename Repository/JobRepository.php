@@ -78,10 +78,10 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
                 ->setParameter('states', $states);
         }
 
-        if (isset($options['old'])) {
+        if (isset($options['past'])) {
             if (!isset($options['to'])) {
                 $to = new \DateTime();
-                $qb->andWhere('s.end >= :to')
+                $qb->andWhere('s.end <= :to')
                     ->setParameter('to', $to);
             }
         }
@@ -150,10 +150,10 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             }
         }
 
-        if (isset($options['old'])) {
+        if (isset($options['past'])) {
             if (!isset($options['to'])) {
                 $to = new \DateTime();
-                $qb->andWhere('s.end >= :to')
+                $qb->andWhere('s.end <= :to')
                     ->setParameter('to', $to);
             }
         }
