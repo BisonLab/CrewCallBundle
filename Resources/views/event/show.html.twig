@@ -41,7 +41,7 @@
                 <td>
                     {% if event.state == "READY" %}
                         <span class="glyphicon glyphicon-ok"></span>
-                    {% elseif event.open %}
+                    {% elseif event.open and event.shifts | length > 0 %}
                         <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</span></a>
                     {% endif %}
                     {{ event.statelabel }}
@@ -105,7 +105,7 @@
                 <div class="state">
                     {% if child.state == "READY" %}
                         <span class="glyphicon glyphicon-ok"></span>
-                    {% elseif child.open %}
+                    {% elseif child.open and event.shifts | length > 0 %}
                         <a href="#" onClick="return submitStateForm({{ child.id }}, 'READY');"><span class="glyphicon glyphicon-unchecked"></span></a>
                     {% endif %}
                     {{ child.statelabel }}

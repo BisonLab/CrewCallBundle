@@ -197,11 +197,11 @@
             Open all shifts
         {% elseif not event.open and event.booked %}
             Reopen event and all shifts
-        {% else %}
+        {% elseif event.shifts | length > 0 %}
             Confirm and open event and all shifts
         {% endif %}
         </a></li>
-       {% if event.open %}
+       {% if event.open and event.shifts | length > 0 %}
         <li><a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</span></a></li>
        {% endif %}
     {% endif %}
