@@ -52,75 +52,11 @@
         {% include 'CrewCallBundle:event:_sub_event.html.twig' with { 'event': event}  %}
 {% else %}
     <div class="panel-group" id="eventaccordion" role="tablist" aria-multiselectable="true">
-        <div id="event_shift_list_{{ event.id }}">
-         <div class="panel panel-default">
-
-          <div class="panel-heading" role="tab" id="heading{{ event.id }}">
-           <h4 class="panel-title">
-            <a class="accordion-toggle {% if event.state == "READY" %}collapsed{% endif %}" role="button" data-toggle="collapse" data-parent="#eventaccordion" href="#eventacc_{{ event.id }}" aria-expanded="{% if event.state == "READY" %}false{% else %}true{% endif %}" aria-controls="eventacc_{{ event.id }}">
-               {{ event.name }}
-            </a>
-           </h4>
-            {{ event.start|date('d M H:i') }}
-            <span class="glyphicon glyphicon-arrow-right"></span> 
-            {%  if event.end | date('Y-m-d') == event.start | date('Y-m-d') %}
-            {{ event.end|date('H:i') }}
-            {% else %}
-                {{ event.end | date('d M H:i') }}
-            {% endif %}
-            <div class="state">
-                    {% if event.state == "READY" %}
-                        <span class="glyphicon glyphicon-ok"></span>
-                    {% elseif event.open %}
-                        <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');"><span class="glyphicon glyphicon-unchecked"></span></a>
-                    {% endif %}
-                {{ event.statelabel }}
-            </div>
-          </div> <!-- / panel-heading -->
-          <div id="eventacc_{{ event.id }}" class="panel-collapse collapse {% if event.state != "READY" %}in{% endif %}" role="tabpanel" aria-labelledby="heading{{ event.id }}">
-            <div class="panel-body">
-            {% include 'CrewCallBundle:event:_sub_event.html.twig' with { 'event': event}  %}
-           </div>
-          </div>
-         </div> <!-- / Panel -->
-        </div> <!-- / event_shift -->
+        {% include 'CrewCallBundle:event:_accordion.html.twig' with { 'event': event}  %}
 
         {% for child in event.children %}
-            <div id="event_shift_list_{{ event.id }}">
-             <div class="panel panel-default">
-
-              <div class="panel-heading" role="tab" id="heading{{ child.id }}">
-               <h4 class="panel-title">
-                <a class="accordion-toggle {% if child.state == "READY" %}collapsed{% endif %}" role="button" data-toggle="collapse" data-parent="#childaccordion" href="#childacc_{{ child.id }}" aria-expanded="{% if child.state == "READY" %}false{% else %}true{% endif %}" aria-controls="childacc_{{ child.id }}">
-                   {{ child.name }}
-                </a>
-               </h4>
-                {{ child.start|date('d M H:i') }}
-                <span class="glyphicon glyphicon-arrow-right"></span> 
-                {%  if child.end | date('Y-m-d') == child.start | date('Y-m-d') %}
-                {{ child.end|date('H:i') }}
-                {% else %}
-                    {{ child.end | date('d M H:i') }}
-                {% endif %}
-                <div class="state">
-                    {% if child.state == "READY" %}
-                        <span class="glyphicon glyphicon-ok"></span>
-                    {% elseif child.open and child.shifts | length > 0 %}
-                        <a href="#" onClick="return submitStateForm({{ child.id }}, 'READY');"><span class="glyphicon glyphicon-unchecked"></span></a>
-                    {% endif %}
-                    {{ child.statelabel }}
-                </div>
-              </div> <!-- / panel-heading -->
-
-              <div id="childacc_{{ child.id }}" class="panel-collapse collapse {% if child.state != "READY" %}in{% endif %}" role="tabpanel" aria-labelledby="heading{{ child.id }}">
-                <div class="panel-body">
-        {% include 'CrewCallBundle:event:_sub_event.html.twig' with { 'event': child}  %}
-           </div>
-          </div>
-         </div> <!-- / Panel -->
-        </div> <!-- / event_shift -->
+            {% include 'CrewCallBundle:event:_accordion.html.twig' with { 'event': child}  %}
         {% endfor %}
-
     </div>
 {% endif %}
 

@@ -1,0 +1,44 @@
+
+    <div id="event_shift_list_{{ event.id }}">
+      <div class="panel panel-default">
+        {% if event.state == "READY" %}
+            {% set collapse = true %}
+        {% else %}
+            {% set collapse = false %}
+        {% endif %}
+        {# Unless we have an open shift, no collapse #}
+        {% for sh in event.shifts %}
+            {% if sh.open %}
+                {% set collapse = false %}
+            {% endif %}
+        {% endfor %}
+          <div class="panel-heading" role="tab" id="heading{{ event.id }}">
+           <h4 class="panel-title">
+            <a class="accordion-toggle {% if collapse %}collapsed{% endif %}" role="button" data-toggle="collapse" data-parent="#eventaccordion" href="#eventacc_{{ event.id }}" aria-expanded="{% if collapse %}false{% else %}true{% endif %}" aria-controls="eventacc_{{ event.id }}">
+               {{ event.name }}
+            </a>
+           </h4>
+            {{ event.start|date('d M H:i') }}
+            <span class="glyphicon glyphicon-arrow-right"></span> 
+            {%  if event.end | date('Y-m-d') == event.start | date('Y-m-d') %}
+            {{ event.end|date('H:i') }}
+            {% else %}
+                {{ event.end | date('d M H:i') }}
+            {% endif %}
+            <div class="state">
+                    {% if event.state == "READY" %}
+                        <span class="glyphicon glyphicon-ok"></span>
+                    {% elseif event.open %}
+                        <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');"><span class="glyphicon glyphicon-unchecked"></span></a>
+                    {% endif %}
+                {{ event.statelabel }}
+            </div>
+          </div> <!-- / panel-heading -->
+          <div id="eventacc_{{ event.id }}" class="panel-collapse collapse {% if not collapse %}in{% endif %}" role="tabpanel" aria-labelledby="heading{{ event.id }}">
+            <div class="panel-body">
+            {% include 'CrewCallBundle:event:_sub_event.html.twig' with { 'event': event}  %}
+           </div>
+          </div>
+         </div> <!-- / Panel -->
+        </div> <!-- / event_shift -->
+

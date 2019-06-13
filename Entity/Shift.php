@@ -422,10 +422,14 @@ class Shift
 
     public function isOpen()
     {
-        // Doesen't make sense to let crew register on a shift when the event
-        // is closed.
-        if (!$this->getEvent()->isOpen())
-            return false;
+        /*
+         * It may be discussible to not let a shift be open unless the event
+         * is. But setting the state "READY" will close all shifts and
+         * therefore make them not open. Which may be too strict.
+         * Admins may want to mark an event as ready while keeping the abolity
+         * to register interest on the shift anyway. Which is why the event is
+         * not checked here.
+         */
         return in_array($this->getState(), ExternalEntityConfig::getOpenStatesFor('Shift'));
     }
 
