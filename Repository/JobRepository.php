@@ -150,17 +150,23 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             }
         }
 
+        // Unless there are a set timeframe, use "from now".
+        $from = new \DateTime();
+
+        // And from(!) here it can be overridden
+
         if (isset($options['past'])) {
+            // If the "to" option is set, use it and not "past".
             if (!isset($options['to'])) {
                 $to = new \DateTime();
                 $qb->andWhere('s.end <= :to')
                     ->setParameter('to', $to);
             }
+            // More or less a random day on the past. If we need to use
+            // specified from dates, it will be set further below.
+            $from = new \DateTime("2018-01-01");
         }
 
-        // Unless there are a set timeframe, use "from now".
-        $from = new \DateTime();
-        // And here it can be overridden
         if (isset($options['from']) || isset($options['to'])) {
             if (isset($options['from'])) {
                 if ($options['from'] instanceof \DateTime )
