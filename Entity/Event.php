@@ -95,7 +95,7 @@ class Event
 
     /**
      * @ORM\OneToMany(targetEntity="Shift", mappedBy="event", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
-     * @ORM\OrderBy({"start" = "ASC"})
+     * @ORM\OrderBy({"start" = "ASC", "id" = "ASC"})
      */
     private $shifts;
 
@@ -109,7 +109,7 @@ class Event
      */
     /**
      * @ORM\OneToMany(targetEntity="Event", mappedBy="parent", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
-     * @ORM\OrderBy({"start" = "ASC"})
+     * @ORM\OrderBy({"start" = "ASC", "id" = "ASC"})
      */
     private $children;
 

@@ -105,7 +105,7 @@
                 <div class="state">
                     {% if child.state == "READY" %}
                         <span class="glyphicon glyphicon-ok"></span>
-                    {% elseif child.open and event.shifts | length > 0 %}
+                    {% elseif child.open and child.shifts | length > 0 %}
                         <a href="#" onClick="return submitStateForm({{ child.id }}, 'READY');"><span class="glyphicon glyphicon-unchecked"></span></a>
                     {% endif %}
                     {{ child.statelabel }}

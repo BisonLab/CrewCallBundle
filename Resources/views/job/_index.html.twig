@@ -73,6 +73,9 @@
             <td align="right">
             {% if job.state == "CONFIRMED" %}
               <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
+            <div class="btn-group" data-toggle="buttons">
+<label for="success" class="btn btn-success"><input type="checkbox" id="success" class="badgebox"><span class="badge">&check;</span> Success</label>
+            </div>
             {% elseif job.state == "ASSIGNED" %}
               <a role="button" class="btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
               <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>

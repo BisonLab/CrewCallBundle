@@ -193,12 +193,18 @@
         <li><a href="#" id="popLogSummary_event_{{ event.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('event', {{ event.id }});"> Changelog </a></li>
     {% if not event.done %}
         <li><a href="#" onClick="return submitStateForm({{ event.id}}, 'CONFIRMED');">
-        {% if event.open and event.shifts | length > 0 %}
+        {% set shiftsclosed = false %}
+        {% for sh in event.shifts %}
+            {% if not sh.open %}
+                {% set shiftsclosed = true %}
+            {% endif %}
+        {% endfor %}
+        {% if event.open and shiftsclosed %}
             Open all shifts
         {% elseif not event.open and event.booked %}
-            Reopen event and all shifts
-        {% elseif event.shifts | length > 0 %}
-            Confirm and open event and all shifts
+            Reopen event
+        {% elseif not event.open and event.shifts | length > 0 %}
+            Confirm and open event
         {% endif %}
         </a></li>
        {% if event.open and event.shifts | length > 0 %}
