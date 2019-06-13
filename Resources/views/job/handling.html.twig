@@ -16,6 +16,7 @@ function hideJobList(shift_id) {
     $( "#jobList_" + shift_id ).hide();
     $( "#plus_job_list_" + shift_id ).show();
     $( "#minus_job_list_" + shift_id ).hide();
+    return false;
 }
 
 function setStateOnJob(job_id, state, shift_id) {
