@@ -26,11 +26,9 @@
                 {{ event.end | date('d M H:i') }}
             {% endif %}
             <div class="state">
-                    {% if event.state == "READY" %}
-                        <span class="glyphicon glyphicon-ok"></span>
-                    {% elseif event.open %}
-                        <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');"><span class="glyphicon glyphicon-unchecked"></span></a>
-                    {% endif %}
+                {% if event.state == "READY" %}
+                    <span class="glyphicon glyphicon-ok"></span>
+                {% endif %}
                 {{ event.statelabel }}
             </div>
           </div> <!-- / panel-heading -->

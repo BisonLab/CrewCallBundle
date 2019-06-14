@@ -28,6 +28,14 @@
 {% include 'CrewCallBundle:dashboarder:handling.html.twig' %}
 
 <div id="combowall">
+<div class="row">
+<div class="col-sm-10">
+<h3>Notes</h3>
+</div>
+<div class="col-sm-1" style="margin-top: 20px;">
+ <a href="#" onClick='createCombo();' class="btn btn-xs btn-dark">Add</a>
+</div>
+</div>
 
 {% set criterias = {
     'message_types': ['Admin Wall', 'TODO'],
@@ -41,24 +49,28 @@
   {% else %}
    <div id="sakonninmessage_{{ message.id}}">
   {% endif %}
-     <div class="row">
-<pre wrap class="ccNotesText col-md-9">
+     <div class="row ccNotesText">
+<pre wrap class="ccNotesText col-md-8">
 {{ message.body }}
 </pre>
         <div class="col-md-2">
+        <br>
         {% if message.messagetype == "TODO" %}
             <label class="cc_switch">
               <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState({{ message.id }}, this)" {% if message.state == "CHECKED" %}checked{% endif %}/>
               <span class="cc_slider round"></span>
             </label><br>
         {% else %}
-            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');"><button>Archive</button></a><br>
+            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" class="btn btn-xs btn-success">Archive</a><br>
         {% endif %}
+        </div>
+        <div class="col-md-1">
+        <br>
         {% if is_granted('edit', message) %}
 {% set emform = sakonnin_messages.getEditForm( message, true ) %}
 {% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
 {{ cmac.print_comboedit(emform, action, message.id, message.messagetype ) }}
-            <a href="#" onClick='editCombo({{ message.id }});'><button class="dabatdbutton">Edit</button></a>
+            <a href="#" onClick='editCombo({{ message.id }});' class="btn btn-xs btn-dark">Edit</a>
         {% endif %}
         </div>
      </div>
@@ -72,7 +84,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Add a todo or wall message</h4>
+        <h4 class="modal-title">Add todo or wall message</h4>
       </div>
       <div class="modal-body">
         <label class="cc_switch">
@@ -99,8 +111,6 @@
     </div>
   </div>
  </div>
- <a href="#" onClick='createCombo();'><button>Add a todo or wall message</button></a>
-
 </div> <!-- end combowall -->
 
 <script type="text/javascript">

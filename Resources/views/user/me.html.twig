@@ -72,7 +72,7 @@
                 <td>{{ shift.function }}</td>
                 <td>
                 <form method="POST" action="{{ path('user_confirm_job', {'id': job.id }) }}">
-                <button type="submit" class="btn btn-success">Confirm</button>
+                <button type="submit" class="btn btn-sm btn-success">Confirm</button>
                 </form>
                 </td>
             </tr>
@@ -192,7 +192,7 @@ jQuery(document).ready(function() {
 {% set confirm = confirm ~ note.subject ~ '\\n' ~ note.body ~ '\\n' %}
 {% endfor %}
                     <form method="POST" action="{{ path('user_register_interest', {'id': shift.id }) }}" {% if confirm %}onSubmit='return confirm("{{ confirm  }}");'{% endif %}>
-                    <button type="submit" class="btn btn-success">I want it!</button>
+                    <button type="submit" class="btn btn-sm btn-success">I want it!</button>
                     </form>
                 </td>
             </tr>
@@ -228,7 +228,7 @@ jQuery(document).ready(function() {
                 <td>{{ shift.function }}</td>
                 <td>
                     <form method="POST" action="{{ path('user_delete_interest', {'id': job.id }) }}">
-                    <button type="submit" class="btn btn-danger">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
                     </form>
                 </td>
                 <td>
@@ -261,6 +261,6 @@ jQuery(document).ready(function() {
     </table>
 {% endif %}
 
-<a href="{{ path('user_me', {'past': true }) }}"><button class="btn btn-primary">Old Jobs</button></a>
+<a href="{{ path('user_me', {'past': true }) }}"><button class="btn btn-sm btn-primary">Old Jobs</button></a>
 {% endif %}
 {% endblock %}

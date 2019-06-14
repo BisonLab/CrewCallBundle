@@ -16,9 +16,9 @@
     </div>
     <div class="col-sm-1" style="margin-top: 10px;">
 {% if function_type is defined %}
-    <a href="{{ path('function_new', {'function_type': function_type}) }}"><button class="btn btn-dark mt-4 ml-3">New {{ function_type_label }}</button></a>
+    <a href="{{ path('function_new', {'function_type': function_type}) }}" class="btn btn-sm btn-dark">New {{ function_type_label }}</a>
 {% else %}
-    <a href="{{ path('function_new') }}"><button class="btn btn-dark mt-4 ml-3">New Function</button></a>
+    <a href="{{ path('function_new') }}" class="btn btn-sm btn-dark">New Function</a>
 {% endif %}
     </div>
     </div>

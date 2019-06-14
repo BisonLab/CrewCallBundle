@@ -18,7 +18,7 @@ $(document).ready(function()
         {{ form_widget(edit_form) }}
         <input type="submit" value="Save" />
     {{ form_end(edit_form) }}
-    <a href="{{ path('event_index') }}"><button>Cancel</button></a><br>
+    <a href="{{ path('event_index') }}" class="btn btn-sm btn-dark">Cancel</a><br>
     {{ form_start(delete_form) }}
         <input type="submit" value="Delete">
     {{ form_end(delete_form) }}

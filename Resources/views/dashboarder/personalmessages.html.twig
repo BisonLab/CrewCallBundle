@@ -16,7 +16,7 @@
 <pre wrap class="ccNotesText">
 {{ note.body }}
 </pre>
-<a href="#" onClick="return setStateOnMessage({{ note.id }}, 'ARCHIVED');"><button>Read it!</button></a>
+<a href="#" onClick="return setStateOnMessage({{ note.id }}, 'ARCHIVED');" class="btn btn-sm btn-success">Read it!</a>
 </div>
 {% endif %}
 {% endfor %}
@@ -26,7 +26,7 @@
 <pre wrap>
 {{ note.body }}
 </pre>
-<a href="#" onClick="return setStateOnMessage({{ note.id }}, 'ARCHIVED');"><button>Read it!</button></a>
+<a href="#" onClick="return setStateOnMessage({{ note.id }}, 'ARCHIVED');" class="btn btn-sm btn-dark">Read it!</a>
 </div>
 {% endfor %}
 </div>

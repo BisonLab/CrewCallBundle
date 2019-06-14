@@ -11,11 +11,11 @@
       <div class="row">
         <pre wrap class="ccNotesText col-sm-11">
         {{ message.body }}
-        <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'CHECKED');"><button>Done!</button></a><br>
+        <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'CHECKED');" class="btn btn-sm btn-success">Done!</a><br>
         </pre>
     {% if is_granted('edit', message) %}
         <div class="col-sm-1">
-        <a href="#" onClick='grabEditMessageForm({{ message.id }});'><button class="dabatdbutton">Edit</button></a>
+        <a href="#" onClick='grabEditMessageForm({{ message.id }});' class="btn btn-sm btn-dark">Edit</a>
         </div>
     {% endif %}
     </div>
@@ -32,5 +32,5 @@
         }
     %}
 {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
-<a href="#" onClick='createCheck("todocheck");'><button>Add another</button></a>
+<a href="#" onClick='createCheck("todocheck");' class="btn btn-sm btn-dark">Add another</a>
 </div>

@@ -214,14 +214,14 @@ function openStateChange() {
             </tr>
             <tr>
                 <th>
-                    <a href="#" id="popLogSummary_person_{{ person.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('person', {{ person.id }});"> Changelog </a><br>
+                    <a href="#" id="popLogSummary_person_{{ person.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('person', {{ person.id }});" class="btn btn-sm btn-dark">Changelog</a>
                     <br>
-                    <a href="{{ path('person_edit', { 'id': person.id }) }}">Edit</a>
+                    <a href="{{ path('person_edit', { 'id': person.id }) }}" class="btn btn-sm btn-dark">Edit</a>
                     <br>
-                    <a href="{{ path('person_reset_password', { 'id': person.id }) }}">Send Password reset mail</a>
+                    <a href="{{ path('person_reset_password', { 'id': person.id }) }}" class="btn btn-sm btn-dark">Send Password reset mail</a>
                     <br>
                     {{ form_start(delete_form) }}
-                    <input type="submit" value="Delete">
+                    <input  class="btn btn-sm btn-danger" type="submit" value="Delete">
                     <br>
                     {{ form_end(delete_form) }}
                 </th>
@@ -313,13 +313,13 @@ function openStateChange() {
             </td>
             <td>
             {% if job.state == "CONFIRMED" %}
-              <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
+              <a class="btn btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
             {% elseif job.state == "ASSIGNED" %}
-              <a role="button" class="btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
-              <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
+              <a class="btn btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
+              <a class="btn btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
             {% else %}
-              <a role="button" class="btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
-              <a role="button" class="btn-sm ccAssigned" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
+              <a class="btn btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
+              <a class="btn btn-sm ccAssigned" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
             {% endif %}
             </td>
         </tr>
@@ -368,12 +368,12 @@ function openStateChange() {
 {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
     <strong>{{ note.subject }}</strong> ({{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}). {% if note.expireat %}Expires {{ note.expireat | date('Y-m-d') }}{% endif %}
     <pre>{{ note.body }}</pre>
-    <a href="#" onClick='return grabEditMessageForm({{ note.id }});'><button>Edit</button></a>
+    <a href="#" onClick='return grabEditMessageForm({{ note.id }});' class="btn btn-sm btn-dark">Edit</a>
     {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
     <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
     {{ form_start(mdelform) }}
     {{ form_rest(mdelform) }}
-    <input class="dabatdbutton" type="submit" name="submit" value="Delete">
+    <input class="btn btn-sm btn-danger" type="submit" name="submit" value="Delete">
     </form>
 {% endfor %}
   </div>
@@ -414,9 +414,8 @@ function openStateChange() {
   <div class="tab-pane" id="absencetab">
 
     <div id="change_state_popover" class="hidden">
-    <a href="#" id="stateChangeLink" onClick="return openStateChange();">Add</a><br>
+    <a href="#" id="stateChangeLink" onClick="return openStateChange();" class="btn btn-sm btn-dark">Add</a><br>
     </div>
-
 
     <table class="table  table-sm">
     <th>What</th><th>From</th><th>To</th><th>Days</th>

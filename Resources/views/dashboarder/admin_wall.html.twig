@@ -12,9 +12,9 @@
     {{ message.body }}
     </pre>
       <div class="col-sm-1">
-        <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');"><button>Archive</button></a><br>
+        <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" class="btn btn-sm btn-dark">Archive</a><br>
         {% if is_granted('edit', message) %}
-        <a href="#" onClick='grabEditMessageForm({{ message.id }});'><button class="dabatdbutton">Edit</button></a>
+        <a href="#" onClick='grabEditMessageForm({{ message.id }});' class="btn btn-sm btn-dark">Edit</a>
         {% endif %}
       </div>
     </div>
@@ -36,5 +36,5 @@
           }
       %}
 {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-<a href="#" onClick='createMessage("c_adminwall");'><button>Add another</button></a>
+<a href="#" onClick='createMessage("c_adminwall");' class="btn btn-sm btn-dark">Add another</a>
 </div>

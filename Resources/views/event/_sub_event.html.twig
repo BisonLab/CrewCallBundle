@@ -27,7 +27,7 @@
                 <td>
 {% for pfe in event.personfunctionevents() %}
    {{ pfe.person }}{% if pfe.person.mobilephonenumber %} - {{ pfe.person.mobilephonenumber }}{% endif %}
-   <a role="button" class="btn-sm btn-danger" href="{{ path('event_remove_contact', { 'id': pfe.id }) }}">Remove</a>
+   <a href="{{ path('event_remove_contact', { 'id': pfe.id }) }}"><span style="font-size: 15px" class="glyphicon glyphicon-remove-circle"></span></a>
 <br />
 {% endfor %}
 {% if add_contact_form is not null %}
@@ -125,7 +125,7 @@
             <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
             {{ form_start(mdelform) }}
             {{ form_rest(mdelform) }}
-            <input class="dabatdbutton" type="submit" name="submit" value="Delete">
+            <input class="btn btn-sm btn-danger" type="submit" name="submit" value="Delete">
             </form>
             <br>
         {% endfor %}
@@ -146,7 +146,7 @@
             <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
             {{ form_start(mdelform) }}
             {{ form_rest(mdelform) }}
-            <input class="dabatdbutton" type="submit" name="submit" value="Delete">
+            <input class="btn btn-sm btn-danger" type="submit" name="submit" value="Delete">
             </form>
             <br>
         {% endfor %}

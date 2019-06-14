@@ -4,6 +4,7 @@
 {% include 'CrewCallBundle:event:handling.html.twig' %}
 {% include 'CrewCallBundle:shift:handling.html.twig' %}
 {% include 'CrewCallBundle:job:handling.html.twig' %}
+{% include 'CrewCallBundle:joblog:handling.html.twig' %}
 {% include 'CrewCallBundle:shiftorganization:handling.html.twig' %}
 
 <div class="row">
@@ -18,8 +19,8 @@
   </div>
   <div class="col-sm-6" align="right">
     {% if not event.parent %}
-        <a href="{{ path('event_new', {'parent': event.id}) }}"><button>New sub event</button></a>
-        <a href="{{ path('event_clone', {'event': event.id}) }}"><button>Create a copy with new start date</button></a>
+        <a href="{{ path('event_new', {'parent': event.id}) }}" class="btn btn-sm btn-dark">New sub event</a>
+        <a href="{{ path('event_clone', {'event': event.id}) }}" class="btn btn-sm btn-dark">Create a copy with new start date</a>
     {% endif %}
   </div>
 </div> <!-- / row -->

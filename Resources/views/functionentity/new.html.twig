@@ -18,9 +18,9 @@ $(document).ready(function() {
         <input type="submit" value="Create" />
     {{ form_end(form) }}
 {% if function_type is not null %}
-    <a href="{{ path('function_index', {'function_type': function_type}) }}"><button>Cancel</button></a>
+    <a href="{{ path('function_index', {'function_type': function_type}) }}"  class="btn btn-sm btn-dark">Cancel</a>
 {% else %}
-    <a href="{{ path('function_index') }}"><button>Cancel</button></a>
+    <a href="{{ path('function_index') }}" class="btn btn-sm btn-dark">Cancel</a>
 {% endif %}
 
 {% endblock %}

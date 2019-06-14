@@ -3,7 +3,7 @@
 {% block body %}
 {% include 'CrewCallBundle:event:handling.html.twig' %}
 <div id="unprintableContent">
-<a href="#" onClick="return printTableContent();"><button id="printbutton">Print</button></a>
+<a href="#" onClick="return printTableContent();" class="btn btn-sm btn-dark" id="printbutton">Print</a>
 
 {% for val in ['Mobile', 'Diets'] %}
 <input id="epcheck_{{ val }}" type="checkbox" onClick='checkChecked("{{ val }}");' checked>{{ val }}</input>

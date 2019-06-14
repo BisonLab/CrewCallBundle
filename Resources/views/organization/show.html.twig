@@ -40,14 +40,14 @@
 
     <ul>
         <li>
-           <a href="#" id="popLogSummary_organization_{{ organization.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('organization', {{ organization.id }});"><button>Changelog</button></a><br>
+           <a href="#" id="popLogSummary_organization_{{ organization.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('organization', {{ organization.id }});" class="btn btn-sm btn-dark">Changelog</a><br>
         </li>
         <li>
-            <a href="{{ path('organization_edit', { 'id': organization.id }) }}"><button>Edit</button></a>
+            <a href="{{ path('organization_edit', { 'id': organization.id }) }}" class="btn btn-sm btn-dark">Edit</a>
         </li>
         <li>
             {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
+                <input type="submit"  class="btn btn-sm btn-danger" value="Delete">
             {{ form_end(delete_form) }}
         </li>
     </ul>
@@ -83,7 +83,7 @@
 
     <div class="tab-pane" id="peopletab">
       <div id="addExistingPerson" style="float: left">
-      <a href="#" onClick="return grabAddExistingPersonForm();"><button>Add person</button></a><br>
+      <a href="#" onClick="return grabAddExistingPersonForm();" class="btn btn-sm btn-dark">Add person</a><br>
       </div>
     
       <table id="apTable" class="table  table-sm">
@@ -108,7 +108,7 @@
         <td>{{ pfo.person.mobilephonenumber }}</td>
         <td>{{ pfo.function }}</td>
         <td>
-            <a role="button" class="btn-sm btn-danger" href="{{ path('organization_remove_person', { 'id': pfo.id }) }}">Remove</a>
+            <a class="btn btn-sm btn-danger" href="{{ path('organization_remove_person', { 'id': pfo.id }) }}">Remove</a>
         </td>
         </tr>
         {% endfor %}

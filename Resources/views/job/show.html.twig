@@ -15,8 +15,8 @@
             </tr>
         </tbody>
     </table>
-    <a href="{{ path('job_index') }}"><button>Cancel</button></a><br>
-    <a href="{{ path('job_edit', { 'id': job.id }) }}"><button>Edit</button></a><br>
+    <a href="{{ path('job_index') }}" class="btn btn-sm btn-dark">Cancel</a><br>
+    <a href="{{ path('job_edit', { 'id': job.id }) }}" class="btn btn-sm btn-dark">Edit</a><br>
     {{ form_start(delete_form) }}
         <input type="submit" value="Delete">
     {{ form_end(delete_form) }}

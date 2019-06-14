@@ -5,14 +5,15 @@
 {% if message.subject is not empty %}
     <h3>{{ message.subject }}</h3>
 {% endif %}
-<div class="row">
+<div class="row ccNotesText">
 <pre wrap class="ccNotesText col-sm-10">
 {{ message.body }}
 </pre>
 {% endif %}
 {% if is_granted('edit', message) %}
 <div class="col-sm-1">
-<a href="#" onClick='grabEditMessageForm({{ message.id }});'><button class="dabatdbutton">Edit</button></a>
+<br>
+<a href="#" onClick='grabEditMessageForm({{ message.id }});' class="btn btn-xs btn-dark">Edit</a>
 </div>
 {% endif %}
 </div>

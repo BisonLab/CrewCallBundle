@@ -8,7 +8,7 @@
         <input type="submit" value="Save" />
     {{ form_end(edit_form) }}
 
-    <a href="{{ path('function_show', {'id': functionEntity.id}) }}"><button>Cancel</button></a>
+    <a href="{{ path('function_show', {'id': functionEntity.id}) }}" class="btn btn-sm btn-dark">Cancel</a>
     {{ form_start(delete_form) }}
         <input type="submit" value="Delete">
     {{ form_end(delete_form) }}

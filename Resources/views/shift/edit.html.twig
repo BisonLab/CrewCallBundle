@@ -3,7 +3,7 @@
 {% block body %}
     <h1>Shift edit</h1>
 {% include 'CrewCallBundle:shift:_edit.html.twig' with { 'edit_form': edit_form}  %}
-    <a href="{{ path('shift_index') }}"><button>Cancel</button></a><br>
+    <a href="{{ path('shift_index') }}" class="btn btn-sm btn-dark">Cancel</a><br>
     {{ form_start(delete_form) }}
         <input type="submit" value="Delete">
     {{ form_end(delete_form) }}

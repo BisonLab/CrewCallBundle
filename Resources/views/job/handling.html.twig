@@ -63,13 +63,6 @@ function grabNewJobForm(shift_id) {
         $( "#newJobForm #crewcallbundle_job_person" ).autocomplete({
           source: "{{ path('person_search', {'enabled': true, 'access': 'ajax','value_with_all': true }) }}",
           minLength: 2,
-          response: function(event, ui) {
-            if (ui.content.length === 0) {
-                console.log("Nei");
-            } else {
-                console.log(ui.content);
-            }
-          },
           select: function( event, ui ) {
             $( "#newJobForm #crewcallbundle_job_person" ).val(ui.item.value);
             $( "#newJobForm #username" ).val(ui.item.username);
@@ -135,6 +128,66 @@ function popPersonJobs(person_id, job_id) {
     return false;
 }
 
+function select_all_jobs(shift_id, value) {
+    if (typeof(value) !== "boolean") {
+        value = $(value).prop('checked');
+    }
+    $(".job_list_checkbox_" + shift_id).prop('checked', value);
+}
+
+function get_selected_jobs(shift_id) {
+    list = [];
+    $(".job_list_checkbox_" + shift_id).each(function(index, box) {
+        if ($(box).prop('checked') == true) {
+            values = box.value.split(",");
+            list.push(values[0]);
+        }
+    });
+    return list;
+}
+
+function get_selected_persons(shift_id) {
+    list = [];
+    $(".job_list_checkbox_" + shift_id).each(function(index, box) {
+        if ($(box).prop('checked') == true) {
+            values = box.value.split(",");
+            list.push(values[1]);
+        }
+    });
+    return list;
+}
+
+function openMessageModal(shift_id) {
+    content = $("#message_modal").html();
+    $( "#jobModalTitle" ).html('Send Message');
+    $( "#jobModalBody" ).html(content);
+    $( "#jobModal" ).modal();
+
+    $("#job_list_message_form").submit(function( event ) {
+        var $btn = $(document.activeElement);
+        list = get_selected_persons(shift_id);
+        $(".job_list_message_form_plist").remove();
+        list.map(function(value) {
+            $("#job_list_message_form").append('<input class="job_list_message_form_plist" type="hidden" name="person_list[]" value="'+value+'">');
+        });
+        if ($btn.is('[id]') && $btn.attr("id") == "sendmessage") {
+            postdata = $("#job_list_message_form").serialize();
+            $.ajax({
+                type: "POST",
+                url: "{{ path('persons_send_message') }}",
+                data: postdata,
+                success: function(data)
+                {
+                    alert(data);
+                    select_all_jobs(shift_id, false);
+                    $( "#jobModal" ).modal("hide");
+                }
+            });
+        }
+        event.preventDefault();
+    });
+}
+
 </script>
 
 <div class="modal fade" id="jobModal" role="dialog" tabindex='-1'>
@@ -150,3 +203,11 @@ function popPersonJobs(person_id, job_id) {
     </div>
   </div>
 </div> <!-- / modal -->
+
+<div id="message_modal" class="hidden">
+    <form id="job_list_message_form" method="POST">
+    <textarea name="body" cols="20" rows="4"></textarea>
+    <input type="hidden" value="BULKSMS" name="message_type">
+    <input class="btn btn-sm btn-dark" id="sendmessage" type="submit" name="submit" value="Send">
+    </form>
+</div>
