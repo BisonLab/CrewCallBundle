@@ -41,7 +41,7 @@
         }
     %}
     {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-            <a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
+            <a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-envelope"></span></a>
     {% endif %}
           </td>
             {% set reason = job.person.occupied({'reasons': true}) %}
@@ -52,6 +52,7 @@
     {% endif %}
             </td>
             <td>
+            <a href="#" id="popLogSummary_job_{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('job', {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
                 {{ job.statelabel }}
 {% set jobcontext = {
             'message_types': ['JobComment', 'InformCheck'],
@@ -92,7 +93,6 @@
               <a role="button" class="btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
               <a role="button" class="btn-sm ccAssigned" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
             {% endif %}
-            <a href="#" id="popLogSummary_job_{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('job', {{ job.id }});"> Changelog </a>
             </td>
         </tr>
     {% endfor %}
@@ -117,7 +117,9 @@
           <tr>
             <td>{{ so.organization }}</td>
             <td>{{ so.amount }}</td>
-            <td>{{ so.statelabel }}</td>
+            <td>{{ so.statelabel }}
+            <a href="#" id="popLogSummary_job_{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('job', {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
+            </td>
             <td>
               <a role="button" class="btn-sm btn-danger" href="#" onClick="deleteShiftOrganization({{so.id}});">Delete</a>
               <a role="button" class="btn-sm btn-success" href="#" onClick="return grabEditShiftOrganizationForm({{ so.id }});">Edit</a>

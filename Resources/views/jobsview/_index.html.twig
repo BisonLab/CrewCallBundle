@@ -27,7 +27,7 @@
         }
     %}
     {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-                <a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-tasks"></span></a>
+                <a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-envelope"></span></a>
     {% endif %}
             {{ job.person }}
     {% if reason %}

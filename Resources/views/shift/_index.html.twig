@@ -11,8 +11,8 @@
                 {{ shift.end | date('d M H:i') }}
             {% endif %}
         <td>
-        {{ shift.function }}
         <a href="#" id="popSummary_event_{{ shift.event.id }}{{ shift.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('event', {{ shift.event.id }}, {{ shift.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+        {{ shift.function }}
         </td>
         <td align="right">
         <label class="cc_switch">
