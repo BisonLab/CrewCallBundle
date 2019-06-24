@@ -106,9 +106,11 @@
             'external_id': job.id
     }
 %}
-{% for note in sakonnin_messages.MessagesForContext(cjobcontext) %}
-    {{ note.body }}
-{% endfor %}
+    {% if sakonnin_messages.contexthasmessages(cjobcontext) %}
+       <a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': cjobcontext.system, 'object_name': cjobcontext.object_name, 'external_id': cjobcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
+    {% else %}
+        &nbsp;
+    {% endif %}
             </td>
             <td align="right">
             {% if job.state == "CONFIRMED" %}
