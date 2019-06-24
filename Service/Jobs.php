@@ -6,16 +6,80 @@ use Doctrine\Common\Collections\ArrayCollection;
 use CrewCallBundle\Entity\Job;
 use CrewCallBundle\Entity\Person;
 use CrewCallBundle\Entity\Shift;
+use CrewCallBundle\Entity\Event;
 
 class Jobs
 {
     private $em;
     private $sakonnin;
+    private $checks_event_cache = [];
+    private $checks_shift_cache = [];
 
     public function __construct($em, $sakonnin)
     {
         $this->em = $em;
         $this->sakonnin = $sakonnin;
+    }
+
+    /*
+     * Kinda not related to this, but kinda is aswell - functions.
+     */
+
+    /*
+     * This is the reason the functions below exists.
+     */
+    public function checksForJob(Job $job)
+    {
+        $jcontext = [
+            'base_type' => "CHECK",
+            'order' => 'DESC',
+            'system' => 'crewcall',
+            'object_name' => 'job',
+            'external_id' => $job->getId()
+        ];
+        return $this->sakonnin->getMessagesForContext($jcontext);
+    }
+
+    /*
+     * Gotta have control on checks to check against.
+     */
+    public function checksForShift(Shift $shift)
+    {
+        if (!isset($this->checks_shift_cache[$shift->getId()])) {
+            $checks = $this->checksForEvent($shift->getEvent());
+            if ($epar = $shift->getEvent()->getParent()) {
+                    $checks = array_merge($checks,
+                        $this->checksForEvent($epar));
+            }
+            $scontext = [
+                'base_type' => "CHECK",
+                'order' => 'DESC',
+                'system' => 'crewcall',
+                'object_name' => 'shift',
+                'external_id' => $shift->getId()
+            ];
+            if ($sc = $this->sakonnin->getMessagesForContext($scontext))
+                $checks = array_merge($checks, $sc);
+            
+            $this->checks_shift_cache[$shift->getId()] = $checks;
+        }
+        return $this->checks_shift_cache[$shift->getId()];
+    }
+
+    public function checksForEvent(Event $event)
+    {
+        if (!isset($this->checks_event_cache[$event->getId()])) {
+            $econtext = [
+                'base_type' => "CHECK",
+                'order' => 'DESC',
+                'system' => 'crewcall',
+                'object_name' => 'event',
+                'external_id' => $event->getId()
+            ];
+            $checks = $this->sakonnin->getMessagesForContext($econtext);
+            $this->checks_event_cache[$event->getId()] = $checks;
+        }
+        return $this->checks_event_cache[$event->getId()];
     }
 
     /*

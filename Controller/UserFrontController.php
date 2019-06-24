@@ -405,9 +405,10 @@ class UserFrontController extends CommonController
                 'external_id' => $job->getId(),
             ];
 
-            $sm->postMessage(array(
+            $posted = $sm->postMessage(array(
                 'message_type' => $shift_check->getMessageType()->getName(),
                 'body' => $shift_check->getBody(),
+                'in_reply_to' => $shift_check->getMessageId(),
                 'state' => "CHECKED",
                 'to_type' => "NONE",
                 'from_type' => "NONE",

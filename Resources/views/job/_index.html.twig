@@ -24,6 +24,11 @@
             </th>
             <th>Name</th>
             <th>State</th>
+{% set shift_checks = cc_jobs.checksForShift(shift) %}
+{% for check in shift_checks if check.messagetype == "InformCheck" %}
+    <th class="no-sort">{{ check.body }}</th>
+{% endfor %}
+            <th>Comments</th>
             <th class="no-sort">&nbsp;</th>
         </tr>
     </thead>
@@ -54,17 +59,6 @@
             <td>
             <a href="#" id="popLogSummary_job_{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('job', {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
                 {{ job.statelabel }}
-{% set jobcontext = {
-            'message_types': ['JobComment', 'InformCheck'],
-            'order': 'DESC',
-            'system': 'crewcall',
-            'object_name': 'job',
-            'external_id': job.id
-    }
-%}
-{% for note in sakonnin_messages.MessagesForContext(jobcontext) %}
-    <br>{{ note.createdAt | date('d M') }}: <pre>{{ note.body }}</pre>
-{% endfor %}
             {% if job.shift.start < date() %}
 {# Better be a selectbox or just not at jobs at all, just event or shift.
                 <br><a role="button" class="btn-sm btn-primary" href="#" onClick="setStateOnJob({{shift.id}}, 'COMPLETED', {{ job.shift.id }});">Complete</a>
@@ -83,6 +77,39 @@
             {% else %}
             </td>
             {% endif %}
+{% set ijobcontext = {
+            'message_types': ['InformCheck'],
+            'order': 'DESC',
+            'system': 'crewcall',
+            'object_name': 'job',
+            'external_id': job.id
+    }
+%}
+{% set job_checks = cc_jobs.checksForJob(job) %}
+{% for shift_check in shift_checks if shift_check.messagetype == "InformCheck" %}
+  <td>
+    {% for job_check in job_checks if job_check.messagetype == "InformCheck" %}
+        {% if job_check.state == "CHECKED" and job_check.inreplyto.id == shift_check.id %}
+            <span style="font-size: 15px" class="glyphicon glyphicon-ok"></span>
+        {% else %}
+            &nbsp;
+        {% endif %}
+    {% endfor %}
+ </td>
+{% endfor %}
+            <td>
+{% set cjobcontext = {
+            'message_types': ['JobComment'],
+            'order': 'DESC',
+            'system': 'crewcall',
+            'object_name': 'job',
+            'external_id': job.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(cjobcontext) %}
+    {{ note.body }}
+{% endfor %}
+            </td>
             <td align="right">
             {% if job.state == "CONFIRMED" %}
               <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
