@@ -56,7 +56,7 @@ Done
 {% set emform = sakonnin_messages.getEditForm( message, true ) %}
 {% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
 {{ cmac.print_comboedit(emform, action, message.id, message.messagetype ) }}
-            <a href="#" onClick='editCombo({{ message.id }});'><span class="edit_glyph"></span></a>
+            <a href="#" onClick='return editCombo({{ message.id }});'><span class="edit_glyph"></span></a>
         {% endif %}
         </div>
 <pre wrap class="ccNotesText col-md-9">
@@ -111,7 +111,7 @@ Done
     </div>
   </div>
  </div>
- <a href="#" onClick='createCombo();' class="btn btn-dark">New Note</a>
+ <a href="#" onClick='return createCombo();' class="btn btn-dark">New Note</a>
 </div> <!-- end combowall -->
 
 <script type="text/javascript">

@@ -128,8 +128,8 @@ function get_selected_persons() {
         </tbody>
     </table>
 <div align="right">
-    <button id="select_all_button" class="btn btn-sm btn-dark" onClick="select_all_persons(true);">Select all</button>
-    <button id="deselect_all_button" class="btn btn-sm btn-dark" style="display: none;"onClick="select_all_persons(false);">Deselect all</button>
+    <button id="select_all_button" class="btn btn-sm btn-dark" onClick="return select_all_persons(true);">Select all</button>
+    <button id="deselect_all_button" class="btn btn-sm btn-dark" style="display: none;"onClick="return select_all_persons(false);">Deselect all</button>
     <br>
     <button class="btn btn-sm btn-dark" id="message_popover_link" onClick="return openMessagePopover(false);">Send a message</button>
 </div>

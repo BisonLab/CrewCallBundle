@@ -15,7 +15,7 @@
         </pre>
     {% if is_granted('edit', message) %}
         <div class="col-sm-1">
-        <a href="#" onClick='grabEditMessageForm({{ message.id }});' class="btn btn-sm btn-dark">Edit</a>
+        <a href="#" onClick='return grabEditMessageForm({{ message.id }});' class="btn btn-sm btn-dark">Edit</a>
         </div>
     {% endif %}
     </div>
@@ -32,5 +32,5 @@
         }
     %}
 {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
-<a href="#" onClick='createCheck("todocheck");' class="btn btn-sm btn-dark">Add another</a>
+<a href="#" onClick='return createCheck("todocheck");' class="btn btn-sm btn-dark">Add another</a>
 </div>

@@ -14,7 +14,7 @@
       <div class="col-sm-1">
         <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');"><span class="archive_glyph"></span></a>
         {% if is_granted('edit', message) %}
-        <a href="#" onClick='grabEditMessageForm({{ message.id }});'><span class="edit_glyph"></span></a>
+        <a href="#" onClick='return grabEditMessageForm({{ message.id }});'><span class="edit_glyph"></span></a>
         {% endif %}
       </div>
     </div>
@@ -36,5 +36,5 @@
           }
       %}
 {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-<a href="#" onClick='createMessage("c_adminwall");' class="btn btn-sm btn-dark">Add another</a>
+<a href="#" onClick='return createMessage("c_adminwall");' class="btn btn-sm btn-dark">Add another</a>
 </div>

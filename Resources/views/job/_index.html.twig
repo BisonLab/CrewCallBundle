@@ -61,7 +61,7 @@
                 {{ job.statelabel }}
             {% if job.shift.start < date() %}
 {# Better be a selectbox or just not at jobs at all, just event or shift.
-                <br><a role="button" class="btn-sm btn-primary" href="#" onClick="setStateOnJob({{shift.id}}, 'COMPLETED', {{ job.shift.id }});">Complete</a>
+                <br><a role="button" class="btn-sm btn-primary" href="#" onClick="return setStateOnJob({{shift.id}}, 'COMPLETED', {{ job.shift.id }});">Complete</a>
 #}
             </td>
                 <td id="jobLogTable_{{ job.id }}">
@@ -114,13 +114,13 @@
             </td>
             <td align="right">
             {% if job.state == "CONFIRMED" %}
-              <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
+              <a role="button" class="btn-sm btn-danger" href="#" onClick="return setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
             {% elseif job.state == "ASSIGNED" %}
-              <a role="button" class="btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
-              <a role="button" class="btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
+              <a role="button" class="btn-sm ccConfirmed" href="#" onClick="return setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
+              <a role="button" class="btn-sm btn-danger" href="#" onClick="return setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
             {% else %}
-              <a role="button" class="btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
-              <a role="button" class="btn-sm ccAssigned" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
+              <a role="button" class="btn-sm ccConfirmed" href="#" onClick="return setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
+              <a role="button" class="btn-sm ccAssigned" href="#" onClick="return setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
             {% endif %}
             </td>
         </tr>
@@ -150,7 +150,7 @@
             <a href="#" id="popLogSummary_job_{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('job', {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
             </td>
             <td>
-              <a role="button" class="btn-sm btn-danger" href="#" onClick="deleteShiftOrganization({{so.id}});">Delete</a>
+              <a role="button" class="btn-sm btn-danger" href="#" onClick="return deleteShiftOrganization({{so.id}});">Delete</a>
               <a role="button" class="btn-sm btn-success" href="#" onClick="return grabEditShiftOrganizationForm({{ so.id }});">Edit</a>
             </td>
           </tr>

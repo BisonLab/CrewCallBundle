@@ -9,7 +9,7 @@
 {% if is_granted('edit', message) %}
 <div class="col-sm-1">
 <br>
-<a href="#" onClick='grabEditMessageForm({{ message.id }});'><span class="edit_glyph"></span></a>
+<a href="#" onClick='return grabEditMessageForm({{ message.id }});'><span class="edit_glyph"></span></a>
 </div>
 {% endif %}
 <pre wrap class="ccNotesText col-sm-10">

@@ -59,7 +59,7 @@
           <li><a href="#" onClick='return createCheck("shiftconfirmcheck_{{ shift.id }}");'>Add a must confirm checkbox</a></li>
 
           <li><a href="#" id="popLogSummary_shift_{{ shift.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('shift', {{ shift.id }});">Changelog</a></li>
-          <li><a href="#" onClick="deleteShift({{ shift.id }});">Delete</a></li>
+          <li><a href="#" onClick="return deleteShift({{ shift.id }});">Delete</a></li>
         </ul>
         </div>
       </td>

@@ -6,7 +6,7 @@
 <a href="#" onClick="return printTableContent();" class="btn btn-sm btn-dark" id="printbutton">Print</a>
 
 {% for val in ['Mobile', 'Diets'] %}
-<input id="epcheck_{{ val }}" type="checkbox" onClick='checkChecked("{{ val }}");' checked>{{ val }}</input>
+<input id="epcheck_{{ val }}" type="checkbox" onClick='return checkChecked("{{ val }}");' checked>{{ val }}</input>
 {% endfor %}
 
 </div>

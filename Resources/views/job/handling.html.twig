@@ -37,11 +37,7 @@ function setStateOnJob(job_id, state, shift_id) {
             errmsg = "Warning!\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
-            if ($( "#jobTable_" + shift_id ).length) {
-                grabJobList(shift_id);
-            } else {
-                parent.location.reload();
-            }
+            grabJobList(shift_id);
     });
     return false;
 }
