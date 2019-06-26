@@ -27,7 +27,7 @@
                 <td>
 {% for pfe in event.personfunctionevents() %}
    {{ pfe.person }}{% if pfe.person.mobilephonenumber %} - {{ pfe.person.mobilephonenumber }}{% endif %}
-   <a href="{{ path('event_remove_contact', { 'id': pfe.id }) }}"><span style="font-size: 15px" class="glyphicon glyphicon-remove-circle"></span></a>
+   <a href="{{ path('event_remove_contact', { 'id': pfe.id }) }}"><span class="remove_glyph"></span></a>
 <br />
 {% endfor %}
 {% if add_contact_form is not null %}
@@ -49,7 +49,10 @@
   <div class="col-sm-4"> 
       <ul class="nav nav-tabs">
       <li class="active">
-      <a href="#notestab_{{ event.id }}" data-toggle="tab">Notes / Checks</a>
+      <a href="#notestab_{{ event.id }}" data-toggle="tab">Notes</a>
+      </li>
+      <li>
+      <a href="#checkstab_{{ event.id }}" data-toggle="tab">Checks</a>
       </li>
       <li>
       <a href="#filestab_{{ event.id }}" data-toggle="tab">Files</a>
@@ -59,7 +62,6 @@
       <div class="tab-content ">
 
       <div class="tab-pane active" id="notestab_{{ event.id }}">
-        <br>
         <p>
         {% set mconf = {'mconfig': {
                 'formname': 'eventconfirmnote_' ~ event.id,
@@ -78,7 +80,31 @@
             }
         %}
         {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <a href="#" onClick='return createMessage("eventconfirmnote_{{ event.id }}");'>Add a must confirm note</a><br />
+        <a href="#" onClick='return createMessage("eventconfirmnote_{{ event.id }}");'>Add a must confirm note</a>
+        </p>
+
+        <p>
+        {% set mlogcontext = {
+                    'system': 'crewcall',
+                    'object_name': 'event',
+                    'message_group': 'Notes',
+                    'external_id': event.id
+            }
+        %}
+        {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+            {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
+            <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
+            {{ form_start(mdelform) }}
+            {{ form_rest(mdelform) }}
+            <strong>{{ note.subject }}</strong> ({{ note.messagetype }})
+            <button type="submit" class="btn btn-link"> <span class="remove_glyph" type="submit" name="submit" value="Delete"></span></button>
+            </form>
+            <pre>{{ note.body }}</pre>
+        {% endfor %}
+        </p>
+      </div>
+      <div class="tab-pane" id="checkstab_{{ event.id }}">
+      <p>
         {% set mconf = {'mconfig': {
                 'formname': 'eventconfirmcheck_' ~ event.id,
                 'reload_after_post': true,
@@ -110,26 +136,6 @@
         {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
         <a href="#" onClick='return createCheck("eventinformheck_{{ event.id }}");'>Add an information checkbox</a><br />
         </p>
-        <p>
-        {% set mlogcontext = {
-                    'system': 'crewcall',
-                    'object_name': 'event',
-                    'message_group': 'Notes',
-                    'external_id': event.id
-            }
-        %}
-        {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
-            <strong>{{ note.subject }}</strong> ({{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }})
-            <pre>{{ note.body }}</pre>
-            {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
-            <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
-            {{ form_start(mdelform) }}
-            {{ form_rest(mdelform) }}
-            <input class="btn btn-sm btn-danger" type="submit" name="submit" value="Delete">
-            </form>
-            <br>
-        {% endfor %}
-        <p><br>
         {% set mlogcontext = {
                     'system': 'crewcall',
                     'object_name': 'event',
@@ -138,18 +144,18 @@
             }
         %}
         {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
-            {{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}
-            <ul>
-            <li>{{ note.body }}</li>
-            </ul>
             {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
             <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
             {{ form_start(mdelform) }}
             {{ form_rest(mdelform) }}
-            <input class="btn btn-sm btn-danger" type="submit" name="submit" value="Delete">
+            {{ note.messagetype }}
+            <button type="submit" class="btn btn-link"> <span class="remove_glyph" type="submit" name="submit" value="Delete"></span></button>
             </form>
-            <br>
+            <ul>
+            <li><strong>{{ note.body }}</strong></li>
+            </ul>
         {% endfor %}
+        <br>
       </div>
 
       <div class="tab-pane" id="filestab_{{ event.id }}">
@@ -166,7 +172,6 @@
         %}
         {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
             <p>
-            <br>
               <a href="#" onClick="return uploadFile('eventfiles_{{ event.id }}'); return false;">Add a document or image</a><br />
             </p>
         {% set filecontext = {

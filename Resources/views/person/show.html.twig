@@ -271,7 +271,6 @@ function openStateChange() {
             <th>When</th>
             <th>What</th>
             <th>Response</th>
-            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -310,17 +309,6 @@ function openStateChange() {
 {% for note in sakonnin_messages.MessagesForContext(jobcontext) %}
     {{ note.createdAt | date('Y-m-d') }}: <pre>{{ note.body }}</pre>
 {% endfor %}
-            </td>
-            <td>
-            {% if job.state == "CONFIRMED" %}
-              <a class="btn btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
-            {% elseif job.state == "ASSIGNED" %}
-              <a class="btn btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
-              <a class="btn btn-sm btn-danger" href="#" onClick="setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
-            {% else %}
-              <a class="btn btn-sm ccConfirmed" href="#" onClick="setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
-              <a class="btn btn-sm ccAssigned" href="#" onClick="setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
-            {% endif %}
             </td>
         </tr>
     {% endfor %}

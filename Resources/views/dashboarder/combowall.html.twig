@@ -32,8 +32,8 @@
 <div class="col-sm-10">
 <h3>Notes</h3>
 </div>
-<div class="col-sm-1" style="margin-top: 20px;">
- <a href="#" onClick='createCombo();' class="btn btn-xs btn-dark">Add</a>
+<div class="col-sm-1" style="margin-top: 30px; font-size: 18px;">
+Done
 </div>
 </div>
 
@@ -50,10 +50,19 @@
    <div id="sakonninmessage_{{ message.id}}">
   {% endif %}
      <div class="row ccNotesText">
-<pre wrap class="ccNotesText col-md-8">
+        <div class="col-md-1">
+        <br>
+        {% if is_granted('edit', message) %}
+{% set emform = sakonnin_messages.getEditForm( message, true ) %}
+{% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
+{{ cmac.print_comboedit(emform, action, message.id, message.messagetype ) }}
+            <a href="#" onClick='editCombo({{ message.id }});'><span class="edit_glyph"></span></a>
+        {% endif %}
+        </div>
+<pre wrap class="ccNotesText col-md-9">
 {{ message.body }}
 </pre>
-        <div class="col-md-2">
+        <div class="col-md-2" halign="left">
         <br>
         {% if message.messagetype == "TODO" %}
             <label class="cc_switch">
@@ -61,16 +70,7 @@
               <span class="cc_slider round"></span>
             </label><br>
         {% else %}
-            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" class="btn btn-xs btn-success">Archive</a><br>
-        {% endif %}
-        </div>
-        <div class="col-md-1">
-        <br>
-        {% if is_granted('edit', message) %}
-{% set emform = sakonnin_messages.getEditForm( message, true ) %}
-{% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
-{{ cmac.print_comboedit(emform, action, message.id, message.messagetype ) }}
-            <a href="#" onClick='editCombo({{ message.id }});' class="btn btn-xs btn-dark">Edit</a>
+            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');"><span class="archive_glyph"></span></a>
         {% endif %}
         </div>
      </div>
@@ -111,6 +111,7 @@
     </div>
   </div>
  </div>
+ <a href="#" onClick='createCombo();' class="btn btn-dark">New Note</a>
 </div> <!-- end combowall -->
 
 <script type="text/javascript">

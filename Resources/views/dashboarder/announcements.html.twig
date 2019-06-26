@@ -6,15 +6,15 @@
     <h3>{{ message.subject }}</h3>
 {% endif %}
 <div class="row ccNotesText">
-<pre wrap class="ccNotesText col-sm-10">
-{{ message.body }}
-</pre>
-{% endif %}
 {% if is_granted('edit', message) %}
 <div class="col-sm-1">
 <br>
-<a href="#" onClick='grabEditMessageForm({{ message.id }});' class="btn btn-xs btn-dark">Edit</a>
+<a href="#" onClick='grabEditMessageForm({{ message.id }});'><span class="edit_glyph"></span></a>
 </div>
+{% endif %}
+<pre wrap class="ccNotesText col-sm-10">
+{{ message.body }}
+</pre>
 {% endif %}
 </div>
 {% endfor %}
