@@ -210,7 +210,7 @@ class Calendar
     public function jobToCal(Job $job)
     {
         $c = $this->shiftToCal($job->getShift());
-        $c['title'] = (string)$job->getFunction();
+        $c['title'] = (string)$job->getShift();
         if ($job->isBooked()) {
             $c['color'] = "green";
             $c['textColor'] = "white";
