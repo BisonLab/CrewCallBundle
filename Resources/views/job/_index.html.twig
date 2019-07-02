@@ -20,7 +20,10 @@
     <thead class="thead-inverse">
         <tr>
             <th class="no-sort">
+{#
             <input onClick="return select_all_jobs({{ shift.id }}, this);" class="select_all_persons_checkbox" type="checkbox" name="select_all">
+#}
+            &nbsp;
             </th>
             <th>Name</th>
             <th>State</th>
@@ -36,7 +39,10 @@
     {% for job in jobs %}
         <tr>
           <td>
+{#
             <input class="job_list_checkbox_{{ shift.id }}" type="checkbox" name="job_list" value="{{ job.id }},{{ job.person.id }}">
+#}
+            <input class="job_list_checkbox_{{ shift.event.id }}" type="checkbox" name="job_list" value="{{ job.id }},{{ job.person.id }}">
             <a href="#" id="popSummary_person_jobs_{{ job.person.id }}{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popPersonJobs({{ job.person.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
             <a href="#" id="popSummary_person_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
     {% set mlogcontext = {
@@ -127,9 +133,12 @@
     {% endfor %}
     </tbody>
  </table>
+{#
 <div align="left">
 <button class="btn btn-sm btn-dark" id="message_popover_link" onClick="return openMessageModal({{ shift.id }});">Send a message</button>
+
 </div>
+#}
 {% endif %}
 {% if sos.count > 0 %}
 <table id="shiftOrgTable" class="table  table-sm">

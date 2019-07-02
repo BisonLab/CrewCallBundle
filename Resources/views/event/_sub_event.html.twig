@@ -230,6 +230,9 @@
    </div> <!-- col-sm-2 -->
 </div> <!-- / row -->
 
+<strong>Select all:  </strong><input onClick="return select_all_jobs({{ event.id }}, this);" class="select_all_persons_checkbox" type="checkbox" name="select_all">
 <div id="shiftList_{{ event.id}}">
   {% include 'CrewCallBundle:shift:_index.html.twig' with { 'event': event}  %}
 </div>
+
+<button class="btn btn-sm btn-dark" id="message_popover_link" onClick="return openMessageModal({{ event.id }});">Send a message</button>
