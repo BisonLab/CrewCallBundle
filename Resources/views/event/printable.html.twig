@@ -12,12 +12,15 @@
 </div>
 <div class="printableContent">
   <h1>{{ event.name }} {{ event.start | date("d.M.y") }}</h1>
+  <table id="printEventTable" style="width:100%" class="printable-table">
 
  {% for shift in event.shifts if shift.jobs | length > 0%}
-  <h4>{{ shift.function.name }} {{ shift.start | date("H.i") }} -> {{ shift.end | date("H.i") }}</h4>
-
-  <table id="printEventTable" style="width:100%" class="printable-table">
     <thead>
+  <tr>
+  <td colspan="3">
+    <h4>{{ shift.function.name }} {{ shift.start | date("H.i") }} -> {{ shift.end | date("H.i") }}</h4>
+  </td>
+  </tr>
         <tr>
             <th class="epName">Name</th>
             <th class="epMobile">Mobile</th>
@@ -27,7 +30,7 @@
         </tr>
     </thead>
     <tbody>
-      {% for job in shift.jobs %}
+      {% for job in shift.jobs if state is empty or job.state == state %} 
         <tr>
             <td class="epName">{{ job.person.name }}</td>
             <td class="epMobile">{{ job.person.mobilephonenumber }}</td>
@@ -61,8 +64,8 @@
         </tr>
       {% endfor %}
     </tbody>
-   </table>
   {% endfor %}
+   </table>
 
 </div>
 

@@ -126,6 +126,7 @@ class EventController extends CommonController
         if ($request->get('printable')) {
             return $this->render('event/printable.html.twig', array(
                 'event' => $event,
+                'state' => $request->get('state'),
             ));
         }
 

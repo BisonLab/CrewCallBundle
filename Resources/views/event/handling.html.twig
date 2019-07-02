@@ -90,10 +90,14 @@ function submitStateForm(event_id, state) {
     return false;
 }
 
-function openPrintEventWindow(event_id)
+function openPrintEventWindow(event_id, state = null)
 {
     url = "{{ path('event_show', { 'id': "XXX", 'printable': true }) }}";
     url = url.replace('XXX', event_id);
+    
+    if (state != null) {
+        url = url + "?state=" + state;
+    }
     w = popmeup(url);
     return false;
 }
@@ -105,7 +109,6 @@ function checkChecked(classname)
     } else {
         $( ".ep" + classname ).hide();
     }
-    return false;
 }
 
 function printTableContent()
