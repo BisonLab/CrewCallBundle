@@ -38,7 +38,6 @@ function grabEvents(what) {
         $( "#" + what + "content" ).html(data);
     }).done(function() {
         $( "#" + what + "table").dataTable({
-            "order": [[ 1, "asc" ]],
             "paging": false,
             "searching": search
             });
