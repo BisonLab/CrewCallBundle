@@ -21,12 +21,18 @@ class Person
             'label' => 'Name'
             );
 
+        $summary[] = array(
+            'name' => 'mobile_phone_number',
+            'value' => (string)$person->getMobilePhoneNumber(),
+            'label' => 'Mobile'
+            );
+
         if ($stateobj = $person->getStateOnDate()) {
             $text = $stateobj->getState();
             if ($fd = $stateobj->getFromDate())
-                $text .= " From:" . $fd->format('Y-m-d');
+                $text .= "  From:" . $fd->format('Y-m-d');
             if ($td = $stateobj->getToDate())
-                $text .= " To:" . $td->format('Y-m-d');
+                $text .= "  To:" . $td->format('Y-m-d');
             $summary[] = array(
                 'name' => 'state',
                 'value' => $text,
