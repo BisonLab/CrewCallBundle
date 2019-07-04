@@ -70,7 +70,7 @@
         <button type="button" class="close" data-dismiss="modal">&times;</button>
          <h4 class="modal-title">Add contact</h4>
       </div>
-      <div class="modal-body" id="jobModalBody">
+      <div class="modal-body" id="addContactModalBody">
         <div id="add_contact_popover_content">
             {{ form_start(add_contact_form, { 'action': path('event_add_contact', {'id': "XXX" }), 'attr': {'id':'addContactForm'}}) }}
             {{ form_widget(add_contact_form) }}
