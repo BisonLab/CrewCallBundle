@@ -1,4 +1,32 @@
 <script>
+
+function openMessageToEventModal(event_id, state) {
+    content = $("#eventmessage_modal").html();
+    $( "#eventModalTitle" ).html('Send Message to all confirmed');
+    $( "#eventModalBody" ).html(content);
+    $( "#eventModal" ).modal();
+    $( "#eventMessageForm" ).append('<input type="hidden" name="state" value="'+state+'">');
+
+    $("#eventMessageForm").submit(function( event ) {
+        postdata = $("#eventMessageForm").serialize();
+        url = "{{ path('event_send_message', {'access': 'ajax', 'id': "XXX" }) }}".replace("XXX", event_id);
+        $.ajax({
+            type: "POST",
+            data: postdata,
+            url: url,
+            success: function(data)
+            {
+                alert(data);
+                $( "#eventModal" ).modal("hide");
+                $( "#eventModalTitle" ).html("");
+                $( "#eventModalBody" ).html("");
+            }
+        });
+        event.preventDefault();
+    });
+    return false;
+}
+
 function openAddContact(event_id) {
     $( "#addContactModal" ).modal();
 
@@ -120,6 +148,28 @@ function printTableContent()
     $("#unprintableContent").show();
 }
 </script>
+
+<div class="modal fade" id="eventModal" role="dialog" tabindex='-1'>
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title" id="eventModalTitle"></h4>
+      </div>
+      <div class="modal-body" id="eventModalBody">
+      </div>
+    </div>
+  </div>
+</div> <!-- / modal -->
+
+<div id="eventmessage_modal" class="hidden">
+    <form name="eventmessage_form" id="eventMessageForm" method="POST">
+        <input type="hidden" value="BULKSMS" name="message_type">
+        <textarea id="eventMessageFormBody" name="body" cols="40" rows="4"></textarea>
+        <input class="btn btn-sm btn-dark" id="evsendmessage" type="submit" name="submit" value="Send">
+    </form>
+</div>
 
 {% if state_form is defined %}
     <div class="hidden">

@@ -213,17 +213,20 @@
         {% endif %}
         </a></li>
        {% if event.open and event.shifts | length > 0 %}
-        <li><a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</span></a></li>
+        <li>
+            <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</a>
+        </li>
        {% endif %}
     {% endif %}
 
     {% if not event.booked %}
         <li>
-        <li><a href="#" onClick="return submitDeleteForm({{ event.id}});">
-        Delete
-        </a>
+            <a href="#" onClick="return submitDeleteForm({{ event.id}});">Delete</a>
         </li>
     {% endif %}
+        <li>
+            <a href="#" onClick="return openMessageToEventModal({{ event.id }}, 'CONFIRMED');">Send a message to all confirmed</a>
+        </li>
 
     </ul>
 
@@ -235,4 +238,4 @@
   {% include 'CrewCallBundle:shift:_index.html.twig' with { 'event': event}  %}
 </div>
 
-<button class="btn btn-sm btn-dark" id="message_popover_link" onClick="return openMessageModal({{ event.id }});">Send a message</button>
+<button class="btn btn-sm btn-dark" id="message_popover_link" onClick="return openMessageToJobsModal({{ event.id }});">Send a message</button>

@@ -309,15 +309,38 @@ class Event
 
     /**
      * Get jobs
+     * 
+     * Annoyingly simple filter for now.
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getJobs($filter = [])
+    {
+        $jobs = new ArrayCollection();
+        foreach ($this->getShifts() as $shift) {
+            foreach ($shift->getJobs() as $job) {
+                if ($filter['states'] && !in_array($job->getState(), $filter['states']))
+                    continue;
+                $jobs->add($job);
+            }
+        }
+        // This is where I should add the filtering. Call that a TODO
+        $criteria = Criteria::create()
+            ->orderBy(array("start" => Criteria::ASC));
+        return $jobs->matching($criteria);
+    }
+
+    /**
+     * Get all jobs, including those on Children events
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
     public function getAllJobs($filter = [])
     {
-        $jobs = new ArrayCollection();
-        foreach ($this->getAllShifts() as $shift) {
+        $jobs = $this->getJobs($filter);
+        foreach ($this->getChildren() as $child) {
             $jobs = new ArrayCollection(array_merge($jobs->toArray() ,
-                $shift->getJobs()->toArray()));
+                $child->getJobs($filter)->toArray()));
         }
         $criteria = Criteria::create()
             ->orderBy(array("start" => Criteria::ASC));

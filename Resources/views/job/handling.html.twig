@@ -153,20 +153,20 @@ function get_selected_persons(shift_id) {
     return list;
 }
 
-function openMessageModal(shift_id) {
-    content = $("#message_modal").html();
+function openMessageToJobsModal(shift_id) {
+    content = $("#jobmessage_modal").html();
     $( "#jobModalTitle" ).html('Send Message');
     $( "#jobModalBody" ).html(content);
     $( "#jobModal" ).modal();
 
     $("#job_list_message_form").submit(function( event ) {
-        var $btn = $(document.activeElement);
+        var btn = $(document.activeElement);
         list = get_selected_persons(shift_id);
         $(".job_list_message_form_plist").remove();
         list.map(function(value) {
             $("#job_list_message_form").append('<input class="job_list_message_form_plist" type="hidden" name="person_list[]" value="'+value+'">');
         });
-        if ($btn.is('[id]') && $btn.attr("id") == "sendmessage") {
+        if (btn.is('[id]') && btn.attr("id") == "sendmessage") {
             postdata = $("#job_list_message_form").serialize();
             $.ajax({
                 type: "POST",
@@ -177,6 +177,9 @@ function openMessageModal(shift_id) {
                     alert(data);
                     /* select_all_jobs(shift_id, false); */
                     $( "#jobModal" ).modal("hide");
+                    $( "#jobModalTitle" ).html("");
+                    $( "#jobModalBody" ).html("");
+                    $(".job_list_message_form_plist").remove();
                 }
             });
         }
@@ -200,9 +203,9 @@ function openMessageModal(shift_id) {
   </div>
 </div> <!-- / modal -->
 
-<div id="message_modal" class="hidden">
+<div id="jobmessage_modal" class="hidden">
     <form id="job_list_message_form" method="POST">
-    <textarea name="body" cols="20" rows="4"></textarea>
+    <textarea name="body" cols="40" rows="4"></textarea>
     <input type="hidden" value="BULKSMS" name="message_type">
     <input class="btn btn-sm btn-dark" id="sendmessage" type="submit" name="submit" value="Send">
     </form>
