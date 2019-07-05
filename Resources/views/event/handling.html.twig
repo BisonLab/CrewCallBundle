@@ -123,7 +123,7 @@ function openPrintEventWindow(event_id, state = null)
     url = url.replace('XXX', event_id);
     
     if (state != null) {
-        url = url + "?state=" + state;
+        url = url + "&state=" + state;
     }
     w = popmeup(url);
     return false;
