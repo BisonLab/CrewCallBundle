@@ -1,15 +1,25 @@
 <script>
 
-function openMessageToEventModal(event_id, state) {
+function openMessageToEventModal(object_id, filter, state) {
     content = $("#eventmessage_modal").html();
-    $( "#eventModalTitle" ).html('Send Message to all confirmed');
+    $( "#eventModalTitle" ).html('Send Message');
     $( "#eventModalBody" ).html(content);
     $( "#eventModal" ).modal();
     $( "#eventMessageForm" ).append('<input type="hidden" name="state" value="'+state+'">');
+    if (filter == "event") {
+        url = "{{ path('event_send_message', {'access': 'ajax', 'id': "XXX" }) }}".replace("XXX", object_id);
+    }
+    if (filter == "function") {
+        url = "{{ path('event_send_message', {'access': 'ajax', 'id': "XXX" }) }}".replace("XXX", object_id);
+        fselect = $( "#function_select_" + object_id ).html();
+        $( "#eventMessageFormSelect" ).append(fselect);
+    }
+    if (filter == "shift") {
+        url = "{{ path('shift_send_message', {'access': 'ajax', 'id': "XXX" }) }}".replace("XXX", object_id);
+    }
 
     $("#eventMessageForm").submit(function( event ) {
         postdata = $("#eventMessageForm").serialize();
-        url = "{{ path('event_send_message', {'access': 'ajax', 'id': "XXX" }) }}".replace("XXX", event_id);
         $.ajax({
             type: "POST",
             data: postdata,
@@ -166,8 +176,17 @@ function printTableContent()
 <div id="eventmessage_modal" class="hidden">
     <form name="eventmessage_form" id="eventMessageForm" method="POST">
         <input type="hidden" value="BULKSMS" name="message_type">
+      <div class="row">
+       <div class="col-sm-7">
         <textarea id="eventMessageFormBody" name="body" cols="40" rows="4"></textarea>
+       </div>
+       <div class="col-sm-1">
+       </div>
+       <div class="col-sm-3">
+        <div id="eventMessageFormSelect"></div>
         <input class="btn btn-sm btn-dark" id="evsendmessage" type="submit" name="submit" value="Send">
+       </div>
+      </div>
     </form>
 </div>
 

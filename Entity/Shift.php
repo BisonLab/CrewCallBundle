@@ -304,12 +304,20 @@ class Shift
 
     /**
      * Get jobs
+     * Annoyingly simple filter for now.
+     * TODO: Use Criterias
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getJobs()
+    public function getJobs($filter = [])
     {
-        return $this->jobs;
+        $jobs = new ArrayCollection();
+        foreach ($this->jobs as $job) {
+            if (isset($filter['states']) && !in_array($job->getState(), $filter['states']))
+                continue;
+            $jobs->add($job);
+        }
+        return $jobs;
     }
 
     /**

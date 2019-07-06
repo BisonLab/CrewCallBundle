@@ -309,8 +309,6 @@ class Event
 
     /**
      * Get jobs
-     * 
-     * Annoyingly simple filter for now.
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
@@ -318,16 +316,14 @@ class Event
     {
         $jobs = new ArrayCollection();
         foreach ($this->getShifts() as $shift) {
-            foreach ($shift->getJobs() as $job) {
-                if ($filter['states'] && !in_array($job->getState(), $filter['states']))
-                    continue;
-                $jobs->add($job);
-            }
+            if (isset($filter['functions']) && !in_array((string)$shift->getFunction(), $filter['functions']))
+                continue;
+            if (isset($filter['function_ids']) && !in_array($shift->getFunction()->getId(), $filter['function_ids']))
+                continue;
+            $jobs = new ArrayCollection(array_merge($jobs->toArray() ,
+                $shift->getJobs($filter)->toArray()));
         }
-        // This is where I should add the filtering. Call that a TODO
-        $criteria = Criteria::create()
-            ->orderBy(array("start" => Criteria::ASC));
-        return $jobs->matching($criteria);
+        return $jobs;
     }
 
     /**
@@ -342,9 +338,7 @@ class Event
             $jobs = new ArrayCollection(array_merge($jobs->toArray() ,
                 $child->getJobs($filter)->toArray()));
         }
-        $criteria = Criteria::create()
-            ->orderBy(array("start" => Criteria::ASC));
-        return $jobs->matching($criteria);
+        return $jobs;
     }
 
     /**
@@ -543,6 +537,7 @@ class Event
     /*
      * The downside of this "helper" is that we don't see the function, aka
      * what they do in the event.
+     * And this is people connected to the event, not shifts/jobs
      */
     public function getPersons($function_name = null)
     {
@@ -570,6 +565,20 @@ class Event
             }
         }
         return $amount;
+    }
+
+    /*
+     * Quite specialized, I know. But useful.
+     */
+    public function getDistinctShiftFunctions()
+    {
+        $functions = new ArrayCollection();
+        foreach ($this->getShifts() as $shift) {
+            if ($functions->contains($shift->getFunction()))
+                continue;
+            $functions->add($shift->getFunction());
+        }
+        return $functions;
     }
 
     /**

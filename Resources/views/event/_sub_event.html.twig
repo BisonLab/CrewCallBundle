@@ -225,9 +225,11 @@
         </li>
     {% endif %}
         <li>
-            <a href="#" onClick="return openMessageToEventModal({{ event.id }}, 'CONFIRMED');">Send a message to all confirmed</a>
+            <a href="#" onClick="return openMessageToEventModal({{ event.id }}, 'event', 'CONFIRMED');">Send a message to all confirmed</a>
         </li>
-
+        <li>
+            <a href="#" onClick="return openMessageToEventModal({{ event.id }}, 'function', 'CONFIRMED');">Send a message specific funciton</a>
+        </li>
     </ul>
 
    </div> <!-- col-sm-2 -->
@@ -239,3 +241,12 @@
 </div>
 
 <button class="btn btn-sm btn-dark" id="message_popover_link" onClick="return openMessageToJobsModal({{ event.id }});">Send a message</button>
+
+<div id="function_select_{{ event.id }}" class="hidden">
+<label>Function</label>
+<select name="function_id">
+{% for f in event.distinctshiftfunctions %}
+  <option value="{{ f.id }}">{{ f.name }}</option>
+{% endfor %}
+</select>
+</div>

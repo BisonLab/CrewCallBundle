@@ -9,6 +9,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\Common\Collections\ArrayCollection;
+
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use CrewCallBundle\Lib\ExternalEntityConfig;
 
@@ -222,6 +224,38 @@ class ShiftController extends CommonController
             $event_id = $shift->getEvent()->getId();
         return $this->redirectToRoute('event_show', array(
             'id' => $event_id));
+    }
+
+    /**
+     * Sends messages to a batch of persons.
+     *
+     * @Route("/{id}/send_message", name="shift_send_message", methods={"POST"})
+     */
+    public function sendMessageAction($access, Request $request, Shift $shift)
+    {
+        $sm = $this->get('sakonnin.messages');
+        $body = $request->request->get('body');
+
+        if (!$state = $request->request->get('state'))
+            throw InvalidArgumentException("Only filerting by state for now");
+
+        $persons = new ArrayCollection();
+        foreach ($shift->getJobs(['states' => [$state]]) as $j) {
+            if (!$persons->contains($j->getPerson()))
+                $persons->add($j->getPerson());
+        }
+        $person_ids = array_map(function($person) {
+                return $person->getId();
+            }, $persons->toArray());
+        $message_type = $request->request->get('message_type');
+        $sm->postMessage(array(
+            'body' => $body,
+            'to' => implode(",", $person_ids),
+            'message_type' => $message_type,
+            'to_type' => "INTERNAL",
+            'from_type' => "INTERNAL",
+        ));
+        return new Response("Sent: " . $body, Response::HTTP_OK);
     }
 
     /**
