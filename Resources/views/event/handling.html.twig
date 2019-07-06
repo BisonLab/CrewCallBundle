@@ -1,20 +1,19 @@
 <script>
 
-function openMessageToEventModal(object_id, filter, state) {
+/*
+ * Yeah, and shift.
+ */
+function openMessageToEventModal(object, object_id) {
     content = $("#eventmessage_modal").html();
     $( "#eventModalTitle" ).html('Send Message');
     $( "#eventModalBody" ).html(content);
     $( "#eventModal" ).modal();
-    $( "#eventMessageForm" ).append('<input type="hidden" name="state" value="'+state+'">');
-    if (filter == "event") {
-        url = "{{ path('event_send_message', {'access': 'ajax', 'id': "XXX" }) }}".replace("XXX", object_id);
-    }
-    if (filter == "function") {
+    if (object == "event") {
         url = "{{ path('event_send_message', {'access': 'ajax', 'id': "XXX" }) }}".replace("XXX", object_id);
         fselect = $( "#function_select_" + object_id ).html();
         $( "#eventMessageFormSelect" ).append(fselect);
     }
-    if (filter == "shift") {
+    if (object == "shift") {
         url = "{{ path('shift_send_message', {'access': 'ajax', 'id': "XXX" }) }}".replace("XXX", object_id);
     }
 
@@ -183,6 +182,8 @@ function printTableContent()
        <div class="col-sm-1">
        </div>
        <div class="col-sm-3">
+        <input type="radio" name="state" value="CONFIRMED" checked>Only confirmed</option>
+        <input type="radio" name="state" value="">All</option>
         <div id="eventMessageFormSelect"></div>
         <input class="btn btn-sm btn-dark" id="evsendmessage" type="submit" name="submit" value="Send">
        </div>

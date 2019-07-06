@@ -225,10 +225,7 @@
         </li>
     {% endif %}
         <li>
-            <a href="#" onClick="return openMessageToEventModal({{ event.id }}, 'event', 'CONFIRMED');">Send a message to all confirmed</a>
-        </li>
-        <li>
-            <a href="#" onClick="return openMessageToEventModal({{ event.id }}, 'function', 'CONFIRMED');">Send a message specific funciton</a>
+            <a href="#" onClick="return openMessageToEventModal('event', {{ event.id }});">Send a message</a>
         </li>
     </ul>
 
@@ -240,11 +237,12 @@
   {% include 'CrewCallBundle:shift:_index.html.twig' with { 'event': event}  %}
 </div>
 
-<button class="btn btn-sm btn-dark" id="message_popover_link" onClick="return openMessageToJobsModal({{ event.id }});">Send a message</button>
+<button class="btn btn-sm btn-dark" id="message_popover_link" onClick="return openMessageToJobsModal({{ event.id }});">Send a message to selected</button>
 
 <div id="function_select_{{ event.id }}" class="hidden">
 <label>Function</label>
 <select name="function_id">
+  <option value="" selected>All</option>
 {% for f in event.distinctshiftfunctions %}
   <option value="{{ f.id }}">{{ f.name }}</option>
 {% endfor %}

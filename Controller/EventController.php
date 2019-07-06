@@ -404,13 +404,11 @@ class EventController extends CommonController
         $sm = $this->get('sakonnin.messages');
         $body = $request->request->get('body');
 
-        if (!$state = $request->request->get('state'))
-            throw InvalidArgumentException("Only filerting by state for now");
-
-        $filter = ['states' => [$state]];
-        if ($function_id = $request->request->get('function_id')) {
+        $filter = [];
+        if ($state = $request->request->get('state'))
+            $filter['states'] = [$state];
+        if ($function_id = $request->request->get('function_id'))
             $filter['function_ids'] = [$function_id];
-        }
         
         $persons = new ArrayCollection();
         foreach ($event->getJobs($filter) as $j) {

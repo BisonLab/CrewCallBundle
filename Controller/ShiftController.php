@@ -236,11 +236,12 @@ class ShiftController extends CommonController
         $sm = $this->get('sakonnin.messages');
         $body = $request->request->get('body');
 
-        if (!$state = $request->request->get('state'))
-            throw InvalidArgumentException("Only filerting by state for now");
+        $filter = [];
+        if ($state = $request->request->get('state'))
+            $filter['states'] = [$state];
 
         $persons = new ArrayCollection();
-        foreach ($shift->getJobs(['states' => [$state]]) as $j) {
+        foreach ($shift->getJobs($filter) as $j) {
             if (!$persons->contains($j->getPerson()))
                 $persons->add($j->getPerson());
         }

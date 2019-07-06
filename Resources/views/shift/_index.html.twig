@@ -43,7 +43,7 @@
           </button>
         <ul class="dropdown-menu dropdown-menu-right">
           <li>
-            <a href="#" onClick="return openMessageToEventModal({{ shift.id }}, 'shift', 'CONFIRMED');">Send a message to all confirmed</a>
+            <a href="#" onClick="return openMessageToEventModal('shift', {{ shift.id }});">Send a message</a>
           </li>
           <li>
             <a href="#" onClick="return grabNewJobForm({{shift.id}});">Add person</a>
