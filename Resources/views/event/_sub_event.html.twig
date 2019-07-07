@@ -187,17 +187,29 @@
   </div>
   <div class="col-sm-4" align="right"> 
     <ul>
+        <li>
     {% if event.shifts | length > 0 %}
             {% set last_shift = event.shifts | last %}
             <a href="#" onClick="return grabNewShiftForm({{ event.id }}, {{ last_shift.id }});">Add shift</a>
     {% else %}
             <a href="#" onClick="return grabNewShiftForm({{ event.id }});">Add shift</a>
     {% endif %}
-        <li><a href="#" onClick="return openPrintEventWindow({{ event.id }}, 'CONFIRMED');">Print</a></li>
-        <li><a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a></li>
-        <li><a href="#" id="popLogSummary_event_{{ event.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('event', {{ event.id }});">Changelog</a></li>
+        </li>
+        <li>
+            <a href="#" onClick="return openPrintEventWindow({{ event.id }}, 'CONFIRMED');">Print</a>
+        </li>
+        <li>
+            <a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a>
+        </li>
+        <li>
+            <a href="#" id="popLogSummary_event_{{ event.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('event', {{ event.id }});">Changelog</a>
+        </li>
+        <li>
+            <a href="#" onClick="return openMessageToEventModal('event', {{ event.id }});">Send a message</a>
+        </li>
     {% if not event.done %}
-        <li><a href="#" onClick="return submitStateForm({{ event.id}}, 'CONFIRMED');">
+       <li>
+        <a href="#" onClick="return submitStateForm({{ event.id}}, 'CONFIRMED');">
         {% set shiftsclosed = false %}
         {% for sh in event.shifts %}
             {% if not sh.open %}
@@ -211,7 +223,8 @@
         {% elseif not event.open and event.shifts | length > 0 %}
             Confirm and open event
         {% endif %}
-        </a></li>
+        </a>
+       </li>
        {% if event.open and event.shifts | length > 0 %}
         <li>
             <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</a>
@@ -224,9 +237,6 @@
             <a href="#" onClick="return submitDeleteForm({{ event.id}});">Delete</a>
         </li>
     {% endif %}
-        <li>
-            <a href="#" onClick="return openMessageToEventModal('event', {{ event.id }});">Send a message</a>
-        </li>
     </ul>
 
    </div> <!-- col-sm-2 -->
