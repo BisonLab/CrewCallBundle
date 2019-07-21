@@ -75,7 +75,11 @@
 </select>
             </td>
             <td class="jwHours">
+{% if job.joblogs.1 is defined %}
+                {{ job.joblogs.1.workedtime }}
+{% else %}
             <input size="5" class="jobs_list_hours" type="text" name="jobs_hours_{{ job.id }}" value="" />
+{% endif %}
             
             </td>
             <td class="jwSelect">

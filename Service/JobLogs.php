@@ -36,9 +36,9 @@ class JobLogs
          * on month and nothing else.
          * Alas, this is a pretty diverse piece of code.
          */
-        $first_of_week      = new \DateTime('00:00');
+        $first_of_week = new \DateTime('00:00');
         $first_of_week->modify('this week');
-        $l7days      = new \DateTime('00:00');
+        $l7days = new \DateTime('00:00');
         $l7days->modify('-7 days');
         $first_of_month     = new \DateTime();
         $first_of_month->modify('first day of this month');
@@ -53,13 +53,13 @@ class JobLogs
                 $joblogs[] = $jl;
                 $in  = $jl->getIn();
                 $out = $jl->getOut();
+                $minutes = $jl->getWorkedMinutes();
                 $joblog_array[] = [
                     'in' => $in->format("Y-m-d H:i"),
                     'out' => $out->format("Y-m-d H:i"),
                     'job' => (string)$jl->getShift()
                 ];
                 // DateTime interval does NOT work. Stupidly enough.
-                $minutes = ($out->getTimeStamp() - $in->getTimeStamp()) / 60;
                 $summary['total'] += $minutes;
 
                 if ($out < $first_of_year && $out > $first_of_last_year) {

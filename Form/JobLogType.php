@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -33,6 +34,9 @@ class JobLogType extends AbstractType
                 'date_widget' => "single_text",
                 'time_widget' => "single_text",
                 'attr' => array('tabindex' => 1)))
+           ->add('break_minutes', IntegerType::class, array(
+                'label' => "Break",
+                'attr' => array('size'=> 3, 'tabindex' => 2)))
            ->add('job', EntityType::class,
                 array('class' => 'CrewCallBundle:Job'))
            ;

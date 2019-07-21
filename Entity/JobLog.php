@@ -28,7 +28,7 @@ class JobLog
     private $id;
 
     /**
-     * @var string
+     * @var string or DateTime
      *
      * @ORM\Column(name="intime", type="datetime", nullable=false)
      * @Gedmo\Versioned
@@ -36,12 +36,20 @@ class JobLog
     private $in;
 
     /**
-     * @var string
+     * @var string or DateTime
      *
      * @ORM\Column(name="outtime", type="datetime", nullable=true)
      * @Gedmo\Versioned
      */
     private $out;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="break_minutes", type="integer", nullable=true, options={"default" = "0"})
+     * @Gedmo\Versioned
+     */
+    private $break_minutes = 0;
 
     /**
      * @var string $state
@@ -184,7 +192,7 @@ class JobLog
     }
 
     /**
-     * Get in
+     * Get out
      *
      * @return \DateTime
      */
@@ -208,6 +216,30 @@ class JobLog
     public function setOut($out)
     {
         $this->out = $out;
+
+        return $this;
+    }
+
+    /**
+     * Get break minutes
+     *
+     * @return \DateTime
+     */
+    public function getBreakMinutes()
+    {
+        return $this->break_minutes;
+    }
+
+    /**
+     * Set out
+     *
+     * @param \datetime $out
+     *
+     * @return joblog
+     */
+    public function setBreakMinutes($break_minutes)
+    {
+        $this->break_minutes = $break_minutes;
 
         return $this;
     }
@@ -242,5 +274,18 @@ class JobLog
 
         $this->job = $job;
         return $this;
+    }
+
+    public function getWorkedMinutes()
+    {
+        return (($this->getOut()->getTimeStamp() - $this->getIn()->getTimeStamp()) / 60) - $this->getBreakMinutes();
+    }
+
+    public function getWorkedTime()
+    {
+        $minutes = $this->getWorkedMinutes();
+        $h = floor($minutes / 60);
+        $m = $minutes % 60;
+        return $h . ":" . str_pad($m, 2, "0", STR_PAD_LEFT);
     }
 }
