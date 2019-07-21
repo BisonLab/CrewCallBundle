@@ -330,4 +330,21 @@ class Job
         $this->overlap = $overlap;
         return $this;
     }
+
+    public function getWorkedMinutes()
+    {
+        $mins = 0;
+        foreach ($this->getJobLogs() as $jl) {
+            $mins += $jl->getWorkedMinutes();
+        }
+        return $mins;
+    }
+
+    public function getWorkedTime()
+    {
+        $minutes = $this->getWorkedMinutes();
+        $h = floor($minutes / 60);
+        $m = $minutes % 60;
+        return $h . ":" . str_pad($m, 2, "0", STR_PAD_LEFT);
+    }
 }
