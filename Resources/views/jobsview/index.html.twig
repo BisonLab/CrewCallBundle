@@ -23,13 +23,21 @@
 
 <form id="filtersForm" method="GET">
 
-<label>Coming/current event</label>
+<label>Events:</label>
+
+<label>Upcoming/current</label>
 <select name="cur_event">
 <option value="" selected>All</option>
 {{ fmacros.select_list(future_events) }}
 </select>
 
-<label>Search for event</label>
+<label>Last month</label>
+<select name="past_event">
+<option value="" selected>None</option>
+{{ fmacros.select_list(past_month_events) }}
+</select>
+
+<label>Search</label>
 <input id="filter_event" name="event" />
 <input type="hidden" id="filter_event_id" name="past_event" />
 <br>

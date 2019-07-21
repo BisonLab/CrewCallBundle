@@ -55,6 +55,8 @@ class JobsViewController extends CommonController
         // Future must include current.
         $future_events = $eventrepo->findEvents(['future' => true,
             'parents_only' => true]);
+        $past_month_events = $eventrepo->findEvents(['past' => true,
+            'from' => new \DateTime('first day of last month')]);
         $functions = $functionrepo->findByFunctionType('SKILL');
         $event_states = Event::getStatesList();
         $shift_states = Shift::getStatesList();
@@ -62,6 +64,7 @@ class JobsViewController extends CommonController
 
         return $this->render('jobsview/index.html.twig', array(
             'future_events' => $future_events,
+            'past_month_events' => $past_month_events,
             'functions' => $functions,
             'event_states' => $event_states,
             'shift_states' => $shift_states,
