@@ -75,12 +75,9 @@
 </select>
             </td>
             <td class="jwHours">
-{% if job.joblogs.1 is defined %}
-                {{ job.joblogs.1.workedtime }}
-{% else %}
-            <input size="5" class="jobs_list_hours" type="text" name="jobs_hours_{{ job.id }}" value="" />
-{% endif %}
-            
+<div id="jw_joblogs_{{ job.id }}">
+{% include 'CrewCallBundle:jobsview:_joblogs.html.twig' with { 'job': job } %}
+</div>
             </td>
             <td class="jwSelect">
             <input class="jobs_list_checkbox" type="checkbox" name="jobs_list" value="{{ job.id }}" onClick="return countJobsList();">
@@ -96,9 +93,8 @@
                 {{ so.organization.officephonenumber }}
             </td>
             <td class="jwTime">
-                {{ so.shift.start | date("Y-m-d H:i") }}
-            </td>
                 {{ so.shift.start | date("H:i") }} -> {{ so.shift.end | date("H:i") }}
+            </td>
             <td>
             <a href="#" id="popSummary_event_{{ so.shift.event.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('event', {{ so.shift.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
                 {{ so.shift.event.name }}

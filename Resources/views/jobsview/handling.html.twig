@@ -1,8 +1,12 @@
 <script>
 
 $(document).ready(function() {
+{# 
+  To be handled by some sort of DataTables configuration later. Consider this ia reminder.
     $( '#jwcheck_Hours' ).attr('checked', false)
     $( '#jwcheck_Time' ).attr('checked', false)
+    $( ".jwHours" ).hide();
+#}
 
     $( "#filter_username" ).autocomplete({
       source: "{{ path('person_search', {'access': 'ajax'}) }}",
@@ -73,7 +77,6 @@ function grabJobsViewList() {
                 'colvis'
             ]
         });
-        $( ".jwHours" ).hide();
     });
     return false;
 }
@@ -201,6 +204,145 @@ function printTableContent()
     $("#jobsViewTable_filter").show();
     $(".jwSelect").show();
     $("header").show();
+}
+
+function jwGrabNewJobLogForm(job_id) {
+    url = "{{ path('joblog_new', { 'access': 'ajax' }) }}?job=" + job_id;
+   
+    $.get(url, function( content ) {
+        popat = "#addJobLog_"+job_id;
+        $( popat ).popover({
+            html: true,
+            placement: 'left',
+            title: 'Add Work  <a href="#" class="close" data-dismiss="alert"><span style="font-size: 15px" class="glyphicon glyphicon-remove-circle"></span></a>',
+            content: content
+        });
+        $( popat ).popover("show");
+        $( "#crewcallbundle_joblog_job").hide();
+        $( "#crewcallbundle_joblog_job").prev().hide();
+        $( "#crewcallbundle_joblog_shift").hide();
+        $( "#crewcallbundle_joblog_shift").prev().hide();
+        $( "#newJobLogForm" ).submit(function( event ) {
+            event.preventDefault();
+            jwSubmitNewJobLogForm(job_id);
+        });
+        $(document).on("click", ".popover .close" , function(){
+            $(this).parents(".popover").popover('hide');
+        });
+    });
+    return false;
+}
+
+function jwGrabEditJobLogForm(joblog_id, job_id) {
+    url = "{{ path('joblog_edit', { 'access': 'ajax', 'id': 'XXX' }) }}";
+    url = url.replace('XXX', joblog_id);
+    $.get(url, function( content ) {
+        $( "#editJobLog_"+joblog_id ).popover({
+            html: true,
+            placement: 'left',
+            title: 'Edit <a href="#" class="close" data-dismiss="alert">&times;</a>',
+            content: content
+        });
+        $( "#editJobLog_"+joblog_id ).popover("show");
+        $( "#crewcallbundle_joblog_job").hide();
+        $( "#crewcallbundle_joblog_job").prev().hide();
+        $( "#editJobLogForm" ).submit(function( event ) {
+            event.preventDefault();
+            jwSubmitEditJobLogForm(joblog_id, job_id);
+        });
+        $(document).on("click", ".popover .close" , function(){
+            $(this).parents(".popover").popover('hide');
+        });
+    });
+    return false;
+}
+
+function jwSubmitNewJobLogForm(job_id) {
+    newJobLogFormData = $( "#newJobLogForm" ).serialize();
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('joblog_new', { 'access': 'ajax' }) }}",
+        data: newJobLogFormData,
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 201) {
+                jwGrabJobLogs(job_id)
+            } else {
+                alert(xhr.responseText);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Failed adding job\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    $( "#editJobLog_"+joblog_id ).popover("show");
+    return false;
+}
+
+function jwSubmitEditJobLogForm(joblog_id, job_id) {
+    editJobLogFormData = $( "#editJobLogForm" ).serialize();
+    url = "{{ path('joblog_edit', { 'access': 'ajax', 'id': 'XXX' }) }}";
+    url = url.replace('XXX', joblog_id);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: url,
+        data: editJobLogFormData,
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 200) {
+                jwGrabJobLogs(job_id)
+            } else {
+                alert(xhr.responseText);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Failed saving\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function deleteJobLog(joblog_id, job_id) {
+    url = "{{ path('joblog_delete', { 'access': 'ajax', 'id': 'XXX' }) }}";
+    url = url.replace('XXX', joblog_id);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "DELETE",
+        url: url,
+        data: '',
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 200) {
+                jwGrabJobLogs(joblog_id, job_id)
+            } else {
+                alert(xhr.responseText);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Delete failed\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function jwGrabJobLogs(job_id) {
+    url = "{{ path('jobsview_job_joblog', { 'access': 'ajax', 'id': 'XXX' }) }}";
+    url = url.replace('XXX', job_id);
+    $.get(url, function( data ) {
+        $( "#jw_joblogs_" + job_id ).html(data);
+    });
+    return false;
 }
 
 </script>

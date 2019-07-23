@@ -1,14 +1,5 @@
 <script>
 
-function grabJobLogList(job_id) {
-    url = "{{ path('job_index', {'access': 'ajax' }) }}" 
-        + "?job=" + job_id;
-    $.get(url, function( data ) {
-        $( "#jobLogTable_" + job_id ).html(data);
-    });
-    return false;
-}
-
 function grabNewJobLogForm(job_id, shift_id) {
     url = "{{ path('joblog_new', { 'access': 'ajax' }) }}";
     if (job_id == "shift") {

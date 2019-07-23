@@ -1,18 +1,29 @@
-{% macro list_joblogs(jobloglist) %}
+{% macro list_joblogs(job) %}
     <table class="table  table-sm">
     <th>In</th><th>Out</th><th>Break</th><th>Time</th><th>&nbsp;</th>
-    {% for elem in jobloglist %}
+    {% for elem in job.joblogs %}
     <tr>
     <td>{{ elem.in | date("Y-m-d H:i") }}</td>
     <td>{{ elem.out | date("Y-m-d H:i") }}</td>
     <td>{{ elem.breakminutes }}</td>
     <td>{{ elem.workedtime }}</td>
     <td>
-    <a href="#!" id="editJobLog_{{ elem.id }}" data-html="true" onClick="return grabEditJobLogForm({{ elem.id }}, {{ elem.job.shift.id }});">Edit</a><br>
-    <a href="#!" id="deleteJobLog_{{ elem.id }}" data-html="true" onClick="return deleteJobLog({{ elem.id }}, {{ elem.job.shift.id }});">Delete</a><br>
+    <a href="#!" id="editJobLog_{{ elem.id }}" data-html="true" onClick="return grabEditJobLogForm({{ elem.id }}, {{ elem.job.shift.id }});"><span class="edit_glyph"></span></a>
+    <a href="#!" id="deleteJobLog_{{ elem.id }}" data-html="true" onClick="return deleteJobLog({{ elem.id }}, {{ elem.job.shift.id }});"><span class="remove_glyph"></span></a>
     </td>
     </tr>
     {% endfor %}
+    <tr>
+    <td colspan="3">
+        &nbsp;
+    </td>
+    <td>
+        {{ job.workedtime }}   
+    </td>
+    <td>
+       <a role="button" class="btn-sm btn-primary" href="#" id="addJobLog_{{ job.id }}" data-html="true" onClick="return grabNewJobLogForm({{ job.id }}, {{ job.shift.id }});">Add Hours</a>
+    </td>
+    </tr>
     </table>
 {% endmacro %}
 {% import _self as jlmacros %}
@@ -72,19 +83,6 @@
                 <br><a role="button" class="btn-sm btn-primary" href="#" onClick="return setStateOnJob({{shift.id}}, 'COMPLETED', {{ job.shift.id }});">Complete</a>
 #}
             </td>
-                <td id="jobLogTable_{{ job.id }}">
-                {% if job.joblogs | length > 0  %}
-                     {{ jlmacros.list_joblogs(job.joblogs) }}
-                {% else %}
-                    &nbsp;
-                {% endif %}
-                {% if job.booked  %}
-                    <a role="button" class="btn-sm btn-primary" href="#" id="addJobLog_{{ job.id }}" data-html="true" onClick="return grabNewJobLogForm({{ job.id }}, {{ job.shift.id }});">Add Hours</a>
-                {% endif %}
-                </td>
-            {% else %}
-            </td>
-            {% endif %}
 {% set ijobcontext = {
             'message_types': ['InformCheck'],
             'order': 'DESC',
@@ -119,6 +117,18 @@
     {% else %}
         &nbsp;
     {% endif %}
+            </td>
+            <td id="jobLogTable_{{ job.id }}" align="right">
+                {% if job.joblogs | length > 0  %}
+                     {{ jlmacros.list_joblogs(job) }}
+                {% else %}
+                    {% if job.booked  %}
+                        <a role="button" class="btn-sm btn-primary" href="#" id="addJobLog_{{ job.id }}" data-html="true" onClick="return grabNewJobLogForm({{ job.id }}, {{ job.shift.id }});">Add Hours</a>
+                    {% else %}
+                        &nbsp;
+                    {% endif %}
+                {% endif %}
+            {% endif %}
             </td>
             <td align="right">
             {% if job.state == "CONFIRMED" %}

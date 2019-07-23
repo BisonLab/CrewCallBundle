@@ -221,4 +221,14 @@ class JobsViewController extends CommonController
             return $this->redirectToRoute('shift_show', array('id' => $job->getShift()->getId()));
         }
     }
+
+    /**
+     * Then we need to serve jobs.
+     *
+     * @Route("/jobs_joblog/{id}", name="jobsview_job_joblog", methods={"GET"})
+     */
+    public function jobsJobLogsAction(Request $request, Job $job)
+    {
+        return $this->render('jobsview/_joblogs.html.twig', ['job' => $job]);
+    }
 }

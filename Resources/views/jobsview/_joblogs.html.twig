@@ -1,0 +1,16 @@
+{% set somejl = false %}
+{% for jl in job.joblogs %}
+{% if somejl  %}
+<br />
+{% endif %}
+{% set somejl = true %}
+    {{ jl.in | date("H:i") }}
+    -> {{ jl.out | date("H:i") }}
+    ({{ jl.workedtime }})
+    <a href="#!" id="editJobLog_{{ jl.id }}" data-html="true" onClick="return jwGrabEditJobLogForm({{ jl.id }}, {{ job.id }});"><span class="edit_glyph"></span></a>
+    <a href="#!" id="deleteJobLog_{{ jl.id }}" data-html="true" onClick="return deleteJobLog({{ jl.id }}, {{ job.id }});"><span class="remove_glyph"></span></a>
+{% endfor %}
+{% if somejl  %}
+<br />
+{% endif %}
+    <a role="button" class="btn-sm btn-primary" href="#" id="addJobLog_{{ job.id }}" data-html="true" onClick="return jwGrabNewJobLogForm({{ job.id }}, {{ job.shift.id }});"><span class="glyphicon glyphicon-plus"></span></a>
