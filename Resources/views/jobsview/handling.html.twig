@@ -82,7 +82,7 @@ function grabJobsViewList() {
 }
 
 function countJobsList() {
-    list = get_selected_jobs();
+    list = jwGet_selected_jobs();
     $( "#jobs_selected_count").text("Selected: " + list.length);
 }
 
@@ -91,7 +91,7 @@ function select_all_jobs(value) {
     countJobsList();
 }
 
-function get_selected_jobs() {
+function jwGet_selected_jobs() {
     list = [];
     $(".jobs_list_checkbox").each(function(index, box) {
         if ($(box).prop('checked') == true) {
@@ -103,7 +103,7 @@ function get_selected_jobs() {
 
 function setStateOnSelectedJobs() {
     url = "{{ path('jobs_state') }}";
-    slist = get_selected_jobs();
+    slist = jwGet_selected_jobs();
     state = $( "#jobStateSelect option:selected" ).val();
     data = {'jobs': slist, 'state': state};
 
@@ -116,7 +116,7 @@ function setStateOnSelectedJobs() {
         type: "POST",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            grabJobList();
+            grabJobsViewList();
       }).fail(function(xhr, status, error) {
             errmsg = "Failed changing state\n";
             errmsg = errmsg + xhr.responseText + "\n";
@@ -127,7 +127,7 @@ function setStateOnSelectedJobs() {
 
 function releaseSelectedJobs() {
     url = "{{ path('jobs_release') }}";
-    slist = get_selected_jobs();
+    slist = jwGet_selected_jobs();
     data = { 'jobs': slist };
 
     $.ajax({
@@ -139,7 +139,7 @@ function releaseSelectedJobs() {
         type: "POST",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            grabJobList();
+            grabJobsViewList();
       }).fail(function(xhr, status, error) {
             errmsg = "Failed changing state\n";
             errmsg = errmsg + xhr.responseText + "\n";
@@ -170,7 +170,7 @@ function moveJobs() {
         type: "POST",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            grabJobList();
+            grabJobsViewList();
       }).fail(function(xhr, status, error) {
             errmsg = "Failed changing state\n";
             errmsg = errmsg + xhr.responseText + "\n";
