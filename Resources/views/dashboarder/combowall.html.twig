@@ -145,7 +145,7 @@ function submitComboForm(action_url, message_id) {
           req.setRequestHeader("Accept", "application/json");
         },
         type: "POST",
-        url: "{{ path('message_create', { 'access': 'ajax' }) }}",
+        url: action_url,
         data: formdata,
         dataType: "text",
         async: true,
