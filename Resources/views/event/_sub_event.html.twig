@@ -225,7 +225,11 @@
         {% endif %}
         </a>
        </li>
-       {% if event.open and event.shifts | length > 0 %}
+        {% if event.end < date() %}
+        <li>
+            <a href="#" onClick="return submitStateForm({{ event.id }}, 'COMPLETED');">Set Completed</a>
+        </li>
+       {% elseif event.open and event.shifts | length > 0 %}
         <li>
             <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</a>
         </li>

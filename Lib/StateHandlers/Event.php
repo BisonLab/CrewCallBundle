@@ -47,5 +47,16 @@ class Event
                 $uow->recomputeSingleEntityChangeSet($meta, $shift);
             }
         }
+
+        if ($to == "COMPLETED") {
+            $uow = $this->em->getUnitOfWork();
+            foreach ($event->getShifts() as $shift) {
+                $shift->setState("CLOSED");
+                $meta = $this->em->getClassMetadata(get_class($shift));
+                $uow->computeChangeSet($meta, $shift);
+                $uow->computeChangeSets();
+                $uow->recomputeSingleEntityChangeSet($meta, $shift);
+            }
+        }
     }
 }
