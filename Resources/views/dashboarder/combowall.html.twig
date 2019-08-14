@@ -125,7 +125,7 @@ function setCheckboxState(message_id, elem) {
 }
 
 $(document).ready(function() {
-    $( "#message_data_message_type" ).val({{ sakonnin_messages.messagetype('Admin Wall').id }});
+    $( "#createcomboform #message_data_message_type" ).val({{ sakonnin_messages.messagetype('Admin Wall').id }});
 } );
 
 function createCombo() {
