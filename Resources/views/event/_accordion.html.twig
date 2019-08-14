@@ -15,7 +15,11 @@
           <div class="panel-heading" role="tab" id="heading{{ event.id }}">
            <h4 class="panel-title">
             <a class="accordion-toggle {% if collapse %}collapsed{% endif %}" role="button" data-toggle="collapse" data-parent="#eventaccordion" href="#eventacc_{{ event.id }}" aria-expanded="{% if collapse %}false{% else %}true{% endif %}" aria-controls="eventacc_{{ event.id }}">
-               {{ event.name }}
+                {% if event.parent %}
+                    {{ event.parent.name }} <span class="glyphicon glyphicon-arrow-right"></span> {{ event.name }}
+                {% else %}
+                    {{ event.name }} (Main Event)
+                {% endif %}
             </a>
            </h4>
             {{ event.start|date('d M H:i') }}
