@@ -31,12 +31,8 @@ class EventType extends AbstractType
             ->add('end', DateTimeType::class, array('label' => "End",
                 'date_widget' => "single_text",
                 'time_widget' => "single_text"))
-/*
- * May not be needed. Most state handling is done with link/buttons.
- * (And main customer does not want this. Later just toggle show/hidewith some CSS and id/labels.)
             ->add('state', ChoiceType::class, array(
                 'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Event')))
- */
             ->add('location', EntityType::class,
                 array('class' => 'CrewCallBundle:Location',
                     'query_builder' => function(EntityRepository $er) {
