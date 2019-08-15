@@ -32,6 +32,7 @@ class EventType extends AbstractType
                 'date_widget' => "single_text",
                 'time_widget' => "single_text"))
             ->add('state', ChoiceType::class, array(
+                'label' => 'Status',
                 'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Event')))
             ->add('location', EntityType::class,
                 array('class' => 'CrewCallBundle:Location',

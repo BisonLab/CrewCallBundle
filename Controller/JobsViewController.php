@@ -209,7 +209,7 @@ class JobsViewController extends CommonController
         
         $em = $this->getDoctrine()->getManager();
         if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, array('booked' => true))) {
-            return new Response("Can not set job to a booked state because it will overlap with " . (string)current($overlap)->getShift(), Response::HTTP_CONFLICT);
+            return new Response("Can not set job to a booked status because it will overlap with " . (string)current($overlap)->getShift(), Response::HTTP_CONFLICT);
         }
 
         $em->persist($job);

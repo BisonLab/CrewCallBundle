@@ -39,7 +39,7 @@
             &nbsp;
             </th>
             <th>Name</th>
-            <th>State</th>
+            <th>Status</th>
 {% set shift_checks = cc_jobs.checksForShift(shift) %}
 {% for check in shift_checks if check.messagetype == "InformCheck" %}
     <th class="no-sort">{{ check.body }}</th>

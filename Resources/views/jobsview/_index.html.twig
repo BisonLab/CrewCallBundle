@@ -6,7 +6,7 @@
             <th class="jwTime">Time</th>
             <th class="jwEvent">Event</th>
             <th class="jwFunction">Function</th>
-            <th class="jwState">State</th>
+            <th class="jwStatus">Status</th>
             <th class="jwComments">Comments</th>
             <th class="jwMove">Move</th>
             <th class="jwHours">Hours</th>
@@ -47,7 +47,7 @@
             <td class="jwFunction">
                 {{ job.function.name }}
             </td>
-            <td class="jwState">
+            <td class="jwStatus">
                 {{ job.statelabel }} {# {% if job.statechanged %}{{ job.statechanged | date('Y-m-d H:i') }}{% endif %} #}
             </td>
             <td class="jwComments">
@@ -102,7 +102,7 @@
             <td class="jwFunction">
                 {{ so.shift.function.name }}
             </td>
-            <td class="jwState">
+            <td class="jwStatus">
                 {{ so.statelabel }}<br>{{ so.amount }} people.
             </td>
             <td class="jwComments">
@@ -127,7 +127,7 @@
             <td class="jwTime">&nbsp;</td>
             <td class="jwEvent">&nbsp;</td>
             <td class="jwFunction">{% for function, count in count_by_function %}{{ function }}: {{ count }}<br>{% endfor %}</td>
-            <td class="jwState">{% for state, count in count_by_state %}{{ state }}: {{ count }}<br>{% endfor %}</td>
+            <td class="jwStatus">{% for state, count in count_by_state %}{{ state }}: {{ count }}<br>{% endfor %}</td>
             <td class="jwComments">&nbsp;</td>
             <td class="jwMove">&nbsp;</td>
             <td class="jwHours">&nbsp;</td>

@@ -22,7 +22,8 @@ class FunctionEntityType extends AbstractType
             ->add('name')
             ->add('description')
             ->add('state', ChoiceType::class, array(
-              'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Function')))
+                'label' => 'Status',
+                'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Function')))
             ->add('function_type', ChoiceType::class, array(
               'choices' => FunctionEntity::getFunctionTypesAsChoiceArray()))
             // I wonder if having these here is a good idea as long as it's json.

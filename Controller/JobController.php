@@ -104,7 +104,7 @@ class JobController extends CommonController
                 return new JsonResponse(array("status" => "NOT FOUND"), Response::HTTP_NOT_FOUND);
             $job->setState($state);
             if ($job->isBooked() && $overlap = $jobrepo->checkOverlapForPerson($job, array('booked' => true))) {
-            return new Response("Can not set job to a booked state because it will overlap with " . (string)current($overlap)->getShift(), Response::HTTP_CONFLICT);
+            return new Response("Can not set job to a booked status because it will overlap with " . (string)current($overlap)->getShift(), Response::HTTP_CONFLICT);
             }
         }
         $em->flush();

@@ -35,7 +35,8 @@ class ShiftType extends AbstractType
                 'date_widget' => "single_text",
                 'time_widget' => "single_text"))
            ->add('state', ChoiceType::class, array(
-              'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift')))
+                'label' => 'Status',
+                'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Shift')))
            ->add('amount', TextType::class, array('required' => true, 'attr' => array('size' => 3, 'pattern' => '[0-9]{1,3}')))
            ->add('function', EntityType::class,
                array('class' => 'CrewCallBundle:FunctionEntity',

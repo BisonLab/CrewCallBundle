@@ -95,7 +95,7 @@
 
  TODO: Replace this with a configuration option with all the available tabe columns and show/hide/false to decide if the colums shall be available at all, shown by default or hidden.
 <a href="#" onClick="return printTableContent();"><button class="btn btn-sm btn-dark" id="printbutton">Print</button></a>
-{% for val in ['Person', 'Mobile', 'Time', 'Event', 'Function', 'State', 'Comments', 'Hours', 'Move', 'Select'] %}
+{% for val in ['Person', 'Mobile', 'Time', 'Event', 'Function', 'Status', 'Comments', 'Hours', 'Move', 'Select'] %}
 <input id="jwcheck_{{ val }}" type="checkbox" onClick='return checkChecked("{{ val }}");' checked>{{ val }}</input>
 {% endfor %}
 #}

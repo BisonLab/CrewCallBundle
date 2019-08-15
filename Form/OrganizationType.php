@@ -24,6 +24,7 @@ class OrganizationType extends AbstractType
             ->add('office_phone_number')
             ->add('office_email')
             ->add('state', ChoiceType::class, array(
+              'label' => 'Status',
               'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Organization')))
             // ->add('attributes')
             ->add('visit_address', AddressType::class, ['address_elements' => $options['address_elements']])

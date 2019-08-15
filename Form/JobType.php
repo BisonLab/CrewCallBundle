@@ -20,7 +20,9 @@ class JobType extends AbstractType
     {
         $builder
             ->add('person', UsernameFormType::class, array('label' => "Person", 'required' => true))
-            ->add('state', ChoiceType::class, array('choices' => ExternalEntityConfig::getStatesAsChoicesFor('Job')))
+            ->add('state', ChoiceType::class, array(
+                'label' => 'Status',
+                'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Job')))
             ->add('shift')
         ;
     }
