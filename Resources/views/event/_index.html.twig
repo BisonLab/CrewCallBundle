@@ -1,9 +1,9 @@
 {% block body %}
     
     {# hacks, blame laziness #}
-    {% if upcoming %}
+    {% if upcoming is defined and upcoming %}
         <table id="upcomingtable" class="table table-striped table-sm" data-order='[[ 0, "asc" ]]'>
-    {% elseif past %}
+    {% elseif past is defined and past %}
         <table id="pasttable" class="table table-striped table-sm" data-order='[[ 0, "desc" ]]'>
     {% else %}
         <table id="sortable_table" class="table table-striped table-sm" data-order='[[ 0, "asc" ]]'>

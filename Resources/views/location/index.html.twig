@@ -18,6 +18,7 @@
                 <th>Name</th>
                 <th>Address</th>
                 <th>Description</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -27,6 +28,7 @@
                 <td><a href="{{ path('location_show', { 'id': location.id }) }}">{{ location.name }}</a></td>
                 <td>{{ cc_addressing.compose(location, 'line') }}</td>
                 <td>{{ location.description }}</td>
+                <td>{{ location.statelabel }}</td>
                 <td>
                  <a href="{{ path('location_show', { 'id': location.id }) }}">show</a><br>
                  <a href="{{ path('location_edit', { 'id': location.id }) }}">edit</a>
