@@ -26,7 +26,9 @@
 </div> <!-- / row -->
 
 {# No need to do accordion if there is no sub events #}
+{#
 {% if event.children | length == 0 %}
+#}
     <table class="showTable">
         <tbody>
             <tr>
@@ -40,26 +42,30 @@
             <tr>
                 <th>Status</th>
                 <td>
+                    {{ event.statelabel }}
                     {% if event.state == "READY" %}
                         <span class="glyphicon glyphicon-ok"></span>
                     {% elseif event.open and event.shifts | length > 0 %}
                         <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</span></a>
                     {% endif %}
-                    {{ event.statelabel }}
                 </td>
             </tr>
         </tbody>
         </table>
         {% include 'CrewCallBundle:event:_sub_event.html.twig' with { 'event': event}  %}
+{#
 {% else %}
     <div class="panel-group" id="eventaccordion" role="tablist" aria-multiselectable="true">
         {% include 'CrewCallBundle:event:_accordion.html.twig' with { 'event': event}  %}
+#}
 
         {% for child in event.children %}
             {% include 'CrewCallBundle:event:_accordion.html.twig' with { 'event': child}  %}
         {% endfor %}
     </div>
+{#
 {% endif %}
+#}
 
 {% if add_contact_form is not null %}
 <div class="modal fade" id="addContactModal" role="dialog" tabindex='-1'>
