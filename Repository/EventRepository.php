@@ -56,9 +56,11 @@ class EventRepository extends \Doctrine\ORM\EntityRepository
         }
 
         if (isset($options['ongoing'])) {
-            $qb->andWhere('e.end >= :today')
-               ->andWhere('e.start <= :today')
-               ->setParameter('today', new \DateTime(),
+            $qb->andWhere('e.end >= :today_start')
+               ->andWhere('e.start <= :today_end')
+               ->setParameter('today_start', new \DateTime("01:00"),
+                    \Doctrine\DBAL\Types\Type::DATETIME)
+               ->setParameter('today_end', new \DateTime("23:59"),
                     \Doctrine\DBAL\Types\Type::DATETIME);
         }
 
