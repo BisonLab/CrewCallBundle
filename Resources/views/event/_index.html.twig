@@ -1,68 +1,129 @@
+{% macro print_event_tr(event, dateformat, expandable) %}
+    {% if event.parent %}
+        <tr class="event_child event_parent_{{ event.parent.id}} {{ event.state }}_state ">
+    {% else %}
+        <tr class="event_tr_{{ event.id}} {{ event.state }}_state">
+    {% endif %}
+        <td>
+            {% if expandable %}
+            <a href="#" id="expand_subs_{{ event.id }}" onClick="return expandSubs({{ event.id }});"><span id=expand_subs_{{ event.id }}_span" class="glyphicon glyphicon-plus"></span></a>
+            <a href="#" class="collapse_subs" id="collapse_subs_{{ event.id }}" onClick="return collapseSubs({{ event.id }});"><span id=collapse_subs_{{ event.id }}_span" class="glyphicon glyphicon-minus"></span></a>
+            {% else %}
+            &nbsp;
+            {% endif %}
+        </td>
+
+        {% if event.parent %}
+        <td data-order="{{ event.start | date('U')}}" >
+        {% else %}
+        <td>
+        {% endif %}
+            {{ event.start|date(dateformat) }}
+            {% if event.end %}
+                <span class="glyphicon glyphicon-arrow-right"></span> 
+                {%  if event.end | date('Y-m-d') == event.start | date('Y-m-d') %}
+                {{ event.end|date('H:i') }}
+                {% else %}
+                    {{ event.end | date(dateformat) }}
+                {% endif %}
+            {% endif %}
+        </td>
+        <td>
+        <a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.name }}</a>
+        </td>
+        <td>{{ event.location }}</td>
+        <td>{{ event.statelabel }}</td>
+        <td>
+        {% set amounts = event.jobsamountbystate %}
+        <span class="ccAmount ccNeeded">{{ event.totalamountneeded }}</span>
+        <span class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
+        <span class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
+        <span class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
+        </td>
+        <td>
+        <div class="dropdown">
+          <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
+          <span></span>
+          </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+        <li><a href="{{ path('event_show', { 'id': event.id }) }}">show</a></li>
+        <li><a href="{{ path('event_edit', { 'id': event.id }) }}">edit</a></li>
+        </ul>
+        </div>
+        </td>
+    </tr>
+{% endmacro %}
+{% import _self as evmacros %}
+
 {% block body %}
+    {% if past is defined and past %}
+        {% set past = true %}
+    {% else %}
+        {% set past = false %}
+    {% endif %}
+    {% if upcoming is defined and upcoming %}
+        {% set upcoming = true %}
+    {% else %}
+        {% set upcoming = false %}
+    {% endif %}
     
     {# hacks, blame laziness #}
-    {% if upcoming is defined and upcoming %}
-        <table id="upcomingtable" class="table table-striped table-sm" data-order='[[ 0, "asc" ]]'>
-    {% elseif past is defined and past %}
-        <table id="pasttable" class="table table-striped table-sm" data-order='[[ 0, "desc" ]]'>
+    {% if upcoming %}
+        <table id="sortable_table" class="table table-striped table-sm" data-order='[[ 1, "asc" ]]'>
+    {% elseif past %}
+        <table id="sortable_table" class="table table-striped table-sm" data-order='[[ 1, "desc" ]]'>
     {% else %}
-        <table id="sortable_table" class="table table-striped table-sm" data-order='[[ 0, "asc" ]]'>
+        <table id="sortable_table" class="table table-striped table-sm" data-order='[[ 1, "asc" ]]'>
     {% endif %}
-        <thead class="thead-inverse">
-            <tr>
-                <th>When</th>
-                <th>Event</th>
-                <th>Location</th>
-                <th>Status</th>
-                <th>Amounts</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% if past is not null %}
-            {% set dateformat = 'd M Y H:i' %}
+
+    <thead class="thead-inverse">
+        <tr>
+            <th class="no-sort">&nbsp;</th>
+            <th>When</th>
+            <th>Event</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th class="no-sort">Amounts</th>
+            <th class="no-sort">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    {% if past %}
+        {% set dateformat = 'd M Y H:i' %}
+    {% else %}
+        {% set dateformat = 'd M H:i' %}
+    {% endif %}
+
+    {% for event in events if not event.parent %}
+        {% if not past and event.children | length > 0 %}
+            {{ evmacros.print_event_tr(event, dateformat, true) }}
         {% else %}
-            {% set dateformat = 'd M H:i' %}
+            {{ evmacros.print_event_tr(event, dateformat, false) }}
         {% endif %}
-        {% for event in events if event.parent is null %}
-            <tr>
-                <td data-order="{{ event.start | date('U')}}" >
-                    {{ event.start|date(dateformat) }}
-                    {% if event.end %}
-                        <span class="glyphicon glyphicon-arrow-right"></span> 
-                        {%  if event.end | date('Y-m-d') == event.start | date('Y-m-d') %}
-                        {{ event.end|date('H:i') }}
-                        {% else %}
-                            {{ event.end | date(dateformat) }}
-                        {% endif %}
-                    {% endif %}
-                </td>
-                <td>
-                <a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.mainevent }}</a>
-                </td>
-                <td>{{ event.location }}</td>
-                <td>{{ event.statelabel }}</td>
-                <td>
-                {% set amounts = event.jobsamountbystate %}
-                <span class="ccAmount ccNeeded">{{ event.totalamountneeded }}</span>
-                <span class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
-                <span class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
-                <span class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
-                </td>
-                <td>
-                <div class="dropdown">
-                  <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
-                  <span></span>
-                  </button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                <li><a href="{{ path('event_show', { 'id': event.id }) }}">show</a></li>
-                <li><a href="{{ path('event_edit', { 'id': event.id }) }}">edit</a></li>
-                </ul>
-                </div>
-                </td>
-            </tr>
+        {% for child in event.children %}
+            {{ evmacros.print_event_tr(child, dateformat, false) }}
         {% endfor %}
-        </tbody>
-    </table>
+    {% endfor %}
+    </tbody>
+ </table>
+<script>
+
+function expandSubs(event_id) {
+    $(".event_parent_" + event_id).show();
+    $("#expand_subs_" + event_id).hide();
+    $("#collapse_subs_" + event_id).show();
+}
+function collapseSubs(event_id) {
+    $(".event_parent_" + event_id).hide();
+    $("#collapse_subs_" + event_id).hide();
+    $("#expand_subs_" + event_id).show();
+}
+
+$(document).ready(function() {
+    $(".event_child").hide();
+    $(".collapse_subs").hide();
+});
+</script>
 
 {% endblock %}
