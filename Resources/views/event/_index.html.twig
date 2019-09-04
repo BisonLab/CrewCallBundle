@@ -5,7 +5,7 @@
         <tr class="event_tr_{{ event.id}} {{ event.state }}_state">
     {% endif %}
         <td>
-            {% if expandable %}
+            {% if expandable and event.children | length > 0 %}
             <a href="#" id="expand_subs_{{ event.id }}" onClick="return expandSubs({{ event.id }});"><span id=expand_subs_{{ event.id }}_span" class="glyphicon glyphicon-plus"></span></a>
             <a href="#" class="collapse_subs" id="collapse_subs_{{ event.id }}" onClick="return collapseSubs({{ event.id }});"><span id=collapse_subs_{{ event.id }}_span" class="glyphicon glyphicon-minus"></span></a>
             {% else %}
@@ -90,14 +90,14 @@
     {% endif %}
 
     {% for event in events if not event.parent %}
-        {% if not past and event.children | length > 0 %}
-            {{ evmacros.print_event_tr(event, dateformat, true, true) }}
-        {% else %}
+        {% if past %}
             {{ evmacros.print_event_tr(event, dateformat, false, false) }}
+        {% else %}
+            {{ evmacros.print_event_tr(event, dateformat, true, true) }}
+            {% for child in event.children %}
+                {{ evmacros.print_event_tr(child, dateformat, false, true) }}
+            {% endfor %}
         {% endif %}
-        {% for child in event.children %}
-            {{ evmacros.print_event_tr(child, dateformat, false, false) }}
-        {% endfor %}
     {% endfor %}
     </tbody>
  </table>
@@ -113,15 +113,14 @@ function collapseSubs(event_id) {
     $("#collapse_subs_" + event_id).hide();
     $("#expand_subs_" + event_id).show();
 }
-function checkReadyCheckbox(message_id, elem) {
-    if (elem.checked) {
-        setStateOnMessage(message_id, "CHECKED");
-    } else {
-        setStateOnMessage(message_id, "UNCHECKED");
-    }
-}
 
 $(document).ready(function() {
+/*
+    if ($("#readycheckbox").prop('checked') == true) {
+        $(".READY_state").hide();
+    }
+    $("#readycheckbox").hide();
+*/
     $(".event_child").hide();
     $(".collapse_subs").hide();
 });
