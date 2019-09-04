@@ -1,15 +1,41 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    
 {% include 'CrewCallBundle:event:handling.html.twig' %}
     
 <div class="row">
 
- <div class="col-sm-6">
-  <h1>Events</h1>
+ <div class="col-sm-3">
+    {% if past %}
+      <h1>Past Events</h1>
+    {% elseif upcoming %}
+      <h1>Upcoming Events</h1>
+    {% else %}
+      <h1>Ongoing Events</h1>
+    {% endif %}
  </div>
 
- <div class="col-sm-4">
+ <div class="col-sm-1" style="margin-top: 10px;">
+    {% if not ongoing %}
+   <a href="{{ path('event_index', {'ongoing': true }) }}" class="btn btn-light">Ongoing</a>
+    {% endif %}
+ </div>
+ <div class="col-sm-1" style="margin-top: 10px;">
+    {% if not upcoming %}
+   <a href="{{ path('event_index', {'upcoming': true }) }}" class="btn btn-light">Upcoming</a>
+    {% endif %}
+ </div>
+ <div class="col-sm-1" style="margin-top: 10px;">
+    {% if not past %}
+    <a href="{{ path('event_index', {'past': true }) }}" class="btn btn-light">Past</a>
+    {% endif %}
+ </div>
+ <div class="col-sm-3" style="margin-top: 20px;">
+    <input type="checkbox" onChange="checkReadyCheckbox(this)">Hide ready events
+ </div>
+
+ <div class="col-sm-2" style="margin-top: 20px;">
  </div>
 
  <div class="col-sm-1" style="margin-top: 10px;">
@@ -18,33 +44,16 @@
 
 </div>
 
-<ul class="nav nav-tabs">
-    <li class="active">
-    <a href="#ongoingtab" data-toggle="tab">Ongoing</a>
-    </li>
-    <li>
-    <a href="#upcomingtab" data-toggle="tab" onClick="return grabEvents('upcoming');">Upcoming</a>
-    </li>
-    <li>
-    <a href="#pasttab" data-toggle="tab" onClick="return grabEvents('past');">Past</a>
-    </li>
-{# To be decided later
-    <li>
-    <a href="#calendartab" data-toggle="tab" onClick="return grabEventCalendar();">Calendar</a>
-    </li>
-#}
-</ul>
+{% include 'CrewCallBundle:event:_index.html.twig' %}
 
-<div class="tab-content ">
-  <div class="tab-pane active" id="ongoingtab">
-    {% include 'CrewCallBundle:event:_index.html.twig' %}
-  </div>
-  <div class="tab-pane active" id="upcomingtab">
-    <div id="upcomingcontent"></div>
-  </div>
-  <div class="tab-pane active" id="pasttab">
-    <div id="pastcontent"></div>
-  </div>
-</div>
+<script>
+function checkReadyCheckbox(elem) {
+    if (elem.checked) {
+        $(".READY_state").hide();
+    } else {
+        $(".READY_state").show();
+    }
+}
+</script>
 
 {% endblock %}
