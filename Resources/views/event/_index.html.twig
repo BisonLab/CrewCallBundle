@@ -1,4 +1,4 @@
-{% macro print_event_tr(event, dateformat, expandable) %}
+{% macro print_event_tr(event, dateformat, expandable, with_amounts) %}
     {% if event.parent %}
         <tr class="event_child event_parent_{{ event.parent.id}} {{ event.state }}_state ">
     {% else %}
@@ -33,13 +33,15 @@
         </td>
         <td>{{ event.location }}</td>
         <td>{{ event.statelabel }}</td>
-        <td>
-        {% set amounts = event.jobsamountbystate %}
-        <span class="ccAmount ccNeeded">{{ event.totalamountneeded }}</span>
-        <span class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
-        <span class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
-        <span class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
-        </td>
+        {% if with_amounts %}
+            <td>
+            {% set amounts = event.jobsamountbystate %}
+            <span class="ccAmount ccNeeded">{{ event.totalamountneeded }}</span>
+            <span class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
+            <span class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
+            <span class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
+            </td>
+        {% endif %}
         <td>
         <div class="dropdown">
           <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
@@ -73,7 +75,9 @@
             <th>Event</th>
             <th>Location</th>
             <th>Status</th>
+    {% if not past %}
             <th class="no-sort">Amounts</th>
+    {% endif %}
             <th class="no-sort">Actions</th>
         </tr>
     </thead>
@@ -87,12 +91,12 @@
 
     {% for event in events if not event.parent %}
         {% if not past and event.children | length > 0 %}
-            {{ evmacros.print_event_tr(event, dateformat, true) }}
+            {{ evmacros.print_event_tr(event, dateformat, true, true) }}
         {% else %}
-            {{ evmacros.print_event_tr(event, dateformat, false) }}
+            {{ evmacros.print_event_tr(event, dateformat, false, false) }}
         {% endif %}
         {% for child in event.children %}
-            {{ evmacros.print_event_tr(child, dateformat, false) }}
+            {{ evmacros.print_event_tr(child, dateformat, false, false) }}
         {% endfor %}
     {% endfor %}
     </tbody>
