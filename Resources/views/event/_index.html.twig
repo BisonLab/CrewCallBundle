@@ -61,14 +61,14 @@
 
 {# hacks, blame laziness #}
 {% if upcoming %}
-    <table id="sortable_table" class="table table-striped table-sm" data-order='[[ 1, "asc" ]]'>
+    <table id="sortable_table" class="table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
 {% elseif past %}
-    <table id="sortable_table" class="table table-striped table-sm" data-order='[[ 1, "desc" ]]'>
+    <table id="sortable_table" class="table table-hover table-sm" data-order='[[ 1, "desc" ]]'>
 {% else %}
-    <table id="sortable_table" class="table table-striped table-sm" data-order='[[ 1, "asc" ]]'>
+    <table id="sortable_table" class="table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
 {% endif %}
 
-    <thead class="thead-inverse">
+        <thead>
         <tr>
             <th class="no-sort">&nbsp;</th>
             <th>When</th>
