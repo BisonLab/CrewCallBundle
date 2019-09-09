@@ -69,11 +69,12 @@ class Calendar
                     $ed = new \DateTime($end);
 
                 // First, break each frog into days.
+                /*
+                 * For now, they decided only start day to be shown.
+                 * And I kinda agree.
                 while ($sd <= $ed) {
                     $s = $sd->format("Ymd") . $cal['color'];
                 
-                    // $cal['title'] = '<span class="circle-' . $cal['color'] . '">.</span>';
-                    // $cal['color'] = "transparent";
                     $cal['start'] = $sd->format("Y-m-d\T01:00");
                     $cal['end'] = $sd->format("Y-m-d\T10:00");
                     $cal['title'] = ' ';
@@ -87,9 +88,25 @@ class Calendar
 
                     $arr[] = $cal;
                     $summary_arr[$s] = true;
-
                 }
+                */
+                /*
+                 * This one does not add a dot for each day in the shift.
+                 */
+                $s = $sd->format("Ymd") . $cal['color'];
+            
+                $cal['start'] = $sd->format("Y-m-d\T01:00");
+                $cal['end'] = $sd->format("Y-m-d\T10:00");
+                $cal['title'] = ' ';
+                $cal['textColor'] = $cal['color'];
 
+                // Can not continue / drop until sd has been modified.
+                // (Avoiding eternal loops.)
+                if (isset($summary_arr[$s]))
+                    continue;
+
+                $arr[] = $cal;
+                $summary_arr[$s] = true;
             }
         }
         return $arr;
