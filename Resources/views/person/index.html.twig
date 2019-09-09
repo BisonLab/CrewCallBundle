@@ -128,16 +128,27 @@ function get_selected_persons() {
         </tbody>
     </table>
 <div align="right">
-    <button id="select_all_button" class="btn btn-sm btn-dark" onClick="return select_all_persons(true);">Select all</button>
-    <button id="deselect_all_button" class="btn btn-sm btn-dark" style="display: none;"onClick="return select_all_persons(false);">Deselect all</button>
-    <br>
-    <button class="btn btn-sm btn-dark" id="message_popover_link" onClick="return openMessagePopover(false);">Send a message</button>
+    <button class="btn btn-sm btn-dark" id="message_popover_link" onClick="return openMessagePopover();">Send a message</button>
 </div>
 
-<div id="message_popover" class="hidden">
+<div class="modal fade" id="personModal" role="dialog" tabindex='-1'>
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>               
+         <h4 class="modal-title" id="personModalTitle"></h4>
+      </div>    
+      <div class="modal-body" id="personModalBody">
+      </div>
+    </div>
+  </div>
+</div> <!-- / modal -->
+
+<div id="personmessage_modal" class="hidden">
     <form id="person_list_form" method="POST">
     <textarea name="body" cols="40" rows="4"></textarea><br>
-    <input type="radio" value="BULKALL" name="message_type" CHECKED>SMS, Email, PM</input><br>
+    <input type="radio" value="BULKALL" name="message_type" CHECKED>SMS and  Email</input><br>
     <input type="radio" value="BULKSMS" name="message_type">SMS only</input><br>
     <input class="btn btn-sm btn-dark" id="sendmessage" type="submit" name="submit" value="Send">
     </form>
@@ -146,14 +157,12 @@ function get_selected_persons() {
 <script>
 
 function openMessagePopover() {
-    content = $("#message_popover").html();
-    $( "#message_popover_link" ).popover({
-        html: true,
-        placement: 'top',
-        title: 'Send Message <a href="#" class="close" data-dismiss="alert">&times;</a>',
-        content: content
-    });
-    $( "#message_popover_link" ).popover("show");
+
+    content = $("#personmessage_modal").html();
+    $( "#personModalTitle" ).html('Send Message');
+    $( "#personModalBody" ).html(content);
+    $( "#personModal" ).modal();
+
     $("#person_list_form").submit(function( event ) {
         var $btn = $(document.activeElement);
         list = get_selected_persons();
@@ -171,15 +180,20 @@ function openMessagePopover() {
                 {
                     alert(data);
                     select_all_persons(false);
-                    $( "#message_popover_link" ).popover("hide");
+                    $( "#personModal" ).modal("hide");
+                    $( "#personModalTitle" ).html("");
+                    $( "#personModalBody" ).html("");
                 }
             });
         }
         event.preventDefault();
     });
+
     $(document).on("click", ".popover .close" , function(){
         $( "#message_popover_link" ).popover("hide");
     });
+
+    return false;
 }
 </script>
 {% endblock %}
