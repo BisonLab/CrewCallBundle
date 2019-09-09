@@ -90,7 +90,9 @@ class Builder implements ContainerAwareInterface
                     array('route' => 'person_function_type',
                     'routeParameters' => array('all' => true, 'function_type' => $ftname)));
             }
-            $adminmenu->addChild('Applicants', array('route' => 'person_applicants'));
+            if ($this->container->getParameter('allow_registration')) {
+                $adminmenu->addChild('Applicants', array('route' => 'person_applicants'));
+            }
             // Not sure I need it, reapply in custom if you need it.
             // $adminmenu->addChild('Add person', array('route' => 'person_new'));
 
