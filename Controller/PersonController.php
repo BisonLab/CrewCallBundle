@@ -138,7 +138,7 @@ class PersonController extends CommonController
     public function listApplicantsAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $people = $em->getRepository('CrewCallBundle:Person')->findBy(array('state' => null));
+        $people = $em->getRepository('CrewCallBundle:Person')->findByState('APPLICANT');
 
         return $this->render('person/applicants.html.twig', array(
             'applicants' => $people));
