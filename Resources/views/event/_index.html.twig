@@ -36,10 +36,10 @@
         {% if with_amounts %}
             <td>
             {% set amounts = event.jobsamountbystate %}
-            <span class="ccAmount ccNeeded">{{ event.totalamountneeded }}</span>
-            <span class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
-            <span class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
-            <span class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
+            <span title="Total amount needed" class="ccAmount ccNeeded">{{ event.totalamountneeded }}</span>
+            <span title="Amount Confirmed"  class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
+            <span title="Amount Assigned" class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
+            <span title="Amount Interested" class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
             </td>
         {% endif %}
         <td>

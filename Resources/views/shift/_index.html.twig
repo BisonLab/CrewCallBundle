@@ -16,16 +16,16 @@
         </td>
         <td align="right">
         <label class="cc_switch">
-          <input type="checkbox" id="shiftstatecheck_{{ shift.id }}" onChange="setStateOnShiftCheckbox({{ shift.id }}, {{ shift.event.id }}, this)" {% if shift.open %}checked{% endif %}/>
-          <span class="cc_slider round"></span>
+          <input title="Open or close the shift" type="checkbox" id="shiftstatecheck_{{ shift.id }}" onChange="setStateOnShiftCheckbox({{ shift.id }}, {{ shift.event.id }}, this)" {% if shift.open %}checked{% endif %}/>
+          <span class="cc_slider round" title="Open or close the shift"></span>
         </label><br>
         </td>
         <td align="right">
         {% set amounts = shift.jobsamountbystate %}
-        <span class="ccAmount ccNeeded">{{ shift.amount }}</span>
-        <span class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
-        <span class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
-        <span class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
+        <span title="Total amount needed" class="ccAmount ccNeeded">{{ shift.amount }}</span>
+        <span  title="Amount Confirmed" class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
+        <span title="Amount Assigned" class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
+        <span title="Amount Interested" class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
         </td>
         <td align="right">
         {% if shift.registeredamount > 0 %}
