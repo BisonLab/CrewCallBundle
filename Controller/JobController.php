@@ -188,9 +188,9 @@ class JobController extends CommonController
         $shiftrepo = $em->getRepository('CrewCallBundle:Shift');
         foreach ($moves as $job_id => $shift_id) {
             if (!$job = $jobrepo->find($job_id))
-                return new JsonResponse(array("status" => "NOT FOUND"), Response::HTTP_NOT_FOUND);
+                return new JsonResponse(array("status" => "Job not found"), Response::HTTP_NOT_FOUND);
             if (!$shift = $shiftrepo->find($shift_id))
-                return new JsonResponse(array("status" => "NOT FOUND"), Response::HTTP_NOT_FOUND);
+                return new JsonResponse(array("status" => "Shift not found"), Response::HTTP_NOT_FOUND);
             $job->setShift($shift);
             // I will not check overlap, this is hopefully done by purpose.
         }

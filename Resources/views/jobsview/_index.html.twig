@@ -72,7 +72,7 @@
                 {% set current_job_id = job.id %}
                 {% for j in cc_jobs.jobsforperson(job.person, {'from': job.shift.event.start, 'to': job.shift.event.end }) %}
                 {% if j.id != current_job_id %}
-                <option class="cc{{ j.state }}" value="{{ j.id }}">{{ j.shift }} {{ j.start | date("H:i") }} {{ j.end | date("H:i") }}</option>
+                <option class="cc{{ j.state }}" value="{{ j.shift.id }}">{{ j.shift }} {{ j.start | date("H:i") }} {{ j.end | date("H:i") }}</option>
                 {% endif %}
                 {% endfor %}
                 </select>
