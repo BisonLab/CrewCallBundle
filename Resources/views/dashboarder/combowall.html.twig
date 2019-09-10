@@ -44,11 +44,7 @@ Done
 %}
 {% for message in sakonnin_messages.messages(criterias) %}
  {% if is_granted('show', message) %}
-  {% if message.messagetype == "TODO" %}
-   <div id="sakonninmcheck{{ message.id}}">
-  {% else %}
    <div id="sakonninmessage_{{ message.id}}">
-  {% endif %}
      <div class="row ccNotesText">
         <div class="col-md-1">
         <br>
@@ -69,9 +65,8 @@ Done
               <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState({{ message.id }}, this)" {% if message.state == "CHECKED" %}checked{% endif %}/>
               <span class="cc_slider round"></span>
             </label><br>
-        {% else %}
-            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');"><span class="archive_glyph"></span></a>
         {% endif %}
+            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');"><span class="archive_glyph"></span></a>
         </div>
      </div>
    </div>
