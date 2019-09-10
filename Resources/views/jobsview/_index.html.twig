@@ -1,23 +1,26 @@
 <table id="jobsViewTable" style="width:100%" class="table-striped display compact order-column">
     <thead>
         <tr>
-            <th class="jwPerson">Person</th>
-            <th class="jwMobile">Mobile</th>
-            <th class="jwTime">Time</th>
-            <th class="jwEvent">Event</th>
-            <th class="jwFunction">Function</th>
-            <th class="jwStatus">Status</th>
-            <th class="jwComments">Comments</th>
-            <th class="jwMove">Move</th>
-            <th class="jwHours">Hours</th>
-            <th class="jwSelect">Select</th>
+            <th class="jvPerson">Person</th>
+            <th class="jvMobile">Mobile</th>
+            <th class="jvTime">Time</th>
+            <th class="jvEvent">Event</th>
+            <th class="jvFunction">Function</th>
+            <th class="jvStatus">Status</th>
+            <th class="jvComments">Comments</th>
+            <th class="jvMove">Move</th>
+            <th class="jvHours">Hours</th>
+            <th class="jvSelect">
+            <input onClick="check_select_all_box(this);" class="check_select_all_box" type="checkbox" name="select_all">
+                Select
+            </th>
         </tr>
     </thead>
     <tbody>
     {% for job in jobs %}
         <tr id=jobRow_{{ job.id }}>
             {% set reason = job.person.occupied({'reasons': true}) %}
-            <td class="jwPerson{% if reason %} cc_warn{% endif %}">
+            <td class="jvPerson{% if reason %} cc_warn{% endif %}">
             <a href="#" id="popSummary_person_jobs_{{ job.person.id }}{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popPersonJobs({{ job.person.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
             <a href="#" id="popSummary_person_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
     {% set mlogcontext = {
@@ -34,23 +37,23 @@
         <br>{{ reason.statelabel }}
     {% endif %}
             </td>
-            <td class="jwMobile">
+            <td class="jvMobile">
                 {{ job.person.mobilephonenumber }}
             </td>
-            <td class="jwTime">
+            <td class="jvTime">
                 {{ job.start | date("H:i") }} -> {{ job.end | date("H:i") }}
             </td>
-            <td class="jwEvent">
+            <td class="jvEvent">
             <a href="#" id="popSummary_event_{{ job.event.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
                 {{ job.event.name }}
             </td>
-            <td class="jwFunction">
+            <td class="jvFunction">
                 {{ job.function.name }}
             </td>
-            <td class="jwStatus">
+            <td class="jvStatus">
                 {{ job.statelabel }} {# {% if job.statechanged %}{{ job.statechanged | date('Y-m-d H:i') }}{% endif %} #}
             </td>
-            <td class="jwComments">
+            <td class="jvComments">
 {% set jobcontext = {
             'message_types': ['JobComment', 'InformCheck'],
             'order': 'DESC',
@@ -63,58 +66,58 @@
     {{ note.body }}<br>
 {% endfor %}
             </td>
-            <td class="jwMove">
-<select class="move_job_to" name="{{job.id}}">
-<option class="cc{{ job.state }}" value="">{{ job.shift }} {{ job.start | date("H:i") }} -> {{ job.end | date("H:i") }}</option>
-{% set current_job_id = job.id %}
-{% for j in cc_jobs.jobsforperson(job.person, {'from': job.shift.event.start, 'to': job.shift.event.end }) %}
-{% if j.id != current_job_id %}
-<option class="cc{{ j.state }}" value="{{ j.id }}">{{ j.shift }} {{ j.start | date("H:i") }} {{ j.end | date("H:i") }}</option>
-{% endif %}
-{% endfor %}
-</select>
+            <td class="jvMove">
+                <select class="move_job_to" name="{{job.id}}">
+                <option class="cc{{ job.state }}" value="">{{ job.shift }} {{ job.start | date("H:i") }} -> {{ job.end | date("H:i") }}</option>
+                {% set current_job_id = job.id %}
+                {% for j in cc_jobs.jobsforperson(job.person, {'from': job.shift.event.start, 'to': job.shift.event.end }) %}
+                {% if j.id != current_job_id %}
+                <option class="cc{{ j.state }}" value="{{ j.id }}">{{ j.shift }} {{ j.start | date("H:i") }} {{ j.end | date("H:i") }}</option>
+                {% endif %}
+                {% endfor %}
+                </select>
             </td>
-            <td class="jwHours">
-<div id="jw_joblogs_{{ job.id }}">
+            <td class="jvHours">
+<div id="jv_joblogs_{{ job.id }}">
 {% include 'CrewCallBundle:jobsview:_joblogs.html.twig' with { 'job': job } %}
 </div>
             </td>
-            <td class="jwSelect">
+            <td class="jvSelect">
             <input class="jobs_list_checkbox" type="checkbox" name="jobs_list" value="{{ job.id }}" onClick="return countJobsList();">
             </td>
         </tr>
     {% endfor %}
     {% for so in shiftorganizations %}
         <tr id=jobRow_so_{{ so.id }}>
-            <td class="jwPerson">
+            <td class="jvPerson">
             {{ so.organization }}
             </td>
-            <td class="jwMobile">
+            <td class="jvMobile">
                 {{ so.organization.officephonenumber }}
             </td>
-            <td class="jwTime">
+            <td class="jvTime">
                 {{ so.shift.start | date("H:i") }} -> {{ so.shift.end | date("H:i") }}
             </td>
             <td>
             <a href="#" id="popSummary_event_{{ so.shift.event.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('event', {{ so.shift.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
                 {{ so.shift.event.name }}
             </td>
-            <td class="jwFunction">
+            <td class="jvFunction">
                 {{ so.shift.function.name }}
             </td>
-            <td class="jwStatus">
+            <td class="jvStatus">
                 {{ so.statelabel }}<br>{{ so.amount }} people.
             </td>
-            <td class="jwComments">
+            <td class="jvComments">
             &nbsp;
             </td>
-            <td class="jwMove">
+            <td class="jvMove">
             &nbsp;
             </td>
-            <td class="jwHours">
+            <td class="jvHours">
             &nbsp;
             </td>
-            <td class="jwSelect">
+            <td class="jvSelect">
             &nbsp;
             </td>
         </tr>
@@ -122,16 +125,29 @@
     </tbody>
     <tfoot>
         <tr>
-            <td class="jwPerson">&nbsp;</td>
-            <td class="jwMobile">&nbsp;</td>
-            <td class="jwTime">&nbsp;</td>
-            <td class="jwEvent">&nbsp;</td>
-            <td class="jwFunction">{% for function, count in count_by_function %}{{ function }}: {{ count }}<br>{% endfor %}</td>
-            <td class="jwStatus">{% for state, count in count_by_state %}{{ state }}: {{ count }}<br>{% endfor %}</td>
-            <td class="jwComments">&nbsp;</td>
-            <td class="jwMove">&nbsp;</td>
-            <td class="jwHours">&nbsp;</td>
-            <td class="jwSelect"><span id="jobs_selected_count">Selected: 0</span></td>
+            <th class="jvPerson">&nbsp;</th>
+            <th class="jvMobile">&nbsp;</th>
+            <th class="jvTime">&nbsp;</th>
+            <th class="jvEvent">&nbsp;</th>
+            <th class="jvFunction">{% for function, count in count_by_function %}{{ function }}: {{ count }}<br>{% endfor %}</th>
+            <th class="jvStatus">{% for state, count in count_by_state %}{{ state }}: {{ count }}<br>{% endfor %}</th>
+            <th class="jvComments">&nbsp;</th>
+            <th class="jvMove">
+            Move</br>
+            <button class="btn btn-dark btn-sm" id="save_jobs_link" onClick="return saveJobs();">Save hours and moves.</button>
+            </th>
+            <th class="jvHours">&nbsp;</th>
+            <th class="jvSelect">
+                <span id="jobs_selected_count">Selected: 0</span>
+                <select id="jobStateSelect" name="jobStateSelect">
+                <option value="" selected>All</option>
+                {% for j in job_states %}
+                <option value="{{ j }}">{{ j }}</option>
+                {% endfor %}
+                </select>
+                <button class="btn btn-dark btn-sm" id="set_states_link" onClick="return setStateOnSelectedJobs(false);">Set Status</button><br>
+                <button class="btn btn-dark btn-sm" id="message_popover_link" onClick="return openJviewMessagePopover();">Send a message</button>
+            </th>
         </tr>
     </tfoot>
  </table>

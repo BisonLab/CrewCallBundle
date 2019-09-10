@@ -193,6 +193,7 @@ class JobsViewController extends CommonController
             'from'  => $from_date,
             'to'  => $to_date,
             'jobs'  => $jobs,
+            'job_states' => Job::getStatesList(),
             'shiftorganizations'  => $shiftorganizations,
             'count_by_state'  => $count_by_state,
             'count_by_function'  => $count_by_function,

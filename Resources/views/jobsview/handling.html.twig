@@ -1,11 +1,34 @@
+
+<div class="modal fade" id="jvModal" role="dialog" tabindex='-1'>
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title" id="jvModalTitle"></h4>
+      </div>
+      <div class="modal-body" id="jvModalBody">
+      </div>
+    </div>
+  </div>
+</div> <!-- / modal -->
+
+<div id="jvmessage_modal" class="hidden">
+    <form id="jv_list_form" method="POST">
+    <textarea name="body" cols="40" rows="4"></textarea><br>
+    <input type="radio" value="BULKSMS" name="message_type" CHECKED>SMS only</input><br>
+    <input type="radio" value="BULKALL" name="message_type">SMS and  Email</input><br>
+    <input class="btn btn-sm btn-dark" id="sendmessage" type="submit" name="submit" value="Send">
+    </form>
+</div>
 <script>
 
 $(document).ready(function() {
 {# 
   To be handled by some sort of DataTables configuration later. Consider this ia reminder.
-    $( '#jwcheck_Hours' ).attr('checked', false)
-    $( '#jwcheck_Time' ).attr('checked', false)
-    $( ".jwHours" ).hide();
+    $( '#jvcheck_Hours' ).attr('checked', false)
+    $( '#jvcheck_Time' ).attr('checked', false)
+    $( ".jvHours" ).hide();
 #}
 
     $( "#filter_username" ).autocomplete({
@@ -82,16 +105,11 @@ function grabJobsViewList() {
 }
 
 function countJobsList() {
-    list = jwGet_selected_jobs();
+    list = jvGet_selected_jobs();
     $( "#jobs_selected_count").text("Selected: " + list.length);
 }
 
-function select_all_jobs(value) {
-    $(".jobs_list_checkbox").prop('checked', value);
-    countJobsList();
-}
-
-function jwGet_selected_jobs() {
+function jvGet_selected_jobs() {
     list = [];
     $(".jobs_list_checkbox").each(function(index, box) {
         if ($(box).prop('checked') == true) {
@@ -101,9 +119,16 @@ function jwGet_selected_jobs() {
     return list;
 }
 
+function deselect_all_boxes() {
+    $(".jobs_list_checkbox").prop('checked', false);
+    $(".check_select_all_box").prop('checked', false);
+    countJobsList();
+    return false;
+}
+
 function setStateOnSelectedJobs() {
     url = "{{ path('jobs_state') }}";
-    slist = jwGet_selected_jobs();
+    slist = jvGet_selected_jobs();
     state = $( "#jobStateSelect option:selected" ).val();
     data = {'jobs': slist, 'state': state};
 
@@ -127,7 +152,7 @@ function setStateOnSelectedJobs() {
 
 function releaseSelectedJobs() {
     url = "{{ path('jobs_release') }}";
-    slist = jwGet_selected_jobs();
+    slist = jvGet_selected_jobs();
     data = { 'jobs': slist };
 
     $.ajax({
@@ -181,10 +206,10 @@ function moveJobs() {
 
 function checkChecked(classname)
 {
-    if ($( "#jwcheck_" + classname ).is(":checked")) {
-        $( ".jw" + classname ).show();
+    if ($( "#jvcheck_" + classname ).is(":checked")) {
+        $( ".jv" + classname ).show();
     } else {
-        $( ".jw" + classname ).hide();
+        $( ".jv" + classname ).hide();
     }
 }
 
@@ -193,20 +218,20 @@ function printTableContent()
     $("header").hide();
     // This may be a bit specific for my designs,
     document.body.style.paddingTop = "0px";
-    $("#jwfilters").hide();
+    $("#jvfilters").hide();
     $("#jobsViewTable_info").hide();
     $("#jobsViewTable_filter").hide();
-    $(".jwSelect").hide();
+    $(".jvSelect").hide();
     window.print();
     document.body.style.paddingTop = "";
-    $("#jwfilters").show();
+    $("#jvfilters").show();
     $("#jobsViewTable_info").show();
     $("#jobsViewTable_filter").show();
-    $(".jwSelect").show();
+    $(".jvSelect").show();
     $("header").show();
 }
 
-function jwGrabNewJobLogForm(job_id) {
+function jvGrabNewJobLogForm(job_id) {
     url = "{{ path('joblog_new', { 'access': 'ajax' }) }}?job=" + job_id;
    
     $.get(url, function( content ) {
@@ -224,7 +249,7 @@ function jwGrabNewJobLogForm(job_id) {
         $( "#crewcallbundle_joblog_shift").prev().hide();
         $( "#newJobLogForm" ).submit(function( event ) {
             event.preventDefault();
-            jwSubmitNewJobLogForm(job_id);
+            jvSubmitNewJobLogForm(job_id);
         });
         $(document).on("click", ".popover .close" , function(){
             $(this).parents(".popover").popover('hide');
@@ -233,7 +258,7 @@ function jwGrabNewJobLogForm(job_id) {
     return false;
 }
 
-function jwGrabEditJobLogForm(joblog_id, job_id) {
+function jvGrabEditJobLogForm(joblog_id, job_id) {
     url = "{{ path('joblog_edit', { 'access': 'ajax', 'id': 'XXX' }) }}";
     url = url.replace('XXX', joblog_id);
     $.get(url, function( content ) {
@@ -248,7 +273,7 @@ function jwGrabEditJobLogForm(joblog_id, job_id) {
         $( "#crewcallbundle_joblog_job").prev().hide();
         $( "#editJobLogForm" ).submit(function( event ) {
             event.preventDefault();
-            jwSubmitEditJobLogForm(joblog_id, job_id);
+            jvSubmitEditJobLogForm(joblog_id, job_id);
         });
         $(document).on("click", ".popover .close" , function(){
             $(this).parents(".popover").popover('hide');
@@ -257,7 +282,7 @@ function jwGrabEditJobLogForm(joblog_id, job_id) {
     return false;
 }
 
-function jwSubmitNewJobLogForm(job_id) {
+function jvSubmitNewJobLogForm(job_id) {
     newJobLogFormData = $( "#newJobLogForm" ).serialize();
     $.ajax({
         beforeSend: function(req) {
@@ -270,7 +295,7 @@ function jwSubmitNewJobLogForm(job_id) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             if (xhr.status == 201) {
-                jwGrabJobLogs(job_id)
+                jvGrabJobLogs(job_id)
             } else {
                 alert(xhr.responseText);
             }
@@ -283,7 +308,7 @@ function jwSubmitNewJobLogForm(job_id) {
     return false;
 }
 
-function jwSubmitEditJobLogForm(joblog_id, job_id) {
+function jvSubmitEditJobLogForm(joblog_id, job_id) {
     editJobLogFormData = $( "#editJobLogForm" ).serialize();
     url = "{{ path('joblog_edit', { 'access': 'ajax', 'id': 'XXX' }) }}";
     url = url.replace('XXX', joblog_id);
@@ -298,7 +323,7 @@ function jwSubmitEditJobLogForm(joblog_id, job_id) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             if (xhr.status == 200) {
-                jwGrabJobLogs(job_id)
+                jvGrabJobLogs(job_id)
             } else {
                 alert(xhr.responseText);
             }
@@ -324,7 +349,7 @@ function deleteJobLog(joblog_id, job_id) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             if (xhr.status == 200) {
-                jwGrabJobLogs(joblog_id, job_id)
+                jvGrabJobLogs(joblog_id, job_id)
             } else {
                 alert(xhr.responseText);
             }
@@ -336,12 +361,52 @@ function deleteJobLog(joblog_id, job_id) {
     return false;
 }
 
-function jwGrabJobLogs(job_id) {
+function jvGrabJobLogs(job_id) {
     url = "{{ path('jobsview_job_joblog', { 'access': 'ajax', 'id': 'XXX' }) }}";
     url = url.replace('XXX', job_id);
     $.get(url, function( data ) {
-        $( "#jw_joblogs_" + job_id ).html(data);
+        $( "#jv_joblogs_" + job_id ).html(data);
     });
+    return false;
+}
+
+function openJviewMessagePopover() {
+
+    content = $("#jvmessage_modal").html();
+    $( "#jvModalTitle" ).html('Send Message');
+    $( "#jvModalBody" ).html(content);
+    $( "#jvModal" ).modal();
+
+    $("#jv_list_form").submit(function( event ) {
+        var btn = $(document.activeElement);
+        list = jvGet_selected_jobs();
+        $(".jv_list_form_plist").remove();
+        list.map(function(value) {
+            $("#jv_list_form").append('<input class="jv_list_form_plist" type="hidden" name="jobs_list[]" value="'+value+'">');
+        });
+        if (btn.is('[id]') && btn.attr("id") == "sendmessage") {
+            postdata = $("#jv_list_form").serialize();
+            $.ajax({
+                type: "POST",
+                url: "{{ path('jobs_send_message') }}",
+                data: postdata,
+                success: function(data)
+                {
+                    alert(data);
+                    deselect_all_boxes();
+                    $( "#jvModal" ).modal("hide");
+                    $( "#jvModalTitle" ).html("");
+                    $( "#jvModalBody" ).html("");
+                }
+            });
+        }
+        event.preventDefault();
+    });
+
+    $(document).on("click", ".popover .close" , function(){
+        $( "#message_popover_link" ).popover("hide");
+    });
+
     return false;
 }
 

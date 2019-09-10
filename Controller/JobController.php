@@ -208,4 +208,36 @@ class JobController extends CommonController
     {
         return  $this->showLogPage($request,$access, "CrewCallBundle:Job", $id);
     }
+
+    /**
+     * Sends messages to a batch of jobs.
+     *
+     * @Route("/jobs_send_message", name="jobs_send_message", methods={"POST"})
+     */
+    public function jobsSendMessageAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $jrepo = $em->getRepository('CrewCallBundle:Job');
+        $sm = $this->get('sakonnin.messages');
+        $body = $request->request->get('body');
+        $job_ids = $request->request->get('jobs_list') ?? [];
+        $person_ids = new \Doctrine\Common\Collections\ArrayCollection();
+        foreach ($job_ids as $jid) {
+            $job = $jrepo->find($jid);
+            if ($person_ids->contains($job->getPerson()->getId()))
+                continue;
+            $person_ids->add($job->getPerson()->getId());
+        }
+        $message_type = $request->request->get('message_type');
+        if ($person_ids->count() == 0)
+            return new Response("No one to send to.", Response::HTTP_OK);
+        $sm->postMessage(array(
+            'body' => $body,
+            'to' => implode(",", $person_ids->toArray()),
+            'message_type' => $message_type,
+            'to_type' => "INTERNAL",
+            'from_type' => "INTERNAL",
+        ));
+        return new Response("Sent: " . $body, Response::HTTP_OK);
+    }
 }

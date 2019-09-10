@@ -18,7 +18,7 @@
 {% include 'CrewCallBundle:jobsview:handling.html.twig' %}
 {% include 'CrewCallBundle:job:handling.html.twig' %}
 
-<div id="jwfilters">
+<div id="jvfilters">
 <h3>Filters</h3>
 
 <form id="filtersForm" method="GET">
@@ -96,33 +96,11 @@
  TODO: Replace this with a configuration option with all the available tabe columns and show/hide/false to decide if the colums shall be available at all, shown by default or hidden.
 <a href="#" onClick="return printTableContent();"><button class="btn btn-sm btn-dark" id="printbutton">Print</button></a>
 {% for val in ['Person', 'Mobile', 'Time', 'Event', 'Function', 'Status', 'Comments', 'Hours', 'Move', 'Select'] %}
-<input id="jwcheck_{{ val }}" type="checkbox" onClick='return checkChecked("{{ val }}");' checked>{{ val }}</input>
+<input id="jvcheck_{{ val }}" type="checkbox" onClick='return checkChecked("{{ val }}");' checked>{{ val }}</input>
 {% endfor %}
 #}
 
 </div>
 <div id="jobsView">
 </div>
-<div class="buttons" align="right">
-  <div class="jwSelect" id="jobSelect">
-    <button class="btn btn-dark btn-sm" onClick="return select_all_jobs(true);">Select all</button>
-    <button class="btn btn-dark btn-sm" onClick="return select_all_jobs(false);">Deselect all</button>
-    </br>
-    <select id="jobStateSelect" name="jobStateSelect">
-    <option value="" selected>All</option>
-    {% for j in job_states %}
-    <option value="{{ j }}">{{ j }}</option>
-    {% endfor %}
-    </select>
-    <button class="btn btn-dark btn-sm" id="set_states_link" onClick="return setStateOnSelectedJobs(false);">Set state</button><br>
-    <button class="btn btn-dark btn-sm" id="release_link" onClick="return releaseSelectedJobs();">Release (Delete!)</button>
-    <!--
-    <button class="btn btn-dark btn-sm" id="message_popover_link" onClick="return openMessagePopover(false);">Send a message</button>
-    -->
-  </div>
-  <div class="jwMove">
-    <button class="btn btn-dark btn-sm" id="set_move_to_link" onClick="return moveJobs();">Move Jobs</button>
-  </div>
-</div>
-
 {% endblock %}
