@@ -83,7 +83,8 @@ class ShiftController extends CommonController
                 // /rest/ call, but not /ajax/. If AJAX, return a prettier
                 // text.
                 if ($this->isRest($access)) {
-                    return $this->returnErrorResponse("Validation Error", 400, $this->handleFormErrors($form));
+                    return $this->returnErrorResponse("Validation Error",
+                        400, $this->handleFormErrors($form));
                 }
             }
         }
@@ -93,17 +94,21 @@ class ShiftController extends CommonController
             if ($event = $em->getRepository('CrewCallBundle:Event')->find($event_id)) {
                 $shift->setEvent($event);
                 // Better have something to start with.
-                $shift->setStart($event->getStart());
+                $shift->setStart(clone($event->getStart()));
                 // But ending at the end of the event is just too much. Let's
                 // add 8 hours instead.
-                $shift->setEnd($event->getStart()->modify('+8 hours'));
+                $plus_8 = clone($event->getStart())->modify('+8 hours');
+                if ($plus_8 < $event->getEnd())
+                    $shift->setEnd($plus_8);
+                else
+                    $shift->setEnd($event->getEnd());
                 $form->setData($shift);
             }
         }
         if ($from_shift = $request->get('from_shift')) {
             if ($fshift = $em->getRepository('CrewCallBundle:Shift')->find($from_shift)) {
                 $shift->setEvent($fshift->getEvent());
-                // Better have something to start with.
+                // We have something to start with
                 $shift->setStart($fshift->getStart());
                 $shift->setEnd($fshift->getEnd());
                 $form->setData($shift);
