@@ -407,6 +407,7 @@ class EventController extends CommonController
     {
         $sm = $this->get('sakonnin.messages');
         $body = $request->request->get('body');
+        $subject = $request->request->get('subject') ?? "Message from CrewCall";
 
         $filter = [];
         if ($state = $request->request->get('state'))
@@ -424,8 +425,10 @@ class EventController extends CommonController
             }, $persons->toArray());
         $message_type = $request->request->get('message_type');
         $sm->postMessage(array(
+            'subject' => $subject,
             'body' => $body,
             'to' => implode(",", $person_ids),
+            'from' => $this->getParameter('system_emails_address'),
             'message_type' => $message_type,
             'to_type' => "INTERNAL",
             'from_type' => "INTERNAL",

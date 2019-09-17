@@ -220,6 +220,7 @@ class JobController extends CommonController
         $jrepo = $em->getRepository('CrewCallBundle:Job');
         $sm = $this->get('sakonnin.messages');
         $body = $request->request->get('body');
+        $subject = $request->request->get('subject') ?? "Message from CrewCall";
         $job_ids = $request->request->get('jobs_list') ?? [];
         $person_ids = new \Doctrine\Common\Collections\ArrayCollection();
         foreach ($job_ids as $jid) {
@@ -232,8 +233,10 @@ class JobController extends CommonController
         if ($person_ids->count() == 0)
             return new Response("No one to send to.", Response::HTTP_OK);
         $sm->postMessage(array(
+            'subject' => $subject,
             'body' => $body,
             'to' => implode(",", $person_ids->toArray()),
+            'from' => $this->getParameter('system_emails_address'),
             'message_type' => $message_type,
             'to_type' => "INTERNAL",
             'from_type' => "INTERNAL",

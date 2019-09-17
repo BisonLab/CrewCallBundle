@@ -299,11 +299,14 @@ class PersonController extends CommonController
     {
         $sm = $this->get('sakonnin.messages');
         $body = $request->request->get('body');
+        $subject = $request->request->get('subject') ?? "Message from CrewCall";
         $persons = $request->request->get('person_list');
         $message_type = $request->request->get('message_type');
         $sm->postMessage(array(
+            'subject' => $subject,
             'body' => $body,
             'to' => implode(",", $persons),
+            'from' => $this->getParameter('system_emails_address'),
             'message_type' => $message_type,
             'to_type' => "INTERNAL",
             'from_type' => "INTERNAL",
