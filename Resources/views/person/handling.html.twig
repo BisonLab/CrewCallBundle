@@ -13,7 +13,7 @@
 </div> <!-- / modal -->
 
 <div id="personmessage_modal" class="hidden">
-    <form id="person_list_form" method="POST">
+    <form id="person_message_form" method="POST">
     <textarea name="body" cols="40" rows="4"></textarea><br>
     <input type="radio" value="BULKSMS" name="message_type" CHECKED>SMS only</input><br>
     <input type="radio" value="BULKALL" name="message_type">SMS and Email</input><br>
@@ -23,22 +23,26 @@
 
 <script>
 
-function openMessagePopover() {
+function openMessagePopover(person_id = null) {
 
     content = $("#personmessage_modal").html();
     $( "#personModalTitle" ).html('Send Message');
     $( "#personModalBody" ).html(content);
     $( "#personModal" ).modal();
 
-    $("#person_list_form").submit(function( event ) {
+    $("#person_message_form").submit(function( event ) {
         var $btn = $(document.activeElement);
         list = get_selected_persons();
-        $(".person_list_form_plist").remove();
-        list.map(function(value) {
-            $("#person_list_form").append('<input class="person_list_form_plist" type="hidden" name="person_list[]" value="'+value+'">');
-        });
+        $(".person_message_form").remove();
+        if (person_id) {
+            $("#person_message_form").append('<input class="person_list_form_plist" type="hidden" name="person_list[]" value="'+person_id+'">');
+        } else {
+            list.map(function(value) {
+                $("#person_message_form").append('<input class="person_list_form_plist" type="hidden" name="person_list[]" value="'+value+'">');
+            });
+        }
         if ($btn.is('[id]') && $btn.attr("id") == "sendmessage") {
-            postdata = $("#person_list_form").serialize();
+            postdata = $("#person_message_form").serialize();
             $.ajax({
                 type: "POST",
                 url: "{{ path('persons_send_message') }}",
@@ -62,8 +66,7 @@ function openMessagePopover() {
 
     return false;
 }
-</script>
-<script>
+
 function select_all_persons(value) {
     if (typeof(value) !== "boolean") {
         value = $(value).prop('checked');

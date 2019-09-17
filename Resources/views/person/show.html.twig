@@ -4,96 +4,7 @@
 
 {% include 'CrewCallBundle:job:handling.html.twig' %}
 {% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' with { 'reload_after_post': true } %}
-<script>
-
-function grabFunctionPickerTab() {
-    if ($( "#functab div" ).length > 1) {
-        return false;
-    }
-    url = "{{ path('function_picker', {'access': 'ajax' }) }}?person_id={{ person.id }}";
-    $.get(url, function( data ) {
-        $( "#functab" ).html(data);
-    }).done(function() {
-        $( ".sfList" ).hide();
-    });
-    return false;
-}
-
-function grabOrganizationPickerTab() {
-    return false;
-
-    /* Guess the TODO */
-    if ($( "#orgstab div" ).length > 1) {
-        return false;
-    }
-    url = "{{ path('function_picker', {'access': 'ajax' }) }}?person_id={{ person.id }}";
-    $.get(url, function( data ) {
-        $( "#orgstab" ).html(data);
-    }).done(function() {
-        $( ".sfList" ).hide();
-    });
-    return false;
-}
-
-function grabJobLogSummary() {
-    if ($( "#hourstab div" ).length > 1) {
-        return false;
-    }
-    url = "{{ path('joblog_person', {'access': 'ajax', 'id': person.id }) }}";
-    $.get(url, function( data ) {
-        $( "#hourstab" ).html(data);
-    }).done(function() {
-        $( ".sfList" ).hide();
-    });
-    return false;
-}
-
-function pickedFunction(function_id) {
-    var person_function = {};
-    person_function.person_id   = {{ person.id }};
-    person_function.function_id = function_id;
-    $.ajax({
-        beforeSend: function(req) {
-          req.setRequestHeader("Accept", "application/json");
-        },
-        type: "POST",
-        url: "{{ path('personfunction_new', { 'access': 'ajax' }) }}",
-        /*
-        data: $.param(person_function),
-        dataType: "json",
-        */
-        data: person_function,
-        dataType: "text",
-        async: true,
-      }).done( function( cont, textStatus, xhr ) {
-            if (xhr.status == 201) {
-                parent.location.reload();
-            } else {
-                alert("Something successfully didn't happen." + textStatus);
-            }
-      }).fail(function(xhr, status, error) {
-            errmsg = "Failed adding fiunction\n";
-            errmsg = errmsg + xhr.responseText + "\n";
-            alert(errmsg);
-    });
-    return false;
-}
-
-function openStateChange() {
-    content = $("#change_state_popover").html();
-    $( "#stateChangeLink" ).popover({
-        html: true,
-        placement: 'bottom',
-        title: 'Status change <a href="#" class="close" data-dismiss="alert">&times;</a>',
-        content: content
-    });
-    $( "#stateChangeLink" ).popover("show");
-    $(document).on("click", ".popover .close" , function(){
-        $(this).parents(".popover").popover('hide');
-    });
-}
-
-</script>
+{% include 'CrewCallBundle:person:handling.html.twig' %}
 
 <div class="col-sm-4" id="personLeft">
     {% set ppcontext = {
@@ -122,7 +33,10 @@ function openStateChange() {
     {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
           <a href="#" onClick="return uploadFile();">Add profile picture</a><br />
 {% endif %}
-    <h1>{{ person.fullname }}</h1>
+    <h1>
+    <a href="#" id="message_popover_link" onClick="return openMessagePopover({{ person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
+    {{ person.fullname }}
+    </h1>
     <h4>{{ person.statelabel }}</h4>
     <table class="showTable">
         <tbody>
@@ -424,4 +338,101 @@ function openStateChange() {
 
   </div>
 </div>
+
+<!--
+
+Until I need to reuse, i'll be lazy and keep'em here.
+
+-->
+<script>
+
+function grabFunctionPickerTab() {
+    if ($( "#functab div" ).length > 1) {
+        return false;
+    }
+    url = "{{ path('function_picker', {'access': 'ajax' }) }}?person_id={{ person.id }}";
+    $.get(url, function( data ) {
+        $( "#functab" ).html(data);
+    }).done(function() {
+        $( ".sfList" ).hide();
+    });
+    return false;
+}
+
+function grabOrganizationPickerTab() {
+    return false;
+
+    /* Guess the TODO */
+    if ($( "#orgstab div" ).length > 1) {
+        return false;
+    }
+    url = "{{ path('function_picker', {'access': 'ajax' }) }}?person_id={{ person.id }}";
+    $.get(url, function( data ) {
+        $( "#orgstab" ).html(data);
+    }).done(function() {
+        $( ".sfList" ).hide();
+    });
+    return false;
+}
+
+function grabJobLogSummary() {
+    if ($( "#hourstab div" ).length > 1) {
+        return false;
+    }
+    url = "{{ path('joblog_person', {'access': 'ajax', 'id': person.id }) }}";
+    $.get(url, function( data ) {
+        $( "#hourstab" ).html(data);
+    }).done(function() {
+        $( ".sfList" ).hide();
+    });
+    return false;
+}
+
+function pickedFunction(function_id) {
+    var person_function = {};
+    person_function.person_id   = {{ person.id }};
+    person_function.function_id = function_id;
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        type: "POST",
+        url: "{{ path('personfunction_new', { 'access': 'ajax' }) }}",
+        /*
+        data: $.param(person_function),
+        dataType: "json",
+        */
+        data: person_function,
+        dataType: "text",
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            if (xhr.status == 201) {
+                parent.location.reload();
+            } else {
+                alert("Something successfully didn't happen." + textStatus);
+            }
+      }).fail(function(xhr, status, error) {
+            errmsg = "Failed adding fiunction\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
+function openStateChange() {
+    content = $("#change_state_popover").html();
+    $( "#stateChangeLink" ).popover({
+        html: true,
+        placement: 'bottom',
+        title: 'Status change <a href="#" class="close" data-dismiss="alert">&times;</a>',
+        content: content
+    });
+    $( "#stateChangeLink" ).popover("show");
+    $(document).on("click", ".popover .close" , function(){
+        $(this).parents(".popover").popover('hide');
+    });
+}
+
+</script>
+
 {% endblock %}
