@@ -253,6 +253,6 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             $qb->andWhere('j.state in (:states)')
                 ->setParameter('states', $states);
         }
-        return $qb->getQuery()->getResult();
+        return count($qb->getQuery()->getResult()) > 1;
     }
 }
