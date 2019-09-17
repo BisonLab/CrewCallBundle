@@ -12,7 +12,9 @@ function setStateOnMessage(message_id, state) {
         type: "POST",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            $('#sakonninmessage_' + message_id).hide();
+            if (state == "ARCHIVED") {
+                $('#sakonninmessage_' + message_id).hide();
+            }
       }).fail(function(xhr, status, error) {
             errmsg = "Failed changing state\n";
             errmsg = errmsg + xhr.responseText + "\n";
