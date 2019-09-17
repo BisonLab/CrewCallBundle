@@ -22,7 +22,7 @@
         </td>
         <td align="right">
         {% set amounts = shift.jobsamountbystate %}
-        <span title="Total amount needed" class="ccAmount ccNeeded">{{ shift.amount }}</span>
+        <span title="Still needing" class="ccAmount ccNeeded">{{ shift.amount - shift.bookedamount }}</span>
         <span  title="Amount Confirmed" class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
         <span title="Amount Assigned" class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
         <span title="Amount Interested" class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>

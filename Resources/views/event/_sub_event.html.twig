@@ -159,6 +159,7 @@
       </div>
 
       <div class="tab-pane" id="filestab_{{ event.id }}">
+        <p>
         {% set sfconf = {'sfconfig': {
                 'formname': 'eventfiles_' ~ event.id,
                 'reload_after_post': true,
@@ -171,9 +172,8 @@
             }
         %}
         {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-            <p>
-              <a href="#" onClick="return uploadFile('eventfiles_{{ event.id }}'); return false;">Add a document or image</a><br />
-            </p>
+          <a href="#" onClick="return uploadFile('eventfiles_{{ event.id }}'); return false;">Add a document or image</a><br />
+        </p>
         {% set filecontext = {
                     'system': 'crewcall',
                     'object_name': 'event',

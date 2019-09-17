@@ -567,6 +567,20 @@ class Event
         return $amount;
     }
 
+    public function getBookedAmount()
+    {
+        $amount = 0;
+        foreach ($this->getShifts() as $shift) {
+            $amount += $shift->getBookedAmount();
+        }
+        foreach ($this->getChildren() as $child) {
+            foreach ($this->getShifts() as $shift) {
+                $amount += $shift->getBookedAmount();
+            }
+        }
+        return $amount;
+    }
+
     /*
      * Quite specialized, I know. But useful.
      */
