@@ -282,7 +282,6 @@
 
   <div class="tab-pane" id="filestab">
     <p>
-    <br/>
     {% set sfconf = {'sfconfig': {
             'file_type': "AUTO",
             'context': {
@@ -294,8 +293,8 @@
         }
     %}
     {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-          <a href="#" onClick="return uploadFile();">Add a file</a><br />
-        </p>
+      <a href="#" onClick="return uploadFile();">Add a file</a><br />
+    </p>
     {% set filecontext = {
         'system': 'crewcall',
         'object_name': 'person',
@@ -303,21 +302,25 @@
       } %}
     {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
   </div>
+
   <div class="tab-pane" id="functab">
   </div>
+
 <!--
   <div class="tab-pane" id="orgstab">
     <p>To be done</p>
   </div>
 -->
+
   <div class="tab-pane" id="hourstab">
   </div>
 
   <div class="tab-pane" id="absencetab">
-
+    <p>
     <div id="change_state_popover" class="hidden">
     <a href="#" id="stateChangeLink" onClick="return openStateChange();" class="btn btn-sm btn-dark">Add</a><br>
     </div>
+    </p>
 
     <table class="table  table-sm">
     <th>What</th><th>From</th><th>To</th><th>Days</th>

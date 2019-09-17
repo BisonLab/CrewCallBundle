@@ -64,10 +64,11 @@
     </div>
 
   <div class="tab-pane" id="peopletab">
-
+    <p>
     <div id="addExistingPerson" style="float: left">
-    <a href="#" onClick="return grabAddExistingPersonForm();" class="btn btn-sm btn-dark">Add person</a><br>
+    <a href="#" onClick="return grabAddExistingPersonForm();" class="btn btn-sm btn-dark">Add person</a>
     </div>
+    </p>
 
     <table id="apTable" class="table table-sm">
     <thead>
@@ -100,6 +101,7 @@
  </div>
 
     <div class="tab-pane" id="notestab">
+      <p>
       {% set mconf = {'mconfig': {
               'formname': 'locationnote',
               'reload_after_post': true,
@@ -116,8 +118,6 @@
           }
       %}
       {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-      <p>
-      <br>
       <a href="#" onClick='return createMessage("locationnote");'>Add a note</a><br />
       </p>
     {% set mlogcontext = {
@@ -135,6 +135,7 @@
   </div>
 
   <div class="tab-pane" id="filestab">
+    <p>
     {% set sfconf = {'sfconfig': {
             'file_type': "AUTO",
             'context': {
@@ -146,8 +147,6 @@
         }
     %}
     {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-    <p>
-    <br>
       <a href="#" onClick="return uploadFile();">Add a document or image</a><br />
     </p>
     {% set filecontext = {
