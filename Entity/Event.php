@@ -553,16 +553,14 @@ class Event
         return $persons;
     }
 
-    public function getTotalAmountNeeded()
+    public function getNeedsAmount()
     {
         $amount = 0;
         foreach ($this->getShifts() as $shift) {
             $amount += $shift->getAmount();
         }
         foreach ($this->getChildren() as $child) {
-            foreach ($this->getShifts() as $shift) {
-                $amount += $shift->getAmount();
-            }
+            $amount += $child->getNeedsAmount();
         }
         return $amount;
     }
@@ -574,9 +572,7 @@ class Event
             $amount += $shift->getBookedAmount();
         }
         foreach ($this->getChildren() as $child) {
-            foreach ($this->getShifts() as $shift) {
-                $amount += $shift->getBookedAmount();
-            }
+            $amount += $child->getBookedAmount();
         }
         return $amount;
     }
