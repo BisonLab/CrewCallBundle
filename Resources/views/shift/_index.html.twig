@@ -22,6 +22,7 @@
         </td>
         <td align="right">
         {% set amounts = shift.jobsamountbystate %}
+        <span title="got_all" class="glyphicon glyphicon-ok {% if shift.amount - shift.bookedamount != 0 %}hidden{% endif %}"></span>
         <span title="Still needing" class="ccAmount ccNeeded">{{ shift.amount - shift.bookedamount }}</span>
         <span  title="Amount Confirmed" class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
         <span title="Amount Assigned" class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
