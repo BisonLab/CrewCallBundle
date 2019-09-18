@@ -36,9 +36,8 @@
         {% if with_amounts %}
             <td>
             {% set amounts = event.jobsamountbystate %}
-{{ event.neededamount }} - {{ event.bookedamount }} - 
-            <span title="got_all" class="glyphicon glyphicon-ok {% if event.neededamount - event.bookedamount != 0 %}hidden{% endif %}"></span>&nbsp;
-            <span title="Still needing" class="ccAmount ccNeeded">{{ event.neededamount - event.bookedamount}}</span>
+            <span title="got_all" class="glyphicon glyphicon-ok {% if event.needsamount - event.bookedamount != 0 %}hidden{% endif %}"></span>&nbsp;
+            <span title="Still needing" class="ccAmount ccNeeded">{{ event.needsamount - event.bookedamount}}</span>
             <span title="Amount Confirmed"  class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
             <span title="Amount Assigned" class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
             <span title="Amount Interested" class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
