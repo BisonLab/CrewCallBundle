@@ -22,6 +22,8 @@
     {% set sfconf = {'sfconfig': {
             'file_type': "ProfilePicture",
             'description': "ProfilePicture",
+            'formname': 'profile_upload',
+            'reload_after_post': true,
             'context': {
                 'system': 'crewcall',
                 'object_name': 'person',
@@ -31,7 +33,7 @@
         }
     %}
     {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-          <a href="#" onClick="return uploadFile();">Add profile picture</a><br />
+          <a href="#" onClick="return uploadFile('profile_upload');">Add profile picture</a><br />
 {% endif %}
     <h1>
     <a href="#" id="message_popover_link" onClick="return openMessagePopover({{ person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
@@ -284,6 +286,8 @@
     <p>
     {% set sfconf = {'sfconfig': {
             'file_type': "AUTO",
+            'formname': 'file_upload',
+            'reload_after_post': true,
             'context': {
                 'system': 'crewcall',
                 'object_name': 'person',
@@ -293,7 +297,7 @@
         }
     %}
     {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-      <a href="#" onClick="return uploadFile();">Add a file</a><br />
+      <a href="#" onClick="return uploadFile('file_upload');">Add a file</a><br />
     </p>
     {% set filecontext = {
         'system': 'crewcall',

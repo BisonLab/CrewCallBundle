@@ -62,7 +62,7 @@
       <div class="tab-content ">
 
       <div class="tab-pane active" id="notestab_{{ event.id }}">
-        <p>
+        <br>
         {% set mconf = {'mconfig': {
                 'formname': 'eventconfirmnote_' ~ event.id,
                 'reload_after_post': true,
@@ -80,6 +80,7 @@
             }
         %}
         {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+        <p>
         <a href="#" onClick='return createMessage("eventconfirmnote_{{ event.id }}");'>Add a must confirm note</a>
         </p>
 
@@ -104,7 +105,7 @@
         </p>
       </div>
       <div class="tab-pane" id="checkstab_{{ event.id }}">
-      <p>
+      <br>
         {% set mconf = {'mconfig': {
                 'formname': 'eventconfirmcheck_' ~ event.id,
                 'reload_after_post': true,
@@ -119,7 +120,9 @@
             }
         %}
         {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
+       <p>
         <a href="#" onClick='return createCheck("eventconfirmcheck_{{ event.id }}");'>Add a must confirm checkbox</a><br />
+        </p>
         {% set mconf = {'mconfig': {
                 'formname': 'eventinformheck_' ~ event.id,
                 'reload_after_post': true,
@@ -134,6 +137,7 @@
             }
         %}
         {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
+       <p>
         <a href="#" onClick='return createCheck("eventinformheck_{{ event.id }}");'>Add an information checkbox</a><br />
         </p>
         {% set mlogcontext = {
@@ -159,8 +163,9 @@
       </div>
 
       <div class="tab-pane" id="filestab_{{ event.id }}">
-        <p>
+        <br>
         {% set sfconf = {'sfconfig': {
+                'file_type': "AUTO",
                 'formname': 'eventfiles_' ~ event.id,
                 'reload_after_post': true,
                 'context': {
@@ -172,7 +177,8 @@
             }
         %}
         {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-          <a href="#" onClick="return uploadFile('eventfiles_{{ event.id }}'); return false;">Add a document or image</a><br />
+        <p>
+          <a href="#" onClick="return uploadFile('eventfiles_{{ event.id }}');">Add a file</a><br />
         </p>
         {% set filecontext = {
                     'system': 'crewcall',
