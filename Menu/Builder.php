@@ -74,11 +74,11 @@ class Builder implements ContainerAwareInterface
 
             if (count($fpl_type->getMessages()) > 0) {
                 $fpm = $fpl_type->getMessages()[0];
-                $adminmenu->addChild('Edit front page announcement',
+                $adminmenu->addChild('Edit message to all users',
                     array('route' => 'message_edit',
                     'routeParameters' => array('id' => $fpm->getId())));
             } else {
-                $adminmenu->addChild('Add front page announcement',
+                $adminmenu->addChild('Add message to all users',
                     array('route' => 'message_new',
                     'routeParameters' => array('message_type' => $fpl_type->getId())));
             }
