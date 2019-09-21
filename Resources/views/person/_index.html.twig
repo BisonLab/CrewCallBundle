@@ -1,0 +1,46 @@
+<table id="sortable_table" class="table table-hover table-sm">
+<thead>
+    <tr>
+        <th>Username</th>
+        <th>Name</th>
+        <th>Functions</th>
+        <th>Mobile</th>
+        <th>Status</th>
+        <th class="no-sort">
+            <input onClick="return select_all_persons(this);" class="select_all_persons_checkbox" type="checkbox" name="select_all">
+        </th>
+    </tr>
+</thead>
+<tbody>
+{% for person in people %}
+    <tr>
+        <td><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.username }}</a></td>
+        <td>{{ person.fullname }}</td>
+        <td>
+            {% for f in person.functions(function_type) %} {{ f.name }},{% endfor %}</td>
+        <td>{{ person.mobilephonenumber }}</td>
+        <td>
+        {{ person.statelabel }}
+        </td>
+{#
+        <td>
+          <a href="{{ path('person_show', { 'id': person.id }) }}">Show</a> - 
+          <a href="{{ path('person_edit', { 'id': person.id }) }}">Edit</a>
+    {% set mlogcontext = {
+                'system': 'crewcall',
+                'object_name': 'person',
+                'external_id': person.id
+        }
+    %}
+{% if sakonnin_messages.contexthasmessages(mlogcontext) %}
+    <br><a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>
+{% endif %}
+        </td>
+#}
+        <td>
+                <input class="person_list_checkbox" type="checkbox" name="person_list" value="{{ person.id }}">
+        </td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>

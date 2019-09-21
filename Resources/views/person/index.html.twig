@@ -38,12 +38,16 @@ People
     <option value="{{ elem.id }}" {% if functionEntity is not null and elem.id == functionEntity.id %}selected{% endif %}>{{ elem.name }}</option>
     {% endfor %}
 </select>
+{# TODO: if on-date, show jobs-summary that date #}
+    <select name="select_grouping">
+        <option value="all_active">All Active</option>
+        <option value="available">Available on date:</option>
+        <option value="booked">Booked on date:</option>
+        <option value="registered">Something on date:</option>
+        <option value="all" {% if all is defined and all is not null %}CHECKED{% endif %}>Include non-active</option>
+    </select>
+    <input type="date" value="" name="on_date"/>
     <button class="btn btn-sm btn-dark" type="submit">Show</button>
-{% if all is defined and all is not null %}
-    <input type="checkbox" name="all" checked>Include non-active</input>
-{% else %}
-    <input type="checkbox" name="all">Include non-active</input>
-{% endif %}
     </form>
 {% endif %}
 </div>
@@ -56,52 +60,8 @@ People
 </div>
 {% endif %}
 
-        <table id="sortable_table" class="table table-hover table-sm">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Name</th>
-                <th>Functions</th>
-                <th>Mobile</th>
-                <th>Status</th>
-                <th class="no-sort">
-                    <input onClick="return select_all_persons(this);" class="select_all_persons_checkbox" type="checkbox" name="select_all">
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for person in people %}
-            <tr>
-                <td><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.username }}</a></td>
-                <td>{{ person.fullname }}</td>
-                <td>
-                    {% for f in person.functions(function_type) %} {{ f.name }},{% endfor %}</td>
-                <td>{{ person.mobilephonenumber }}</td>
-                <td>
-                {{ person.statelabel }}
-                </td>
-{#
-                <td>
-                  <a href="{{ path('person_show', { 'id': person.id }) }}">Show</a> - 
-                  <a href="{{ path('person_edit', { 'id': person.id }) }}">Edit</a>
-            {% set mlogcontext = {
-                        'system': 'crewcall',
-                        'object_name': 'person',
-                        'external_id': person.id
-                }
-            %}
-{% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-            <br><a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>
-{% endif %}
-                </td>
-#}
-                <td>
-                        <input class="person_list_checkbox" type="checkbox" name="person_list" value="{{ person.id }}">
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+{% include 'CrewCallBundle:person:_index.html.twig' %}
+
 <div align="right">
     <button class="btn btn-sm btn-dark" id="message_popover_link" onClick="return openMessagePopover();">Send a message</button>
 </div>
