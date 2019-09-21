@@ -12,7 +12,7 @@ use CrewCallBundle\Lib\ExternalEntityConfig;
 /**
  * Job
  *
- * @ORM\Table(name="crewcall_job")
+ * @ORM\Table(name="crewcall_job", uniqueConstraints={@ORM\UniqueConstraint(name="person_shift_job_idx", columns={"person_id", "shift_id"})})
  * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\JobRepository")
  * @ORM\HasLifecycleCallbacks()
  * @Gedmo\Loggable
