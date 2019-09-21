@@ -168,7 +168,7 @@
             <td>{{ so.organization }}</td>
             <td>{{ so.amount }}</td>
             <td>{{ so.statelabel }}
-            <a href="#" id="popLogSummary_job_{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('job', {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
+            <a href="#" id="popLogSummary_shiftorganization_{{ so.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('shiftorganization', {{ so.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
             </td>
             <td>
               <a role="button" class="btn-sm btn-danger" href="#" onClick="return deleteShiftOrganization({{so.id}});">Delete</a>
