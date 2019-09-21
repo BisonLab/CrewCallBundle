@@ -67,7 +67,7 @@ class Builder implements ContainerAwareInterface
             } else {
                 $adminmenu->addChild('Add login page message',
                     array('route' => 'message_new',
-                    'routeParameters' => array('message_type' => $fpnl_type)));
+                    'routeParameters' => array('message_type' => $fpnl_type->getId())));
             }
 
             $fpl_type = $sakonnin->getMessageType('Front page logged in');
@@ -80,7 +80,7 @@ class Builder implements ContainerAwareInterface
             } else {
                 $adminmenu->addChild('Add front page announcement',
                     array('route' => 'message_new',
-                    'routeParameters' => array('message_type' => $fpl_type)));
+                    'routeParameters' => array('message_type' => $fpl_type->getId())));
             }
 
             $adminmenu->addChild('Message Types',
