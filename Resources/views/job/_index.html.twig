@@ -51,7 +51,7 @@
     <tbody>
     {% for job in jobs %}
         <tr>
-          <td>
+          <td {% if job.overlap %}class="cc_warn" {% endif %}>
 {#
             <input class="job_list_checkbox_{{ shift.id }}" type="checkbox" name="job_list" value="{{ job.id }},{{ job.person.id }}">
 #}

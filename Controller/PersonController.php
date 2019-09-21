@@ -56,18 +56,41 @@ class PersonController extends CommonController
     {
         $em = $this->getDoctrine()->getManager();
         $fe_repo = $em->getRepository('CrewCallBundle:FunctionEntity');
+        $job_repo = $em->getRepository('CrewCallBundle:Job');
 
         $fid = $request->get('function_id');
+        $select_grouping = $request->get('select_grouping');
         if (!$functionEntity = $fe_repo->find($fid))
             return $this->returnNotFound($request, 'No function to filter');
-        // Looks stupid, and is. Should be a repo action with filters.
-        if ($request->get('all')) {
+
+        // Looks stupid, and is. Should definately be a repo action with
+        // filters.
+        if ($select_grouping == 'all') {
             $people = $functionEntity->getPeople(false);
         } else {
             $people = [];
+            // I am already going through them all here,
             foreach ($functionEntity->getPeople(false) as $p) {
-                if (in_array($p->getState(), ExternalEntityConfig::getActiveStatesFor('Person')))
-                    $people[] = $p;
+
+                if (!in_array($p->getState(),
+                        ExternalEntityConfig::getActiveStatesFor('Person')))
+                    continue;
+
+                if ($on_date = $request->get('on_date')) {
+                    $booked = $select_grouping == 'booked' || $select_grouping == 'available';
+                    $got_jobs = $job_repo->findJobsForPerson($p, [
+                            'booked' => $booked,
+                            'from' => $on_date,
+                            'to' => $on_date,
+                            ]);
+                    if (count($got_jobs) == 0 && $select_grouping == 'available') {
+                            $people[] = $p;
+                            continue;
+                    } elseif (count($got_jobs) > 0) {
+                        $people[] = $p;
+                        continue;
+                    }
+                }
             }
         }
 
@@ -88,6 +111,7 @@ class PersonController extends CommonController
     public function listByFunctionTypeAction(Request $request, $function_type)
     {
         $em = $this->getDoctrine()->getManager();
+        $job_repo = $em->getRepository('CrewCallBundle:Job');
 
         // Ok, implementing this here aswell.
         $people = [];
@@ -101,14 +125,38 @@ class PersonController extends CommonController
                 ->findByFunctionType($function_type);
         }
 
+        $select_grouping = $request->get('select_grouping');
+
         // Pure laziness I presume, but there are not that many people and
         // since I collect them in different ways above here, it's simple.
         // (OK, lazy)
-        if (!$request->get('all')) {
+
+        if ($select_grouping != 'all') {
             $parr = [];
+            // I am already going through them all here, 
             foreach ($people as $p) {
-                if (in_array($p->getState(), ExternalEntityConfig::getActiveStatesFor('Person')))
+                if (!in_array($p->getState(),
+                        ExternalEntityConfig::getActiveStatesFor('Person')))
+                    continue;
+
+                if ($on_date = $request->get('on_date')) {
+                    $booked = $select_grouping == 'booked' || $select_grouping == 'available';;
+                     
+                    $got_jobs = $job_repo->findJobsForPerson($p, [
+                            'booked' => $booked,
+                            'from' => $on_date,
+                            'to' => $on_date,
+                            ]);
+                    if (count($got_jobs) == 0 && $select_grouping == 'available') {
+                            $parr[] = $p;
+                            continue;
+                    } elseif (count($got_jobs) > 0) {
+                        $parr[] = $p;
+                        continue;
+                    }
+                } else {
                     $parr[] = $p;
+                }
             }
             $people = $parr;
         }

@@ -71,7 +71,7 @@ class JobController extends CommonController
         $em->persist($job);
         $em->flush($job);
 
-        if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, array('booked' => true))) {
+        if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, array('booked' => true, 'return_jobs' => true))) {
             $overlapped = current($overlap)->getShift();
             return new Response(
                 "You have now double booked and the other job being "
@@ -103,7 +103,7 @@ class JobController extends CommonController
             if (!$job = $jobrepo->find($job_id))
                 return new JsonResponse(array("status" => "NOT FOUND"), Response::HTTP_NOT_FOUND);
             $job->setState($state);
-            if ($job->isBooked() && $overlap = $jobrepo->checkOverlapForPerson($job, array('booked' => true))) {
+            if ($job->isBooked() && $overlap = $jobrepo->checkOverlapForPerson($job, array('booked' => true, 'return_jobs' => true))) {
             return new Response("Can not set job to a booked status because it will overlap with " . (string)current($overlap)->getShift(), Response::HTTP_CONFLICT);
             }
         }
@@ -126,7 +126,23 @@ class JobController extends CommonController
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($job);
-            $em->flush($job);
+            try {
+                $em->flush($job);
+            } catch (\Exception $e) {
+                return new Response(
+                    "Could not add Job. Shift possibly added to person already"
+                  , Response::HTTP_BAD_REQUEST);
+            }
+
+            if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, array('booked' => true, 'return_jobs' => true))) {
+                $overlapped = current($overlap)->getShift();
+                return new Response(
+                    "You have now double booked and the other job being "
+                    . (string)$overlapped . " at "
+                    . $overlapped->getStart()->format("H.i")
+                    . " to " . $overlapped->getEnd()->format("H.i")
+                  , Response::HTTP_CONFLICT);
+            }
 
             if ($this->isRest($access)) {
                 return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);

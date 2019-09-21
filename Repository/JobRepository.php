@@ -4,6 +4,7 @@ namespace CrewCallBundle\Repository;
 
 use CrewCallBundle\Entity\Person;
 use CrewCallBundle\Lib\ExternalEntityConfig;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  *
@@ -253,6 +254,15 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             $qb->andWhere('j.state in (:states)')
                 ->setParameter('states', $states);
         }
-        return count($qb->getQuery()->getResult()) > 1;
+        $result = new ArrayCollection($qb->getQuery()->getResult());
+        if (isset($options['return_jobs'])) {
+            $a = [];
+            foreach ($result as $j) {
+                if ($j->getId() != $job->getId())
+                    $a[] = $j;
+            }
+            return $a;
+        }
+        return count($result) > 1;
     }
 }

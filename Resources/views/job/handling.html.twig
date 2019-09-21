@@ -91,9 +91,16 @@ function submitNewJobForm(shift_id) {
                 $( "#jobModalBody" ).html(xhr.responseText);
             }
       }).fail(function(xhr, status, error) {
-            errmsg = "Failed adding new job\n";
-            errmsg = errmsg + xhr.responseText + "\n";
-            alert(errmsg);
+            if (xhr.status == 409) {
+                warning = "Warning!\n";
+                errmsg = warning + xhr.responseText + "\n";
+                alert(errmsg);
+                parent.location.reload();
+            } else {
+                errmsg = "Failed adding new job!\n";
+                errmsg = errmsg + xhr.responseText + "\n";
+                alert(errmsg);
+            }
     });
     return false;
 }
