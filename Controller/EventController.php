@@ -82,15 +82,21 @@ class EventController extends CommonController
         $form = $this->createForm('CrewCallBundle\Form\EventType', $event);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($event);
-            $em->flush($event);
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($event);
+                $em->flush($event);
 
-            if ($event->getParent())
-                return $this->redirectToRoute('event_show', array('id' => $event->getParent()->getId()));
-            else
-                return $this->redirectToRoute('event_show', array('id' => $event->getId()));
+                if ($event->getParent())
+                    return $this->redirectToRoute('event_show', array('id' => $event->getParent()->getId()));
+                else
+                    return $this->redirectToRoute('event_show', array('id' => $event->getId()));
+            }
+            return $this->render('event/new.html.twig', array(
+                'event' => $event,
+                'form' => $form->createView(),
+            ));
         }
 
         // If this has a parent set here, it's not an invalid create attempt.
@@ -108,7 +114,7 @@ class EventController extends CommonController
                 // (Org and loc are included, for now at least.)
                 $form->setData($event);
             }
-        } elseif (!$form->isSubmitted()) {
+        } else {
             // Can't be in the past, not usually anyway.
             $event->setStart(new \DateTime());
             $form->setData($event);

@@ -19,7 +19,6 @@ use CrewCallBundle\Lib\ExternalEntityConfig;
  * @ORM\Entity()
  * @ORM\Table(name="crewcall_event")
  * @ORM\Entity(repositoryClass="CrewCallBundle\Repository\EventRepository")
- * @UniqueEntity("name")
  * @Gedmo\Loggable
  */
 class Event
