@@ -410,8 +410,14 @@ class EventController extends CommonController
         $subject = $request->request->get('subject') ?? "Message from CrewCall";
 
         $filter = [];
+        if ($states = $request->request->get('states')) {
+            if (!in_array("all", $states))
+                $filter['states'] = $states;
+        }
+
         if ($state = $request->request->get('state'))
             $filter['states'] = [$state];
+
         if ($function_id = $request->request->get('function_id'))
             $filter['function_ids'] = [$function_id];
         

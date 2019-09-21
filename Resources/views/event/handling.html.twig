@@ -182,8 +182,10 @@ function printTableContent()
        <div class="col-sm-1">
        </div>
        <div class="col-sm-3">
-        <input type="radio" name="state" value="CONFIRMED" checked>Only confirmed</option>
-        <input type="radio" name="state" value="">All</option>
+        <input type="checkbox" name="states[]" value="CONFIRMED" checked>Confirmed</input><br>
+        <input type="checkbox" name="states[]" value="ASSSIGNED">Assigned</input><br>
+        <input type="checkbox" name="states[]" value="INTERESTED">Interested</input><br>
+        <input type="checkbox" name="states[]" value="all">All</input><br>
         <div id="eventMessageFormSelect"></div>
         <input class="btn btn-sm btn-dark" id="evsendmessage" type="submit" name="submit" value="Send">
        </div>
