@@ -168,4 +168,13 @@ class Jobs
         if ($one === $two) return true;
         return (($one->getStart() <= $two->getEnd()) && ($one->getEnd() >= $two->getStart()));
     }
+
+    /*
+     * Annoying name, just couldn't come up with a better.
+     */
+    public function checkOverlapForPerson(Job $job, $options = array())
+    {
+        $job_repo = $this->em->getRepository('CrewCallBundle:Job');
+        return $job_repo->checkOverlapForPerson($job, $options);
+    }
 }

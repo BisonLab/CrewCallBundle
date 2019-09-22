@@ -50,8 +50,12 @@
     </thead>
     <tbody>
     {% for job in jobs %}
+        {% set overlap = "" %}
+        {% if job.overlap or cc_jobs.checkoverlapforperson(job, {'booked': false }) %}
+            {% set overlap = "cc_warn" %}
+        {% endif %}
         <tr>
-          <td {% if job.overlap %}class="cc_warn" {% endif %}>
+          <td class="{{ overlap }}">
 {#
             <input class="job_list_checkbox_{{ shift.id }}" type="checkbox" name="job_list" value="{{ job.id }},{{ job.person.id }}">
 #}
