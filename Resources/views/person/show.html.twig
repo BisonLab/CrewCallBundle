@@ -248,6 +248,36 @@
             'to_type': "NONE",
             'from_type': "NONE",
             'expire_field': false,
+            'message_type': 'PersonNote',
+            'submit': 'Save',
+            'context': {
+                'system': 'crewcall',
+                'object_name': 'person',
+                'external_id': person.id
+                }
+            }
+        }
+    %}
+    {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+        <a href="#" onClick='return createMessage("adminpersonnote");'>Add a note to the crew member</a><br />
+    </p>
+{% set mlogcontext = {
+            'message_group': 'Notes',
+            'order': 'DESC',
+            'system': 'crewcall',
+            'object_name': 'person',
+            'external_id': person.id
+    }
+%}
+
+    <p>
+    {% set mconf = {'mconfig': {
+            'formname': 'adminpersonnote',
+            'reload_after_post': true,
+            'subject': "",
+            'to_type': "NONE",
+            'from_type': "NONE",
+            'expire_field': false,
             'message_type': 'AdminNote',
             'submit': 'Save',
             'context': {
@@ -259,7 +289,7 @@
         }
     %}
     {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <a href="#" onClick='return createMessage("adminpersonnote");'>Add a note</a><br />
+        <a href="#" onClick='return createMessage("adminpersonnote");'>Add a note for Admins</a><br />
     </p>
 {% set mlogcontext = {
             'message_group': 'Notes',
@@ -270,7 +300,7 @@
     }
 %}
 {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
-    <strong>{{ note.subject }}</strong> ({{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}). {% if note.expireat %}Expires {{ note.expireat | date('Y-m-d') }}{% endif %}
+    <strong>{{ note.subject }}</strong> ({{ note.state | capitalize }} {{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}). {% if note.expireat %}Expires {{ note.expireat | date('Y-m-d') }}{% endif %}
     <pre>{{ note.body }}</pre>
     <a href="#" onClick='return grabEditMessageForm({{ note.id }});' class="btn btn-sm btn-dark">Edit</a>
     {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
