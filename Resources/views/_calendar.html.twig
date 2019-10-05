@@ -47,31 +47,22 @@ $(function () {
                 placement: 'auto top',
                 container: 'body',
                 trigger: 'click',
-                title: event.popup_title + ' <a href="#" class="close" data-dismiss="alert" onClick="return closePopovers();"><span style="font-size: 15px" class="glyphicon glyphicon-remove-circle"></span></a>'
+                title: event.popup_title + ' <a href="#" class="close"><span style="font-size: 13px" class="glyphicon glyphicon-remove-circle"></span></a>'
+            });
+        },
+        viewDestroy: function(view, element) {
+            $( ".popover" ).each(function() {
+                $(this).popover('hide');
             });
         }
+
     });
-/*
- * Internal playground:
-        viewRender: function (view, element) {
-             $('#calendar').fullCalendar('refetchEvents');
-            alert("Rerendered!");
-         },
-  dayClick: function(date, jsEvent, view) {
 
-            $('#calendar').fullCalendar('gotoDate',date);
-            $('#calendar').fullCalendar('changeView','agendaDay');
+    $(document).on("click", ".popover .close" , function(){
+        $(this).parents(".popover").popover('hide');
+    });
 
-   }
- */
 });
-
-function closePopovers() {
-    $( ".popover" ).each(function() {
-        $(this).popover('hide');
-    });
-    return false;
-}
 
 </script>
 <div id="calendar"></div>

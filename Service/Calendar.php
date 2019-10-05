@@ -210,7 +210,9 @@ class Calendar
         $c['textColor'] = "black";
         $c['content'] = 
               'What: ' . (string)$event . "\n"
-            . 'Where: ' . (string)$event->getLocation() . "\n";
+            . 'Where: ' . (string)$event->getLocation() . "\n"
+            . 'When: ' . $event->getStart()->format('H:i') 
+                . " -> " . $event->getEnd()->format('H:i') . "\n";
 
         $url =  $this->router->generate('event_show', 
             array('id' => $event->getId()));
