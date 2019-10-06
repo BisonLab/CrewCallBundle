@@ -129,10 +129,8 @@ class JobsViewController extends CommonController
             $functionrepo = $em->getRepository('CrewCallBundle:FunctionEntity');
             if (!$function = $functionrepo->find($function_id))
                 throw new \InvalidArgumentException('Could not find the function');
-            $functions = $function->getAllChildren();
-            $functions[] = $function;
-            $function_filters['functions'] = $functions;
-            $job_filters['functions'] = $functions;
+            $function_filters['functions'] = [$function];
+            $job_filters['functions'] = [$function];
         }
 
         // Any event criterias?
