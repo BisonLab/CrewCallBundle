@@ -102,7 +102,6 @@ class FunctionEntity
 
     public function __construct($options = array())
     {
-        $this->children = new ArrayCollection();
         $this->person_functions = new ArrayCollection();
         $this->person_function_organizations = new ArrayCollection();
         $this->person_function_events = new ArrayCollection();
