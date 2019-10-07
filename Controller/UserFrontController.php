@@ -703,7 +703,7 @@ class UserFrontController extends CommonController
             $scnc = [
                 'system' => 'crewcall',
                 'object_name' => 'shift',
-                'message_type' => 'ConfirmNote',
+                'message_types' => ['ConfirmNote', 'Note'],
                 'external_id' => $shift->getId(),
             ];
             foreach ($sakonnin->getMessagesForContext($scnc) as $c) {
@@ -779,7 +779,7 @@ class UserFrontController extends CommonController
                 $ecnc = [
                     'system' => 'crewcall',
                     'object_name' => 'event',
-                    'message_type' => 'ConfirmNote',
+                    'message_types' => ['ConfirmNote', 'Note'],
                     'external_id' => $e->getId(),
                 ];
                 foreach ($sakonnin->getMessagesForContext($ecnc) as $c) {
