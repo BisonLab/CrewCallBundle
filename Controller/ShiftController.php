@@ -95,13 +95,8 @@ class ShiftController extends CommonController
                 $shift->setEvent($event);
                 // Better have something to start with.
                 $shift->setStart(clone($event->getStart()));
-                // But ending at the end of the event is just too much. Let's
-                // add 8 hours instead.
-                $plus_8 = clone($event->getStart())->modify('+8 hours');
-                if ($plus_8 < $event->getEnd())
-                    $shift->setEnd($plus_8);
-                else
-                    $shift->setEnd($event->getEnd());
+                // And end.
+                $shift->setEnd($event->getEnd());
                 $form->setData($shift);
             }
         }
