@@ -64,6 +64,26 @@
       <div class="tab-pane active" id="notestab_{{ event.id }}">
         <br>
         {% set mconf = {'mconfig': {
+                'formname': 'eventnote_' ~ event.id,
+                'reload_after_post': true,
+                'subject': "",
+                'to_type': "NONE",
+                'from_type': "NONE",
+                'message_type': 'Note',
+                'submit': 'Save',
+                'context': {
+                    'system': 'crewcall',
+                    'object_name': 'event',
+                    'external_id': event.id
+                    }
+                }
+            }
+        %}
+        {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+        <p>
+        <a href="#" onClick='return createMessage("eventnote_{{ event.id }}");'>Add a note</a>
+        </p>
+        {% set mconf = {'mconfig': {
                 'formname': 'eventconfirmnote_' ~ event.id,
                 'reload_after_post': true,
                 'subject': "",
@@ -107,23 +127,6 @@
       <div class="tab-pane" id="checkstab_{{ event.id }}">
       <br>
         {% set mconf = {'mconfig': {
-                'formname': 'eventconfirmcheck_' ~ event.id,
-                'reload_after_post': true,
-                'message_type': 'ConfirmCheck',
-                'submit': 'Save',
-                'context': {
-                    'system': 'crewcall',
-                    'object_name': 'event',
-                    'external_id': event.id
-                    }
-                }
-            }
-        %}
-        {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
-       <p>
-        <a href="#" onClick='return createCheck("eventconfirmcheck_{{ event.id }}");'>Add a must confirm checkbox</a><br />
-        </p>
-        {% set mconf = {'mconfig': {
                 'formname': 'eventinformheck_' ~ event.id,
                 'reload_after_post': true,
                 'message_type': 'InformCheck',
@@ -139,6 +142,23 @@
         {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
        <p>
         <a href="#" onClick='return createCheck("eventinformheck_{{ event.id }}");'>Add an information checkbox</a><br />
+        </p>
+        {% set mconf = {'mconfig': {
+                'formname': 'eventconfirmcheck_' ~ event.id,
+                'reload_after_post': true,
+                'message_type': 'ConfirmCheck',
+                'submit': 'Save',
+                'context': {
+                    'system': 'crewcall',
+                    'object_name': 'event',
+                    'external_id': event.id
+                    }
+                }
+            }
+        %}
+        {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
+       <p>
+        <a href="#" onClick='return createCheck("eventconfirmcheck_{{ event.id }}");'>Add a must confirm checkbox</a><br />
         </p>
         {% set mlogcontext = {
                     'system': 'crewcall',

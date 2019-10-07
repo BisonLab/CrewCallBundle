@@ -68,6 +68,12 @@
             <a href="#" onClick='return createMessage("shiftnote_{{ shift.id }}");'>Add a note</a>
         </li>
         <li>
+            <a href="#" onClick='return createMessage("shiftconfirmnote_{{ shift.id }}");'>Add a must confirm note</a>
+        </li>
+        <li>
+            <a href="#" onClick='return createCheck("shiftinformcheck_{{ shift.id }}");'>Add an information checkbox</a>
+        </li>
+        <li>
             <a href="#" onClick='return createCheck("shiftconfirmcheck_{{ shift.id }}");'>Add a must confirm checkbox</a>
         </li>
 
@@ -99,6 +105,26 @@
         'to_type': "NONE",
         'from_type': "NONE",
         'message_type': 'Note',
+        'submit': 'Save',
+        'context': {
+            'system': 'crewcall',
+            'object_name': 'shift',
+            'external_id': shift.id
+            }
+        }
+    }
+%}
+{% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+{% set mconf = {'mconfig': {
+        'formname': 'shiftconfirmnote_' ~ shift.id,
+        'reload_after_post': true,
+        'subject': "",
+        'to_field': false,
+        'from_field': false,
+        'to_type': "NONE",
+        'from_type': "NONE",
+        'message_type': 'ConfirmNote',
+        'submit': 'Save',
         'context': {
             'system': 'crewcall',
             'object_name': 'shift',
@@ -112,6 +138,20 @@
         'formname': 'shiftconfirmcheck_' ~ shift.id,
         'reload_after_post': true,
         'message_type': 'ConfirmCheck',
+        'submit': 'Save',
+        'context': {
+            'system': 'crewcall',
+            'object_name': 'shift',
+            'external_id': shift.id
+            }
+        }
+    }
+%}
+{% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
+{% set mconf = {'mconfig': {
+        'formname': 'shiftinformcheck_' ~ shift.id,
+        'reload_after_post': true,
+        'message_type': 'InformCheck',
         'submit': 'Save',
         'context': {
             'system': 'crewcall',
