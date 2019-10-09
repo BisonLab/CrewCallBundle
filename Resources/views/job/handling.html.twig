@@ -37,7 +37,7 @@ function setStateOnJob(job_id, state, shift_id) {
             errmsg = "Warning!\n";
             errmsg = errmsg + xhr.responseText + "\n";
             alert(errmsg);
-            grabJobList(shift_id);
+            parent.location.reload();
     });
     return false;
 }
@@ -212,8 +212,9 @@ function openMessageToJobsModal(shift_id) {
 
 <div id="jobmessage_modal" class="hidden">
     <form id="job_list_message_form" method="POST">
-    <textarea name="body" cols="40" rows="4"></textarea>
-    <input type="hidden" value="BULKSMS" name="message_type">
+    <textarea name="body" cols="40" rows="4"></textarea><br>
+    <input type="radio" value="BULKSMS" name="message_type" CHECKED>SMS only</input>
+    <input type="radio" value="BULKALL" name="message_type">SMS and  Email</input><br>
     <input class="btn btn-sm btn-dark" id="sendmessage" type="submit" name="submit" value="Send">
     </form>
 </div>
