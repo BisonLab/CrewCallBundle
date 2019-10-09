@@ -174,12 +174,9 @@ function printTableContent()
 
 <div id="eventmessage_modal" class="hidden">
     <form name="eventmessage_form" id="eventMessageForm" method="POST">
-        <input type="hidden" value="BULKSMS" name="message_type">
       <div class="row">
-       <div class="col-sm-7">
-        <textarea id="eventMessageFormBody" name="body" cols="40" rows="4"></textarea>
-       </div>
-       <div class="col-sm-1">
+       <div class="col-sm-6">
+        <textarea id="eventMessageFormBody" name="body" cols="30" rows="6"></textarea><br>
        </div>
        <div class="col-sm-3">
         <input type="checkbox" name="states[]" value="CONFIRMED" checked>Confirmed</input><br>
@@ -187,6 +184,10 @@ function printTableContent()
         <input type="checkbox" name="states[]" value="INTERESTED">Interested</input><br>
         <input type="checkbox" name="states[]" value="all">All</input><br>
         <div id="eventMessageFormSelect"></div>
+       </div>
+       <div class="col-sm-3">
+            <input type="radio" value="BULKSMS" name="message_type" CHECKED>SMS only</input><br>
+            <input type="radio" value="BULKALL" name="message_type">SMS and  Email</input>
         <input class="btn btn-sm btn-dark" id="evsendmessage" type="submit" name="submit" value="Send">
        </div>
       </div>
