@@ -134,7 +134,7 @@ class JobController extends CommonController
                   , Response::HTTP_BAD_REQUEST);
             }
 
-            if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, array('booked' => true, 'return_jobs' => true))) {
+            if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, ['return_jobs' => true])) {
                 $overlapped = current($overlap)->getShift();
                 return new Response(
                     "You have now double booked and the other job being "
