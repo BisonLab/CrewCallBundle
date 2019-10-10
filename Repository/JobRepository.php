@@ -233,7 +233,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
     /*
      * Hmm, need it, gotta find out best way to to.
      */
-    public function checkOverlapForPerson($job, $options)
+    public function checkOverlapForPerson($job, $options = [])
     {
         $person = $job->getPerson();
         $from = $job->getStart();
@@ -249,20 +249,37 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('to', $to)
             ->setParameter('from', $from);
 
-        if (isset($options['booked'])) {
+        if (isset($options['booked_only'])) {
             $states = ExternalEntityConfig::getBookedStatesFor('Job');
             $qb->andWhere('j.state in (:states)')
                 ->setParameter('states', $states);
         }
+
         $result = new ArrayCollection($qb->getQuery()->getResult());
-        if (isset($options['return_jobs'])) {
-            $a = [];
-            foreach ($result as $j) {
-                if ($j->getId() != $job->getId())
-                    $a[] = $j;
+        $one_booked = $job->isBooked();
+        $a = [];
+        foreach ($result as $j) {
+            if ($j->getId() != $job->getId()) {
+                $a[] = $j;
+                if ($j->isBooked())
+                    $one_booked = true;
             }
-            return $a;
         }
-        return count($result) > 1;
+        if (isset($options['any'])) {
+            if (isset($options['return_jobs'])) {
+                return $a;
+            }
+            return count($a) > 0;
+        }
+        if (isset($options['return_jobs'])) {
+            if ($one_booked)
+                return $a;
+            else
+                return [];
+        }
+        if ($one_booked)
+            return count($a) > 0;
+        else
+            return false;
     }
 }

@@ -128,7 +128,7 @@ class Event
     public function __toString()
     {
         if ($this->getParent())
-            return $this->getParent()->getMainEvent() . " - " . $this->name;
+            return $this->getParent()->getMainEvent() . " -> " . $this->name;
         return $this->getName();
     }
 

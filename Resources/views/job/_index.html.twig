@@ -46,22 +46,28 @@
 {% endfor %}
             <th>Comments</th>
             <th class="no-sort">&nbsp;</th>
+            <th class="no-sort">&nbsp;</th>
         </tr>
     </thead>
     <tbody>
     {% for job in jobs %}
-        {% set overlap = "" %}
-        {% if job.overlap or cc_jobs.checkoverlapforperson(job, {'booked': false }) %}
-            {% set overlap = "cc_warn" %}
-        {% endif %}
         <tr>
-          <td class="{{ overlap }}">
-{#
-            <input class="job_list_checkbox_{{ shift.id }}" type="checkbox" name="job_list" value="{{ job.id }},{{ job.person.id }}">
-#}
+        {% set overjobs = cc_jobs.checkoverlapforperson(job, {'return_jobs': true }) %}
+        {% if overjobs | length > 0 %}
+<div id="overlap_popover_content_{{ job.id }}" class="hidden">
+{% for ojob in overjobs %}
+{{ ojob.shift }}<br>
+{% endfor %}
+</div>
+            <td class="ccWarn" data-order="{{ shift.start | date('U')}}" >
             <input class="job_list_checkbox_{{ shift.event.id }}" type="checkbox" name="job_list" value="{{ job.id }},{{ job.person.id }}">
-            <a href="#" id="popSummary_person_jobs_{{ job.person.id }}{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popPersonJobs({{ job.person.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
-            <a href="#" id="popSummary_person_{{ job.person.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a href="#" title="Overlapping Jobs" id="overlap_popover_{{ job.id }}" onClick="return popOverlap({{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-warning-sign"></span></a>
+        {% else %}
+            <td>
+            <input class="job_list_checkbox_{{ shift.event.id }}" type="checkbox" name="job_list" value="{{ job.id }},{{ job.person.id }}">
+        {% endif %}
+            <a href="#" title="Person Summary" id="popSummary_person_{{ job.person.id }}{{ job.id}}" onClick="return popSummary('person', {{ job.person.id }},{{ job.id}});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a href="#" title="Jobs" id="popSummary_person_jobs_{{ job.person.id }}{{ job.id }}" onClick="return popPersonJobs({{ job.person.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
     {% set mlogcontext = {
                 'system': 'crewcall',
                 'object_name': 'person',
@@ -69,18 +75,18 @@
         }
     %}
     {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-            <a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-envelope"></span></a>
+            <a href="#" title="Messages and Notes" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-envelope"></span></a>
     {% endif %}
           </td>
             {% set reason = job.person.occupied({'reasons': true}) %}
-            <td {% if reason %}class="cc_warn"{% endif %}>
+            <td {% if reason %}class="ccWarn"{% endif %}>
             {{ job.person }}
     {% if reason %}
-        <br>{{ reason.statelabel }}
+        <br>{{ reason.0.statelabel }}
     {% endif %}
             </td>
             <td>
-            <a href="#" id="popLogSummary_job_{{ job.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('job', {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
+            <a href="#" title="Log Summary" id="popLogSummary_job_{{ job.id }}" onClick="return popLogSummary('job', {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
                 {{ job.statelabel }}
             {% if job.shift.start < date() %}
 {# Better be a selectbox or just not at jobs at all, just event or shift.
@@ -107,7 +113,7 @@
     {% endfor %}
  </td>
 {% endfor %}
-            <td>
+            <td id="jobCommentTable_{{ job.id }}">
 {% set cjobcontext = {
             'message_types': ['JobComment'],
             'order': 'DESC',
@@ -151,7 +157,7 @@
  </table>
 {#
 <div align="left">
-<button class="btn btn-sm btn-dark" id="message_popover_link" onClick="return openMessageToJobsModal({{ shift.id }});">Send a message</button>
+<button class="btn btn-sm btn-dark" id="message_modal_link" onClick="return openMessageToJobsModal({{ shift.id }});">Send a message</button>
 
 </div>
 #}
@@ -172,7 +178,7 @@
             <td>{{ so.organization }}</td>
             <td>{{ so.amount }}</td>
             <td>{{ so.statelabel }}
-            <a href="#" id="popLogSummary_shiftorganization_{{ so.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('shiftorganization', {{ so.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
+            <a href="#" title="Logs" id="popLogSummary_shiftorganization_{{ so.id }}" onClick="return popLogSummary('shiftorganization', {{ so.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
             </td>
             <td>
               <a role="button" class="btn-sm btn-danger" href="#" onClick="return deleteShiftOrganization({{so.id}});">Delete</a>

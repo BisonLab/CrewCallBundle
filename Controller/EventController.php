@@ -470,8 +470,8 @@ class EventController extends CommonController
                     // TODO: Add full name.
                     $res = array(
                         'id' => $event->getId(),
-                        'value' => $event->getName(),
-                        'label' => $event->getName(),
+                        'value' => (string)$event,
+                        'label' => (string)$event,
                     );
                     $result[] = $res;
                 }

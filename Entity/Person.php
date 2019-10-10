@@ -482,7 +482,10 @@ class Person extends BaseUser
         if ($before && $before === $after) {
             $afterstate = new PersonState();
             $afterstate->setState($before->getState());
-            $afterdate = clone($newstate->getToDate());
+            if ($newstate->getToDate())
+                $afterdate = clone($newstate->getToDate());
+            else
+                $afterdate = new \DateTime();
             $afterstate->setFromDate($afterdate->modify("+1 day"));
             $afterstate->setToDate($before->getToDate());
             $this->addState($afterstate);

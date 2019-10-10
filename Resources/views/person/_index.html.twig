@@ -1,4 +1,9 @@
+{# Sorting by username.
+ #}
 <table id="sortable_table" class="table table-hover table-sm">
+{# Sort by last name?
+<table id="sortable_table" class="table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
+#}
 <thead>
     <tr>
         <th>Username</th>
@@ -15,7 +20,7 @@
 {% for person in people %}
     <tr>
         <td><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.username }}</a></td>
-        <td>{{ person.fullname }}</td>
+        <td data-order="{{ person.lastname }}">{{ person.fullname }}</td>
         <td>
             {% for f in person.functions(function_type) %} {{ f.name }},{% endfor %}</td>
         <td>{{ person.mobilephonenumber }}</td>

@@ -147,6 +147,28 @@ class Jobs
         return $opportunities;
     }
 
+    /*
+     * This sets a flag "Overlap" on every job that overlaps with a booked job
+     * the same day. This is a compromise and kinda makes sense aswell.
+     */
+    public function checkOverlapByDay($jobs)
+    {
+        $last = null;
+        $checked = new \Doctrine\Common\Collections\ArrayCollection();
+        foreach ($jobs as $job) {
+            if ($last && $this->overlap($job->getShift(), $last->getShift())) {
+                $job->setOverlap(true);
+                $last->setOverlap(true);
+            }
+            $checked->add($job);
+            $last = $job;
+        }
+        return $checked;
+    }
+
+    /*
+     * And this one sets the Overlap flag if there is an ovelap at all.
+     */
     public function checkOverlap($jobs)
     {
         $last = null;

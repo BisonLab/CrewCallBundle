@@ -37,13 +37,57 @@ class PersonController extends CommonController
      *
      * @Route("/", name="person_index", methods={"GET"})
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
         $people = $em->getRepository('CrewCallBundle:Person')->findAll();
+        $fe_repo = $em->getRepository('CrewCallBundle:FunctionEntity');
+        $job_repo = $em->getRepository('CrewCallBundle:Job');
+
+        $fid = $request->get('function_id');
+        $ftype = $request->get('function_type');
+        $select_grouping = $request->get('select_grouping');
+        if (!$functionEntity = $fe_repo->find($fid))
+            return $this->returnNotFound($request, 'No function to filter');
+
+        // Looks stupid, and is. Should definately be a repo action with
+        // filters.
+        if ($select_grouping == 'all') {
+            $people = $functionEntity->getPeople(false);
+        } else {
+            $people = [];
+            // I am already going through them all here,
+            foreach ($functionEntity->getPeople(false) as $p) {
+
+                if (!in_array($p->getState(),
+                        ExternalEntityConfig::getActiveStatesFor('Person')))
+                    continue;
+
+                if ($on_date = $request->get('on_date')) {
+                    $booked = $select_grouping == 'booked' || $select_grouping == 'available';
+                    $got_jobs = $job_repo->findJobsForPerson($p, [
+                            'booked' => $booked,
+                            'from' => $on_date,
+                            'to' => $on_date,
+                            ]);
+                    if (count($got_jobs) == 0 && $select_grouping == 'available') {
+                            $people[] = $p;
+                            continue;
+                    } elseif (count($got_jobs) > 0) {
+                        $people[] = $p;
+                        continue;
+                    }
+                }
+            }
+        }
+
+        $functions = $fe_repo->findBy(['function_type'
+            => $functionEntity->getFunctionType()], ['name' => 'ASC']);
         return $this->render('person/index.html.twig', array(
             'people' => $people,
+            'functions' => $functions,
+            'functionEntity' => $functionEntity,
         ));
     }
 

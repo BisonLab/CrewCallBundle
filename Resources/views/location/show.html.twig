@@ -28,7 +28,7 @@
 
     <ul>
         <li>
-            <a href="#" id="popLogSummary_location_{{ location.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('location', {{ location.id }});" class="btn btn-sm btn-dark">Changelog</a>
+            <a href="#" title="LOcation Summary" id="popLogSummary_location_{{ location.id }}" onClick="return popLogSummary('location', {{ location.id }});" class="btn btn-sm btn-dark">Changelog</a>
         </li>
         <li>
             <a href="{{ path('location_edit', { 'id': location.id }) }}" class="btn btn-sm btn-dark">Edit</a>
@@ -125,7 +125,7 @@
     {% set mlogcontext = {
         'system': 'crewcall',
         'object_name': 'location',
-        'message_type': 'Notes',
+        'message_group': 'Notes',
         'external_id': location.id
         }
     %}

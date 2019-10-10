@@ -36,7 +36,7 @@
           <a href="#" onClick="return uploadFile('profile_upload');">Add profile picture</a><br />
 {% endif %}
     <h1>
-    <a href="#" id="message_popover_link" onClick="return openMessagePopover({{ person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
+    <a href="#" id="message_modal_link" onClick="return openMessageModal({{ person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
     {{ person.fullname }}
     </h1>
     <h4>{{ person.statelabel }}</h4>
@@ -130,7 +130,7 @@
             </tr>
             <tr>
                 <th>
-                    <a href="#" id="popLogSummary_person_{{ person.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('person', {{ person.id }});" class="btn btn-sm btn-dark">Changelog</a>
+                    <a href="#" title="Logs" id="popLogSummary_person_{{ person.id }}" onClick="return popLogSummary('person', {{ person.id }});" class="btn btn-sm btn-dark">Changelog</a>
                     <br>
                     <a href="{{ path('person_edit', { 'id': person.id }) }}" class="btn btn-sm btn-dark">Edit</a>
                     <br>
@@ -192,16 +192,23 @@
     <tbody>
     {% for job in jobs %}
         {% set shift = job.shift %}
-        {% set c_class = "" %}
-        {% if job.overlap %}
-            {% set c_class = "cc_warn" %}
-        {% endif %}
         <tr>
             <td>
-            <a href="#" id="popSummary_event_{{ job.event.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a href="#" title="Event Summary" id="popSummary_event_{{ job.event.id }}" onClick="return popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
             {{ shift.event }}
             </td>
-            <td class="{{ c_class }}" data-order="{{ shift.start | date('U')}}" >
+        {% set overjobs = cc_jobs.checkoverlapforperson(job, {'return_jobs': true }) %}
+        {% if overjobs | length > 0 %}
+<div id="overlap_popover_content_{{ job.id }}" class="hidden">
+{% for ojob in overjobs %}
+{{ ojob.shift }}<br>
+{% endfor %}
+</div>
+            <td class="ccWarn" data-order="{{ shift.start | date('U')}}" >
+            <a href="#" title="Overlapping Jobs" id="overlap_popover_{{ job.id }}" onClick="return popOverlap({{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-warning-sign"></span></a>
+        {% else %}
+            <td data-order="{{ shift.start | date('U')}}" >
+        {% endif %}
                 {{ shift.start|date('d M H:i') }}
                 <span class="glyphicon glyphicon-arrow-right"></span> 
                 {%  if shift.end | date('Y-m-d') == shift.start | date('Y-m-d') %}
@@ -259,7 +266,7 @@
         }
     %}
     {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <a href="#" onClick='return createMessage("adminpersonnote");'>Add a note to the crew member</a><br />
+        <a href="#" onClick='return createMessage("adminpersonnote");'>Add a note to the crew member (PersonNote)</a><br />
     </p>
 {% set mlogcontext = {
             'message_group': 'Notes',
@@ -272,7 +279,7 @@
 
     <p>
     {% set mconf = {'mconfig': {
-            'formname': 'adminpersonnote',
+            'formname': 'adminadminnote',
             'reload_after_post': true,
             'subject': "",
             'to_type': "NONE",
@@ -289,7 +296,7 @@
         }
     %}
     {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <a href="#" onClick='return createMessage("adminpersonnote");'>Add a note for Admins</a><br />
+        <a href="#" onClick='return createMessage("adminadminnote");'>Add a note for Admins only (AdminNote)</a><br />
     </p>
 {% set mlogcontext = {
             'message_group': 'Notes',

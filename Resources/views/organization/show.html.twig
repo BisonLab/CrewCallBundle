@@ -40,7 +40,7 @@
 
     <ul>
         <li>
-           <a href="#" id="popLogSummary_organization_{{ organization.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('organization', {{ organization.id }});" class="btn btn-sm btn-dark">Changelog</a><br>
+           <a href="#" title="Logs" id="popLogSummary_organization_{{ organization.id }}" onClick="return popLogSummary('organization', {{ organization.id }});" class="btn btn-sm btn-dark">Changelog</a><br>
         </li>
         <li>
             <a href="{{ path('organization_edit', { 'id': organization.id }) }}" class="btn btn-sm btn-dark">Edit</a>
@@ -59,11 +59,6 @@
   <li class="active">
   <a href="#eventstab" data-toggle="tab">Events</a>
   </li>
-{#
-  <li>
-  <a href="#caltab" data-toggle="tab">Calendar</a>
-  </li>
-#}
   <li>
   <a href="#peopletab" data-toggle="tab">People</a>
   </li>
@@ -141,7 +136,7 @@
         {% set mlogcontext = {
                     'system': 'crewcall',
                     'object_name': 'organization',
-                    'message_type': 'Notes',
+                    'message_group': 'Notes',
                     'external_id': organization.id
             }
         %}
@@ -156,6 +151,7 @@
         <p>
         {% set sfconf = {'sfconfig': {
                 'file_type': "AUTO",
+                'reload_after_post': true,
                 'context': {
                     'system': 'crewcall',
                     'object_name': 'organization',

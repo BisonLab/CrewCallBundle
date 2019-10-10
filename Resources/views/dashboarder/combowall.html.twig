@@ -61,12 +61,12 @@ Done
         <div class="col-md-2" halign="left">
         <br>
         {% if message.messagetype == "TODO" %}
-            <label class="cc_switch">
+            <label class="ccSwitch">
               <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState({{ message.id }}, this)" {% if message.state == "CHECKED" %}checked{% endif %}/>
-              <span class="cc_slider round"></span>
+              <span class="ccSlider round" title="Todo"></span>
             </label><br>
         {% endif %}
-            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');"><span class="archive_glyph"></span></a>
+            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" ><span class="archive_glyph" title="Archive"></span></a>
         </div>
      </div>
    </div>
@@ -82,9 +82,9 @@ Done
         <h4 class="modal-title">Add todo or wall message</h4>
       </div>
       <div class="modal-body">
-        <label class="cc_switch">
+        <label class="ccSwitch">
         <input type="checkbox" id="mtypecheck" onChange="setMessageType(this)" />
-        <span class="cc_slider round"></span>
+        <span class="ccSlider round"></span>
         </label>
         <strong>Todo</strong>
 {% set ccmform = sakonnin_messages.getCreateForm({

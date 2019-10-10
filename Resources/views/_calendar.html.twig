@@ -59,9 +59,11 @@ $(function () {
     });
 
     $(document).on("click", ".popover .close" , function(){
-        $(this).parents(".popover").popover('hide');
+        /* $(this).parents(".popover").popover('hide'); */
+        $( ".popover" ).each(function() {
+            $(this).popover('hide');
+        });
     });
-
 });
 
 </script>

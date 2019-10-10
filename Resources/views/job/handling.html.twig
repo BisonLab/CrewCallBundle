@@ -108,6 +108,7 @@ function submitNewJobForm(shift_id) {
 function popPersonJobs(person_id, job_id) {
     url = "{{ path('summary_person_jobs_job', {'access': 'ajax' }) }}?job=" + job_id;
     var popelement = "#popSummary_person_jobs_" + person_id + job_id;
+    poptitle = 'Jobs <a href="#" class="close" data-dismiss="alert"><span style="font-size: 15px" class="glyphicon glyphicon-remove-circle"></span></a>';
 
     res = $.ajax({
             url: url,
@@ -118,9 +119,10 @@ function popPersonJobs(person_id, job_id) {
             delay: 500,
             html: true,
             placement: "auto top",
+            trigger: "focus",
             content: contenthtml,
-            title: 'Jobs <a href="#" class="close" data-dismiss="alert"><span style="font-size: 15px" class="glyphicon glyphicon-remove-circle"></span></a>'
         });
+        /* May not need $( popelement ).attr('data-original-title', poptitle); */
         $( popelement ).popover("show");
         $(document).on("click", ".popover .close" , function(){
             $(this).parents(".popover").popover('hide');
@@ -192,6 +194,21 @@ function openMessageToJobsModal(shift_id) {
         }
         event.preventDefault();
     });
+}
+
+function popOverlap(job_id) {
+
+    popcontent = $("#overlap_popover_content_" + job_id).html();
+    var popelement = "#overlap_popover_" + job_id;
+    $( popelement ).popover({
+        delay: 500,
+        html: true,
+        placement: "auto top",
+        content: popcontent,
+        trigger: "focus",
+    });
+    $( popelement ).popover("show");
+    return false;
 }
 
 </script>

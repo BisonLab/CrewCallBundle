@@ -18,20 +18,21 @@
             {% endif %}
         <td>
 {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-        <a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
+        <a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
 {% endif %}
-        <a href="#" id="popSummary_event_{{ shift.event.id }}{{ shift.id }}" data-toggle="popover" data-html="true" onClick="return popSummary('event', {{ shift.event.id }}, {{ shift.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+        <a href="#" title="Event Summary" id="popSummary_event_{{ shift.event.id }}{{ shift.id }}" onClick="return popSummary('event', {{ shift.event.id }}, {{ shift.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
         {{ shift.function }}
         </td>
         <td align="right">
-        <label class="cc_switch">
-          <input title="Open or close the shift" type="checkbox" id="shiftstatecheck_{{ shift.id }}" onChange="setStateOnShiftCheckbox({{ shift.id }}, {{ shift.event.id }}, this)" {% if shift.open %}checked{% endif %}/>
-          <span class="cc_slider round" title="Open or close the shift"></span>
+        <label class="ccSwitch">
+          <input title="Open or close the shift for registration" type="checkbox" id="shiftstatecheck_{{ shift.id }}" onChange="setStateOnShiftCheckbox({{ shift.id }}, {{ shift.event.id }}, this)" {% if shift.open %}checked{% endif %}/>
+          <span class="ccSlider round" title="Open or close the shift"></span>
         </label><br>
         </td>
         <td align="right">
         {% set amounts = shift.jobsamountbystate %}
-        <span title="got_all" class="glyphicon glyphicon-ok {% if shift.amount - shift.bookedamount != 0 %}hidden{% endif %}"></span>
+        <span title="Fully Booked" class="glyphicon glyphicon-ok {% if shift.amount - shift.bookedamount != 0 %}hidden{% endif %}"></span>
+            <span title="Total needed" class="ccAmount ccTotal">{{ shift.amount }}</span>
         <span title="Still needing" class="ccAmount ccNeeded">{{ shift.amount - shift.bookedamount }}</span>
         <span  title="Amount Confirmed" class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
         <span title="Amount Assigned" class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
@@ -68,17 +69,17 @@
             <a href="#" onClick='return createMessage("shiftnote_{{ shift.id }}");'>Add a note</a>
         </li>
         <li>
-            <a href="#" onClick='return createMessage("shiftconfirmnote_{{ shift.id }}");'>Add a must confirm note</a>
+            <a href="#" onClick='return createMessage("shiftconfirmnote_{{ shift.id }}");'>Add a confirm note</a>
         </li>
         <li>
             <a href="#" onClick='return createCheck("shiftinformcheck_{{ shift.id }}");'>Add an information checkbox</a>
         </li>
         <li>
-            <a href="#" onClick='return createCheck("shiftconfirmcheck_{{ shift.id }}");'>Add a must confirm checkbox</a>
+            <a href="#" onClick='return createCheck("shiftconfirmcheck_{{ shift.id }}");'>Add a confirm checkbox</a>
         </li>
 
         <li>
-            <a href="#" id="popLogSummary_shift_{{ shift.id }}" data-toggle="popover" data-html="true" onClick="return popLogSummary('shift', {{ shift.id }});">Changelog</a>
+            <a href="#" title="Log Summary" id="popLogSummary_shift_{{ shift.id }}" onClick="return popLogSummary('shift', {{ shift.id }});">Changelog</a>
        </li>
         <li>
             <a href="#" onClick="return grabEditShiftForm({{ shift.id }}, {{ shift.event.id }});">Edit</a>
