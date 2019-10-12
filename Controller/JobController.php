@@ -71,14 +71,22 @@ class JobController extends CommonController
         $em->persist($job);
         $em->flush($job);
 
-        if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, array('booked' => true, 'return_jobs' => true))) {
-            $overlapped = current($overlap)->getShift();
-            return new Response(
-                "You have now double booked and the other job being "
-                . (string)$overlapped . " at "
-                . $overlapped->getStart()->format("H.i")
-                . " to " . $overlapped->getEnd()->format("H.i")
-              , Response::HTTP_CONFLICT);
+        $conflicts = [];
+        if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, ['same_day' => true, 'booked_only' => true, 'return_jobs' => true])) {
+            foreach ($overlap as $ojob) {
+                $overlapped = $ojob->getShift();
+                $conflicts[] = 
+                    "You have now double booked "
+                    . (string)$job . " for "
+                    . (string)$job->getPerson()
+                    . " and the other job being "
+                    . (string)$overlapped . " at "
+                    . $overlapped->getStart()->format("H.i")
+                    . " to " . $overlapped->getEnd()->format("H.i");
+            }
+        }
+        if (count($conflicts) > 0) {
+            return new Response(implode("\n", $conflicts), Response::HTTP_CONFLICT);
         }
 
         if ($this->isRest($access)) {
@@ -99,15 +107,29 @@ class JobController extends CommonController
 
         $em = $this->getDoctrine()->getManager();
         $jobrepo = $em->getRepository('CrewCallBundle:Job');
+        $conflicts = [];
         foreach ($jobs as $job_id) {
             if (!$job = $jobrepo->find($job_id))
                 return new JsonResponse(array("status" => "NOT FOUND"), Response::HTTP_NOT_FOUND);
             $job->setState($state);
-            if ($job->isBooked() && $overlap = $jobrepo->checkOverlapForPerson($job, array('booked' => true, 'return_jobs' => true))) {
-            return new Response("Can not set job to a booked status because it will overlap with " . (string)current($overlap)->getShift(), Response::HTTP_CONFLICT);
+            if ($job->isBooked() && $overlap = $jobrepo->checkOverlapForPerson($job, ['same_day' => true, 'booked_only' => true, 'return_jobs' => true])) {
+                foreach ($overlap as $ojob) {
+                    $overlapped = $ojob->getShift();
+                    $conflicts[] = 
+                        "You have now double booked "
+                        . (string)$job . " for "
+                        . (string)$job->getPerson()
+                        . " and the other job being "
+                        . (string)$overlapped . " at "
+                        . $overlapped->getStart()->format("H.i")
+                        . " to " . $overlapped->getEnd()->format("H.i");
+                }
             }
         }
         $em->flush();
+        if (count($conflicts) > 0) {
+            return new Response(implode("\n", $conflicts), Response::HTTP_CONFLICT);
+        }
 
         return new JsonResponse(array("status" => "OK"), Response::HTTP_OK);
     }
@@ -134,14 +156,32 @@ class JobController extends CommonController
                   , Response::HTTP_BAD_REQUEST);
             }
 
-            if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, ['return_jobs' => true])) {
-                $overlapped = current($overlap)->getShift();
-                return new Response(
-                    "You have now double booked and the other job being "
-                    . (string)$overlapped . " at "
-                    . $overlapped->getStart()->format("H.i")
-                    . " to " . $overlapped->getEnd()->format("H.i")
-                  , Response::HTTP_CONFLICT);
+            $conflicts = [];
+            if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, ['same_day' => true, 'booked_only' => true, 'return_jobs' => true])) {
+                foreach ($overlap as $ojob) {
+                    $overlapped = $ojob->getShift();
+                    $conflicts[] = 
+                        "You have now double booked "
+                        . (string)$job . " for "
+                        . (string)$job->getPerson()
+                        . " and the other job being "
+                        . (string)$overlapped . " at "
+                        . $overlapped->getStart()->format("H.i")
+                        . " to " . $overlapped->getEnd()->format("H.i");
+                }
+            }
+            // Added to a function without having the skill?
+            if (!$job->getPerson()->getFunctions()->contains($job->getShift()->getFunction())) {
+                    $conflicts[] = 
+                        "You have added "
+                        . (string)$job->getPerson()
+                        . " to a job with a function ("
+                        . (string)$job->getFunction()
+                        . ") the person does not have ";
+            }
+
+            if (count($conflicts) > 0) {
+                return new Response(implode("\n", $conflicts), Response::HTTP_CONFLICT);
             }
 
             if ($this->isRest($access)) {

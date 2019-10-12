@@ -52,14 +52,18 @@
     <tbody>
     {% for job in jobs %}
         <tr>
-        {% set overjobs = cc_jobs.checkoverlapforperson(job, {'return_jobs': true }) %}
+        {% set overjobs = cc_jobs.checkoverlapforperson(job, {'same_day': true, 'booked_only': true, 'return_jobs': true }) %}
         {% if overjobs | length > 0 %}
 <div id="overlap_popover_content_{{ job.id }}" class="hidden">
 {% for ojob in overjobs %}
-{{ ojob.shift }} ( {{ ojob.statelabel }} {{ ojob.shift.start|date('H:i') }} -> {{ ojob.shift.end|date('H:i') }})<br>
+{{ ojob.shift }} ({{ ojob.statelabel }} {{ ojob.shift.start|date('H:i') }} -> {{ ojob.shift.end|date('H:i') }})<br>
 {% endfor %}
 </div>
+            {% if job.booked %}
+            <td class="ccError" data-order="{{ shift.start | date('U')}}" >
+            {% else %}
             <td class="ccWarn" data-order="{{ shift.start | date('U')}}" >
+            {% endif %}
             <input class="job_list_checkbox_{{ shift.event.id }}" type="checkbox" name="job_list" value="{{ job.id }},{{ job.person.id }}">
             <a href="#" title="Overlapping Jobs" id="overlap_popover_{{ job.id }}" onClick="return popOverlap({{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-warning-sign"></span></a>
         {% else %}

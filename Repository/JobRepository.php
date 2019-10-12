@@ -232,6 +232,9 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
 
     /*
      * Hmm, need it, gotta find out best way to to.
+     * TODO: Ponder how I can configure overlap requirements. Should be a
+     * configuration option for "Overlap check method". Both here and the one
+     * that sets the overlap flag. (Which isn't very useful right now.)
      */
     public function checkOverlapForPerson($job, $options = [])
     {
@@ -243,11 +246,30 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ->from($this->_entityName, 'j')
             ->innerJoin('j.shift', 's')
             ->where("j.person = :person")
-            ->andWhere('s.start <= :to')
-            ->andWhere('s.end >= :from')
-            ->setParameter('person', $person)
-            ->setParameter('to', $to)
-            ->setParameter('from', $from);
+            ->setParameter('person', $person);
+
+        /*
+         * This should be default, but I'll just spread it around instead.
+         * It's more understandable than the other way round with som "Exact"
+         * or better option name.
+         */
+        if (isset($options['same_day'])) {
+            $from_day = clone($from);
+            // This just looks so wrong.
+            $qb
+                ->andWhere('s.start >= :from_day_start')
+                ->andWhere('s.start <= :from_day_end')
+                ->setParameter('from_day_start', $from_day->format("Y-m-d 00:00"))
+                ->setParameter('from_day_end', $from_day->format("Y-m-d 23:59"))
+            ;
+        } else {
+            $qb
+                ->andWhere('s.start <= :to')
+                ->andWhere('s.end >= :from')
+                ->setParameter('to', $to)
+                ->setParameter('from', $from)
+            ;
+        }
 
         if (isset($options['booked_only'])) {
             $states = ExternalEntityConfig::getBookedStatesFor('Job');
@@ -265,7 +287,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
                     $one_booked = true;
             }
         }
-        if (isset($options['any'])) {
+        if (isset($options['any_overlap'])) {
             if (isset($options['return_jobs'])) {
                 return $a;
             }
