@@ -24,7 +24,6 @@ class LocationType extends AbstractType
                 'label' => 'Status',
                 'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Location')))
             ->add('address', AddressType::class, ['address_elements' => $options['address_elements']])
-            ->add('parent')
         ;
     }
     

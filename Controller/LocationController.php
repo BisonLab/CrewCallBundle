@@ -44,6 +44,12 @@ class LocationController extends CommonController
     public function newAction(Request $request)
     {
         $location = new Location();
+        if ($parent_id = $request->get('parent')) {
+            $em = $this->getDoctrine()->getManager();
+            if ($parent = $em->getRepository('CrewCallBundle:Location')->find($parent_id)) {
+                $location->setParent($parent);
+            }
+        }
         $addressing = $this->container->get('crewcall.addressing');
         $address_elements = $addressing->getFormElementList($location);
         $form = $this->createForm('CrewCallBundle\Form\LocationType', $location, ['address_elements' => $address_elements]);

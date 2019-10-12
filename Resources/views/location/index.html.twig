@@ -19,16 +19,24 @@
                 <th>Address</th>
                 <th>Description</th>
                 <th>Status</th>
+                <th>Sublocations</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for location in locations %}
+        {% for location in locations if location.parent is empty %}
             <tr>
                 <td><a href="{{ path('location_show', { 'id': location.id }) }}">{{ location.name }}</a></td>
                 <td>{{ cc_addressing.compose(location, 'line') }}</td>
                 <td>{{ location.description }}</td>
                 <td>{{ location.statelabel }}</td>
+                <td>
+                {% for child in location.children %}
+                    <a href="{{ path('location_show', { 'id': child.id }) }}">{{ child.name }}</a><br>
+                {% else %}
+                    &nbsp;
+                {% endfor %}
+                </td>
                 <td>
                  <a href="{{ path('location_show', { 'id': location.id }) }}">show</a><br>
                  <a href="{{ path('location_edit', { 'id': location.id }) }}">edit</a>

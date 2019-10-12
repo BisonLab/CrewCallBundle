@@ -3,7 +3,13 @@
 {% block body %}
 {% include 'CrewCallBundle:location:handling.html.twig' %}
 <div class="col-sm-3">
-    <h1>{{ location }}</h1>
+    {% if location.parent %}
+        <h1>
+        <a href="{{ path('location_show', {'id': location.parent.id}) }}">{{ location.parent }}</a> -> {{ location.name }}
+        </h1>
+    {% else %}
+        <h1>{{ location.name }}</h1>
+    {% endif %}
 
     <table class="showTable">
         <tbody>
@@ -23,19 +29,34 @@
                 <th>Address</th>
                 <td>{{ cc_addressing.compose(location, 'html') | raw }}</td>
             </tr>
+            {% if location.children | length > 0 %}
+            <tr>
+                <th>Sublocations</th>
+                <td>
+                {% for child in location.children %}
+                    <a href="{{ path('location_show', {'id': child.id}) }}">{{ child.name }}</a><br>
+                {% endfor %}
+                </td>
+            </tr>
+            {% endif %}
         </tbody>
     </table>
 
     <ul>
+        {% if not location.parent %}
         <li>
-            <a href="#" title="LOcation Summary" id="popLogSummary_location_{{ location.id }}" onClick="return popLogSummary('location', {{ location.id }});" class="btn btn-sm btn-dark">Changelog</a>
+            <a href="{{ path('location_new', {'parent': location.id}) }}" class="btn btn-sm btn-dark">New sub location</a>
+        </li>
+        {% endif %}
+        <li>
+            <a href="#" title="Location Summary" id="popLogSummary_location_{{ location.id }}" onClick="return popLogSummary('location', {{ location.id }});" class="btn btn-sm btn-dark">Changelog</a>
         </li>
         <li>
             <a href="{{ path('location_edit', { 'id': location.id }) }}" class="btn btn-sm btn-dark">Edit</a>
         </li>
         <li>
             {{ form_start(delete_form) }}
-                <input class="btn btn-sm btn-error" type="submit" value="Delete">
+                <input class="btn btn-sm btn-danger" type="submit" value="Delete">
             {{ form_end(delete_form) }}
         </li>
     </ul>
