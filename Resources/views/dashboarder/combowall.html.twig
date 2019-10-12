@@ -82,11 +82,7 @@ Done
         <h4 class="modal-title">Add todo or wall message</h4>
       </div>
       <div class="modal-body">
-        <label class="ccSwitch">
-        <input type="checkbox" id="mtypecheck" onChange="setMessageType(this)" />
-        <span class="ccSlider round"></span>
-        </label>
-        <strong>Todo</strong>
+        <input type="checkbox" id="mtypecheck" onChange="setMessageType(this)"> <strong>Todo</strong></input>
 {% set ccmform = sakonnin_messages.getCreateForm({
     'message_data': {},
     'create_view': true,
