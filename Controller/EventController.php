@@ -78,6 +78,12 @@ class EventController extends CommonController
     public function newAction(Request $request)
     {
         $event = new Event();
+        if ($parent_id = $request->get('parent')) {
+            $em = $this->getDoctrine()->getManager();
+            if ($parent = $em->getRepository('CrewCallBundle:Event')->find($parent_id)) {
+                $event->setParent($parent);
+            }
+        }
 
         $form = $this->createForm('CrewCallBundle\Form\EventType', $event);
         $form->handleRequest($request);
@@ -100,20 +106,16 @@ class EventController extends CommonController
         }
 
         // If this has a parent set here, it's not an invalid create attempt.
-        if ($parent_id = $request->get('parent')) {
-            $em = $this->getDoctrine()->getManager();
-            if ($parent = $em->getRepository('CrewCallBundle:Event')->find($parent_id)) {
-                $event->setParent($parent);
-                $event->setStart($parent->getStart());
-                $event->setEnd($parent->getEnd());
-                $event->setOrganization($parent->getOrganization());
-                $event->setLocation($parent->getLocation());
-                // TODO: Consider setting manager, location and organization
-                // aswell. But not before I've decided on wether I want to
-                // inherit from the parent or not. And on which properties.
-                // (Org and loc are included, for now at least.)
-                $form->setData($event);
-            }
+        if ($parent = $event->getParent()) {
+            $event->setStart($parent->getStart());
+            $event->setEnd($parent->getEnd());
+            $event->setOrganization($parent->getOrganization());
+            $event->setLocation($parent->getLocation());
+            // TODO: Consider setting manager, location and organization
+            // aswell. But not before I've decided on wether I want to
+            // inherit from the parent or not. And on which properties.
+            // (Org and loc are included, for now at least.)
+            $form->setData($event);
         } else {
             // Can't be in the past, not usually anyway.
             $event->setStart(new \DateTime());
