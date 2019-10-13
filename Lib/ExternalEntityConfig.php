@@ -86,6 +86,12 @@ class ExternalEntityConfig
         return isset(self::$states[$thingie]) ? self::$states[$thingie]['states'] : self::$states['default']['states'];
     }
 
+    public static function getDefaultStateFor($thingie)
+    {
+        // And yes, I will hard code a state here.
+        return self::$states[$thingie]['default_state'] ?? "ACTIVE";
+    }
+
     public static function getActiveStatesFor($thingie)
     {
         return isset(self::$states[$thingie]) ? self::$states[$thingie]['active_states'] : self::$states['default']['active_states'];
