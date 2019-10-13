@@ -414,21 +414,42 @@ class Person extends BaseUser
     /**
      * Set state
      *
+     * Way too complex. I am trying to squeeze states inside states and make
+     * sure we only have one current state and so on.
+     *
+     * TODO:
+     * I'd better come up with a simpler solution, maybe even let the admin
+     * users take care of the date handling and accept there will be two states
+     * for the same day when they don't.
+     *
+     * With a default state there should at least be something returned from
+     * getState anyway.
+     *
+     * But there should be a saved state for any given date, just for the
+     * record. So, I should be setting some dates, and woops, complex again.
+     *
      * @param string $state
      * @return Person
      */
     public function setState($state, $options = array())
     {
-        if (empty($options) && $state == $this->getState()) return $this;
+        // No dates and same state? no need to go on.
+        if (empty($options) && $state == $this->getState())
+            return $this;
             
         $newstate = new PersonState();
         $newstate->setState($state);
+        $curstate = $this->getStateOnDate();
 
-        // Should add "And from_date is today";
         if (empty($options)) {
             $newstate->setFromDate(new \DateTime());
-            if ($curstate = $this->getStateOnDate()) {
-                $curstate->setToDate(new \DateTime('yesterday'));
+            if ($curstate) {
+                // Just in case the state was set today.
+                if ($curstate->getFromDate() == $newstate->getFromDate())
+                    $this->removeState($curstate);
+                else
+                    // Can't be in the future, so set the to date to yesterday.
+                    $curstate->setToDate(new \DateTime('yesterday'));
             }
             $this->addState($newstate);
             return $this;
@@ -453,6 +474,18 @@ class Person extends BaseUser
             if ($ps->getToDate() !== null
                     && $ps->getToDate() < $newstate->getFromDate()) {
                 continue;
+            }
+
+            // If this state is within the new state, just remove it.
+            if ($newstate->getFromDate() <= $ps->getFromDate()) {
+                if (!$ps->getToDate() && !$newstate->getToDate()) {
+                    $this->removeState($ps);
+                    continue;
+                }
+                if ($ps->getToDate() <= $newstate->getToDate()) {
+                    $this->removeState($ps);
+                    continue;
+                }
             }
 
             // New state in the future after this period?
@@ -504,6 +537,14 @@ class Person extends BaseUser
             $bend = clone($newstate->getFromDate());
             $before->setToDate($bend->modify("-1 day"));
         }
+/*
+dump($before);
+dump($after);
+dump($curstate);
+dump($newstate);
+throw new Nei();
+ */
+
         return $this;
     }
 
@@ -526,6 +567,13 @@ class Person extends BaseUser
         return $this;
     }
 
+    public function removeState(PersonState $state)
+    {
+        if ($this->person_states->contains($state))
+            $this->person_states->removeElement($state);
+        return $this;
+    }
+
     /**
      * Get state
      *
@@ -533,8 +581,7 @@ class Person extends BaseUser
      */
     public function getState()
     {
-        return $this->getStateOnDate()
-            ? $this->getStateOnDate()->getState() : "";
+        return $this->getStateOnDate()->getState();
     }
 
     /**
@@ -568,12 +615,15 @@ class Person extends BaseUser
             if ($ps->getFromDate() > $date)
                 continue;
             // But not a to_date.
-            if ($ps->getToDate() !== null && $ps->getToDate() < $date)
+            if ($ps->getToDate() != null && $ps->getToDate() < $date)
                 continue;
-            // Are we left with the first viable state now?
             return $ps;
         }
-        return null;
+        // Can not return nothing.
+        $default = new PersonState();
+        $default->setState(ExternalEntityConfig::getDefaultStateFor('Person'));
+        $default->setFromDate($date);
+        return $default;
     }
 
     /**
@@ -675,8 +725,7 @@ class Person extends BaseUser
         /*
          * Check state. I'll default to the uncertain
          */
-        if (!$stateobj = $this->getStateOnDate($time))
-            return true;
+        $stateobj = $this->getStateOnDate($time);
 
         $state = $stateobj->getState();
         if (!in_array($state,
