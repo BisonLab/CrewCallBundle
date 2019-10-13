@@ -143,7 +143,15 @@
         {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
             <strong>{{ note.subject }}</strong><br>
             <pre>{{ note.body }}</pre>
-            <br>
+    {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
+    <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
+    <a href="#" onClick="return grabEditMessageForm({{ note.id }});"><span class="edit_glyph"></span></a>
+    {{ form_start(mdelform) }}
+    {{ form_rest(mdelform) }}
+    <button type="submit" class="btn btn-link">
+    <span class="glyphicon glyphicon-trash"></span>
+    </button>
+    </form>
         {% endfor %}
     </div>
 
