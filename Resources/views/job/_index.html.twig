@@ -92,9 +92,10 @@
             <td>
             <a href="#" title="Log Summary" id="popLogSummary_job_{{ job.id }}" onClick="return popLogSummary('job', {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
                 {{ job.statelabel }}
-            {% if job.shift.start < date() %}
 {# Better be a selectbox or just not at jobs at all, just event or shift.
+            {% if job.shift.start < date() %}
                 <br><a role="button" class="btn-sm btn-primary" href="#" onClick="return setStateOnJob({{shift.id}}, 'COMPLETED', {{ job.shift.id }});">Complete</a>
+            {% endif %}
 #}
             </td>
 {% set ijobcontext = {
@@ -114,6 +115,8 @@
         {% else %}
             &nbsp;
         {% endif %}
+    {% else %}
+    &nbsp;
     {% endfor %}
  </td>
 {% endfor %}
@@ -133,18 +136,19 @@
     {% endif %}
             </td>
             <td id="jobLogTable_{{ job.id }}" align="right">
+            {% if job.shift.start < date() %}
                 {% if job.joblogs | length > 0  %}
                      {{ jlmacros.list_joblogs(job) }}
+                {% elseif job.booked  %}
+                    <a role="button" class="btn-sm btn-primary" href="#" id="addJobLog_{{ job.id }}" data-html="true" onClick="return grabNewJobLogForm({{ job.id }}, {{ job.shift.id }});">Add Hours</a>
                 {% else %}
-                    {% if job.booked  %}
-                        <a role="button" class="btn-sm btn-primary" href="#" id="addJobLog_{{ job.id }}" data-html="true" onClick="return grabNewJobLogForm({{ job.id }}, {{ job.shift.id }});">Add Hours</a>
-                    {% else %}
-                        &nbsp;
-                    {% endif %}
+                    &nbsp;
                 {% endif %}
+            {% else %}
+                &nbsp;
             {% endif %}
             </td>
-            <td align="right">
+            <td id="buttons_{{ job.id }}" align="right">
             {% if job.state == "CONFIRMED" %}
               <a role="button" class="btn-sm btn-danger" href="#" onClick="return setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
             {% elseif job.state == "ASSIGNED" %}
