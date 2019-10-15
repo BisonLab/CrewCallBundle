@@ -51,6 +51,16 @@ class EventType extends AbstractType
                      ->orderBy('o.name', 'ASC');
                     },
                 ))
+            ->add('parent', EntityType::class,
+                array(
+                    'required' => false,
+                    'placeholder' => "",
+                    'class' => 'CrewCallBundle:Event',
+                    'query_builder' => function(EntityRepository $er) {
+                    return $er->createQueryBuilder('e')
+                     ->where("e.parent is null");
+                    },
+                ))
            ;
     }
     
