@@ -27,11 +27,14 @@
         <label class="ccSwitch">
           <input title="Open or close the shift for registration" type="checkbox" id="shiftstatecheck_{{ shift.id }}" onChange="setStateOnShiftCheckbox({{ shift.id }}, {{ shift.event.id }}, this)" {% if shift.open %}checked{% endif %}/>
           <span class="ccSlider round" title="Open or close the shift"></span>
-        </label><br>
+        </label>
+        </td>
+        <td align="left">
+          <div id="openclose_{{ shift.id }}">{% if shift.open %}Open for registration{% else %}Closed for registration{% endif %}</div>
         </td>
         <td align="right">
         {% set amounts = shift.jobsamountbystate %}
-        <span title="Fully Booked" class="glyphicon glyphicon-ok {% if shift.amount - shift.bookedamount != 0 %}hidden{% endif %}"></span>
+        <span title="Fully Booked" class="glyphicon glyphicon-ok {% if shift.amount - amounts.CONFIRMED != 0 %}hidden{% endif %}"></span>
             <span title="Total needed" class="ccAmount ccTotal">{{ shift.amount }}</span>
         <span title="Still needing" class="ccAmount ccNeeded">{{ shift.amount - shift.bookedamount }}</span>
         <span  title="Amount Confirmed" class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
