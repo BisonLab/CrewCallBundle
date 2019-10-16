@@ -1,15 +1,11 @@
-{# Sorting by username.
- #}
-<table id="sortable_table" class="table table-hover table-sm">
-{# Sort by last name?
 <table id="sortable_table" class="table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
-#}
 <thead>
     <tr>
         <th>Username</th>
         <th>Name</th>
         <th>Functions</th>
         <th>Mobile</th>
+        <th>Email</th>
         <th>Status</th>
         <th class="no-sort">
             <input onClick="return select_all_persons(this);" class="select_all_persons_checkbox" type="checkbox" name="select_all">
@@ -24,6 +20,7 @@
         <td>
             {% for f in person.functions(function_type) %} {{ f.name }},{% endfor %}</td>
         <td>{{ person.mobilephonenumber }}</td>
+        <td>{{ person.email }}</td>
         <td>
         {{ person.statelabel }}
         </td>

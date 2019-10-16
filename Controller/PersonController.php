@@ -43,50 +43,62 @@ class PersonController extends CommonController
 
         $people = $em->getRepository('CrewCallBundle:Person')->findAll();
         $fe_repo = $em->getRepository('CrewCallBundle:FunctionEntity');
-        $job_repo = $em->getRepository('CrewCallBundle:Job');
-
-        $fid = $request->get('function_id');
-        $ftype = $request->get('function_type');
-        $select_grouping = $request->get('select_grouping');
-        if (!$functionEntity = $fe_repo->find($fid))
-            return $this->returnNotFound($request, 'No function to filter');
-
-        // Looks stupid, and is. Should definately be a repo action with
-        // filters.
-        if ($select_grouping == 'all') {
-            $people = $functionEntity->getPeople(false);
-        } else {
-            $people = [];
-            // I am already going through them all here,
-            foreach ($functionEntity->getPeople(false) as $p) {
-
-                if (!in_array($p->getState(),
-                        ExternalEntityConfig::getActiveStatesFor('Person')))
-                    continue;
-
-                if ($on_date = $request->get('on_date')) {
-                    $booked = $select_grouping == 'booked' || $select_grouping == 'available';
-                    $got_jobs = $job_repo->findJobsForPerson($p, [
-                            'booked' => $booked,
-                            'from' => $on_date,
-                            'to' => $on_date,
-                            ]);
-                    if (count($got_jobs) == 0 && $select_grouping == 'available') {
-                            $people[] = $p;
-                            continue;
-                    } elseif (count($got_jobs) > 0) {
-                        $people[] = $p;
-                        continue;
-                    }
-                }
-            }
-        }
 
         $functions = $fe_repo->findBy(['function_type'
             => $functionEntity->getFunctionType()], ['name' => 'ASC']);
         return $this->render('person/index.html.twig', array(
             'people' => $people,
             'functions' => $functions,
+            'functionEntity' => $functionEntity,
+        ));
+    }
+
+    /**
+     * Can become a new controller, but keep it here for now.
+     *
+     * @Route("/crew", name="crew_index", methods={"GET"})
+     */
+    public function crewIndexAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $fe_repo = $em->getRepository('CrewCallBundle:FunctionEntity');
+        $job_repo = $em->getRepository('CrewCallBundle:Job');
+
+        $select_grouping = $request->get('select_grouping');
+        $on_date = $request->get('on_date');
+
+        $people = [];
+        $functionEntity = null;
+        if ($fid = $request->get('function_id')) {
+            if (!$functionEntity = $fe_repo->find($fid))
+                return $this->returnNotFound($request, 'No function to filter');
+
+            if ($select_grouping == 'all') {
+                $people = $functionEntity->getPeople(false);
+            } else {
+                $people = $this->_filterPeople($functionEntity->getPeople(false), [
+                    'crew_only' => true,
+                    'select_grouping' => $select_grouping,
+                    'on_date' => $on_date,
+                ]);
+            }
+        } else {
+                $people = $this->_filterPeople($em->getRepository('CrewCallBundle:Person')->findAll(),[
+                    'crew_only' => true,
+                    'select_grouping' => $select_grouping,
+                    'on_date' => $on_date,
+                ]);
+        }
+
+        $functions = $fe_repo->findBy(['function_type' => 'SKILL'],
+            ['name' => 'ASC']);
+        return $this->render('person/crewindex.html.twig', array(
+            'people' => $people,
+            'on_date' => $on_date,
+            'select_grouping' => $select_grouping,
+            'functions' => $functions,
+            'function_type' => 'SKILL',
             'functionEntity' => $functionEntity,
         ));
     }
@@ -104,44 +116,24 @@ class PersonController extends CommonController
 
         $fid = $request->get('function_id');
         $select_grouping = $request->get('select_grouping');
+        $on_date = $request->get('on_date') ?? null;
         if (!$functionEntity = $fe_repo->find($fid))
             return $this->returnNotFound($request, 'No function to filter');
 
-        // Looks stupid, and is. Should definately be a repo action with
-        // filters.
         if ($select_grouping == 'all') {
             $people = $functionEntity->getPeople(false);
         } else {
-            $people = [];
-            // I am already going through them all here,
-            foreach ($functionEntity->getPeople(false) as $p) {
-
-                if (!in_array($p->getState(),
-                        ExternalEntityConfig::getActiveStatesFor('Person')))
-                    continue;
-
-                if ($on_date = $request->get('on_date')) {
-                    $booked = $select_grouping == 'booked' || $select_grouping == 'available';
-                    $got_jobs = $job_repo->findJobsForPerson($p, [
-                            'booked' => $booked,
-                            'from' => $on_date,
-                            'to' => $on_date,
-                            ]);
-                    if (count($got_jobs) == 0 && $select_grouping == 'available') {
-                            $people[] = $p;
-                            continue;
-                    } elseif (count($got_jobs) > 0) {
-                        $people[] = $p;
-                        continue;
-                    }
-                }
-            }
+            $people = $this->_filterPeople($functionEntity->getPeople(false), [
+                'select_grouping' => $select_grouping,
+                'on_date' => $on_date,
+            ]);
         }
 
         $functions = $fe_repo->findBy(['function_type'
             => $functionEntity->getFunctionType()], ['name' => 'ASC']);
         return $this->render('person/index.html.twig', array(
             'people' => $people,
+            'on_date' => $on_date,
             'functions' => $functions,
             'functionEntity' => $functionEntity,
         ));
@@ -159,6 +151,7 @@ class PersonController extends CommonController
 
         // Ok, implementing this here aswell.
         $people = [];
+        $functionEntity = null;
         if ($fid = $request->get('function_id')) {
             $fe_repo = $em->getRepository('CrewCallBundle:FunctionEntity');
             if (!$functionEntity = $fe_repo->find($fid))
@@ -170,40 +163,13 @@ class PersonController extends CommonController
         }
 
         $select_grouping = $request->get('select_grouping');
+        $on_date = $request->get('on_date') ?? null;
 
-        // Pure laziness I presume, but there are not that many people and
-        // since I collect them in different ways above here, it's simple.
-        // (OK, lazy)
-
-        if ($select_grouping != 'all') {
-            $parr = [];
-            // I am already going through them all here, 
-            foreach ($people as $p) {
-                if (!in_array($p->getState(),
-                        ExternalEntityConfig::getActiveStatesFor('Person')))
-                    continue;
-
-                if ($on_date = $request->get('on_date')) {
-                    $booked = $select_grouping == 'booked' || $select_grouping == 'available';;
-                     
-                    $got_jobs = $job_repo->findJobsForPerson($p, [
-                            'booked' => $booked,
-                            'from' => $on_date,
-                            'to' => $on_date,
-                            ]);
-                    if (count($got_jobs) == 0 && $select_grouping == 'available') {
-                            $parr[] = $p;
-                            continue;
-                    } elseif (count($got_jobs) > 0) {
-                        $parr[] = $p;
-                        continue;
-                    }
-                } else {
-                    $parr[] = $p;
-                }
-            }
-            $people = $parr;
-        }
+        if ($functionEntity)
+            $people = $this->_filterPeople($functionEntity->getPeople(false), [
+                'select_grouping' => $select_grouping,
+                'on_date' => $on_date,
+            ]);
 
         $ftypes = ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType');
         $function_type_plural = $ftypes[$function_type]['plural'];
@@ -212,6 +178,7 @@ class PersonController extends CommonController
             ->findByFunctionType($function_type);
         return $this->render('person/index.html.twig', array(
             'people' => $people,
+            'on_date' => $on_date,
             'function_type' => $function_type,
             'function_type_plural' => $function_type_plural,
             'function_type_label' => $function_type_label,
@@ -583,23 +550,28 @@ class PersonController extends CommonController
             $class = $userManager->getClass();
             $em = $this->getDoctrine()->getManagerForClass($class);
             $repo = $em->getRepository($class);
-            $result = array();
+
             $q = $repo->createQueryBuilder('u')
                 ->where('lower(u.usernameCanonical) LIKE :term')
                 ->orWhere('lower(u.emailCanonical) LIKE :term')
                 ->setParameter('term', strtolower($term) . '%');
+
+
             if (property_exists($class, 'full_name')) {
                 $q->orWhere('lower(u.full_name) LIKE :full_name')
                 ->setParameter('full_name', '%' . strtolower($term) . '%');
             }
+
             if (property_exists($class, 'mobile_phone_number')) {
                 $q->orWhere('lower(u.mobile_phone_number) LIKE :mobile_phone_number')
                 ->setParameter('mobile_phone_number', '%' . strtolower($term) . '%');
             }
+
             if (property_exists($class, 'phone_number')) {
                 $q->orWhere('lower(u.phone_number) LIKE :phone_number')
                 ->setParameter('phone_number', '%' . strtolower($term) . '%');
             }
+
             if (property_exists($class, 'phone_number')) {
                 $q->orWhere('lower(u.phone_number) LIKE :phone_number')
                 ->setParameter('phone_number', '%' . strtolower($term) . '%');
@@ -612,6 +584,14 @@ class PersonController extends CommonController
                     // Filtering here, since I already go through them.
                     if ($request->query->get("enabled")) {
                         if (!$user->getEnabled())
+                            continue;
+                    }
+                    /*
+                     * The simplest way to filter. If they have a
+                     * skill/person_function they are crew.
+                     */
+                    if ($request->query->get("crew_only")) {
+                        if (!$user->isCrew())
                             continue;
                     }
 
@@ -638,8 +618,6 @@ class PersonController extends CommonController
                     $people[] = $res;
                 }        
             }
-        } else {
-            $result = "Too little information provided for a viable search";
         }
 
         if ($this->isRest($access)) {
@@ -652,5 +630,89 @@ class PersonController extends CommonController
         );
         return $this->render('BisonLabCommonBundle:User:index.html.twig',
             $params);
+    }
+
+    /*
+     * In case of more filters, send request.
+     */
+    private function _filterPeople($people, $options)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $job_repo = $em->getRepository('CrewCallBundle:Job');
+
+        $select_grouping = $options['select_grouping'] ?? null;
+        $crew_only = $options['crew_only'] ?? false;
+        $on_date = $options['on_date'] ?? null;
+
+        // If all, return all.
+        if (!$crew_only && $select_grouping == 'all') {
+            return $people;
+        }
+
+        $filtered = new \Doctrine\Common\Collections\ArrayCollection();
+        foreach ($people as $p) {
+            if ($crew_only && !$p->isCrew()) {
+                continue;
+            }
+            if ($on_date) {
+                // Basically all active
+                if ($select_grouping == 'all_active') {
+                    if (!in_array($p->getStateOnDate($on_date),
+                            ExternalEntityConfig::getActiveStatesFor('Person')))
+                        continue;
+                }
+                $jobs = $job_repo->findJobsForPerson($p, [
+                        'from' => $on_date,
+                        'to' => $on_date,
+                        ]);
+                if ($select_grouping == 'nothing' && count($jobs) == 0) {
+                    if (!$filtered->contains($p))
+                        $filtered->add($p);
+                    continue;
+                }
+                // Now filter based on select_group
+                $add_person = false;
+                foreach ($jobs as $j) {
+                    switch($select_grouping) {
+                        case 'booked':
+                        case 'available':
+                            if (in_array($j->getState(),
+                                ExternalEntityConfig::getBookedStatesFor('Job')))
+                                    $add_person = true;
+                            break;
+                        case 'interested':
+                            if ($j->getState() == "INTERESTED")
+                                $add_person = true;
+                            break;
+                        case 'assigned':
+                            if ($j->getState() == "ASSIGNED")
+                                $add_person = true;
+                            break;
+                        case 'confirmed':
+                            if ($j->getState() == "CONFIRMED")
+                                $add_person = true;
+                            break;
+                    }
+                }
+                if ($select_grouping == 'available') {
+                    if (!$add_person && !$filtered->contains($p))
+                        $filtered->add($p);
+                    continue;
+                }
+                if ($add_person)
+                    if (!$filtered->contains($p))
+                        $filtered->add($p);
+            // And if no on_date set:
+            } else {
+                if ($select_grouping == 'all_active') {
+                    if (!in_array($p->getState(),
+                            ExternalEntityConfig::getActiveStatesFor('Person')))
+                        continue;
+                }
+                if (!$filtered->contains($p))
+                    $filtered->add($p);
+            }
+        }
+        return $filtered;
     }
 }

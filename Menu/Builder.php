@@ -40,8 +40,7 @@ class Builder implements ContainerAwareInterface
             // Todo: Use system_role, if they can log in (ROLE_USER and
             // ROLE_ADMIN), they should be here.
             $crewmenu = $menu->addChild("Crew",
-                array('route' => 'person_function_type',
-                'routeParameters' => array('function_type' => "SKILL")));
+                array('route' => 'crew_index'));
             $menu->addChild('Organizations', array('route' => 'organization_index'));
             $menu->addChild('Locations', array('route' => 'location_index'));
 

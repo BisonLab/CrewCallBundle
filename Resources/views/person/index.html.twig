@@ -1,18 +1,12 @@
 {% extends 'base.html.twig' %}
 {% block title %}
-{% if function_type == "SKILL" %}
-Crew
-{% else %}
 People
-{% endif %}
 {% endblock %}
 
 {% block body %}
 {% include 'CrewCallBundle:person:handling.html.twig' %}
 
-    {% if function_type == "SKILL" %}
-        <h1>Crew</h1>
-    {% elseif function_type_plural is defined %}
+    {% if function_type_plural is defined %}
         <h1>People with {{ function_type_plural }}</h1>
     {% elseif functionEntity is defined and functionEntity is not null %}
         <h1>People with {{ functionEntity }}</h1>
@@ -40,25 +34,15 @@ People
 </select>
 {# TODO: if on-date, show jobs-summary that date #}
     <select name="select_grouping">
-        <option value="all_active">All Active</option>
-        <option value="available">Available on date:</option>
-        <option value="booked">Booked on date:</option>
-        <option value="registered">Something on date:</option>
-        <option value="all" {% if all is defined and all is not null %}CHECKED{% endif %}>Include non-active</option>
+        <option value="all">All</option>
+        <option value="all_nocrew">All, exclude crewmembers </option>
     </select>
-    <input type="date" value="" name="on_date"/>
     <button class="btn btn-sm btn-dark" type="submit">Show</button>
     </form>
 {% endif %}
 </div>
 <div class="col-sm-2">
 </div>
-{% if function_type == "SKILL" %}
-{# Kinda defies the possibility to configure function types, but I am still pondering about that need anyway. #}
-<div class="col-sm-2">
-    <a href="{{ path('person_new_crewmember', {'function_type': function_type}) }}" class="btn btn-sm btn-dark">New Crew member</a>
-</div>
-{% endif %}
 
 {% include 'CrewCallBundle:person:_index.html.twig' %}
 

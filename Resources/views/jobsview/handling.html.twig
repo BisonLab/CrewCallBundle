@@ -32,7 +32,7 @@ $(document).ready(function() {
 #}
 
     $( "#filter_username" ).autocomplete({
-      source: "{{ path('person_search', {'access': 'ajax'}) }}",
+      source: "{{ path('person_search', {'crew_only': true, 'enabled': true, 'access': 'ajax','value_with_all': true }) }}",
       minLength: 2,
       select: function( event, ui ) {
         $( "#filter_username" ).val(ui.item.label);

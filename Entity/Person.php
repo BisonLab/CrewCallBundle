@@ -1037,6 +1037,21 @@ throw new Nei();
     }
 
     /**
+     * Is this person a crewe member or not?
+     * This is where we decide (for now)
+     * Later I have to come up with a filter option for use in the repository
+     * calls.
+     * Right now it's very simpole and only checks the state of the person.
+     * Some day it has to filter on a Role/Funtion in the admins organization.
+     * But that is when people can be crew members in more than one
+     * organization and we have a multi-org setup. If ever.
+     */
+    public function isCrew()
+    {
+        return $this->getState() != "EXTERNAL";
+    }
+
+    /**
      * Overrding roles. Need only one role at a time.
      */
     public function setSystemRole($systemRole)

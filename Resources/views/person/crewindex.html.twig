@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+Crew
+{% endblock %}
+
+{% block body %}
+{% include 'CrewCallBundle:person:handling.html.twig' %}
+
+<h1>Crew {{ select_grouping }}</h1>
+<div class="row">
+<div class="col-sm-8">
+{% if functions is defined %}
+<form action="{{ path('crew_index') }}" method="GET">
+<label>Function</label>
+<select name="function_id">
+    <option value="">All</option>
+    {% for elem in functions %}
+    <option value="{{ elem.id }}" {% if functionEntity is not null and elem.id == functionEntity.id %}selected{% endif %}>{{ elem.name }}</option>
+    {% endfor %}
+</select>
+{# TODO: if on-date, show jobs-summary that date #}
+    <select name="select_grouping">
+        <option value="all_active"{% if select_grouping == "all_active" %} SELECTED{% endif %}>All Active</option>
+        <option value="available"{% if select_grouping == "available" %} SELECTED{% endif %}>Available on date:</option>
+        <option value="booked"{% if select_grouping == "booked" %} SELECTED{% endif %}>Booked on date:</option>
+        <option value="confirmed"{% if select_grouping == "confirmed" %} SELECTED{% endif %}>Confirmed on date:</option>
+        <option value="assigned"{% if select_grouping == "assigned" %} SELECTED{% endif %}>Assigned on date:</option>
+        <option value="interested"{% if select_grouping == "interested" %} SELECTED{% endif %}>Interested on date:</option>
+        <option value="nothing"{% if select_grouping == "nothing" %} SELECTED{% endif %}>Nothing on date:</option>
+        <option value="all"{% if select_grouping == "all" %} SELECTED{% endif %}>Include non-active</option>
+    </select>
+    <input type="date" value="{{ on_date}}" name="on_date"/>
+    <button class="btn btn-sm btn-dark" type="submit">Show</button>
+    </form>
+{% endif %}
+</div>
+<div class="col-sm-2">
+</div>
+{# Kinda defies the possibility to configure function types, but I am still pondering about that need anyway. #}
+<div class="col-sm-2">
+    <a href="{{ path('person_new_crewmember', {'function_type': function_type}) }}" class="btn btn-sm btn-dark">New Crew member</a>
+</div>
+
+{% include 'CrewCallBundle:person:_index.html.twig' %}
+
+<div align="right">
+    <button class="btn btn-sm btn-dark" id="message_modal_link" onClick="return openMessageModal();">Send a message</button>
+</div>
+{% endblock %}
