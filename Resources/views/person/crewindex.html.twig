@@ -26,7 +26,9 @@ Crew
         <option value="confirmed"{% if select_grouping == "confirmed" %} SELECTED{% endif %}>Confirmed on date:</option>
         <option value="assigned"{% if select_grouping == "assigned" %} SELECTED{% endif %}>Assigned on date:</option>
         <option value="interested"{% if select_grouping == "interested" %} SELECTED{% endif %}>Interested on date:</option>
+<!-- Not sure why I wanted this. Keep it as an idea for now.
         <option value="nothing"{% if select_grouping == "nothing" %} SELECTED{% endif %}>Nothing on date:</option>
+-->
         <option value="all"{% if select_grouping == "all" %} SELECTED{% endif %}>Include non-active</option>
     </select>
     <input type="date" value="{{ on_date}}" name="on_date"/>
