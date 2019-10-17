@@ -57,8 +57,11 @@ class EventType extends AbstractType
                     'placeholder' => "",
                     'class' => 'CrewCallBundle:Event',
                     'query_builder' => function(EntityRepository $er) {
-                    return $er->createQueryBuilder('e')
-                     ->where("e.parent is null");
+                        $today = new \DateTime();
+                        return $er->createQueryBuilder('e')
+                         ->where("e.parent is null")
+                         ->andWhere("e.start > :today")
+                         ->setParameter('today', $today);
                     },
                 ))
            ;
