@@ -83,27 +83,6 @@
         <p>
         <a href="#" onClick='return createMessage("eventnote_{{ event.id }}");'>Add a note</a>
         </p>
-        {% set mconf = {'mconfig': {
-                'formname': 'eventconfirmnote_' ~ event.id,
-                'reload_after_post': true,
-                'subject': "",
-                'to_type': "NONE",
-                'from_type': "NONE",
-                'message_type': 'ConfirmNote',
-                'submit': 'Save',
-                'context': {
-                    'system': 'crewcall',
-                    'object_name': 'event',
-                    'external_id': event.id
-                    }
-                }
-            }
-        %}
-        {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <p>
-        <a href="#" onClick='return createMessage("eventconfirmnote_{{ event.id }}");'>Add a confirm note</a>
-        </p>
-
         <p>
         {% set mlogcontext = {
                     'system': 'crewcall',

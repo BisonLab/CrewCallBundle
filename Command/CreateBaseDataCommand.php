@@ -41,11 +41,6 @@ class CreateBaseDataCommand extends ContainerAwareCommand
             'base_type' => 'NOTE',
             'security_model' => 'ADMIN_ONLY',
             'description' => "Note only admins can read"),
-        'ConfirmNote' => array(
-            'parent' => 'Notes',
-            'base_type' => 'NOTE',
-            'security_model' => 'ALL_READ',
-            'description' => "Note a crewmember has to ACK before asking for a specific job"),
         'PMSMS' => array(
             'parent' => 'Messages',
             'base_type' => 'MESSAGE',

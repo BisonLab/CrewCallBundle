@@ -703,14 +703,14 @@ class UserFrontController extends CommonController
             $scnc = [
                 'system' => 'crewcall',
                 'object_name' => 'shift',
-                'message_types' => ['ConfirmNote', 'Note'],
+                'message_types' => ['Note'],
                 'external_id' => $shift->getId(),
             ];
             foreach ($sakonnin->getMessagesForContext($scnc) as $c) {
                 $confirm_notes[] = [
                     'id' => $c->getId(),
                     'subject' => $c->getSubject(),
-                    'confirm_required' => (string)$c->getMessageType() == "ConfirmNote" ? true : false,
+                    'confirm_required' => false,
                     'body' => $c->getBody()
                     ];
             }
@@ -779,14 +779,14 @@ class UserFrontController extends CommonController
                 $ecnc = [
                     'system' => 'crewcall',
                     'object_name' => 'event',
-                    'message_types' => ['ConfirmNote', 'Note'],
+                    'message_types' => ['Note'],
                     'external_id' => $e->getId(),
                 ];
                 foreach ($sakonnin->getMessagesForContext($ecnc) as $c) {
                     $confirm_notes[] = [
                         'id' => $c->getId(),
                         'subject' => $c->getSubject(),
-                        'confirm_required' => (string)$c->getMessageType() == "ConfirmNote" ? true : false,
+                        'confirm_required' => false,
                         'body' => $c->getBody()];
                 }
                 $eccc = [
