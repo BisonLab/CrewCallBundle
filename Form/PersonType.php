@@ -52,8 +52,13 @@ class PersonType extends AbstractType
                 )
             )
             ->add('address', AddressType::class, ['address_elements' => $options['address_elements']])
-            ->add('postal_address', AddressType::class, ['address_elements' => $options['address_elements']])
             ;
+
+        if ($options['addressing_config']['use_postal_address']) {
+            $builder
+                ->add('postal_address', AddressType::class, ['address_elements' => $options['address_elements']])
+            ;
+        }
     }
     
     /**
@@ -63,7 +68,8 @@ class PersonType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'CrewCallBundle\Entity\Person',
-            'address_elements' => []
+            'address_elements' => [],
+            'addressing_config' => []
         ));
     }
 

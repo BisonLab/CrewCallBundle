@@ -78,10 +78,12 @@
                 <th>Address</th>
                 <td>{{ cc_addressing.compose(person.address, 'html') | raw }}</td>
             </tr>
+{% if person.postaladdress is empty %}
             <tr>
                 <th>Postal Address</th>
                 <td>{{ cc_addressing.compose(person.postaladdress, 'html') | raw }}</td>
             </tr>
+{% endif %}
 {% if person.personfunctionorganizations | length > 0 or person.personfunctionlocations | length > 0 %}
             <tr>
                 <th>Roles</th>

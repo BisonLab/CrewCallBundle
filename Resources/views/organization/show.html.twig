@@ -27,10 +27,12 @@
                 <th>Address</th>
                 <td>{{ cc_addressing.compose(organization.visitaddress, 'html') | raw }}</td>
             </tr>
+{% if organization.postaladdress is empty %}
             <tr>
                 <th>Postal Address</th>
                 <td>{{ cc_addressing.compose(organization.postaladdress, 'html') | raw }}</td>
             </tr>
+{% endif %}
             <tr>
                 <th>Status</th>
                 <td>{{ organization.state }}</td>

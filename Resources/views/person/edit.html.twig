@@ -7,7 +7,7 @@
         {{ form_widget(edit_form) }}
         <input type="submit" value="Save" />
     {{ form_end(edit_form) }}
-    <a href="{{ path('person_index') }}" class="btn btn-sm btn-dark">Cancel</a><br>
+    <a href="{{ path('person_show', { 'id': person.id }) }}" class="btn btn-sm btn-dark">Cancel</a><br>
 {% if delete_form %}
             {{ form_start(delete_form) }}
                 <input type="submit" value="Delete">

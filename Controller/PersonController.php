@@ -215,6 +215,7 @@ class PersonController extends CommonController
         $em = $this->getDoctrine()->getManager();
         $person = new Person();
         $person->addRole('ROLE_USER');
+        $addressing_config = $this->container->getParameter('addressing');
         $addressing = $this->container->get('crewcall.addressing');
         $address_elements = $addressing->getFormElementList($person);
         $internal_organization_config = $this->container->getParameter('internal_organization');
@@ -223,6 +224,7 @@ class PersonController extends CommonController
 
         $form = $this->createForm('CrewCallBundle\Form\NewPersonType',
             $person, [
+               'addressing_config' => $addressing_config,
                'address_elements' => $address_elements,
                'organization' => $first_org,
                'role' => $first_role,
@@ -310,9 +312,14 @@ class PersonController extends CommonController
     public function editAction(Request $request, Person $person)
     {
         $deleteForm = $this->createDeleteForm($person);
+        $addressing_config = $this->container->getParameter('addressing');
         $addressing = $this->container->get('crewcall.addressing');
         $address_elements = $addressing->getFormElementList($person);
-        $editForm = $this->createForm('CrewCallBundle\Form\PersonType', $person, ['address_elements' => $address_elements]);
+        $editForm = $this->createForm('CrewCallBundle\Form\PersonType',
+            $person, [
+                'addressing_config' => $addressing_config,
+                'address_elements' => $address_elements
+            ]);
         $editForm->remove('plainPassword');
         // $addressing->addToForm($editForm, $person);
         $editForm->handleRequest($request);

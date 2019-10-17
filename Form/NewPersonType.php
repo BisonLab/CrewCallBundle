@@ -64,6 +64,7 @@ class NewPersonType extends PersonType
         $resolver->setDefaults(array(
             'data_class' => 'CrewCallBundle\Entity\Person',
             'internal_organization_config' => [],
+            'addressing_config' => [],
             'address_elements' => [],
             'role' => null,
             'organization' => null

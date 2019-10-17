@@ -44,9 +44,14 @@ class OrganizationController extends CommonController
     public function newAction(Request $request)
     {
         $organization = new Organization();
+        $addressing_config = $this->container->getParameter('addressing');
         $addressing = $this->container->get('crewcall.addressing');
         $address_elements = $addressing->getFormElementList($organization->getVisitAddress());
-        $form = $this->createForm('CrewCallBundle\Form\OrganizationType', $organization, ['address_elements' => $address_elements]);
+        $form = $this->createForm('CrewCallBundle\Form\OrganizationType',
+            $organization, [
+                'addressing_config' => $addressing_config,
+                'address_elements' => $address_elements
+            ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -86,9 +91,15 @@ class OrganizationController extends CommonController
     public function editAction(Request $request, Organization $organization)
     {
         $deleteForm = $this->createDeleteForm($organization);
+        $addressing_config = $this->container->getParameter('addressing');
         $addressing = $this->container->get('crewcall.addressing');
         $address_elements = $addressing->getFormElementList($organization->getVisitAddress());
-        $editForm = $this->createForm('CrewCallBundle\Form\OrganizationType', $organization, ['address_elements' => $address_elements]);
+
+        $editForm = $this->createForm('CrewCallBundle\Form\OrganizationType',
+            $organization, [
+                'addressing_config' => $addressing_config,
+                'address_elements' => $address_elements
+            ]);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
