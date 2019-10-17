@@ -311,7 +311,6 @@ class PersonController extends CommonController
      */
     public function editAction(Request $request, Person $person)
     {
-        $deleteForm = $this->createDeleteForm($person);
         $addressing_config = $this->container->getParameter('addressing');
         $addressing = $this->container->get('crewcall.addressing');
         $address_elements = $addressing->getFormElementList($person);
@@ -333,7 +332,6 @@ class PersonController extends CommonController
         return $this->render('person/edit.html.twig', array(
             'person' => $person,
             'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
         ));
     }
 

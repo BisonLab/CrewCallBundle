@@ -8,7 +8,4 @@
         <input type="submit" value="Save" />
     {{ form_end(edit_form) }}
     <a href="{{ path('organization_show', { 'id': organization.id }) }}" class="btn btn-sm btn-dark">Cancel</a><br>
-    {{ form_start(delete_form) }}
-        <input class="btn btn-sm btn-danger" type="submit" value="Delete">
-    {{ form_end(delete_form) }}
 {% endblock %}

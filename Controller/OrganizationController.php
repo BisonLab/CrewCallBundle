@@ -90,7 +90,6 @@ class OrganizationController extends CommonController
      */
     public function editAction(Request $request, Organization $organization)
     {
-        $deleteForm = $this->createDeleteForm($organization);
         $addressing_config = $this->container->getParameter('addressing');
         $addressing = $this->container->get('crewcall.addressing');
         $address_elements = $addressing->getFormElementList($organization->getVisitAddress());
@@ -111,7 +110,6 @@ class OrganizationController extends CommonController
         return $this->render('organization/edit.html.twig', array(
             'organization' => $organization,
             'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
         ));
     }
 

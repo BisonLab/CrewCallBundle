@@ -91,7 +91,6 @@ class LocationController extends CommonController
      */
     public function editAction(Request $request, Location $location)
     {
-        $deleteForm = $this->createDeleteForm($location);
         $addressing = $this->container->get('crewcall.addressing');
         $address_elements = $addressing->getFormElementList($location);
         $editForm = $this->createForm('CrewCallBundle\Form\LocationType', $location, ['address_elements' => $address_elements]);
@@ -106,7 +105,6 @@ class LocationController extends CommonController
         return $this->render('location/edit.html.twig', array(
             'location' => $location,
             'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
         ));
     }
 

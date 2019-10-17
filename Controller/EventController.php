@@ -180,7 +180,6 @@ class EventController extends CommonController
      */
     public function editAction(Request $request, Event $event)
     {
-        $deleteForm = $this->createDeleteForm($event);
         $editForm = $this->createForm('CrewCallBundle\Form\EventType', $event);
         $editForm->handleRequest($request);
 
@@ -196,7 +195,6 @@ class EventController extends CommonController
         return $this->render('event/edit.html.twig', array(
             'event' => $event,
             'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
         ));
     }
 

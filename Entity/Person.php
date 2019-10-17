@@ -1065,6 +1065,16 @@ throw new Nei();
         return current($this->getRoles());
     }
 
+    /**
+     * Is this deleeteable? If any event connected to it, no.
+     *
+     * @return boolean
+     */
+    public function isDeleteable()
+    {
+        return count($this->getEvents()) == 0;
+    }
+
     public function __toString()
     {
         return $this->getFullName();

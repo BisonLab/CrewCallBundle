@@ -138,10 +138,12 @@
                     <br>
                     <a href="{{ path('person_reset_password', { 'id': person.id }) }}" class="btn btn-sm btn-dark">Send Password reset mail</a>
                     <br>
+{% if person.deleteable %}
                     {{ form_start(delete_form) }}
                     <input  class="btn btn-sm btn-danger" type="submit" value="Delete">
                     <br>
                     {{ form_end(delete_form) }}
+{% endif %}
                 </th>
                 <td>&nbsp;</td>
         </tbody>

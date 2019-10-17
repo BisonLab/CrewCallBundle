@@ -114,11 +114,6 @@ class Location
         $this->person_function_locations = new ArrayCollection();
         $this->contexts = new ArrayCollection();
     }
-
-    public function __toString()
-    {
-        return $this->getName();
-    }
     
     /*
      * Automatically generated getters and setters below this
@@ -430,5 +425,20 @@ class Location
     public function removeContext(LocationContext $contexts)
     {
         $this->contexts->removeElement($contexts);
+    }
+
+    /**
+     * Is this deleeteable? If any event connected to it, no.
+     *
+     * @return boolean
+     */
+    public function isDeleteable()
+    {
+        return count($this->getEvents()) == 0;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 }

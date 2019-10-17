@@ -47,11 +47,13 @@
         <li>
             <a href="{{ path('organization_edit', { 'id': organization.id }) }}" class="btn btn-sm btn-dark">Edit</a>
         </li>
+{% if organization.deleteable %}
         <li>
             {{ form_start(delete_form) }}
                 <input type="submit"  class="btn btn-sm btn-danger" value="Delete">
             {{ form_end(delete_form) }}
         </li>
+{% endif %}
     </ul>
 </div>
 
