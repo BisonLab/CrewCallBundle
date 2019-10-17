@@ -1072,7 +1072,7 @@ throw new Nei();
      */
     public function isDeleteable()
     {
-        return count($this->getEvents()) == 0;
+        return count($this->getEvents()) == 0 && count($this->getJobs()) == 0;
     }
 
     public function __toString()
