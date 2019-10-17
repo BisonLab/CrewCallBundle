@@ -886,7 +886,7 @@ throw new Nei();
     {
         $evts = new ArrayCollection();
         foreach ($this->getPersonFunctionEvents() as $pfe) {
-            if ($pfe->contains($pfe->getEvent()))
+            if ($evts->contains($pfe->getEvent()))
                 continue;
             $evts->add($pfe->getEvent());
         }
