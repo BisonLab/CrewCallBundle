@@ -46,16 +46,24 @@ Done
  {% if is_granted('show', message) %}
    <div id="sakonninmessage_{{ message.id}}">
      <div class="row ccNotesText">
-        <div class="col-md-1">
+        <div class="col-md-2">
         <br>
         {% if is_granted('edit', message) %}
 {% set emform = sakonnin_messages.getEditForm( message, true ) %}
 {% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
 {{ cmac.print_comboedit(emform, action, message.id, message.messagetype ) }}
-            <a href="#" onClick='return editCombo({{ message.id }});'><span class="edit_glyph"></span></a>
+<a href="#" onClick='return editCombo({{ message.id }});'><span class="edit_glyph"></span></a>
+{% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
+<form method="POST" action="{{ path('message_delete', { 'id': message.id, 'access': 'web' }) }}">
+{{ form_start(mdelform) }}
+{{ form_rest(mdelform) }}
+<button type="submit" class="btn btn-link">
+<span class="glyphicon glyphicon-trash"></span>
+</button>
+</form>
         {% endif %}
         </div>
-<pre wrap class="ccNotesText col-md-9">
+<pre wrap class="ccNotesText col-md-8">
 {{ message.body }}
 </pre>
         <div class="col-md-2" halign="left">
@@ -103,7 +111,7 @@ Done
   </div>
  </div>
  <a href="#" onClick='return createCombo();' class="btn btn-dark">New Note</a>
- <a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('messages_list', {'access': 'ajax', 'states': ['ARCHIVED'], 'message_types':['Admin Wall', 'TODO']  }) }}', 'Archive')">Archive</a>
+ <a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('messages_list', {'sort': 'DESC', 'access': 'ajax', 'states': ['ARCHIVED'], 'message_types':['Admin Wall', 'TODO']  }) }}', 'Archive')">Archive</a>
 
 </div> <!-- end combowall -->
 
