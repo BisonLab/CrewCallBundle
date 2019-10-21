@@ -103,6 +103,8 @@ Done
   </div>
  </div>
  <a href="#" onClick='return createCombo();' class="btn btn-dark">New Note</a>
+ <a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('messages_list', {'access': 'ajax', 'states': ['ARCHIVED'], 'message_types':['Admin Wall', 'TODO']  }) }}', 'Archive')">Archive</a>
+
 </div> <!-- end combowall -->
 
 <script type="text/javascript">

@@ -18,7 +18,9 @@
             {% endif %}
         <td>
 {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-        <a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
+        <a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}', 'Notes')">
+        <span style="font-size: 15px" class="glyphicon glyphicon-comment"></span>
+        </a>
 {% endif %}
         <a href="#" title="Event Summary" id="popSummary_event_{{ shift.event.id }}{{ shift.id }}" onClick="return popSummary('event', {{ shift.event.id }}, {{ shift.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
         {{ shift.function }}
