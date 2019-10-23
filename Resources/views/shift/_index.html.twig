@@ -46,8 +46,8 @@
         <td align="right">
         {% if shift.registeredamount > 0 %}
         {# TODO: Toggle + and - #}
-        <a href="#" onClick="return grabJobList({{ shift.id }});"><span id="plus_job_list_{{ shift.id }}" class="glyphicon glyphicon-plus" /></a>
-        <a href="#" onClick="return hideJobList({{ shift.id }});"><span id="minus_job_list_{{ shift.id }}" class="collapse glyphicon glyphicon-minus" /></a>
+        <a href="#jobList_{{ shift.id }}" onClick="return grabJobList({{ shift.id }});"><span id="plus_job_list_{{ shift.id }}" class="glyphicon glyphicon-plus" /></a>
+        <a href="#jobList_{{ shift.id }}" onClick="return hideJobList({{ shift.id }});"><span id="minus_job_list_{{ shift.id }}" class="collapse glyphicon glyphicon-minus" /></a>
         {% else %}
             &nbsp;
         {% endif %}

@@ -1,8 +1,18 @@
 <script>
 $(document).ready(function() {
+    // First, close them all.. looks stupid but it's because they are not
+    // populated and ends up as just a small white stripe.
     $( ".jobList" ).each(function() {
         $(this).hide();
     });
+    // Then, do we have any wishes about open job lists?
+    var jobhash = document.location.hash;
+    if (jobhash.match("jobList")) {
+        shifts = jobhash.replace("#jobList_", "").split(",");
+        shifts.forEach(function(shift_id){
+            grabJobList(shift_id);
+        });
+    }
 });
 
 function grabShiftList(event_id) {

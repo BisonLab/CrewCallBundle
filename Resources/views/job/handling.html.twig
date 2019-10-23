@@ -1,5 +1,17 @@
 <script>
 
+function composeJobHash() {
+
+    shifts = [];
+    $( ".jobList" ).each(function() {
+        shift_id = $(this).attr('id').replace('jobList_', '');
+        if ($(this).is(':visible')) {
+            shifts.push(shift_id);
+        }
+    });
+    window.location.hash = "#jobList_" + shifts.join(',');
+}
+
 function grabJobList(shift_id) {
     url = "{{ path('job_index', {'access': 'ajax' }) }}" 
         + "?shift=" + shift_id;
@@ -8,6 +20,7 @@ function grabJobList(shift_id) {
         $( "#jobList_" + shift_id ).show();
         $( "#plus_job_list_" + shift_id ).hide();
         $( "#minus_job_list_" + shift_id ).show();
+        composeJobHash();
     });
     return false;
 }
@@ -16,6 +29,7 @@ function hideJobList(shift_id) {
     $( "#jobList_" + shift_id ).hide();
     $( "#plus_job_list_" + shift_id ).show();
     $( "#minus_job_list_" + shift_id ).hide();
+    composeJobHash();
     return false;
 }
 
