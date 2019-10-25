@@ -69,19 +69,6 @@ class Builder implements ContainerAwareInterface
                     'routeParameters' => array('message_type' => $fpnl_type->getId())));
             }
 
-            $fpl_type = $sakonnin->getMessageType('Front page logged in');
-
-            if (count($fpl_type->getMessages()) > 0) {
-                $fpm = $fpl_type->getMessages()[0];
-                $adminmenu->addChild('Edit message to all users',
-                    array('route' => 'message_edit',
-                    'routeParameters' => array('id' => $fpm->getId())));
-            } else {
-                $adminmenu->addChild('Add message to all users',
-                    array('route' => 'message_new',
-                    'routeParameters' => array('message_type' => $fpl_type->getId())));
-            }
-
             $adminmenu->addChild('Message Types',
                 array('route' => 'messagetype'));
             foreach (ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType') as $ftname => $ftarr) {

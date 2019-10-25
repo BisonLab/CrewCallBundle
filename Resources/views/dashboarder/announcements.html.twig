@@ -1,21 +1,59 @@
 {% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' with { 'reload_after_post': true } %}
+{% include 'CrewCallBundle:dashboarder:handling.html.twig' %}
 <div id="announcements">
-{% for message in sakonnin_messages.messagetype('Front page logged in').messages if message.state == "SHOW" %}
+<div class="row">
+<div class="col-sm-11">
+<h3>General Annoucements</h3>
+</div>
+<div class="col-sm-1" style="margin-top: 30px; font-size: 18px;">
+</div>
+</div>
+{% for message in sakonnin_messages.messagetype('Front page logged in').messages if message.state == "SHOW" or message.state == "UNREAD" %}
 {% if is_granted('show', message) %}
-{% if message.subject is not empty %}
-    <h3>{{ message.subject }}</h3>
-{% endif %}
 <div class="row ccNotesText">
 {% if is_granted('edit', message) %}
-<div class="col-sm-1">
-<br>
-<a href="#" onClick='return grabEditMessageForm({{ message.id }});'><span class="edit_glyph"></span></a>
-</div>
+<div class="col-sm-10">
+{% else %}
+<div class="col-sm-11">
 {% endif %}
-<pre wrap class="ccNotesText col-sm-10">
+{#
+{% if message.subject is not empty %}
+<strong>{{ message.subject }}</strong>
+{% endif %}
+#}
+<em>By {{ message.createdBy }}, {{ message.createdAt | date('Y-m-d') }}</em>
+<pre wrap class="ccNotesText">
 {{ message.body }}
 </pre>
+</div>
+{% endif %}
+{% if is_granted('edit', message) %}
+<div class="col-sm-2">
+<br>
+<a href="#" onClick="return grabEditNoteForm({{ message.id }}, 'General Annoucement', true);"><span class="edit_glyph"></span></a>
+<br>
+<br>
+<a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" ><span class="archive_glyph" title="Archive"></span></a>
+</div>
 {% endif %}
 </div>
 {% endfor %}
 </div>
+      {% set mconf = {'mconfig': {
+              'formname': 'c_anouncements',
+              'title': 'General Annoucement',
+              'reload_after_post': true,
+              'subject': null,
+              'state': "SHOW",
+              'to_type': "NONE",
+              'from_type': "NONE",
+              'to_field': false,
+              'from_field': false,
+              'message_type': 'Front page logged in',
+              'context': null
+              }
+          }
+      %}
+{% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+<a href="#" onClick='return createMessage("c_anouncements");' class="btn btn-sm btn-dark">New</a>
+<a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('messages_list', {'sort': 'DESC', 'access': 'ajax', 'states': ['ARCHIVED'], 'message_types':['Front page logged in']  }) }}', 'Archive')">Archive</a>

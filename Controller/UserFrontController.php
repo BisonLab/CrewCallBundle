@@ -178,7 +178,9 @@ class UserFrontController extends CommonController
         $gnotes = [];
         if ($mt = $sakonnin->getMessageType('Front page logged in')) {
             foreach ($mt->getMessages() as $m) {
-                if ($m->getState() == "SHOW") {
+                // SHOW should be the only one, but this is the path of least
+                // resistance.
+                if (in_array($m->getState(), ["UNREAD", "SHOW"])) {
                     $gnotes[] = [
                         'subject' => $m->getSubject(),
                         'body' => $m->getBody(),
