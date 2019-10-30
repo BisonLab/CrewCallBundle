@@ -57,16 +57,18 @@ class Builder implements ContainerAwareInterface
             $sakonnin = $this->container->get('sakonnin.messages');
             // Do we have a message for the front page?
             $fpnl_type = $sakonnin->getMessageType('Front page not logged in');
-
+;
+            $router = $this->container->get('router');
             if (count($fpnl_type->getMessages()) > 0) {
                 $fpm = $fpnl_type->getMessages()[0];
-                $adminmenu->addChild('Edit login page message',
-                    array('route' => 'message_edit',
-                    'routeParameters' => array('id' => $fpm->getId())));
+                $elpm = $adminmenu->addChild('Edit login page message', array('uri' => "#"));
+                $uri = $router->generate('message_edit', array('access' => 'ajax', 'id' => $fpm->getId(), 'reload_after_post' => true));
+                $elpm->setLinkAttribute('onClick', "return openCcModal('" . $uri . "', 'Edit login page message');");
             } else {
-                $adminmenu->addChild('Add login page message',
-                    array('route' => 'message_new',
-                    'routeParameters' => array('message_type' => $fpnl_type->getId())));
+                $alpm = $adminmenu->addChild('Add login page message',
+                    array('uri' => '#'));
+                $uri = $router->generate('message_new', array('access' => 'ajax', 'message_type' => $fpnl_type->getId(), 'reload_after_post' => true));
+                $alpm->setLinkAttribute('onClick', "return openCcModal('" . $uri . "', 'Add login page message');");
             }
 
             $adminmenu->addChild('Message Types',
