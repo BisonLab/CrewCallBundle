@@ -59,6 +59,12 @@ class CreateBaseDataCommand extends ContainerAwareCommand
             'security_model' => 'PRIVATE',
             'forward_function' => 'smscopy',
             'description' => "Send SMSes to a bunch of people"),
+        'BULKMAIL' => array(
+            'parent' => 'Messages',
+            'base_type' => 'MESSAGE',
+            'security_model' => 'PRIVATE',
+            'forward_function' => 'mailcopy',
+            'description' => "Send emails to a bunch of people"),
         'BULKALL' => array(
             'parent' => 'Messages',
             'base_type' => 'MESSAGE',
