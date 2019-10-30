@@ -37,6 +37,9 @@ People
         <option value="all">All</option>
         <option value="all_nocrew">All, exclude crewmembers </option>
     </select>
+{% if simplified %}
+    <input type="hidden" name="simplified" value="true">
+{% endif %}
     <button class="btn btn-sm btn-dark" type="submit">Show</button>
     </form>
 {% endif %}
@@ -44,7 +47,11 @@ People
 <div class="col-sm-2">
 </div>
 
+{% if simplified %}
+{% include 'CrewCallBundle:person:_simplified_index.html.twig' %}
+{% else %}
 {% include 'CrewCallBundle:person:_index.html.twig' %}
+{% endif %}
 
 <div align="right">
     <button class="btn btn-sm btn-dark" id="message_modal_link" onClick="return openMessageModal();">Send a message</button>

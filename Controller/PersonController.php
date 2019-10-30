@@ -66,6 +66,7 @@ class PersonController extends CommonController
         $job_repo = $em->getRepository('CrewCallBundle:Job');
 
         $select_grouping = $request->get('select_grouping');
+        $simplified = $request->get('simplified');
         $on_date = $request->get('on_date');
 
         $people = [];
@@ -96,6 +97,7 @@ class PersonController extends CommonController
         return $this->render('person/crewindex.html.twig', array(
             'people' => $people,
             'on_date' => $on_date,
+            'simplified' => $simplified,
             'select_grouping' => $select_grouping,
             'functions' => $functions,
             'function_type' => 'SKILL',

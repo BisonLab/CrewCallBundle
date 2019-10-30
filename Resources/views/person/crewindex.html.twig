@@ -32,6 +32,9 @@ Crew
         <option value="all"{% if select_grouping == "all" %} SELECTED{% endif %}>Include non-active</option>
     </select>
     <input type="date" value="{{ on_date}}" name="on_date"/>
+{% if simplified %}
+    <input type="hidden" name="simplified" value="true">
+{% endif %}
     <button class="btn btn-sm btn-dark" type="submit">Show</button>
     </form>
 {% endif %}
@@ -39,11 +42,21 @@ Crew
 <div class="col-sm-2">
 </div>
 {# Kinda defies the possibility to configure function types, but I am still pondering about that need anyway. #}
+{% if simplified %}
+<div class="col-sm-2" align="right">
+    <button class="btn btn-sm btn-dark" id="message_modal_link" onClick="return openMessageModal();">Send a message</button>
+</div>
+{% else %}
 <div class="col-sm-2">
     <a href="{{ path('person_new_crewmember', {'function_type': function_type}) }}" class="btn btn-sm btn-dark">New Crew member</a>
 </div>
+{% endif %}
 
+{% if simplified %}
+{% include 'CrewCallBundle:person:_simplified_index.html.twig' %}
+{% else %}
 {% include 'CrewCallBundle:person:_index.html.twig' %}
+{% endif %}
 
 <div align="right">
     <button class="btn btn-sm btn-dark" id="message_modal_link" onClick="return openMessageModal();">Send a message</button>
