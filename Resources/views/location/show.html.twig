@@ -157,7 +157,7 @@
         <pre>{{ note.body }}</pre>
     {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
     <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
-    <a href="#" onClick="return grabEditMessageForm({{ note.id }});"><span class="edit_glyph"></span></a>
+    <a href="#" onClick="return grabEditMessageForm({{ note.id }});"><span class="glyphicon glyphicon-pencil"></span></a>
     {{ form_start(mdelform) }}
     {{ form_rest(mdelform) }}
     <button type="submit" class="btn btn-link">

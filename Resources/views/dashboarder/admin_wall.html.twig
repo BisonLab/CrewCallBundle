@@ -12,9 +12,9 @@
     {{ message.body }}
     </pre>
       <div class="col-sm-1">
-        <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');"><span class="archive_glyph"></span></a>
+        <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');"><span class="glyphicon glyphicon-save-file"></span></a>
         {% if is_granted('edit', message) %}
-        <a href="#" onClick='return grabEditMessageForm({{ message.id }});'><span class="edit_glyph"></span></a>
+        <a href="#" onClick='return grabEditMessageForm({{ message.id }});'><span class="glyphicon glyphicon-pencil"></span></a>
         {% endif %}
       </div>
     </div>

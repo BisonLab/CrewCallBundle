@@ -52,7 +52,7 @@ Done
 {% set emform = sakonnin_messages.getEditForm( message, true ) %}
 {% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
 {{ cmac.print_comboedit(emform, action, message.id, message.messagetype ) }}
-<a href="#" onClick='return editCombo({{ message.id }});'><span class="edit_glyph"></span></a>
+<a href="#" onClick='return editCombo({{ message.id }});'><span class="glyphicon glyphicon-pencil"></span></a>
 {% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
 <form method="POST" action="{{ path('message_delete', { 'id': message.id, 'access': 'web' }) }}">
 {{ form_start(mdelform) }}
@@ -75,7 +75,7 @@ Done
             </label>
             <br>
         {% endif %}
-            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" ><span class="archive_glyph" title="Archive"></span></a>
+            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" ><span class="glyphicon glyphicon-save-file" title="Archive"></span></a>
         </div>
      </div>
    </div>

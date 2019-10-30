@@ -7,7 +7,7 @@
     {{ jl.in | date("H:i") }}
     -> {{ jl.out | date("H:i") }}
     ({{ jl.workedtime }})
-    <a href="#!" id="editJobLog_{{ jl.id }}" data-html="true" onClick="return jvGrabEditJobLogForm({{ jl.id }}, {{ job.id }});"><span class="edit_glyph"></span></a>
+    <a href="#!" id="editJobLog_{{ jl.id }}" data-html="true" onClick="return jvGrabEditJobLogForm({{ jl.id }}, {{ job.id }});"><span class="glyphicon glyphicon-pencil"></span></a>
     <a href="#!" id="deleteJobLog_{{ jl.id }}" data-html="true" onClick="return deleteJobLog({{ jl.id }}, {{ job.id }});"><span class="remove_glyph"></span></a>
 {% endfor %}
 {% if somejl  %}
