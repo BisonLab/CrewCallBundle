@@ -30,19 +30,16 @@ class EventController extends CommonController
         $em = $this->getDoctrine()->getManager();
         $eventrepo = $em->getRepository('CrewCallBundle:Event');
 
-        $past = $upcoming = $ongoing = false;
+        $past = $upcoming = false;
         if ($request->get('past')) {
             $events = $eventrepo->findEvents(['past' => true,
                 'parents_only' => true]);
             $past = true;
-        } elseif ($request->get('upcoming')) {
+        } else {
+            // Yeah, "future" vs "upcoming".
             $events = $eventrepo->findEvents(['future' => true,
                 'parents_only' => true]);
             $upcoming = true;
-        } else {
-            $events = $eventrepo->findEvents(['ongoing' => true,
-                'parents_only' => true]);
-            $ongoing = true;
         }
 
         if ($this->isRest($access)) {
@@ -51,14 +48,12 @@ class EventController extends CommonController
                     'events'  => $events,
                     'past'    => $past,
                     'upcoming'=> $upcoming,
-                    'ongoing' => $ongoing,
                 ));
             else
                 return $this->returnRestData($request, [
                     'events'  => $events,
                     'past'    => $past,
                     'upcoming'=> $upcoming,
-                    'ongoing' => $ongoing,
                 ]);
         }
 
@@ -66,7 +61,6 @@ class EventController extends CommonController
             'events'  => $events,
             'past'    => $past,
             'upcoming'=> $upcoming,
-            'ongoing' => $ongoing,
         ));
     }
 

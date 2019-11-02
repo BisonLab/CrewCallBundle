@@ -48,6 +48,11 @@ class EventRepository extends \Doctrine\ORM\EntityRepository
                 $options['from'] = '2019-01-01';
         }
 
+        /*
+         * Should "Future" be exactly that? As event start later than today or
+         * as it is now, including today?
+         * Or should I add "upcoming" so we have one including and one not.
+         */
         if (isset($options['future'])) {
             $today = new \DateTime();
             $qb->andWhere('e.end > :yesterday')

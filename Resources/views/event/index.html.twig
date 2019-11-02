@@ -17,11 +17,6 @@
  </div>
 
  <div class="col-sm-1" style="margin-top: 10px;">
-    {% if not ongoing %}
-   <a href="{{ path('event_index', {'ongoing': true }) }}" class="btn btn-light">Ongoing</a>
-    {% endif %}
- </div>
- <div class="col-sm-1" style="margin-top: 10px;">
     {% if not upcoming %}
    <a href="{{ path('event_index', {'upcoming': true }) }}" class="btn btn-light">Upcoming</a>
     {% endif %}
