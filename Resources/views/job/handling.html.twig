@@ -84,8 +84,12 @@ function grabNewJobForm(shift_id) {
     return false;
 }
 
-function submitNewJobForm(shift_id) {
+function submitNewJobForm(shift_id, force = false) {
     username = $( "#newJobForm #username" ).val();
+    url = "{{ path('job_new', { 'access': 'ajax' }) }}";
+    if (force) {
+        url = url + "?force=true";
+    }
     $( "#newJobForm #crewcallbundle_job_person" ).val(username);
     newJobFormData = $( "#newJobForm" ).serialize();
     $.ajax({
@@ -93,7 +97,7 @@ function submitNewJobForm(shift_id) {
           req.setRequestHeader("Accept", "application/json");
         },
         type: "POST",
-        url: "{{ path('job_new', { 'access': 'ajax' }) }}",
+        url: url,
         data: newJobFormData,
         dataType: "text",
         async: true,
@@ -106,10 +110,14 @@ function submitNewJobForm(shift_id) {
             }
       }).fail(function(xhr, status, error) {
             if (xhr.status == 409) {
-                warning = "Warning!\n";
-                errmsg = warning + xhr.responseText + "\n";
-                alert(errmsg);
-                parent.location.reload();
+                warning = "Warning!\n\n";
+                errmsg = warning + xhr.responseText + "\n\nDo you want to add this anyway?\n";
+                result = confirm(errmsg);
+                if (result) {
+                    submitNewJobForm(shift_id, true);
+                } else {
+                    parent.location.reload();
+                } 
             } else {
                 errmsg = "Failed adding new job!\n";
                 errmsg = errmsg + xhr.responseText + "\n";
