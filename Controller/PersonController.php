@@ -44,12 +44,12 @@ class PersonController extends CommonController
         $people = $em->getRepository('CrewCallBundle:Person')->findAll();
         $fe_repo = $em->getRepository('CrewCallBundle:FunctionEntity');
 
-        $functions = $fe_repo->findBy(['function_type'
-            => $functionEntity->getFunctionType()], ['name' => 'ASC']);
+        $functions = $fe_repo->findAll();
         return $this->render('person/index.html.twig', array(
             'people' => $people,
             'functions' => $functions,
-            'functionEntity' => $functionEntity,
+            'simplified' => false,
+            'functionEntity' => null
         ));
     }
 
@@ -187,6 +187,7 @@ class PersonController extends CommonController
             'all' => $request->get('all') ?? null,
             'functionEntity' => $functionEntity ?? null,
             'functions' => $functions,
+            'simplified' => null,
         ));
     }
 
