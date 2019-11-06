@@ -150,29 +150,37 @@ class UserFrontController extends CommonController
      */
     public function meNotes(Request $request, $as_array = false)
     {
+        $archive = $request->get('archive');
+        $states = ['UNREAD', 'SENT', 'SHOW'];
+        if ($archive)
+            $states = ['ARCHIVED'];
+        
         $user = $this->getUser();
         $sakonnin = $this->container->get('sakonnin.messages');
         $pncontext = [
             'system' => 'crewcall',
             'object_name' => 'person',
             'message_type' => 'PersonNote',
-            'states' => ['UNREAD', 'SENT'],
+            'states' => $states,
             'external_id' => $user->getId(),
         ];
         $pnotes = [];
         foreach ($sakonnin->getMessagesForContext($pncontext) as $m) {
-            $pnotes[] = [
+            $parr = [
                 'subject' => $m->getSubject(),
                 'body' => $m->getBody(),
                 'date' => $m->getCreatedAt(),
                 'message_type' => (string)$m->getMessageType(),
-                'archive_url' => $this->generateUrl('message_state', [
+                ];
+            if (!$archive) {
+                $parr['archive_url'] = $this->generateUrl('message_state', [
                     'access' => 'ajax',
                     'state' => 'ARCHIVED',
                     'id' => $m->getId()
                     ],
-                    UrlGeneratorInterface::ABSOLUTE_URL)
-                ];
+                    UrlGeneratorInterface::ABSOLUTE_URL);
+            }
+            $pnotes[] = $parr;
         }
 
         $gnotes = [];
@@ -180,7 +188,7 @@ class UserFrontController extends CommonController
             foreach ($mt->getMessages() as $m) {
                 // SHOW should be the only one, but this is the path of least
                 // resistance.
-                if (in_array($m->getState(), ["UNREAD", "SHOW"])) {
+                if (in_array($m->getState(), $states)) {
                     $gnotes[] = [
                         'subject' => $m->getSubject(),
                         'body' => $m->getBody(),
