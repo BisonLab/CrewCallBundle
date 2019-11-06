@@ -103,7 +103,7 @@ class UserFrontController extends CommonController
         if (count($pfiles) > 0) {
             $router = $this->container->get('router');
             $profile_picture_url = $router->generate('uf_file', [
-                'id' => $pfiles[0]->getFileId(), 'x' => 200, 'y' => 200]);
+                'id' => end($pfiles)->getFileId(), 'x' => 200, 'y' => 200]);
         }
 
         $retarr = [
@@ -558,6 +558,8 @@ class UserFrontController extends CommonController
 
     /**
      * Everything, and maybe more.
+     *
+     * To be honest, probably less.
      *
      * @Route("/me_files", name="uf_me_files", methods={"GET"})
      */

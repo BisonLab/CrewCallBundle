@@ -16,9 +16,8 @@
     %}
 {% set profile_pictures = sakonnin_files.getFilesForContext(ppcontext) %}
 {% if profile_pictures | length > 0 %}
-{% set pfile = profile_pictures.0 %}
-<img id="img_{{pfile.id}}" src="{{ path('file_thumbnail', { 'id': pfile.fileid, 'x': 100, 'y': 100 }) }}">
-{% else %}
+{% set pfile = profile_pictures | last %}
+<img id="img_{{pfile.id}}" src="{{ path('file_thumbnail', { 'id': pfile.fileid, 'x': 100, 'y': 100 }) }}"><br />
     {% set sfconf = {'sfconfig': {
             'file_type': "ProfilePicture",
             'description': "ProfilePicture",
@@ -33,6 +32,8 @@
         }
     %}
     {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
+          <a href="#" onClick="return uploadFile('profile_upload');">Replace profile picture</a><br />
+{% else %}
           <a href="#" onClick="return uploadFile('profile_upload');">Add profile picture</a><br />
 {% endif %}
     <h1>
