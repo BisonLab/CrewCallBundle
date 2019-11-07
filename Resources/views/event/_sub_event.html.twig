@@ -246,6 +246,9 @@
             <a href="#" onClick="return submitDeleteForm({{ event.id}});">Delete</a>
         </li>
     {% endif %}
+        <li>
+            <a href="{{ path('event_clone', {'event': event.id}) }}">Create a copy with new start date</a>
+        </li>
     </ul>
 
    </div> <!-- col-sm-2 -->
