@@ -23,7 +23,7 @@ class NewPersonOrganizationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-           ->add('email', EmailType::class, array('label' => "E-mail", 'required' => true))
+           ->add('email', EmailType::class, array('label' => "E-mail", 'required' => false))
            ->add('first_name', TextType::class, array('label' => "First name", 'required' => true))
            ->add('last_name', TextType::class, array('label' => "Last name", 'required' => true))
            ->add('mobile_phone_number', TextType::class, array('label' => "Phone number", 'required' => true))

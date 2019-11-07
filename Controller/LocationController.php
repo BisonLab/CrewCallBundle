@@ -146,9 +146,16 @@ class LocationController extends CommonController
             $person->setMobilePhoneNumber($new_form_data['mobile_phone_number']);
             // Yeah, always contact. Need a default. Using just mobile phone is
             // tempting aswell.
-            $username = "CONTACT" . (string)$person->getMobilePhoneNumber();
+            // And we do need an email address, which can be random aswell.
+            // (Yeah, I do not like it. But this is users not going to log in,
+            // so it's not really that bad.)
+            $username = "CONTACT" . \ShortCode\Random::get(6);
             $person->setUsername($username);
-            $person->setEmail($new_form_data['email']);
+            if (empty($new_form_data['email']))
+                $person->setEmail($username . "@crewcall.local");
+            else
+                $person->setEmail($new_form_data['email']);
+
             $person->setFirstName($new_form_data['first_name']);
             $person->setLastName($new_form_data['last_name']);
             $person->setPlainPassword(sprintf("%16x", rand()));
