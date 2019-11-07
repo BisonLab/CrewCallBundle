@@ -650,6 +650,16 @@ class Event
     }
 
     /**
+     * Is this deleeteable?
+     *
+     * @return boolean
+     */
+    public function isDeleteable()
+    {
+        return !$this->isBooked() || $this->isFuture();
+    }
+
+    /**
      * @Assert\Callback
      */
     public function validate(ExecutionContextInterface $context)

@@ -241,7 +241,7 @@
        {% endif %}
     {% endif %}
 
-    {% if not event.booked %}
+    {% if event.deleteable %}
         <li>
             <a href="#" onClick="return submitDeleteForm({{ event.id}});">Delete</a>
         </li>
