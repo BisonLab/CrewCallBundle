@@ -60,7 +60,7 @@ class EventType extends AbstractType
                         $today = new \DateTime();
                         return $er->createQueryBuilder('e')
                          ->where("e.parent is null")
-                         ->andWhere("e.start > :today")
+                         ->andWhere("e.end > :today")
                          ->setParameter('today', $today);
                     },
                 ))
