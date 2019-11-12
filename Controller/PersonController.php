@@ -151,6 +151,9 @@ class PersonController extends CommonController
         $em = $this->getDoctrine()->getManager();
         $job_repo = $em->getRepository('CrewCallBundle:Job');
 
+        $select_grouping = $request->get('select_grouping');
+        $on_date = $request->get('on_date') ?? null;
+
         // Ok, implementing this here aswell.
         $people = [];
         $functionEntity = null;
@@ -159,19 +162,16 @@ class PersonController extends CommonController
             if (!$functionEntity = $fe_repo->find($fid))
                 return $this->returnNotFound($request, 'No function to filter');
             $people = $functionEntity->getPeople(false);
-        } else {
-            $people = $em->getRepository('CrewCallBundle:Person')
-                ->findByFunctionType($function_type);
-        }
-
-        $select_grouping = $request->get('select_grouping');
-        $on_date = $request->get('on_date') ?? null;
-
-        if ($functionEntity)
             $people = $this->_filterPeople($functionEntity->getPeople(false), [
                 'select_grouping' => $select_grouping,
                 'on_date' => $on_date,
             ]);
+        } else {
+            $people = $this->_filterPeople($em->getRepository('CrewCallBundle:Person')->findByFunctionType($function_type), [
+                'select_grouping' => $select_grouping,
+                'on_date' => $on_date,
+            ]);
+        }
 
         $ftypes = ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType');
         $function_type_plural = $ftypes[$function_type]['plural'];
@@ -662,6 +662,9 @@ class PersonController extends CommonController
         $filtered = new \Doctrine\Common\Collections\ArrayCollection();
         foreach ($people as $p) {
             if ($crew_only && !$p->isCrew()) {
+                continue;
+            }
+            if ($select_grouping == "no_crew" && $p->isCrew()) {
                 continue;
             }
             if ($on_date) {
