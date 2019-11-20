@@ -357,7 +357,7 @@ class PersonController extends CommonController
             $em->flush($person);
         }
 
-        return $this->redirectToRoute('person_index');
+        return $this->redirectToRoute('homepage');
     }
 
     /**
