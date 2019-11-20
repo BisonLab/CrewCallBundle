@@ -127,10 +127,12 @@
                 {% endfor %}
                 </td>
             </tr>
+{% if person.attributes is not empty %}
             <tr>
                 <th>Attributes</th>
                 <td>{{ person.attributes | prettyprint }}</td>
             </tr>
+{% endif %}
             <tr>
                 <th>
                     <a href="#" title="Logs" id="popLogSummary_person_{{ person.id }}" onClick="return popLogSummary('person', {{ person.id }});" class="btn btn-sm btn-dark">Changelog</a>
