@@ -42,6 +42,7 @@ class PersonType extends AbstractType
 */
            ->add('roles', ChoiceType::class,
                 array(
+                    'label' =>  'User type',
                     'multiple' =>  true,
                     'choices' =>
                         array(
@@ -59,6 +60,7 @@ class PersonType extends AbstractType
                 ->add('postal_address', AddressType::class, ['address_elements' => $options['address_elements']])
             ;
         }
+        $builder->remove('plainPassword');
     }
     
     /**
@@ -76,9 +78,6 @@ class PersonType extends AbstractType
     public function getParent()
     {
         return 'FOS\UserBundle\Form\Type\RegistrationFormType';
-
-        // Or for Symfony < 2.8
-        // return 'fos_user_registration';
     }
 
     /**

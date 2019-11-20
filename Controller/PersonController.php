@@ -209,7 +209,7 @@ class PersonController extends CommonController
     /**
      * Creates a new person entity.
      * This is only used when you add a crewmember. People with roles
-     * will be created on the Organization or Location controller.
+     * will be created via the Organization or Location controller.
      *
      * @Route("/new_crewmember", name="person_new_crewmember", methods={"GET", "POST"})
      */
@@ -251,6 +251,9 @@ class PersonController extends CommonController
                 $pfo->setOrganization($first_org);
                 $pfo->setFunction($first_role);
             }
+            // I have removed password setting, alas I have to set something
+            // until the user has reset their password.
+            $person->setPassword(\ShortCode\Random::get(16));
             $em->persist($person);
             $em->persist($pf);
             $em->persist($pfo);

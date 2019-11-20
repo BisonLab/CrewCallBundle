@@ -56,6 +56,15 @@
                 <td>{{ person.lastname }}</td>
             </tr>
             <tr>
+                <th>Can log into CrewCall</th>
+                <td>
+                {% if person.enabled %}
+                    Yes{% if "ROLE_ADMIN" in person.roles %}, as admin.{% endif %}
+                {%else%}
+                    No
+                {%endif%}</td>
+            </tr>
+            <tr>
                 <th>Date of birth</th>
                 <td>{% if person.dateofbirth %}{{ person.dateofbirth|date('Y-m-d') }}{% endif %}</td>
             </tr>
@@ -110,15 +119,6 @@
                 </td>
             </tr>
 {% endif %}
-            <tr>
-                <th>Can log into CrewCall</th>
-                <td>
-                {% if person.enabled %}
-                    Yes{% if "ROLE_ADMIN" in person.roles %}, as admin.{% endif %}
-                {%else%}
-                    No
-                {%endif%}</td>
-            </tr>
             <tr>
                 <th>Functions</th>
                 <td>
