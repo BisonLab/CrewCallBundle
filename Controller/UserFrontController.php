@@ -133,12 +133,11 @@ class UserFrontController extends CommonController
         foreach ($user->getPersonFunctions() as $pf) {
             $retarr['functions'][] = (string)$pf;
         }
-        foreach ($user->getPersonFunctionOrganizations() as $pfo) {
+        foreach ($user->getPersonRoleOrganizations() as $pro) {
             $retarr['roles'][] = [
-                'function' => (string)$pfo->getFunction(),
-                'function_type' => $pfo->getFunction()->getFunctionType(),
-                'organization' => (string)$pfo->getOrganization(),
-                'description' => (string)$pfo,
+                'function' => (string)$pro->getRole(),
+                'organization' => (string)$pro->getOrganization(),
+                'description' => (string)$pro,
             ];
         }
         return new JsonResponse($retarr, 200);

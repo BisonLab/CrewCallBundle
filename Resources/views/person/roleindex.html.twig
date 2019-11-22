@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+People
+{% endblock %}
+
+{% block body %}
+{% include 'CrewCallBundle:person:handling.html.twig' %}
+
+{% if role is defined and role is not null %}
+<h1>People with {{ role }}</h1>
+{% else %}
+<h1>People with Roles</h1>
+{% endif %}
+
+<div class="row">
+<div class="col-sm-8">
+   <form action="{{ path('person_role') }}" method="GET">
+<label>Filter on role</label>
+<select name="role_id">
+    <option value="">All</option>
+    {% for elem in roles %}
+    <option value="{{ elem.id }}" {% if role is not null and elem.id == role.id %}selected{% endif %}>{{ elem.name }}</option>
+    {% endfor %}
+</select>
+    <select name="select_grouping">
+        <option value="all">All</option>
+        <option value="no_crew">All, exclude crewmembers </option>
+    </select>
+    <button class="btn btn-sm btn-dark" type="submit">Show</button>
+    </form>
+</div>
+<div class="col-sm-2">
+</div>
+
+<table id="sortable_table" class="table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
+<thead>
+    <tr>
+        <th>Name</th>
+        <th>Roles</th>
+        <th>Mobile</th>
+        <th>Email</th>
+    </tr>
+</thead>
+<tbody>
+{% for person in people %}
+    <tr>
+        <td data-order="{{ person.lastname }}"><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.fullname }}</a></td>
+        <td>
+            {{ person.personroles() | join("<br>") | raw }}
+        </td>
+        <td>{{ person.mobilephonenumber }}</td>
+        <td>{{ person.email }}</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}

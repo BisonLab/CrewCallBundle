@@ -40,16 +40,11 @@ class PersonType extends AbstractType
                 )
             )
 */
-           ->add('roles', ChoiceType::class,
+           ->add('system_roles', ChoiceType::class,
                 array(
                     'label' =>  'User type',
                     'multiple' =>  true,
-                    'choices' =>
-                        array(
-                            'User able to use this application (Crewmember)' => 'ROLE_USER',
-                            'Admin user' => 'ROLE_ADMIN',
-                            'Person with roles' => 'ROLE_PERSON'
-                            )
+                    'choices' => ExternalEntityConfig::getSystemRolesAsChoices('with_description'),
                 )
             )
             ->add('address', AddressType::class, ['address_elements' => $options['address_elements']])

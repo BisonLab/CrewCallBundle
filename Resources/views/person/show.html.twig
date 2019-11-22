@@ -94,20 +94,21 @@
                 <td>{{ cc_addressing.compose(person.postaladdress, 'html') | raw }}</td>
             </tr>
 {% endif %}
-{% if person.personfunctionorganizations | length > 0 or person.personfunctionlocations | length > 0 %}
             <tr>
                 <th>Roles</th>
                 <td>
-                {% for pfo in person.personfunctionorganizations %}
+                {% for pfo in person.personroleorganizations %}
                 {{ pfo }}<br>
                 {% endfor %}
-                {% for pfl in person.personfunctionlocations %}
+                {% for pfl in person.personrolelocations %}
                 {{ pfl }}<br>
+                {% endfor %}
+                {% for pfe in person.personroleevents %}
+                {{ pfe }}<br>
                 {% endfor %}
                 </ul>
                 </td>
             </tr>
-{% endif %}
 {% if person.personfunctionevents | length > 0 %}
             <tr>
                 <th>Events</th>

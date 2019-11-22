@@ -101,22 +101,23 @@
             <th>Email</th>
             <th>Phone</th>
             <th>Role</th>
-            <th>&nbsp;</th>
         </tr>
     </thead>
     <tbody>
-        {% for pfl in location.personfunctionlocations %}
+        {% for person in location.people %}
         <tr>
         <td>
-            <a href="{{ path('person_show', { 'id': pfl.person.id }) }}">
-            {{ pfl.person }}
+            <a href="{{ path('person_show', { 'id': person.id }) }}">
+            {{ person }}
             </a>
         </td>
-        <td>{{ pfl.person.email }}</td>
-        <td>{{ pfl.person.mobilephonenumber }}</td>
-        <td>{{ pfl.function }}</td>
+        <td>{{ person.email }}</td>
+        <td>{{ person.mobilephonenumber }}</td>
         <td>
-            <a class="btn-sm btn-danger" href="{{ path('location_remove_person', { 'id': pfl.id }) }}">Remove</a>
+            {% for pro in person.personroles(location) %}
+            {{pro.role }}
+            <a href="{{ path('location_remove_person', { 'id':pro.id }) }}"><span class="remove_glyph"></span></a><br>
+            {% endfor %}
         </td>
         </tr>
         {% endfor %}

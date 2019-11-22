@@ -27,6 +27,10 @@ class Person extends BaseUser
 
     /**
      * Override FOSUserBundle User base class default role.
+     *
+     * Yes, this is what I call "System Role", not the "Person Role" which is
+     * connected to Organization, Location and Event.
+     *
      * Later you will notice that ROLE_USER is default on creation.
      * But if I have that default here it will always be added and that makes
      * it impossible to have ROLE_PERSON which is a lot more restricted than
@@ -138,6 +142,28 @@ class Person extends BaseUser
     private $person_function_locations;
 
     /**
+     * This is really functions, but since we have three (four) ways for a
+     * function to be connected to this Person object we have to define each
+     * by the other end of the person_role_ connection.
+     * @ORM\OneToMany(targetEntity="PersonRoleOrganization", mappedBy="person", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $person_role_organizations;
+
+    /**
+     * This is really functions, but since we have three (four) ways for a
+     * function to be connected to this Person object we have to define each
+     * by the other end of the person_role_ connection.
+     * @ORM\OneToMany(targetEntity="PersonRoleEvent", mappedBy="person", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $person_role_events;
+
+    /**
+     * And again!
+     * @ORM\OneToMany(targetEntity="PersonRoleLocation", mappedBy="person", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $person_role_locations;
+
+    /**
      * This is for the actual jobs.
      * @ORM\OneToMany(targetEntity="Job", mappedBy="person", fetch="EXTRA_LAZY", cascade={"remove"})
      */
@@ -165,6 +191,9 @@ class Person extends BaseUser
         $this->person_function_locations = new ArrayCollection();
         $this->person_function_events = new ArrayCollection();
         $this->person_functions = new ArrayCollection();
+        $this->person_role_organizations = new ArrayCollection();
+        $this->person_role_locations = new ArrayCollection();
+        $this->person_role_events = new ArrayCollection();
         $this->contexts  = new ArrayCollection();
         $this->jobs  = new ArrayCollection();
         $this->person_states  = new ArrayCollection();
@@ -793,6 +822,175 @@ throw new Nei();
         return $this->person_functions;
     }
 
+    /*
+     * Roles, basically the same as functions, but connected to Event, Location and Organization.
+     */
+
+    /**
+     * Add personRoleOrganization
+     *
+     * @param \CrewCallBundle\Entity\PersonRoleOrganization $personRoleOrganization
+     *
+     * @return Person
+     */
+    public function addPersonRoleOrganization(\CrewCallBundle\Entity\PersonRoleOrganization $personRoleOrganization)
+    {
+        $this->person_role_organizations[] = $personRoleOrganization;
+
+        return $this;
+    }
+
+    /**
+     * Remove personRoleOrganization
+     *
+     * @param \CrewCallBundle\Entity\PersonRoleOrganization $personRoleOrganization
+     */
+    public function removePersonRoleOrganization(\CrewCallBundle\Entity\PersonRoleOrganization $personRoleOrganization)
+    {
+        $this->person_role_organizations->removeElement($personRoleOrganization);
+    }
+
+    /**
+     * Get personRoleOrganizations
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPersonRoleOrganizations()
+    {
+        return $this->person_role_organizations;
+    }
+
+    /**
+     * Get Organizations
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOrganizations($active = true)
+    {
+        $orgs = new ArrayCollection();
+        foreach ($this->getPersonRoleOrganizations() as $pfo) {
+            if ($orgs->contains($pfo->getOrganization()))
+                continue;
+            $orgs->add($pfo->getOrganization());
+        }
+        return $orgs;
+    }
+
+    /**
+     * Add personRoleEvent
+     *
+     * @param \CrewCallBundle\Entity\PersonRoleEvent $personRoleEvent
+     *
+     * @return Person
+     */
+    public function addPersonRoleEvent(\CrewCallBundle\Entity\PersonRoleEvent $personRoleEvent)
+    {
+        $this->person_role_events[] = $personRoleEvent;
+
+        return $this;
+    }
+
+    /**
+     * Remove personRoleEvent
+     *
+     * @param \CrewCallBundle\Entity\PersonRoleEvent $personRoleEvent
+     */
+    public function removePersonRoleEvent(\CrewCallBundle\Entity\PersonRoleEvent $personRoleEvent)
+    {
+        $this->person_role_events->removeElement($personRoleEvent);
+    }
+
+    /**
+     * Get personRoleEvents
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPersonRoleEvents()
+    {
+        return $this->person_role_events;
+    }
+
+    /**
+     * Get Events
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEvents($active = true)
+    {
+        $evts = new ArrayCollection();
+        foreach ($this->getPersonRoleEvents() as $pfe) {
+            if ($evts->contains($pfe->getEvent()))
+                continue;
+            $evts->add($pfe->getEvent());
+        }
+        return $evts;
+    }
+
+    /**
+     * Add personRoleLocation
+     *
+     * @param \CrewCallBundle\Entity\PersonRoleLocation $personRoleLocation
+     *
+     * @return Person
+     */
+    public function addPersonRoleLocation(\CrewCallBundle\Entity\PersonRoleLocation $personRoleLocation)
+    {
+        $this->person_role_locations[] = $personRoleLocation;
+
+        return $this;
+    }
+
+    /**
+     * Remove personRoleLocation
+     *
+     * @param \CrewCallBundle\Entity\PersonRoleLocation $personRoleLocation
+     */
+    public function removePersonRoleLocation(\CrewCallBundle\Entity\PersonRoleLocation $personRoleLocation)
+    {
+        $this->person_role_locations->removeElement($personRoleLocation);
+    }
+
+    /**
+     * Get personRoleLocations
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPersonRoleLocations()
+    {
+        return $this->person_role_locations;
+    }
+
+    /**
+     * Get all PersonRoles in one go.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPersonRoles($frog = null)
+    {
+        // Wanting to use ArrayCollection makes array_merge more annoying.
+        $personroles = new ArrayCollection();
+        foreach ($this->getPersonRoleOrganizations() as $pro) {
+            if ($frog && $frog !== $pro->getOrganization())
+                continue;
+            $personroles->add($pro);
+        }
+        foreach ($this->getPersonRoleLocations() as $prl) {
+            if ($frog && $frog !== $prl->getLocation())
+                continue;
+            $personroles->add($prl);
+        }
+        foreach ($this->getPersonRoleEvents() as $pre) {
+            if ($frog && $frog !== $pre->getEvent())
+                continue;
+            $personroles->add($pre);
+        }
+        return $personroles;
+    }
+
+    /*
+     * The old, too confising names and functionlality
+     */
+
     /**
      * Add personFunctionOrganization
      *
@@ -828,22 +1026,6 @@ throw new Nei();
     }
 
     /**
-     * Get Organizations
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getOrganizations($active = true)
-    {
-        $orgs = new ArrayCollection();
-        foreach ($this->getPersonFunctionOrganizations() as $pfo) {
-            if ($orgs->contains($pfo->getOrganization()))
-                continue;
-            $orgs->add($pfo->getOrganization());
-        }
-        return $orgs;
-    }
-
-    /**
      * Add personFunctionEvent
      *
      * @param \CrewCallBundle\Entity\PersonFunctionEvent $personFunctionEvent
@@ -875,22 +1057,6 @@ throw new Nei();
     public function getPersonFunctionEvents()
     {
         return $this->person_function_events;
-    }
-
-    /**
-     * Get Events
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getEvents($active = true)
-    {
-        $evts = new ArrayCollection();
-        foreach ($this->getPersonFunctionEvents() as $pfe) {
-            if ($evts->contains($pfe->getEvent()))
-                continue;
-            $evts->add($pfe->getEvent());
-        }
-        return $evts;
     }
 
     /**
@@ -1051,6 +1217,14 @@ throw new Nei();
         return $this->getState() != "EXTERNAL";
     }
 
+    /*
+     * System Roles, more specific name for the UserBundle Roles array.
+     * And it makes it easier to separatate from PersonRoles whish is
+     * for this application and against Organization, Location and Event.
+     *
+     * For the form this is called "User Type".
+     */
+
     /**
      * Overrding roles. Need only one role at a time.
      */
@@ -1063,6 +1237,16 @@ throw new Nei();
     public function getSystemRole()
     {
         return current($this->getRoles());
+    }
+
+    public function getSystemRoles()
+    {
+        return $this->getRoles();
+    }
+
+    public function setSystemRoles($systemRoles)
+    {
+        return $this->getRoles($systemRoles);
     }
 
     /**

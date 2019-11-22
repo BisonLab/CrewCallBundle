@@ -24,13 +24,8 @@ class ExistingPersonLocationType extends AbstractType
            ->add('person', UsernameFormType::class, array('label' => "Search with name, phone number or email address", 'required' => true))
            ->add('location', EntityType::class,
                array('class' => 'CrewCallBundle:Location'))
-           ->add('function', EntityType::class,
-               array('class' => 'CrewCallBundle:FunctionEntity',
-                   'query_builder' => function(EntityRepository $er) use ($options) {
-                       $er->setReturnQb(true);
-                       return $er->findByFunctionGroup('Location');
-                   },
-               ))
+           ->add('role', EntityType::class,
+               array('class' => 'CrewCallBundle:Role'))
         ;
     }
     
@@ -40,7 +35,7 @@ class ExistingPersonLocationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CrewCallBundle\Entity\PersonFunctionLocation'
+            'data_class' => 'CrewCallBundle\Entity\PersonRoleLocation'
         ));
     }
 

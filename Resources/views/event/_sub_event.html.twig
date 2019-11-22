@@ -25,7 +25,7 @@
             <tr>
                 <th>Contacts</th>
                 <td>
-{% for pfe in event.personfunctionevents() %}
+{% for pfe in event.personroleevents() %}
    {{ pfe.person }}{% if pfe.person.mobilephonenumber %} - {{ pfe.person.mobilephonenumber }}{% endif %}
    <a href="{{ path('event_remove_contact', { 'id': pfe.id }) }}"><span class="remove_glyph"></span></a>
 <br />

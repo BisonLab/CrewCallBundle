@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 use CrewCallBundle\Entity\Organization;
-use CrewCallBundle\Entity\PersonFunctionOrganization;
+use CrewCallBundle\Entity\PersonRoleOrganization;
 use CrewCallBundle\Entity\Person;
 
 /**
@@ -159,18 +159,18 @@ class OrganizationController extends CommonController
     }
 
     /**
-     * Creates a new personFunctionOrganization entity.
+     * Creates a new PersonRoleOrganization entity.
      *
      * @Route("/{id}/add_person", name="organization_add_person", methods={"GET", "POST"})
      */
     public function addPersonAction(Request $request, Organization $organization, $access)
     {
         $em = $this->getDoctrine()->getManager();
-        $pfo = new PersonFunctionOrganization();
+        $pro = new PersonRoleOrganization();
         // Default-hack
-        $pfo->setOrganization($organization);
+        $pro->setOrganization($organization);
 
-        $exists_form = $this->createForm('CrewCallBundle\Form\ExistingPersonOrganizationType', $pfo);
+        $exists_form = $this->createForm('CrewCallBundle\Form\ExistingPersonOrganizationType', $pro);
         $exists_form->handleRequest($request);
 
         $new_form = $this->createForm('CrewCallBundle\Form\NewPersonOrganizationType');
@@ -178,8 +178,8 @@ class OrganizationController extends CommonController
 
         if ($exists_form->isSubmitted() && $exists_form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($pfo);
-            $em->flush($pfo);
+            $em->persist($pro);
+            $em->flush($pro);
 
             if ($this->isRest($access)) {
                 return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
@@ -210,12 +210,12 @@ class OrganizationController extends CommonController
             $person->setPlainPassword(sprintf("%16x", rand()));
 
             $em->persist($person);
-            $pfo->setPerson($person);
-            $pfo->setFunction($new_form_data['function']);
-            $pfo->setOrganization($new_form_data['organization']);
+            $pro->setPerson($person);
+            $pro->setRole($new_form_data['role']);
+            $pro->setOrganization($new_form_data['organization']);
 
             $em->persist($person);
-            $em->persist($pfo);
+            $em->persist($pro);
             $em->flush();
 
             if ($this->isRest($access)) {
@@ -225,15 +225,15 @@ class OrganizationController extends CommonController
             }
         }
 
-        if ($contact = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneBy(['name' => 'Contact'])) {
-            $exists_form->get('function')->setData($contact);
-            $new_form->get('function')->setData($contact);
+        if ($contact = $em->getRepository('CrewCallBundle:Role')->findOneBy(['name' => 'Contact'])) {
+            $exists_form->get('role')->setData($contact);
+            $new_form->get('role')->setData($contact);
         }
         $new_form->get('organization')->setData($organization);
 
         if ($this->isRest($access)) {
             return $this->render('organization/_new_pfo.html.twig', array(
-                'pfo' => $pfo,
+                'pro' => $pro,
                 'organization' => $organization,
                 'exists_form' => $exists_form->createView(),
                 'new_form' => $new_form->createView(),
@@ -242,17 +242,17 @@ class OrganizationController extends CommonController
     }
 
     /**
-     * Removes a personFunctionOrganization entity.
+     * Removes a PersonRoleOrganization entity.
      * Pure REST/AJAX.
      *
      * @Route("/{id}/remove_person", name="organization_remove_person", methods={"GET", "DELETE", "POST"})
      */
-    public function removePersonAction(Request $request, PersonFunctionOrganization $pfo, $access)
+    public function removePersonAction(Request $request, PersonRoleOrganization $pro, $access)
     {
-        $organization = $pfo->getOrganization();
+        $organization = $pro->getOrganization();
         $em = $this->getDoctrine()->getManager();
-        $em->remove($pfo);
-        $em->flush($pfo);
+        $em->remove($pro);
+        $em->flush($pro);
         if ($this->isRest($access)) {
             return new JsonResponse(array("status" => "OK"),
                 Response::HTTP_OK);

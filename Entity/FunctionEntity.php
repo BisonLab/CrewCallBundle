@@ -474,6 +474,13 @@ class FunctionEntity
             if (!$people->contains($pfl->getPerson()))
                 $people->add($pfl->getPerson());
         }
+        foreach ($this->person_function_events as $pfe) {
+            if ($active_only && !in_array($pfe->getPerson()->getState(),
+                    ExternalEntityConfig::getActiveStatesFor('Person')))
+                continue;
+            if (!$people->contains($pfe->getPerson()))
+                $people->add($pfe->getPerson());
+        }
         return $people;
     }
 

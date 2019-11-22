@@ -45,11 +45,10 @@ class Builder implements ContainerAwareInterface
             $menu->addChild('Locations', array('route' => 'location_index'));
 
             $adminmenu = $menu->addChild('Admin Stuff', array('route' => ''));
-            foreach (ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType') as $ftname => $ftarr) {
-                $adminmenu->addChild('Manage ' . $ftarr['plural'],
-                    array('route' => 'function_index',
-                    'routeParameters' => array('function_type' => $ftname)));
-            }
+            $adminmenu->addChild('Manage Functions',
+                array('route' => 'function_index'));
+            $adminmenu->addChild('Manage Roles',
+                array('route' => 'role_index'));
             $adminmenu->addChild('Report generator', array('route' => 'reports'));
             $adminmenu->addChild('Mail and SMS templates',
                 array('route' => 'sakonnintemplate_index'));
@@ -73,11 +72,10 @@ class Builder implements ContainerAwareInterface
 
             $adminmenu->addChild('Message Types',
                 array('route' => 'messagetype'));
-            foreach (ExternalEntityConfig::getTypesFor('FunctionEntity', 'FunctionType') as $ftname => $ftarr) {
-                $adminmenu->addChild("People with " . $ftarr['plural'],
-                    array('route' => 'person_function_type',
-                    'routeParameters' => array('all' => true, 'function_type' => $ftname)));
-            }
+            $adminmenu->addChild("People with Roles",
+                array('route' => 'person_role'));
+            $adminmenu->addChild("People with Functions",
+                array('route' => 'person_function'));
             if ($this->container->getParameter('allow_registration')) {
                 $adminmenu->addChild('Applicants', array('route' => 'person_applicants'));
             }

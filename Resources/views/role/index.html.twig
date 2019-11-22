@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+{% block title %}Roles{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+    <div class="col-sm-6">
+    <h1>Roles</h1>
+
+    </div>
+    <div class="col-sm-4">
+    </div>
+    <div class="col-sm-1" style="margin-top: 10px;">
+    <a href="{{ path('role_new') }}" class="btn btn-sm btn-dark">New Role</a>
+    </div>
+    </div>
+
+        <table id="sortable_table" class="table table-hover table-sm">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Descriptions</th>
+                <th>People</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for role in roles %}
+        <td><a href="{{ path('role_show', { 'id': role.id }) }}">{{ role.name }}</a></td>
+        <td>{{ role.description }}</td>
+        <td>
+        {% for state, amount in role.countpeople({ 'by_state': true }) %}
+        {{ state }}: {{ amount }}<br/>
+        {% endfor %}
+        </td>
+        <td>
+            <a href="{{ path('role_show', { 'id': role.id }) }}">show</a> - 
+            <a href="{{ path('role_edit', { 'id': role.id }) }}">edit</a> - 
+            <a href="{{ path('person_role', { 'role_id': role.id }) }}">people</a>
+        </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

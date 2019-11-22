@@ -29,13 +29,8 @@ class NewPersonOrganizationType extends AbstractType
            ->add('mobile_phone_number', TextType::class, array('label' => "Phone number", 'required' => true))
            ->add('organization', EntityType::class,
                array('class' => 'CrewCallBundle:Organization'))
-           ->add('function', EntityType::class,
-               array('class' => 'CrewCallBundle:FunctionEntity',
-                   'query_builder' => function(EntityRepository $er) use ($options) {
-                       $er->setReturnQb(true);
-                       return $er->findByFunctionGroup('Organization');
-                   },
-               ))
+           ->add('role', EntityType::class,
+               array('class' => 'CrewCallBundle:Role'))
         ;
     }
     

@@ -11,7 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use CrewCallBundle\Entity\Event;
-use CrewCallBundle\Entity\PersonFunctionEvent;
+use CrewCallBundle\Entity\PersonRoleEvent;
 
 /**
  * Event controller.
@@ -137,23 +137,21 @@ class EventController extends CommonController
             ));
         }
 
-        $funcrepo = $em->getRepository('CrewCallBundle:FunctionEntity');
-        $pfe = new PersonFunctionEvent();
-        $pfe->setEvent($event);
-        if ($contact = $funcrepo->findOneByName('Contact'))
-            $pfe->setFunction($contact);
-        // Gotta find all available persons
-        // $persons = new ArrayCollection();
-        // Just gettable from organization for now, have to add location later.
-        $persons = $event->getOrganization()->getPersons();
-        foreach ($event->getLocation()->getPersons() as $p) {
-            if (!$persons->contains($p))
-                $persons->add($p);
+        $rolerepo = $em->getRepository('CrewCallBundle:Role');
+        $pre = new PersonRoleEvent();
+        $pre->setEvent($event);
+        if ($contact = $rolerepo->findOneByName('Contact'))
+            $pre->setRole($contact);
+        // Gotta find all available people
+        $people = $event->getOrganization()->getPeople();
+        foreach ($event->getLocation()->getPeople() as $p) {
+            if (!$people->contains($p))
+                $people->add($p);
         }
 
         $add_contact_form = null;
-        if (count($persons) > 0) {
-            $add_contact_form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe, ['persons' => $persons])->createView();
+        if (count($people) > 0) {
+            $add_contact_form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pre, ['people' => $people])->createView();
         }
 
         $deleteForm  = $this->createDeleteForm($event);
@@ -323,7 +321,7 @@ class EventController extends CommonController
     }
 
     /**
-     * Creates a new PersonFunctionEvent entity.
+     * Creates a new PersonRoleEvent entity.
      * But it's only the Contact role here. Simplicity for now.
      * Pure REST/AJAX.
      *
@@ -332,26 +330,26 @@ class EventController extends CommonController
     public function addContactAction(Request $request, Event $event, $access)
     {
         $em = $this->getDoctrine()->getManager();
-        $pfe = new PersonFunctionEvent();
-        $pfe->setEvent($event);
+        $pre = new PersonRoleEvent();
+        $pre->setEvent($event);
 
-        $persons = $event->getOrganization()->getPersons();
-        foreach ($event->getLocation()->getPersons() as $p) {
-            if (!$persons->contains($p))
-                $persons->add($p);
+        $people = $event->getOrganization()->getPeople();
+        foreach ($event->getLocation()->getPeople() as $p) {
+            if (!$people->contains($p))
+                $people->add($p);
         }
         $add_contact_form = null;
-        if (count($persons) > 0) {
-            $form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe, ['persons' => $persons]);
+        if (count($people) > 0) {
+            $form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pre, ['people' => $people]);
         } else {
-            $form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pfe);
+            $form = $this->createForm('CrewCallBundle\Form\PersonEventType', $pre);
         }
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($pfe);
-            $em->flush($pfe);
+            $em->persist($pre);
+            $em->flush($pre);
 
             if ($this->isRest($access)) {
                 return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
@@ -365,7 +363,7 @@ class EventController extends CommonController
 
         if ($this->isRest($access)) {
             return $this->render('event/_new_pfe.html.twig', array(
-                'pfe' => $pfe,
+                'pre' => $pre,
                 'event' => $event,
                 'form' => $form->createView(),
             ));
@@ -377,12 +375,12 @@ class EventController extends CommonController
     }
 
     /**
-     * Removes a contactFunctionEvent entity.
+     * Removes a PersonRoleEvent entity.
      * Pure REST/AJAX.
      *
      * @Route("/{id}/remove_contact", name="event_remove_contact", methods={"GET", "DELETE", "POST"})
      */
-    public function removeContactAction(Request $request, PersonFunctionEvent $pfe, $access)
+    public function removeContactAction(Request $request, PersonRoleEvent $pfe, $access)
     {
         $event = $pfe->getEvent();
         $em = $this->getDoctrine()->getManager();
@@ -399,7 +397,7 @@ class EventController extends CommonController
     }
 
     /**
-     * Sends messages to a batch of persons.
+     * Sends messages to a batch of people.
      *
      * @Route("/{id}/send_message", name="event_send_message", methods={"POST"})
      */
@@ -421,14 +419,14 @@ class EventController extends CommonController
         if ($function_id = $request->request->get('function_id'))
             $filter['function_ids'] = [$function_id];
         
-        $persons = new ArrayCollection();
+        $people = new ArrayCollection();
         foreach ($event->getJobs($filter) as $j) {
-            if (!$persons->contains($j->getPerson()))
-                $persons->add($j->getPerson());
+            if (!$people->contains($j->getPerson()))
+                $people->add($j->getPerson());
         }
         $person_ids = array_map(function($person) {
                 return $person->getId();
-            }, $persons->toArray());
+            }, $people->toArray());
         $message_type = $request->request->get('message_type');
         $sm->postMessage(array(
             'subject' => $subject,

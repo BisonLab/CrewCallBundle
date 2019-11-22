@@ -97,9 +97,9 @@ class Location
     private $events;
 
     /**
-     * @ORM\OneToMany(targetEntity="PersonFunctionLocation", mappedBy="location", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="PersonRoleLocation", mappedBy="location", cascade={"persist", "remove"}, orphanRemoval=true)
      */
-    private $person_function_locations;
+    private $person_role_locations;
 
     /**
      * @ORM\OneToMany(targetEntity="LocationContext", mappedBy="owner", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
@@ -111,7 +111,7 @@ class Location
         $this->children = new ArrayCollection();
         $this->address = new EmbeddableAddress();
         $this->events  = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->person_function_locations = new ArrayCollection();
+        $this->person_role_locations = new ArrayCollection();
         $this->contexts = new ArrayCollection();
     }
     
@@ -337,23 +337,23 @@ class Location
      * *all* functions. Alas also those in the person_* tables. I say "Yes", but
      * then it's not that easy to handle these functions in picker-forms.
      */
-    public function getPersonFunctionLocations()
+    public function getPersonRoleLocations()
     {
-        return $this->person_function_locations;
+        return $this->person_role_locations;
     }
 
-    public function addPersonFunctionLocation(PersonFunctionLocation $pfo)
+    public function addPersonRoleLocation(PersonRoleLocation $pfo)
     {
-        if (!$this->person_function_locations->contains($pfo)) {
-            $this->person_function_locations->add($pfo);
+        if (!$this->person_role_locations->contains($pfo)) {
+            $this->person_role_locations->add($pfo);
         }
         return $this;
     }
 
-    public function removePersonFunctionLocation(PersonFunctionLocation $pfo)
+    public function removePersonRoleLocation(PersonRoleLocation $pfo)
     {
-        if ($this->person_function_locations->contains($pfo)) {
-            $this->person_function_locations->removeElement($pfo);
+        if ($this->person_role_locations->contains($pfo)) {
+            $this->person_role_locations->removeElement($pfo);
         }
         return $this;
     }
@@ -362,12 +362,12 @@ class Location
      * The downside of this "helper" is that we don't see the function, aka
      * what they do in the location.
      */
-    public function getPersons()
+    public function getPeople()
     {
         $persons = new ArrayCollection();
-        foreach ($this->getPersonFunctionLocations() as $pfo) {
-            if (!$persons->contains($pfo->getPerson()))
-                $persons->add($pfo->getPerson());
+        foreach ($this->getPersonRoleLocations() as $prl) {
+            if (!$persons->contains($prl->getPerson()))
+                $persons->add($prl->getPerson());
         } 
         return $persons;
     }

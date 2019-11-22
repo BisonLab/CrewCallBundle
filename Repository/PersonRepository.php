@@ -52,6 +52,42 @@ class PersonRepository extends \Doctrine\ORM\EntityRepository
         return $found;
     }
 
+    public function findWithRoles()
+    {
+        $found = new \Doctrine\Common\Collections\ArrayCollection();
+
+        // Had issues with distinct, dropped it.
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('p')
+            ->from($this->_entityName, 'p')
+            ->innerJoin('p.person_role_organizations', 'pfo');
+        foreach ($qb->getQuery()->getResult() as $per) {
+            $found->add($per);
+        }
+
+        $qb2 = $this->_em->createQueryBuilder();
+        $qb2->select('p')
+            ->from($this->_entityName, 'p')
+            ->innerJoin('p.person_role_events', 'pfe');
+        foreach ($qb2->getQuery()->getResult() as $per) {
+            if ($found->contains($per))
+                continue;
+            $found->add($per);
+        }
+
+        $qb3 = $this->_em->createQueryBuilder();
+        $qb3->select('p')
+            ->from($this->_entityName, 'p')
+            ->innerJoin('p.person_role_locations', 'pfl');
+        foreach ($qb3->getQuery()->getResult() as $per) {
+            if ($found->contains($per))
+                continue;
+            $found->add($per);
+        }
+
+        return $found;
+    }
+
     public function findByState($state, $from = null, $to = null)
     {
         $qb = $this->_em->createQueryBuilder();

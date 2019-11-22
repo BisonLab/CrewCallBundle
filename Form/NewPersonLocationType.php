@@ -30,13 +30,8 @@ class NewPersonLocationType extends AbstractType
            ->add('mobile_phone_number', TextType::class, array('label' => "Phone number", 'required' => true))
            ->add('location', EntityType::class,
                array('class' => 'CrewCallBundle:Location'))
-           ->add('function', EntityType::class,
-               array('class' => 'CrewCallBundle:FunctionEntity',
-                   'query_builder' => function(EntityRepository $er) use ($options) {
-                       $er->setReturnQb(true);
-                       return $er->findByFunctionGroup('Location');
-                   },
-               ))
+           ->add('role', EntityType::class,
+               array('class' => 'CrewCallBundle:Role'))
         ;
     }
     

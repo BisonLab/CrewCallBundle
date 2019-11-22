@@ -94,22 +94,23 @@
             <th>Email</th>
             <th>Phone</th>
             <th>Role</th>
-            <th>&nbsp;</th>
         </tr>
     </thead>
     <tbody>
-        {% for pfo in organization.personfunctionorganizations %}
+        {% for person in organization.people %}
         <tr>
         <td>
-            <a href="{{ path('person_show', { 'id': pfo.person.id }) }}">
-            {{ pfo.person }}
+            <a href="{{ path('person_show', { 'id': person.id }) }}">
+            {{ person }}
             </a>
         </td>
-        <td>{{ pfo.person.email }}</td>
-        <td>{{ pfo.person.mobilephonenumber }}</td>
-        <td>{{ pfo.function }}</td>
+        <td>{{ person.email }}</td>
+        <td>{{ person.mobilephonenumber }}</td>
         <td>
-            <a class="btn btn-sm btn-danger" href="{{ path('organization_remove_person', { 'id': pfo.id }) }}">Remove</a>
+            {% for pfo in person.personroles(organization) %}
+            {{ pfo.role }}
+            <a href="{{ path('organization_remove_person', { 'id': pfo.id }) }}"><span class="remove_glyph"></span></a><br>
+            {% endfor %}
         </td>
         </tr>
         {% endfor %}

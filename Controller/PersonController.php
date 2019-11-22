@@ -21,7 +21,7 @@ use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use CrewCallBundle\Entity\Person;
 use CrewCallBundle\Entity\PersonState;
 use CrewCallBundle\Entity\PersonFunction;
-use CrewCallBundle\Entity\PersonFunctionOrganization;
+use CrewCallBundle\Entity\PersonRoleOrganization;
 use CrewCallBundle\Entity\FunctionEntity;
 use CrewCallBundle\Lib\ExternalEntityConfig;
 
@@ -192,6 +192,42 @@ class PersonController extends CommonController
     }
 
     /**
+     * Lists all person entities with a function
+     *
+     * @Route("/role", name="person_role", methods={"GET"})
+     */
+    public function listByRoleAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $role_repo = $em->getRepository('CrewCallBundle:Role');
+        $person_repo = $em->getRepository('CrewCallBundle:Person');
+
+        $on_date = $request->get('on_date');
+        $role = null;
+        $people = [];
+        if ($rid = $request->get('role_id')) {
+            if (!$role = $role_repo->find($rid))
+                return $this->returnNotFound($request, 'No role to filter');
+            $people = $role->getPeople();
+        } else {
+            $people = $person_repo->findWithRoles();
+        }
+
+        if ($select_grouping = $request->get('select_grouping')) {
+            $people = $this->_filterPeople($people, [
+                'select_grouping' => $select_grouping,
+                'on_date' => null,
+            ]);
+        }
+
+        return $this->render('person/roleindex.html.twig', array(
+            'people' => $people,
+            'role' => $role,
+            'roles' => $role_repo->findAll(),
+        ));
+    }
+
+    /**
      * Lists all persons without a state, aka newly registered and ready to be
      * accepted or denied.
      *
@@ -223,7 +259,7 @@ class PersonController extends CommonController
         $address_elements = $addressing->getFormElementList($person);
         $internal_organization_config = $this->container->getParameter('internal_organization');
         $first_org = $em->getRepository('CrewCallBundle:Organization')->findOneBy(array('name' => $internal_organization_config['name']));
-        $first_role = $em->getRepository('CrewCallBundle:FunctionEntity')->findOneBy(array('name' => $internal_organization_config['default_role']));
+        $first_role = $em->getRepository('CrewCallBundle:Role')->findOneBy(array('name' => $internal_organization_config['default_role']));
 
         $form = $this->createForm('CrewCallBundle\Form\NewPersonType',
             $person, [
@@ -241,22 +277,22 @@ class PersonController extends CommonController
             $pf->setPerson($person);
             $pf->setFunction($form->get('function')->getData());
 
-            $pfo = new PersonFunctionOrganization();
+            $pro = new PersonRoleOrganization();
             if ($internal_organization_config['allow_external_crew']) {
-                $pfo->setPerson($person);
-                $pfo->setOrganization($form->get('organization')->getData());
-                $pfo->setFunction($form->get('role')->getData());
+                $pro->setPerson($person);
+                $pro->setOrganization($form->get('organization')->getData());
+                $pro->setRole($form->get('role')->getData());
             } else {
-                $pfo->setPerson($person);
-                $pfo->setOrganization($first_org);
-                $pfo->setFunction($first_role);
+                $pro->setPerson($person);
+                $pro->setOrganization($first_org);
+                $pro->setRole($first_role);
             }
             // I have removed password setting, alas I have to set something
             // until the user has reset their password.
             $person->setPassword(\ShortCode\Random::get(16));
             $em->persist($person);
             $em->persist($pf);
-            $em->persist($pfo);
+            $em->persist($pro);
             $em->flush($person);
 
             return $this->redirectToRoute('person_show', array('id' => $person->getId()));

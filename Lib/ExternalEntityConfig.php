@@ -59,11 +59,14 @@ class ExternalEntityConfig
         return self::$system_roles;
     }
 
-    public static function getSystemRolesAsChoices()
+    public static function getSystemRolesAsChoices($option = null)
     {
         $choices = array();
         foreach (self::$system_roles as $system_role => $params) {
-            $choices[$params['label']] = $system_role;
+            if ($option == "with_description")
+                $choices[$params['description']] = $system_role;
+            else
+                $choices[$params['label']] = $system_role;
         }
         return $choices;
     }

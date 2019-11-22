@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 
 use CrewCallBundle\Entity\Location;
-use CrewCallBundle\Entity\PersonFunctionLocation;
+use CrewCallBundle\Entity\PersonRoleLocation;
 use CrewCallBundle\Entity\Person;
 
 /**
@@ -109,14 +109,14 @@ class LocationController extends CommonController
     }
 
     /**
-     * Creates a new personFunctionLocation entity.
+     * Creates a new PersonRoleLocation entity.
      *
      * @Route("/{id}/add_person", name="location_add_person", methods={"GET", "POST"})
      */
     public function addPersonAction(Request $request, Location $location, $access)
     {
         $em = $this->getDoctrine()->getManager();
-        $pfl = new PersonFunctionLocation();
+        $pfl = new PersonRoleLocation();
         // Default-hack
         $pfl->setLocation($location);
 
@@ -193,17 +193,17 @@ class LocationController extends CommonController
     }
 
     /**
-     * Removes a personFunctionLocation entity.
+     * Removes a personRoleLocation entity.
      * Pure REST/AJAX.
      *
      * @Route("/{id}/remove_person", name="location_remove_person", methods={"GET", "DELETE", "POST"})
      */
-    public function removePersonAction(Request $request, PersonFunctionLocation $pfl, $access)
+    public function removePersonAction(Request $request, PersonRoleLocation $prl, $access)
     {
-        $location = $pfl->getLocation();
+        $location = $prl->getLocation();
         $em = $this->getDoctrine()->getManager();
-        $em->remove($pfl);
-        $em->flush($pfl);
+        $em->remove($prl);
+        $em->flush($prl);
         if ($this->isRest($access)) {
             return new JsonResponse(array("status" => "OK"),
                 Response::HTTP_OK);

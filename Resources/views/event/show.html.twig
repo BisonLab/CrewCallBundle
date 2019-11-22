@@ -79,7 +79,10 @@
       <div class="modal-body" id="addContactModalBody">
         <div id="add_contact_popover_content">
             {{ form_start(add_contact_form, { 'action': path('event_add_contact', {'id': "XXX" }), 'attr': {'id':'addContactForm'}}) }}
-            {{ form_widget(add_contact_form) }}
+            {{ form_widget(add_contact_form.person) }}
+            <div class="hidden">
+            {{ form_widget(add_contact_form.role) }}
+            </div>
             <input type="hidden" name="username" id="username">
             <input id="submitAddExistingPerson" type="submit" value="Add" />
             {{ form_end(add_contact_form) }}

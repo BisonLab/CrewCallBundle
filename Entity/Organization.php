@@ -92,9 +92,9 @@ class Organization
     private $state = "ACTIVE";
 
     /**
-     * @ORM\OneToMany(targetEntity="PersonFunctionOrganization", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="PersonRoleOrganization", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=true)
      */
-    private $person_function_organizations;
+    private $person_role_organizations;
 
     /**
      * @ORM\OneToMany(targetEntity="ShiftOrganization", mappedBy="organization", cascade={"persist", "remove"}, orphanRemoval=true)
@@ -113,7 +113,7 @@ class Organization
 
     public function __construct()
     {
-        $this->person_function_organizations = new ArrayCollection();
+        $this->person_role_organizations = new ArrayCollection();
         $this->contexts = new ArrayCollection();
         $this->events = new ArrayCollection();
         $this->visit_address = new EmbeddableAddress();
@@ -332,23 +332,23 @@ class Organization
      * *all* functions. Alas also those in the person_* tables. I say "Yes", but
      * then it's not that easy to handle these functions in picker-forms.
      */
-    public function getPersonFunctionOrganizations()
+    public function getPersonRoleOrganizations()
     {
-        return $this->person_function_organizations;
+        return $this->person_role_organizations;
     }
 
-    public function addPersonFunctionOrganization(PersonFunctionOrganization $pfo)
+    public function addPersonRoleOrganization(PersonRoleOrganization $pfo)
     {
-        if (!$this->person_function_organizations->contains($pfo)) {
-            $this->person_function_organizations->add($pfo);
+        if (!$this->person_role_organizations->contains($pfo)) {
+            $this->person_role_organizations->add($pfo);
         }
         return $this;
     }
 
-    public function removePersonFunctionOrganization(PersonFunctionOrganization $pfo)
+    public function removePersonRoleOrganization(PersonRoleOrganization $pfo)
     {
-        if ($this->person_function_organizations->contains($pfo)) {
-            $this->person_function_organizations->removeElement($pfo);
+        if ($this->person_role_organizations->contains($pfo)) {
+            $this->person_role_organizations->removeElement($pfo);
         }
         return $this;
     }
@@ -357,10 +357,10 @@ class Organization
      * The downside of this "helper" is that we don't see the function, aka
      * what they do in the organization.
      */
-    public function getPersons()
+    public function getPeople()
     {
         $persons = new ArrayCollection();
-        foreach ($this->getPersonFunctionOrganizations() as $pfo) {
+        foreach ($this->getPersonRoleOrganizations() as $pfo) {
             if (!$persons->contains($pfo->getPerson()))
                 $persons->add($pfo->getPerson());
         } 

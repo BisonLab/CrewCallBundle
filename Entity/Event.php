@@ -88,9 +88,9 @@ class Event
     private $organization;
 
     /**
-     * @ORM\OneToMany(targetEntity="PersonFunctionEvent", mappedBy="event", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="PersonRoleEvent", mappedBy="event", cascade={"persist", "remove"}, orphanRemoval=true)
      */
-    private $person_function_events;
+    private $person_role_events;
 
     /**
      * @ORM\OneToMany(targetEntity="Shift", mappedBy="event", fetch="EXTRA_LAZY", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
@@ -512,23 +512,23 @@ class Event
      * *all* functions. Alas also those in the person_* tables. I say "Yes", but
      * then it's not that easy to handle these functions in picker-forms.
      */
-    public function getPersonFunctionEvents()
+    public function getPersonRoleEvents()
     {
-        return $this->person_function_events;
+        return $this->person_role_events;
     }
 
-    public function addPersonFunctionEvent(PersonFunctionEvent $pfo)
+    public function addPersonRoleEvent(PersonRoleEvent $pfo)
     {
-        if (!$this->person_function_events->contains($pfo)) {
-            $this->person_function_events->add($pfo);
+        if (!$this->person_role_events->contains($pfo)) {
+            $this->person_role_events->add($pfo);
         }
         return $this;
     }
 
-    public function removePersonFunctionEvent(PersonFunctionEvent $pfo)
+    public function removePersonRoleEvent(PersonRoleEvent $pfo)
     {
-        if ($this->person_function_events->contains($pfo)) {
-            $this->person_function_events->removeElement($pfo);
+        if ($this->person_role_events->contains($pfo)) {
+            $this->person_role_events->removeElement($pfo);
         }
         return $this;
     }
@@ -538,16 +538,16 @@ class Event
      * what they do in the event.
      * And this is people connected to the event, not shifts/jobs
      */
-    public function getPersons($function_name = null)
+    public function getPeople($function_name = null)
     {
         $persons = new ArrayCollection();
-        foreach ($this->getPersonFunctionEvents() as $pfe) {
-            if ($persons->contains($pfe->getPerson()))
+        foreach ($this->getPersonRoleEvents() as $pre) {
+            if ($persons->contains($pre->getPerson()))
                 continue;
             if ($function_name 
-                && $function_name != $pfe->getFunction()->getName())
+                && $function_name != $pre->getFunction()->getName())
                     continue;
-            $persons->add($pfe->getPerson());
+            $persons->add($pre->getPerson());
         }
         return $persons;
     }
