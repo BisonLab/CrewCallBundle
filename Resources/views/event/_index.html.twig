@@ -52,11 +52,11 @@
 
 {# hacks, blame laziness #}
 {% if upcoming %}
-    <table id="sortable_table" class="table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
+    <table class="sortable_table table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
 {% elseif past %}
-    <table id="sortable_table" class="table table-hover table-sm" data-order='[[ 1, "desc" ]]'>
+    <table class="sortable_table table table-hover table-sm" data-order='[[ 1, "desc" ]]'>
 {% else %}
-    <table id="sortable_table" class="table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
+    <table class="sortable_table table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
 {% endif %}
 
         <thead>
