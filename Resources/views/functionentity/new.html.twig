@@ -15,7 +15,7 @@ $(document).ready(function() {
 
     {{ form_start(form) }}
         {{ form_widget(form) }}
-        <input type="submit" value="Create" />
+        <input class="btn btn-sm btn-dark" type="submit" value="Create" />
     {{ form_end(form) }}
 {% if function_type is not null %}
     <a href="{{ path('function_index', {'function_type': function_type}) }}"  class="btn btn-sm btn-dark">Cancel</a>

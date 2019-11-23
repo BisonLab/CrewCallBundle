@@ -3,15 +3,12 @@
 {% block body %}
     <h1>{{ functionEntity }}</h1>
 
+<div class="col-sm-4">
     <table class="showTable">
         <tbody>
             <tr>
                 <th>Name</th>
                 <td>{{ functionEntity.name }}</td>
-            </tr>
-            <tr>
-                <th>Type</th>
-                <td>{{ functionEntity.functiontype }}</td>
             </tr>
             <tr>
                 <th>Description</th>
@@ -21,17 +18,52 @@
                 <th>Status</th>
                 <td>{{ functionEntity.statelabel }}</td>
             </tr>
+            <tr>
+             <th>
+                <a href="{{ path('function_edit', { 'id': functionEntity.id }) }}"  class="btn btn-sm btn-dark">Edit</a>
+                <br>
+                {{ form_start(delete_form) }}
+                    <input class="btn btn-sm btn-danger" type="submit" value="Delete">
+                {{ form_end(delete_form) }}
+             </th>
+             <td>&nbsp</td>
+            </tr>
         </tbody>
     </table>
+</div>
 
-    <ul>
-        <li>
-            <a href="{{ path('function_edit', { 'id': functionEntity.id }) }}"  class="btn btn-sm btn-dark">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+<div class="col-sm-8 tabbable" id="eventRight">
+  <ul id="tabRight" class="nav nav-tabs">
+  <li class="active">
+  <a href="#peopletab" data-toggle="tab">People</a>
+  </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane active" id="peopletab">
+      <table id="apTable" class="sortable_table table table-sm">
+      <thead>
+          <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for person in functionEntity.people %}
+          <tr>
+          <td>
+              <a href="{{ path('person_show', { 'id': person.id }) }}">
+              {{ person }}
+              </a>
+          </td>
+          <td>{{ person.email }}</td>
+          <td>{{ person.mobilephonenumber }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
 {% endblock %}

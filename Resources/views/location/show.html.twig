@@ -39,31 +39,29 @@
                 </td>
             </tr>
             {% endif %}
-        </tbody>
-    </table>
-
-    <ul>
         {% if not location.parent %}
-        <li>
-            <a href="{{ path('location_new', {'parent': location.id}) }}" class="btn btn-sm btn-dark">New sub location</a>
-        </li>
+        <tr>
+        </tr>
         {% endif %}
-        <li>
+        <tr>
+          <th>
+            <a href="{{ path('location_new', {'parent': location.id}) }}" class="btn btn-sm btn-dark">New sub location</a>
+            <br>
             <a href="#" title="Location Summary" id="popLogSummary_location_{{ location.id }}" onClick="return popLogSummary('location', {{ location.id }});" class="btn btn-sm btn-dark">Changelog</a>
-        </li>
-        <li>
+            <br>
             <a href="{{ path('location_edit', { 'id': location.id }) }}" class="btn btn-sm btn-dark">Edit</a>
-        </li>
+            <br>
 {% if location.deleteable %}
-        <li>
             {{ form_start(delete_form) }}
                 <input class="btn btn-sm btn-danger" type="submit" value="Delete">
             {{ form_end(delete_form) }}
-        </li>
+        </th>
+        <td>&nbsp</td>
+        </tr>
 {% endif %}
-    </ul>
+        </tbody>
+    </table>
 </div>
-
 
 <div class="col-sm-9 tabbable" id="eventRight">
   <ul id="tabRight" class="nav nav-tabs">
@@ -94,7 +92,7 @@
     </div>
     </p>
 
-    <table id="apTable" class="table table-sm">
+    <table id="apTable" class="sortable_table table table-sm">
     <thead>
         <tr>
             <th>Name</th>

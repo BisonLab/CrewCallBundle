@@ -12,7 +12,7 @@
 <tbody>
 {% for person in people %}
     <tr>
-        <td data-order="{{ person.lastname }}"><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.fullname }}</a></td>
+        <td style="white-space:nowrap;" data-order="{{ person.lastname }}"><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.fullname }}</a></td>
         <td>{{ person.mobilephonenumber }}</td>
         <td>{{ person.email }}</td>
         <td>

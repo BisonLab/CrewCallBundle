@@ -20,7 +20,6 @@
                 <th>Description</th>
                 <th>Status</th>
                 <th>Sublocations</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -36,10 +35,6 @@
                 {% else %}
                     &nbsp;
                 {% endfor %}
-                </td>
-                <td>
-                 <a href="{{ path('location_show', { 'id': location.id }) }}">show</a><br>
-                 <a href="{{ path('location_edit', { 'id': location.id }) }}">edit</a>
                 </td>
             </tr>
         {% endfor %}

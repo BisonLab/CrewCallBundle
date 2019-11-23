@@ -135,6 +135,7 @@ class PersonController extends CommonController
             => $functionEntity->getFunctionType()], ['name' => 'ASC']);
         return $this->render('person/index.html.twig', array(
             'people' => $people,
+            'simplified' => false,
             'on_date' => $on_date,
             'functions' => $functions,
             'functionEntity' => $functionEntity,

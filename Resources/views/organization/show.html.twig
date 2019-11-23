@@ -37,24 +37,23 @@
                 <th>Status</th>
                 <td>{{ organization.state }}</td>
             </tr>
-        </tbody>
-    </table>
-
-    <ul>
-        <li>
-           <a href="#" title="Logs" id="popLogSummary_organization_{{ organization.id }}" onClick="return popLogSummary('organization', {{ organization.id }});" class="btn btn-sm btn-dark">Changelog</a><br>
-        </li>
-        <li>
+        <tr>
+          <th>
+            <a href="#" title="Logs" id="popLogSummary_organization_{{ organization.id }}" onClick="return popLogSummary('organization', {{ organization.id }});" class="btn btn-sm btn-dark">Changelog</a>
+            <br>
             <a href="{{ path('organization_edit', { 'id': organization.id }) }}" class="btn btn-sm btn-dark">Edit</a>
-        </li>
+            <br>
 {% if organization.deleteable %}
-        <li>
             {{ form_start(delete_form) }}
                 <input type="submit"  class="btn btn-sm btn-danger" value="Delete">
             {{ form_end(delete_form) }}
-        </li>
 {% endif %}
-    </ul>
+         </th>
+         <td>&nbsp;</td>
+        </tr>
+        </tbody>
+    </table>
+
 </div>
 
 <div class="col-sm-9 tabbable" id="eventRight">
@@ -87,7 +86,7 @@
       </div>
       </p>
     
-      <table id="apTable" class="table  table-sm">
+      <table id="apTable" class="sortable_table table table-sm">
       <thead>
         <tr>
             <th>Name</th>

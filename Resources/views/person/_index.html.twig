@@ -1,7 +1,6 @@
-<table id="sortable_table" class="table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
+<table id="sortable_table" class="table table-hover table-sm" data-order='[[ 0, "asc" ]]'>
 <thead>
     <tr>
-        <th>Username</th>
         <th>Name</th>
         <th>Functions</th>
         <th>Mobile</th>
@@ -15,8 +14,7 @@
 <tbody>
 {% for person in people %}
     <tr>
-        <td><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.username }}</a></td>
-        <td data-order="{{ person.lastname }}">{{ person.fullname }}</td>
+        <td style="white-space:nowrap;" data-order="{{ person.lastname }}"><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.fullname }}</a></td>
         <td>
             {% for f in person.functions(function_type) %} {{ f.name }},{% endfor %}</td>
         <td>{{ person.mobilephonenumber }}</td>
