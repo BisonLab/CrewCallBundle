@@ -44,13 +44,13 @@ Done
 %}
 {% for message in sakonnin_messages.messages(criterias) %}
  {% if is_granted('show', message) %}
-   <div class="ccNotesText" id="sakonninmessage_{{ message.id}}">
+   <div id="sakonninmessage_{{ message.id}}">
      <div class="row">
         <div class="col-md-11">
             <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
         </div>
      </div>
-     <div class="row">
+     <div class="ccNotesText row">
         <div class="col-md-2" align="right">
         <br>
         {% if message.messagetype == "TODO" %}
@@ -66,7 +66,7 @@ Done
             {% endif %}
 
             <label class="ccSwitch">
-              <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState('{{ message.messageid }}', this)" {% if checked %}checked{% endif %}/>
+              <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState('{{ message.messageid }}', 'TODO', this)" {% if checked %}checked{% endif %}/>
             {% if checked %}
                 <span class="ccSlider round" title="{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}"></span>
                 </label>
@@ -81,11 +81,11 @@ Done
             <br>
         {% endif %}
         </div>
-<pre wrap class="ccNotesText col-md-8">
-{{ message.body }}
-</pre>
-    <div class="col-md-2" align="left">
-        <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" ><span class="glyphicon glyphicon-save-file" title="Archive"></span></a>
+        <pre wrap class="ccNotesText col-md-8">
+        {{ message.body }}
+        </pre>
+        <div class="col-md-2" align="left">
+           <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" ><span class="glyphicon glyphicon-save-file" title="Archive"></span></a>
 
         {% if is_granted('edit', message) %}
 {% set emform = sakonnin_messages.getEditForm( message, true ) %}
@@ -101,9 +101,9 @@ Done
 </button>
 </form>
         {% endif %}
-        </div>
      </div>
-   </div>
+    </div>
+   </div> <! -- sakonninmessage -->
  {% endif %}
 {% endfor %}
 
@@ -142,46 +142,6 @@ Done
 </div> <!-- end combowall -->
 
 <script type="text/javascript">
-
-function addCheckReply(message_id, state) {
-    message_data = { 
-        'in_reply_to': message_id,
-        'message_type': 'TODO',
-        'subject': '',
-        'body': '',
-        'state': state
-        };
-    formdata = JSON.stringify({ 
-            'message_data': message_data
-        });
-    $.ajax({
-        beforeSend: function(req) {
-          req.setRequestHeader("Accept", "application/json");
-        },
-        contentType: 'application/json',
-        type: 'POST',
-        url: "{{ path('message_create', { 'access': 'ajax' }) }}",
-        processData: false,
-        dataType: 'json',
-        data: formdata,
-        async: true,
-      }).done( function( cont, textStatus, xhr ) {
-            return false;
-      }).fail(function(xhr, status, error) {
-            errmsg = "Faled setting TODO\n";
-            errmsg = errmsg + xhr.responseText + "\n";
-            alert(errmsg);
-    });
-    return false;
-}
-
-function setCheckboxState(message_id, elem) {
-    if (elem.checked) {
-        addCheckReply(message_id, "CHECKED");
-    } else {
-        addCheckReply(message_id, "UNCHECKED");
-    }
-}
 
 $(document).ready(function() {
     $( "#createcomboform #message_data_message_type" ).val({{ sakonnin_messages.messagetype('Admin Wall').id }});

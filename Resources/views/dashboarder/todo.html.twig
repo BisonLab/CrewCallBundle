@@ -2,27 +2,71 @@
 {% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' with { 'reload_after_post': true } %}
 <h3>Todo</h3>
 <div id="todo">
-{% for message in sakonnin_messages.messagetype('TODO').messages if message.state == "UNCHECKED" %}
+{% set criterias = {
+    'message_types': ['TODO'],
+    'states': ['UNREAD', 'UNCHECKED', 'CHECKED', 'SHOW'],
+    }
+%}
+{% for message in sakonnin_messages.messages(criterias) %}
   {% if is_granted('show', message) %}
   <div id="sakonninmessage_{{ message.id}}">
         {% if message.subject is not empty %}
-            <h3>{{ message.subject }}</h3>
+            <strong>{{ message.subject }}</strong>
         {% endif %}
-      <div class="row">
-        <pre wrap class="ccNotesText col-sm-11">
-        {{ message.body }}
-        <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'CHECKED');" class="btn btn-sm btn-success">Done!</a><br>
-        </pre>
-    {% if is_granted('edit', message) %}
-        <div class="col-sm-1">
-        <a href="#" onClick='return grabEditMessageForm({{ message.id }});' class="btn btn-sm btn-dark">Edit</a>
+            <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
+     <div class="ccNotesText row">
+        <div class="col-md-2" align="right">
+        <br>
+        {% if message.messagetype == "TODO" %}
+            {# OK, are we checked or not? #}
+            {% set checked = false %}
+            {% set last_reply = message.replies | last %}
+            {% if last_reply %}
+                {% if last_reply.state == "CHECKED" %}
+                    {% set checked = true %}
+                {% else %}
+                    {% set checked = false %}
+                {% endif %}
+            {% endif %}
+
+            <label class="ccSwitch">
+              <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState('{{ message.messageid }}', 'TODO', this)" {% if checked %}checked{% endif %}/>
+            {% if checked %}
+                <span class="ccSlider round" title="{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}"></span>
+                </label>
+                <em style="font-size: 70%;">
+                {{ last_reply.createdAt | date('Y-m-d H:i') }}
+                {{ last_reply.createdBy }}
+                </em>
+            {% else %}
+                <span class="ccSlider round" title="Todo"></span>
+                </label>
+            {% endif %}
+            <br>
+        {% endif %}
         </div>
-    {% endif %}
+<pre wrap class="ccNotesText col-md-8">
+{{ message.body }}
+</pre>
+{% if is_granted('edit', message) %}
+    {% set emform = sakonnin_messages.getEditForm( message, true ) %}
+    {% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
+       <a href="#" onClick='return grabEditMessageForm({{ message.id }});'><span class="glyphicon glyphicon-pencil"></span></a>
+    {% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
+    <form method="POST" action="{{ path('message_delete', { 'id': message.id, 'access': 'web' }) }}">
+    {{ form_start(mdelform) }}
+    {{ form_rest(mdelform) }}
+    <button type="submit" class="btn btn-link">
+    <span class="glyphicon glyphicon-trash"></span>
+    </button>
+    </form>
+{% endif %}
     </div>
   </div>
  {% endif %}
 {% endfor %}
 </div>
+
     {% set mconf = {'mconfig': {
             'formname': 'todocheck',
             'reload_after_post': true,
