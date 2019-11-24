@@ -44,8 +44,13 @@ Done
 %}
 {% for message in sakonnin_messages.messages(criterias) %}
  {% if is_granted('show', message) %}
-   <div id="sakonninmessage_{{ message.id}}">
-     <div class="row ccNotesText">
+   <div class="ccNotesText" id="sakonninmessage_{{ message.id}}">
+     <div class="row">
+        <div class="col-md-11">
+            <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
+        </div>
+     </div>
+     <div class="row">
         <div class="col-md-2">
         <br>
         {% if is_granted('edit', message) %}
@@ -69,11 +74,26 @@ Done
         <div class="col-md-2" halign="left">
         <br>
         {% if message.messagetype == "TODO" %}
-            <label class="ccSwitch">
-              <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState({{ message.id }}, this)" {% if message.state == "CHECKED" %}checked{% endif %}/>
-              <span class="ccSlider round" title="Todo"></span>
-            </label>
-            <br>
+        {# OK, are we checked or not? #}
+        {% set checked = false %}
+        {% set last_reply = message.replies | last %}
+        {% if last_reply %}
+            {% if last_reply.state == "CHECKED" %}
+                {% set checked = true %}
+            {% else %}
+                {% set checked = false %}
+            {% endif %}
+        {% endif %}
+
+        <label class="ccSwitch">
+          <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState('{{ message.messageid }}', this)" {% if checked %}checked{% endif %}/>
+        {% if checked %}
+            <span class="ccSlider round" title="{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}"></span>
+        {% else %}
+            <span class="ccSlider round" title="Todo"></span>
+        {% endif %}
+        </label>
+        <br>
         {% endif %}
             <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" ><span class="glyphicon glyphicon-save-file" title="Archive"></span></a>
         </div>
@@ -118,11 +138,43 @@ Done
 
 <script type="text/javascript">
 
+function addCheckReply(message_id, state) {
+    message_data = { 
+        'in_reply_to': message_id,
+        'message_type': 'TODO',
+        'subject': '',
+        'body': '',
+        'state': state
+        };
+    formdata = JSON.stringify({ 
+            'message_data': message_data
+        });
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        contentType: 'application/json',
+        type: 'POST',
+        url: "{{ path('message_create', { 'access': 'ajax' }) }}",
+        processData: false,
+        dataType: 'json',
+        data: formdata,
+        async: true,
+      }).done( function( cont, textStatus, xhr ) {
+            return false;
+      }).fail(function(xhr, status, error) {
+            errmsg = "Faled setting TODO\n";
+            errmsg = errmsg + xhr.responseText + "\n";
+            alert(errmsg);
+    });
+    return false;
+}
+
 function setCheckboxState(message_id, elem) {
     if (elem.checked) {
-        setStateOnMessage(message_id, "CHECKED");
+        addCheckReply(message_id, "CHECKED");
     } else {
-        setStateOnMessage(message_id, "UNCHECKED");
+        addCheckReply(message_id, "UNCHECKED");
     }
 }
 
@@ -171,7 +223,7 @@ function setMessageType(elem) {
 }
 
 /*
- * I should not need this one, but I have up on getting create and edit work
+ * I should not need this one, but I gave up on getting create and edit work
  * together, the Save button did nothing unless I did this.
  */
 function submitCreateComboForm() {
