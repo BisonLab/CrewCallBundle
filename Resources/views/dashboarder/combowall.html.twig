@@ -51,8 +51,42 @@ Done
         </div>
      </div>
      <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-2" align="right">
         <br>
+        {% if message.messagetype == "TODO" %}
+            {# OK, are we checked or not? #}
+            {% set checked = false %}
+            {% set last_reply = message.replies | last %}
+            {% if last_reply %}
+                {% if last_reply.state == "CHECKED" %}
+                    {% set checked = true %}
+                {% else %}
+                    {% set checked = false %}
+                {% endif %}
+            {% endif %}
+
+            <label class="ccSwitch">
+              <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState('{{ message.messageid }}', this)" {% if checked %}checked{% endif %}/>
+            {% if checked %}
+                <span class="ccSlider round" title="{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}"></span>
+                </label>
+                <em style="font-size: 70%;">
+                {{ last_reply.createdAt | date('Y-m-d H:i') }}
+                {{ last_reply.createdBy }}
+                </em>
+            {% else %}
+                <span class="ccSlider round" title="Todo"></span>
+                </label>
+            {% endif %}
+            <br>
+        {% endif %}
+        </div>
+<pre wrap class="ccNotesText col-md-8">
+{{ message.body }}
+</pre>
+    <div class="col-md-2" align="left">
+        <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" ><span class="glyphicon glyphicon-save-file" title="Archive"></span></a>
+
         {% if is_granted('edit', message) %}
 {% set emform = sakonnin_messages.getEditForm( message, true ) %}
 {% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
@@ -67,35 +101,6 @@ Done
 </button>
 </form>
         {% endif %}
-        </div>
-<pre wrap class="ccNotesText col-md-8">
-{{ message.body }}
-</pre>
-        <div class="col-md-2" halign="left">
-        <br>
-        {% if message.messagetype == "TODO" %}
-        {# OK, are we checked or not? #}
-        {% set checked = false %}
-        {% set last_reply = message.replies | last %}
-        {% if last_reply %}
-            {% if last_reply.state == "CHECKED" %}
-                {% set checked = true %}
-            {% else %}
-                {% set checked = false %}
-            {% endif %}
-        {% endif %}
-
-        <label class="ccSwitch">
-          <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState('{{ message.messageid }}', this)" {% if checked %}checked{% endif %}/>
-        {% if checked %}
-            <span class="ccSlider round" title="{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}"></span>
-        {% else %}
-            <span class="ccSlider round" title="Todo"></span>
-        {% endif %}
-        </label>
-        <br>
-        {% endif %}
-            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" ><span class="glyphicon glyphicon-save-file" title="Archive"></span></a>
         </div>
      </div>
    </div>
