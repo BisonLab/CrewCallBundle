@@ -24,25 +24,6 @@
 
 <script>
 
-function grabPersons() {
-    url = "{{ path('person_index', {'access': 'ajax' }) }}";
-        + "?" + what +"=true";
-    if (what == "past") {
-        search = true;
-    } else {
-        search = false;
-    }
-    $.get(url, function( data ) {
-        $( "#" + what + "content" ).html(data);
-    }).done(function() {
-        $( "#" + what + "table").dataTable({
-            "paging": false,
-            "searching": search
-            });
-    });
-    return false;
-}
-
 function openMessageModal(person_id = null) {
 
     content = $("#personmessage_modal").html();
