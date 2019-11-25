@@ -40,10 +40,9 @@ class Dashboarder
         // And here, go through functions when you have something for them.
 
         $dashboards = [];
-        foreach ($dashes as $function => $dash) {
-            $dash['dashie'] = $function;
-            $cust_class = '\CustomBundle\Lib\Dashboarder\\' . $function;
-            $crew_class = '\CrewCallBundle\Lib\Dashboarder\\' . $function;
+        foreach ($dashes as $dash) {
+            $cust_class = '\CustomBundle\Lib\Dashboarder\\' . $dash['dashie'];
+            $crew_class = '\CrewCallBundle\Lib\Dashboarder\\' . $dash['dashie'];
             if (class_exists($cust_class)) {
                 $cc = new $cust_class($this->router,
                     $this->entitymanager,
