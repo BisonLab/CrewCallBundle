@@ -13,7 +13,7 @@
 {% if is_granted('show', note) %}
 <div id="sakonninmessage_{{ note.id}}">
 <strong>{{ note.subject }}</strong>
-<pre wrap class="ccNotesText">
+<pre wrap class="noteText">
 {{ note.body }}
 </pre>
 <a href="#" onClick="return setStateOnMessage({{ note.id }}, 'ARCHIVED');" class="btn btn-sm btn-success">Read it!</a>

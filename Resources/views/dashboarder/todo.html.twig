@@ -14,7 +14,7 @@
             <strong>{{ message.subject }}</strong>
         {% endif %}
             <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
-     <div class="ccNotesText row">
+     <div class="noteText row">
         <div class="col-md-2" align="right">
         <br>
         {% if message.messagetype == "TODO" %}
@@ -29,23 +29,23 @@
                 {% endif %}
             {% endif %}
 
-            <label class="ccSwitch">
+            <label class="checkSwitch">
               <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState('{{ message.messageid }}', 'TODO', this)" {% if checked %}checked{% endif %}/>
             {% if checked %}
-                <span class="ccSlider round" title="{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}"></span>
+                <span class="checkSlider round" title="{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}"></span>
                 </label>
                 <em style="font-size: 70%;">
                 {{ last_reply.createdAt | date('Y-m-d H:i') }}
                 {{ last_reply.createdBy }}
                 </em>
             {% else %}
-                <span class="ccSlider round" title="Todo"></span>
+                <span class="checkSlider round" title="Todo"></span>
                 </label>
             {% endif %}
             <br>
         {% endif %}
         </div>
-<pre wrap class="ccNotesText col-md-8">
+<pre wrap class="noteText col-md-8">
 {{ message.body }}
 </pre>
 {% if is_granted('edit', message) %}

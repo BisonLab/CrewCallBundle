@@ -11,7 +11,7 @@
 {% for message in sakonnin_messages.messagetype('Front page logged in').messages if message.state == "SHOW" or message.state == "UNREAD" %}
 {% if is_granted('show', message) %}
 <div id="sakonninmessage_{{ message.id}}">
-  <div class="row ccNotesText">
+  <div class="row noteText">
 {% if is_granted('edit', message) %}
 <div class="col-sm-10">
 {% else %}
@@ -23,7 +23,7 @@
 {% endif %}
 #}
 <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
-<pre wrap class="ccNotesText">
+<pre wrap class="noteText">
 {{ message.body }}
 </pre>
 </div>

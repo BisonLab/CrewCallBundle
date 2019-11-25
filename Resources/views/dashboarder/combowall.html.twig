@@ -50,8 +50,8 @@ Done
             <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
         </div>
      </div>
-     <div class="ccNotesText row">
-        <div class="col-md-2" align="right">
+     <div class="noteText row">
+        <div class="col-md-3" align="right">
         <br>
         {% if message.messagetype == "TODO" %}
             {# OK, are we checked or not? #}
@@ -65,25 +65,25 @@ Done
                 {% endif %}
             {% endif %}
 
-            <label class="ccSwitch">
+            <label class="checkSwitch">
               <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState('{{ message.messageid }}', 'TODO', this)" {% if checked %}checked{% endif %}/>
             {% if checked %}
-                <span class="ccSlider round" title="{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}"></span>
+                <span class="checkSlider round" title="{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}"></span>
                 </label>
                 <em style="font-size: 70%;">
                 {{ last_reply.createdAt | date('Y-m-d H:i') }}
                 {{ last_reply.createdBy }}
                 </em>
             {% else %}
-                <span class="ccSlider round" title="Todo"></span>
+                <span class="checkSlider round" title="Todo"></span>
                 </label>
             {% endif %}
             <br>
         {% endif %}
         </div>
-        <pre wrap class="ccNotesText col-md-8">
-        {{ message.body }}
-        </pre>
+<pre wrap class="noteText col-md-7">
+{{ message.body }}
+</pre>
         <div class="col-md-2" align="left">
            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" ><span class="glyphicon glyphicon-save-file" title="Archive"></span></a>
 
