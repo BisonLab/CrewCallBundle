@@ -258,6 +258,7 @@
   </div>
 
   <div class="tab-pane" id="notestab">
+    <div class="adminpersonnote">
     <p>
     {% set mconf = {'mconfig': {
             'formname': 'adminpersonnote',
@@ -279,6 +280,7 @@
     {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
         <a href="#" onClick='return createMessage("adminpersonnote");'>Add a note to the crew member (PersonNote)</a><br />
     </p>
+    </div>
 {% set mlogcontext = {
             'message_group': 'Notes',
             'order': 'DESC',
@@ -288,6 +290,7 @@
     }
 %}
 
+    <div class="adminadminnote">
     <p>
     {% set mconf = {'mconfig': {
             'formname': 'adminadminnote',
@@ -309,6 +312,7 @@
     {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
         <a href="#" onClick='return createMessage("adminadminnote");'>Add a note for Admins only (AdminNote)</a><br />
     </p>
+    </div>
 {% set mlogcontext = {
             'message_group': 'Notes',
             'order': 'DESC',
