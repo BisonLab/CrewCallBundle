@@ -85,6 +85,7 @@ function grabNewJobForm(shift_id) {
 }
 
 function submitNewJobForm(shift_id, force = false) {
+    var $btn = $(document.activeElement);
     username = $( "#newJobForm #username" ).val();
     url = "{{ path('job_new', { 'access': 'ajax' }) }}";
     if (force) {
@@ -104,7 +105,11 @@ function submitNewJobForm(shift_id, force = false) {
       }).done( function( cont, textStatus, xhr ) {
             if (xhr.status == 201) {
                 // Gotta reload. Easiest way to recount everything.
-                parent.location.reload();
+                if ($btn.is('[id]') && $btn.attr("id") == "submitNewJobClose") {
+                    parent.location.reload();
+                } else {
+                    return grabNewJobForm(shift_id);
+                }
             } else {
                 $( "#jobModalBody" ).html(xhr.responseText);
             }
