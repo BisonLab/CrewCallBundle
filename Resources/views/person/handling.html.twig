@@ -12,55 +12,52 @@
   </div>
 </div> <!-- / modal -->
 
-<div id="personmessage_modal" class="hidden">
-    <form id="person_message_form" method="POST">
-    <textarea name="body" cols="40" rows="4"></textarea><br>
-    <input type="radio" value="BULKSMS" name="message_type" CHECKED>SMS only</input><br>
-    <input type="radio" value="BULKMAIL" name="message_type">Email only</input><br>
-    <input type="radio" value="BULKALL" name="message_type">SMS and Email</input><br>
-    <input class="btn btn-sm btn-dark" id="sendmessage" type="submit" name="submit" value="Send">
-    </form>
-</div>
+<div class="modal fade" id="personMessageModal" role="dialog" tabindex='-1'>
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>               
+        <h4 class="modal-title" id="personMessageModalTitle">Send Message</h4>
+      </div>    
+      <div id="personmessage_modal" class="modal-body">
+            <form id="person_message_form" method="POST">
+            <textarea name="body" cols="40" rows="4"></textarea><br>
+            <input type="radio" value="BULKSMS" name="message_type" CHECKED>SMS only</input><br>
+            <input type="radio" value="BULKMAIL" name="message_type">Email only</input><br>
+            <input type="radio" value="BULKALL" name="message_type">SMS and Email</input><br>
+            <input class="btn btn-sm btn-dark" id="sendmessage" type="submit" name="submit" value="Send">
+            </form>
+      </div>
+    </div>
+  </div>
+</div> <!-- / modal -->
 
 <script>
 
-function grabPersons() {
-    url = "{{ path('person_index', {'access': 'ajax' }) }}";
-        + "?" + what +"=true";
-    if (what == "past") {
-        search = true;
-    } else {
-        search = false;
-    }
-    $.get(url, function( data ) {
-        $( "#" + what + "content" ).html(data);
-    }).done(function() {
-        $( "#" + what + "table").dataTable({
-            "paging": false,
-            "searching": search
-            });
-    });
-    return false;
-}
+$(document).ready(function() {
 
-function openMessageModal(person_id = null) {
+    var selected_crewtable = setupSortable($( '#crew_table' ), true);
 
-    content = $("#personmessage_modal").html();
-    $( "#personModalTitle" ).html('Send Message');
-    $( "#personModalBody" ).html(content);
-    $( "#personModal" ).modal();
-
-    $("#person_message_form").submit(function( event ) {
+    // Scope rules makes me have to put this here and not just a part of
+    // openMessageModal.
+    $("#person_message_form").on('submit', function(eventObj) {
         var $btn = $(document.activeElement);
-        list = get_selected_persons();
-        $(".person_message_form").remove();
-        if (person_id) {
-            $("#person_message_form").append('<input class="person_list_form_plist" type="hidden" name="person_list[]" value="'+person_id+'">');
-        } else {
-            list.map(function(value) {
-                $("#person_message_form").append('<input class="person_list_form_plist" type="hidden" name="person_list[]" value="'+value+'">');
-            });
-        }
+        var form = this;
+
+        var rows_selected = selected_crewtable.column('.selectcol').checkboxes.selected();
+
+      // Iterate over all selected checkboxes
+      $.each(rows_selected, function(index, rowId){
+         // Create a hidden element
+         $(form).append(
+             $('<input>')
+                .attr('type', 'hidden')
+                .attr('name', 'person_list[]')
+                .val(rowId)
+         );
+      });
+      var $btn = $(document.activeElement);
         if ($btn.is('[id]') && $btn.attr("id") == "sendmessage") {
             postdata = $("#person_message_form").serialize();
             $.ajax({
@@ -70,41 +67,22 @@ function openMessageModal(person_id = null) {
                 success: function(data)
                 {
                     alert(data);
-                    select_all_persons(false);
-                    $( "#personModal" ).modal("hide");
-                    $( "#personModalTitle" ).html("");
-                    $( "#personModalBody" ).html("");
+                    $( "#personMessageModal" ).modal("hide");
                 }
             });
         }
-        event.preventDefault();
+        eventObj.preventDefault();
+        return false;
     });
+});
+
+function openMessageModal(person_id = null) {
+
+    $( "#personMessageModal" ).modal();
+    if (person_id) {
+        $("#person_message_form").append('<input class="person_list_form_plist" type="hidden" name="person_list[]" value="'+person_id+'">');
+    }
 
     return false;
-}
-
-function select_all_persons(value) {
-    if (typeof(value) !== "boolean") {
-        value = $(value).prop('checked');
-    }
-    $(".person_list_checkbox").prop('checked', value);
-    $(".select_all_persons_checkbox").prop('checked', value);
-    if (value == true) {
-        $("#select_all_button").hide();
-        $("#deselect_all_button").show();
-    } else {
-        $("#deselect_all_button").hide();
-        $("#select_all_button").show();
-    }
-}
-
-function get_selected_persons() {
-    list = [];
-    $(".person_list_checkbox").each(function(index, box) {
-        if ($(box).prop('checked') == true) {
-            list.push(box.value);
-        }
-    });
-    return list;
 }
 </script>

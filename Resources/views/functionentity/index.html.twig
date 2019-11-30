@@ -23,31 +23,26 @@
     </div>
     </div>
 
-        <table id="sortable_table" class="table table-hover table-sm">
+        <table class="sortable_table table table-hover table-sm">
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Descriptions</th>
+                <th>Description</th>
                 <th>Status</th>
                 <th>People</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for functionEntity in functionEntities if function_type is not defined or functionEntity.functiontype == function_type %}
-        <td><a href="{{ path('function_show', { 'id': functionEntity.id }) }}">{{ functionEntity.name }}</a></td>
-        <td>{{ functionEntity.description }}</td>
-        <td>{{ functionEntity.statelabel }}</td>
-        <td>
-        {% for state, amount in functionEntity.countpeople({ 'by_state': true }) %}
-        {{ state }}: {{ amount }}<br/>
-        {% endfor %}
-        </td>
-        <td>
-            <a href="{{ path('function_show', { 'id': functionEntity.id }) }}">show</a> - 
-            <a href="{{ path('function_edit', { 'id': functionEntity.id }) }}">edit</a> - 
-            <a href="{{ path('person_function', { 'function_id': functionEntity.id }) }}">people</a>
-        </td>
+        <tr>
+            <td><a href="{{ path('function_show', { 'id': functionEntity.id }) }}">{{ functionEntity.name }}</a></td>
+            <td>{{ functionEntity.description }}</td>
+            <td>{{ functionEntity.statelabel }}</td>
+            <td>
+            {% for state, amount in functionEntity.countpeople({ 'by_state': true }) %}
+            <a href="{{ path('person_function', { 'function_id': functionEntity.id }) }}">{{ state }}: {{ amount }}</a><br/>
+            {% endfor %}
+            </td>
         </tr>
         {% endfor %}
         </tbody>

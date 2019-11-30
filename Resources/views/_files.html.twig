@@ -5,7 +5,7 @@
            <th>Name</th>
            <th>Description</th>
            <th>Uploaded</th>
-           <th>Actions</th>
+           <th>&nbsp;</th>
        </tr>
    </thead>
     <tbody>
@@ -24,12 +24,12 @@ $("#img_{{sfile.id}}").ezPlus({
         </td>
         <td>{{ sfile.description }}</td>
         <td>{{ sfile.createdat|date('Y-m-d H:i:s') }}</td>
-        <td><a href="{{ path('file_download', { 'id': sfile.id }) }}"><button>Download</button></a>
+        <td><a href="{{ path('file_download', { 'id': sfile.id }) }}" class="btn btn-sm btn-dark">Download</a>
         {% set delete_form = sakonnin_files.getdeleteform(sfile, {'create_view': true}) %}
         {{ form_start(delete_form)}}
         {{ form_rest(delete_form)}}
         <input type="hidden" name="back" value="{{ app.request.uri }}">
-        <input type="submit" name="Delete" value="Delete">
+        <input class="btn btn-sm btn-dark" type="submit" name="Delete" value="Delete">
         {{ form_end(delete_form)}}
         </td>
        </tr>

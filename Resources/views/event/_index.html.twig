@@ -44,17 +44,6 @@
             <span title="Amount Interested" class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
             </td>
         {% endif %}
-        <td>
-        <div class="dropdown">
-          <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
-          <span></span>
-          </button>
-        <ul class="dropdown-menu dropdown-menu-right">
-        <li><a href="{{ path('event_show', { 'id': event.id }) }}">show</a></li>
-        <li><a href="{{ path('event_edit', { 'id': event.id }) }}">edit</a></li>
-        </ul>
-        </div>
-        </td>
     </tr>
 {% endmacro %}
 {% import _self as evmacros %}
@@ -63,11 +52,11 @@
 
 {# hacks, blame laziness #}
 {% if upcoming %}
-    <table id="sortable_table" class="table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
+    <table class="sortable_table table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
 {% elseif past %}
-    <table id="sortable_table" class="table table-hover table-sm" data-order='[[ 1, "desc" ]]'>
+    <table class="sortable_table table table-hover table-sm" data-order='[[ 1, "desc" ]]'>
 {% else %}
-    <table id="sortable_table" class="table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
+    <table class="sortable_table table table-hover table-sm" data-order='[[ 1, "asc" ]]'>
 {% endif %}
 
         <thead>
@@ -80,7 +69,6 @@
     {% if not past %}
             <th class="no-sort">Amounts</th>
     {% endif %}
-            <th class="no-sort">Actions</th>
         </tr>
     </thead>
     <tbody>

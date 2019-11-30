@@ -1,23 +1,19 @@
-<table id="sortable_table" class="table table-hover table-sm" data-order='[[ 0, "asc" ]]'>
+<table id="crew_table" class="table table-hover table-sm" data-order='[[ 0, "asc" ]]'>
 <thead>
     <tr>
         <th>Name</th>
         <th>Mobile</th>
         <th>Email</th>
-        <th class="no-sort">
-            <input onClick="return select_all_persons(this);" class="select_all_persons_checkbox" type="checkbox" name="select_all">
-        </th>
+        <th class="selectcol"></th>
     </tr>
 </thead>
 <tbody>
 {% for person in people %}
     <tr>
-        <td data-order="{{ person.lastname }}"><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.fullname }}</a></td>
+        <td style="white-space:nowrap;" data-order="{{ person.lastname }}"><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.fullname }}</a></td>
         <td>{{ person.mobilephonenumber }}</td>
         <td>{{ person.email }}</td>
-        <td>
-                <input class="person_list_checkbox" type="checkbox" name="person_list" value="{{ person.id }}">
-        </td>
+        <td>{{ person.id }}</td>
     </tr>
 {% endfor %}
 </tbody>
