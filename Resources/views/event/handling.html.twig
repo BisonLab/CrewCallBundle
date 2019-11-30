@@ -36,11 +36,10 @@ function openMessageToEventModal(object, object_id) {
     return false;
 }
 
-function openAddContact(event_id) {
-    $( "#addContactModal" ).modal();
+function openAddContactInfo(event_id) {
 
     /* Yet another way to do this. Gotta standardize some day. */
-    $( "#addContactForm" ).submit(function( event ) {
+    $( "#addContactInfoForm" ).submit(function( event ) {
         event.preventDefault();
         parent.location.reload();
         url = "{{ path('event_add_contact', {'access': 'ajax', 'id': "XXX" }) }}".replace("XXX", event_id);
@@ -155,6 +154,19 @@ function printTableContent()
     window.print();
     document.body.style.paddingTop = "";
     $("#unprintableContent").show();
+}
+
+function openAddContactInfo(event_id) {
+
+    url = "{{ path('event_pick_contact_info', {'access': 'ajax', 'id': "XXX" }) }}".replace("XXX", event_id);
+
+    $.get(url, function( content ) {
+        $( "#eventModalTitle" ).html('Send Message');
+        $( "#eventModalBody" ).html(content);
+        $( "#eventModal" ).modal();
+    });
+
+    return false;
 }
 </script>
 

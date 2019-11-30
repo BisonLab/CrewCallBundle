@@ -399,6 +399,38 @@ class EventController extends CommonController
     }
 
     /**
+     * List all available contact info from location and organization.
+     * Pure Ajax for now.
+     *
+     * @Route("/{id}/pick_contact_info", name="event_pick_contact_info", methods={"GET"})
+     */
+    public function getContactInfoAction(Request $request, Event $event, $access)
+    {
+        $sakonnin = $this->get('sakonnin.messages');
+
+        $loc_context = [
+            'system' => 'crewcall',
+            'object_name' => 'location',
+            'message_type' => 'Contact Info',
+            'external_id' => $event->getLocation()->getId(),
+        ];
+        $loc_infos = $sakonnin->getMessagesForContext($loc_context);
+        $org_context = [
+            'system' => 'crewcall',
+            'object_name' => 'organization',
+            'message_type' => 'Contact Info',
+            'external_id' => $event->getOrganization()->getId(),
+        ];
+        $org_infos = $sakonnin->getMessagesForContext($org_context);
+
+        return $this->render('event/_add_contact_info_list.html.twig', array(
+            'event' => $event,
+            'loc_infos' => $loc_infos,
+            'org_infos' => $org_infos,
+        ));
+    }
+
+    /**
      * Sends messages to a batch of persons.
      *
      * @Route("/{id}/send_message", name="event_send_message", methods={"POST"})

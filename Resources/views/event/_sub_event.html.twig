@@ -22,7 +22,32 @@
                 </td>
             </tr>
 {% endif %}
-            <tr>
+            <tr class="event_contactinfo">
+                <th>Contact Info</th>
+                <td>
+        <p>
+        {% set cicontext = {
+                    'system': 'crewcall',
+                    'object_name': 'event',
+                    'message_type': 'Contact Info',
+                    'external_id': event.id
+            }
+        %}
+        {% for mcont in sakonnin_messages.contextHasMessages(cicontext, true) %}
+        {% set note = mcont.owner %}
+        {% if note.messagetype == 'Contact Info' %}
+            <form method="POST" action="{{ path('message_remove_context', { 'id': mcont.id, 'access': 'web' }) }}">
+            <strong>{{ note.subject }}</strong>
+            <button type="submit" class="btn btn-link"> <span class="remove_glyph" type="submit" name="submit" value="Delete"></span></button>
+            </form>
+            <pre>{{ note.body }}</pre>
+        {% endif %}
+        {% endfor %}
+        </p>
+    <a href="#" id="addContactLink" onClick="return openAddContactInfo({{ event.id }});">Add Contact Info</a>
+                </td>
+            </tr>
+            <tr class="event_contacts">
                 <th>Contacts</th>
                 <td>
 {% for pfe in event.personfunctionevents() %}
@@ -87,7 +112,7 @@
         {% set mlogcontext = {
                     'system': 'crewcall',
                     'object_name': 'event',
-                    'message_group': 'Notes',
+                    'message_type': 'Note',
                     'external_id': event.id
             }
         %}

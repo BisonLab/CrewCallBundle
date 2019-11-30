@@ -31,6 +31,11 @@ class CreateBaseDataCommand extends ContainerAwareCommand
        'Announcements' => array(
                 'description' => 'Announcements'
                 ),
+        'Contact Info' => array(
+            'parent' => 'Notes',
+            'base_type' => 'NOTE',
+            'security_model' => 'ADMIN_RW_USER_R',
+            'description' => "Note about how to get in contact with or at location or organization."),
         'PersonNote' => array(
             'parent' => 'Notes',
             'base_type' => 'NOTE',

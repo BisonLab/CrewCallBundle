@@ -117,6 +117,28 @@
   </div>
 
    <div class="tab-pane" id="notestab">
+     <div class="org_contactinfo">
+        <p>
+        {% set ciconf = { 'mconfig': {
+                'formname': 'org_contactinfo_form',
+                'reload_after_post': true,
+                'subject': "",
+                'to_field': false,
+                'from_field': false,
+                'message_type': 'Contact Info',
+                'context': {
+                    'system': 'crewcall',
+                    'object_name': 'organization',
+                    'external_id': organization.id
+                    }
+                }
+            }
+        %}
+        {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with ciconf %}
+        <a href="#" onClick='return createMessage("org_contactinfo_form");'>Add Contact Info</a><br />
+        </p>
+     </div>
+     <div class="org_adminnote">
         <p>
         {% set mconf = { 'mconfig': {
                 'formname': 'organizationnote',
@@ -134,8 +156,9 @@
             }
         %}
         {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <a href="#" onClick='return createMessage("organizationnote");'>Add a note</a><br />
+        <a href="#" onClick='return createMessage("organizationnote");'>Add a note for admins</a><br />
         </p>
+     </div>
         {% set mlogcontext = {
                     'system': 'crewcall',
                     'object_name': 'organization',
