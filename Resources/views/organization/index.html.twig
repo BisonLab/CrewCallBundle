@@ -31,10 +31,6 @@
                 <td>{{ organization.officeemail }}</td>
                 <td>{{ organization.statelabel }}</td>
                 <td>{{ organization.personroleorganizations.count }}</td>
-                <td>
-                 <a href="{{ path('organization_show', { 'id': organization.id }) }}">show</a>
-                 <a href="{{ path('organization_edit', { 'id': organization.id }) }}">edit</a>
-                </td>
             </tr>
         {% endfor %}
         </tbody>
