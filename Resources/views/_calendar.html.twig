@@ -41,12 +41,14 @@ $(function () {
         ],
 
         eventRender: function(event, element) {
+            $(element).attr('tabindex', '0');
+            $(element).attr('role', 'button');
             element.popover({
                 html: true,
                 content: event.popup_content,
                 placement: 'auto top',
                 container: 'body',
-                trigger: 'click',
+                trigger: 'focus',
                 title: event.popup_title + ' <a href="#" class="close"><span style="font-size: 13px" class="glyphicon glyphicon-remove-circle"></span></a>'
             });
         },
@@ -59,7 +61,6 @@ $(function () {
     });
 
     $(document).on("click", ".popover .close" , function(){
-        /* $(this).parents(".popover").popover('hide'); */
         $( ".popover" ).each(function() {
             $(this).popover('hide');
         });

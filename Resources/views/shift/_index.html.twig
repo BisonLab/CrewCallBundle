@@ -22,7 +22,7 @@
         <span style="font-size: 15px" class="glyphicon glyphicon-comment"></span>
         </a>
 {% endif %}
-        <a href="#" title="Event Summary" id="popSummary_event_{{ shift.event.id }}{{ shift.id }}" onClick="return popSummary('event', {{ shift.event.id }}, {{ shift.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+        <a tabindex="0" href="#" title="Event Summary" id="popSummary_event_{{ shift.event.id }}{{ shift.id }}" onClick="return popSummary('event', {{ shift.event.id }}, {{ shift.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
         {{ shift.function }}
         </td>
         <td align="right">
@@ -81,7 +81,7 @@
         </li>
 
         <li>
-            <a href="#" title="Log Summary" id="popLogSummary_shift_{{ shift.id }}" onClick="return popLogSummary('shift', {{ shift.id }});">Changelog</a>
+            <a tabindex="0" href="#" title="Log Summary" id="popLogSummary_shift_{{ shift.id }}" onClick="return popLogSummary('shift', {{ shift.id }});">Changelog</a>
        </li>
         <li>
             <a href="#" onClick="return grabEditShiftForm({{ shift.id }}, {{ shift.event.id }});">Edit</a>

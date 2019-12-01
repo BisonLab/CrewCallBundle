@@ -136,7 +136,7 @@
 {% endif %}
             <tr>
                 <th>
-                    <a href="#" title="Logs" id="popLogSummary_person_{{ person.id }}" onClick="return popLogSummary('person', {{ person.id }});" class="btn btn-sm btn-dark">Changelog</a>
+                    <a tabindex="0" href="#" title="Logs" id="popLogSummary_person_{{ person.id }}" onClick="return popLogSummary('person', {{ person.id }});" class="btn btn-sm btn-dark">Changelog</a>
                     <br>
                     <a href="{{ path('person_edit', { 'id': person.id }) }}" class="btn btn-sm btn-dark">Edit</a>
                     <br>
@@ -202,7 +202,7 @@
         {% set shift = job.shift %}
         <tr>
             <td>
-            <a href="#" title="Event Summary" id="popSummary_event_{{ job.event.id }}" onClick="return popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a tabindex="0" href="#" title="Event Summary" id="popSummary_event_{{ job.event.id }}" onClick="return popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
             {{ shift.event }}
             </td>
         {% set overjobs = cc_jobs.checkoverlapforperson(job, {'same_day': true, 'booked_only': true, 'return_jobs': true }) %}
@@ -217,7 +217,7 @@
             {% else %}
             <td class="ccWarn" data-order="{{ shift.start | date('U')}}" >
             {% endif %}
-            <a href="#" title="Overlapping Jobs" id="overlap_popover_{{ job.id }}" onClick="return popOverlap({{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-warning-sign"></span></a>
+            <a tabindex="0" href="#" title="Overlapping Jobs" id="overlap_popover_{{ job.id }}" onClick="return popOverlap({{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-warning-sign"></span></a>
         {% else %}
             <td data-order="{{ shift.start | date('U')}}" >
         {% endif %}

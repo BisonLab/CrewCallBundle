@@ -21,8 +21,8 @@
         <tr id=jobRow_{{ job.id }}>
             {% set reason = job.person.occupied({'reasons': true}) %}
             <td class="jvPerson{% if reason %} ccWarn{% endif %}">
-            <a href="#" title="Jobs" id="popSummary_person_jobs_{{ job.person.id }}{{ job.id }}" onClick="return popPersonJobs({{ job.person.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
-            <a href="#" title="Person Summary" id="popSummary_person_{{ job.person.id }}" onClick="return popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a tabindex="0" href="#" title="Jobs" id="popSummary_person_jobs_{{ job.person.id }}{{ job.id }}" onClick="return popPersonJobs({{ job.person.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
+            <a tabindex="0" href="#" title="Person Summary" id="popSummary_person_{{ job.person.id }}" onClick="return popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
     {% set mlogcontext = {
                 'system': 'crewcall',
                 'object_name': 'person',
@@ -44,7 +44,7 @@
                 {{ job.start | date("H:i") }} -> {{ job.end | date("H:i") }}
             </td>
             <td class="jvEvent">
-            <a href="#" title="Event Summary" id="popSummary_event_{{ job.event.id }}" onClick="return popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a tabindex="0" href="#" title="Event Summary" id="popSummary_event_{{ job.event.id }}" onClick="return popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
                 {{ job.event.name }}
             </td>
             <td class="jvFunction">
@@ -99,7 +99,7 @@
                 {{ so.shift.start | date("H:i") }} -> {{ so.shift.end | date("H:i") }}
             </td>
             <td>
-            <a href="#" title="Event Summary" id="popSummary_event_{{ so.shift.event.id }}" onClick="return popSummary('event', {{ so.shift.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a tabindex="0" href="#" title="Event Summary" id="popSummary_event_{{ so.shift.event.id }}" onClick="return popSummary('event', {{ so.shift.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
                 {{ so.shift.event.name }}
             </td>
             <td class="jvFunction">

@@ -47,7 +47,7 @@
           <th>
             <a href="{{ path('location_new', {'parent': location.id}) }}" class="btn btn-sm btn-dark">New sub location</a>
             <br>
-            <a href="#" title="Location Summary" id="popLogSummary_location_{{ location.id }}" onClick="return popLogSummary('location', {{ location.id }});" class="btn btn-sm btn-dark">Changelog</a>
+            <a tabindex="0" href="#" title="Location Summary" id="popLogSummary_location_{{ location.id }}" onClick="return popLogSummary('location', {{ location.id }});" class="btn btn-sm btn-dark">Changelog</a>
             <br>
             <a href="{{ path('location_edit', { 'id': location.id }) }}" class="btn btn-sm btn-dark">Edit</a>
             <br>

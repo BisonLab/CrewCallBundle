@@ -232,7 +232,7 @@
             <a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a>
         </li>
         <li>
-            <a href="#" title="Log" id="popLogSummary_event_{{ event.id }}" onClick="return popLogSummary('event', {{ event.id }});">Changelog</a>
+            <a tabindex="0" href="#" title="Log" id="popLogSummary_event_{{ event.id }}" onClick="return popLogSummary('event', {{ event.id }});">Changelog</a>
         </li>
         <li>
             <a href="#" onClick="return openMessageToEventModal('event', {{ event.id }});">Send a message</a>

@@ -65,13 +65,13 @@
             <td class="ccWarn" data-order="{{ shift.start | date('U')}}" >
             {% endif %}
             <input class="job_list_checkbox_{{ shift.event.id }}" type="checkbox" name="job_list" value="{{ job.id }},{{ job.person.id }}">
-            <a href="#" title="Overlapping Jobs" id="overlap_popover_{{ job.id }}" onClick="return popOverlap({{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-warning-sign"></span></a>
+            <a tabindex="0" href="#" title="Overlapping Jobs" id="overlap_popover_{{ job.id }}" onClick="return popOverlap({{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-warning-sign"></span></a>
         {% else %}
             <td>
             <input class="job_list_checkbox_{{ shift.event.id }}" type="checkbox" name="job_list" value="{{ job.id }},{{ job.person.id }}">
         {% endif %}
-            <a href="#" title="Person Summary" id="popSummary_person_{{ job.person.id }}{{ job.id}}" onClick="return popSummary('person', {{ job.person.id }},{{ job.id}});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
-            <a href="#" title="Jobs" id="popSummary_person_jobs_{{ job.person.id }}{{ job.id }}" onClick="return popPersonJobs({{ job.person.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
+            <a tabindex="0" href="#" title="Person Summary" id="popSummary_person_{{ job.person.id }}{{ job.id}}" onClick="return popSummary('person', {{ job.person.id }},{{ job.id}});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a tabindex="0" href="#" title="Jobs" id="popSummary_person_jobs_{{ job.person.id }}{{ job.id }}" onClick="return popPersonJobs({{ job.person.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
     {% set mlogcontext = {
                 'system': 'crewcall',
                 'object_name': 'person',
@@ -90,7 +90,7 @@
     {% endif %}
             </td>
             <td>
-            <a href="#" title="Log Summary" id="popLogSummary_job_{{ job.id }}" onClick="return popLogSummary('job', {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
+            <a tabindex="0" href="#" title="Log Summary" id="popLogSummary_job_{{ job.id }}" onClick="return popLogSummary('job', {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
                 {{ job.statelabel }}
 {# Better be a selectbox or just not at jobs at all, just event or shift.
             {% if job.shift.start < date() %}
@@ -186,7 +186,7 @@
             <td>{{ so.organization }}</td>
             <td>{{ so.amount }}</td>
             <td>{{ so.statelabel }}
-            <a href="#" title="Logs" id="popLogSummary_shiftorganization_{{ so.id }}" onClick="return popLogSummary('shiftorganization', {{ so.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
+            <a tabindex="0" href="#" title="Logs" id="popLogSummary_shiftorganization_{{ so.id }}" onClick="return popLogSummary('shiftorganization', {{ so.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
             </td>
             <td>
               <a role="button" class="btn-sm btn-danger" href="#" onClick="return deleteShiftOrganization({{so.id}});">Delete</a>
