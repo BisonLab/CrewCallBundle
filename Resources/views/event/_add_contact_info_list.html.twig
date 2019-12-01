@@ -1,0 +1,34 @@
+{% macro ci_form(cinfo, event_id) %}
+<form method="POST" action="{{ path('message_add_context', { 'access': 'web', 'id': cinfo.id, 'system': 'crewcall', 'object_name': 'event', 'external_id': event_id }) }}">
+<div class="row">
+  <div class="col-sm-8">
+    <strong>{{ cinfo.subject }}</strong>
+    <p>{{ cinfo.body }}</p>
+  </div>
+  <div class="col-sm-2">
+    <input class="btn btn-sm btn-dark" type="submit" value="Add"/>
+  </div>
+</div>
+</form>
+<hr>
+{% endmacro %}
+{% import _self as cimacros %}
+
+{% block body %}
+
+{% if loc_infos|length == 0 and org_infos|length == 0%}
+<p>No contact information found.</p>
+{% endif %}
+{% if loc_infos|length > 0 %}
+    <h4>Location info</h4>
+    {% for ci in loc_infos %}
+    {{ cimacros.ci_form(ci, event.id) }}
+    {% endfor %}
+{% endif %}
+    {% if org_infos|length > 0 %}
+    <h4>Organization info</h4>
+    {% for ci in org_infos %}
+    {{ cimacros.ci_form(ci, event.id) }}
+    {% endfor %}
+{% endif %}
+{% endblock %}
