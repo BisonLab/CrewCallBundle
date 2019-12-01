@@ -7,7 +7,7 @@
         </tr>
     </thead>
     <tbody>
-{% for s in data_array %}
+{% for s in data %}
 <tr>
     <td>{% if s.username is defined %}{{ s.username }}{% else %}&nbsp;{% endif %}</td>
     <td>{% if s.logged_at is defined %}{{ s.logged_at|date('Y-m-d H:i') }}{% else %}&nbsp;{% endif %}</td>
