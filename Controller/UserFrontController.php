@@ -777,9 +777,8 @@ class UserFrontController extends CommonController
             $eventparent = $event->getParent();
             $location = $event->getLocation();
             $organization = $event->getOrganization();
-            $contacts = $event->getPersons('Contact');
-            if (count($contacts) <1 && $eventparent)
-                $contacts = $eventparent->getPersons('Contact');
+            $contacts = [];
+            $contact_info = [];
             $confirm_notes = [];
             $checks = [];
             $all_events = [$event];
@@ -814,6 +813,24 @@ class UserFrontController extends CommonController
                         'body' => $c->getBody()
                         ];
                 }
+                $cic = [
+                    'system' => 'crewcall',
+                    'object_name' => 'event',
+                    'message_types' => ['Contact Info'],
+                    'external_id' => $e->getId(),
+                ];
+                foreach ($sakonnin->getMessagesForContext($cic) as $ci) {
+                    $contact_info[] = [
+                        'id' => $ci->getId(),
+                        'subject' => $ci->getSubject(),
+                        'confirm_required' => false,
+                        'body' => $ci->getBody()
+                    ];
+                    $contacts[] = [
+                        'name' => $ci->getBody(),
+                        'mobile_phone_number' => ''
+                    ];
+                }
             }
             $eventarr = [
                 'name' => (string)$event,
@@ -827,18 +844,13 @@ class UserFrontController extends CommonController
                 ],
                 'contacts' => [],
                 'checks' => $checks,
+                'contact_info' => $contact_info,
                 'confirm_notes' => $confirm_notes
             ];
             if ($address = $location->getAddress()) {
                 $addressing = $this->container->get('crewcall.addressing');
                 $eventarr['location']['address'] = $addressing->compose($address);
                 $eventarr['location']['address_flat'] = $addressing->compose($address, 'flat');
-            }
-            foreach ($contacts as $contact) {
-                $eventarr['contacts'][] = [
-                    'name' => (string)$contact,
-                    'mobile_phone_number' => $contact->getMobilePhoneNumber(),
-                ];
             }
             $this->eventcache[$event->getId()] = $eventarr;
         }
