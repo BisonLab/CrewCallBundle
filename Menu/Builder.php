@@ -51,8 +51,6 @@ class Builder implements ContainerAwareInterface
             $adminmenu->addChild('Manage Roles',
                 array('route' => 'role_index'));
             $adminmenu->addChild('Report generator', array('route' => 'reports'));
-            $adminmenu->addChild('Mail and SMS templates',
-                array('route' => 'sakonnintemplate_index'));
 
             $sakonnin = $this->container->get('sakonnin.messages');
             // Do we have a message for the front page?
@@ -71,8 +69,6 @@ class Builder implements ContainerAwareInterface
                 $alpm->setLinkAttribute('onClick', "return openCcModal('" . $uri . "', 'Add login page message');");
             }
 
-            $adminmenu->addChild('Message Types',
-                array('route' => 'messagetype'));
             $adminmenu->addChild("People with Roles",
                 array('route' => 'person_role'));
             $adminmenu->addChild("People with Functions",
@@ -82,6 +78,10 @@ class Builder implements ContainerAwareInterface
             }
             // Not sure I need it, reapply in custom if you need it.
             // $adminmenu->addChild('Add person', array('route' => 'person_new'));
+            $adminmenu->addChild('Mail and SMS templates',
+                array('route' => 'sakonnintemplate_index'));
+            $adminmenu->addChild('Message Types',
+                array('route' => 'messagetype'));
 
             $adminmenu->addChild('Playfront', array('route' => 'frontplay'));
             $adminmenu->addChild('Mobilefront', array('uri' => '/public/userfront/'));
