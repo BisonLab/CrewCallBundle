@@ -36,12 +36,12 @@
         </td>
         <td align="right">
         {% set amounts = shift.jobsamountbystate %}
-        <span title="Fully Booked" class="glyphicon glyphicon-ok {% if shift.amount - amounts.CONFIRMED != 0 %}hidden{% endif %}"></span>
-            <span title="Total needed" class="ccAmount ccTotal">{{ shift.amount }}</span>
+        <span title="All shifts booked" class="glyphicon glyphicon-ok" {% if shift.amount - amounts.CONFIRMED != 0 %}style="opacity: 0;"{% endif %}"></span>&nbsp;
+        <span title="Total needed" class="ccAmount left ccTotal">{{ shift.amount }}</span>
         <span title="Still needing" class="ccAmount ccNeeded">{{ shift.amount - shift.bookedamount }}</span>
         <span  title="Amount Confirmed" class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
         <span title="Amount Assigned" class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
-        <span title="Amount Interested" class="ccAmount ccInterested">{{ amounts.INTERESTED }}</span>
+        <span title="Amount Interested" class="ccAmount right ccInterested">{{ amounts.INTERESTED }}</span>
         </td>
         <td align="right">
         {% if shift.registeredamount > 0 %}
