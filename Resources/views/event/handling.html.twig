@@ -161,7 +161,7 @@ function openAddContactInfo(event_id) {
     url = "{{ path('event_pick_contact_info', {'access': 'ajax', 'id': "XXX" }) }}".replace("XXX", event_id);
 
     $.get(url, function( content ) {
-        $( "#eventModalTitle" ).html('Send Message');
+        $( "#eventModalTitle" ).html('Add Contact Info');
         $( "#eventModalBody" ).html(content);
         $( "#eventModal" ).modal();
     });
