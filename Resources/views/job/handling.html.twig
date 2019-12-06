@@ -79,6 +79,9 @@ function grabNewJobForm(shift_id) {
           }
          });
         $( "#jobModal" ).modal('show');
+
+        $( "#jobModalCloseButton" ).click(function(){ parent.location.reload(); });
+
         $( "#newJobForm #crewcallbundle_job_person" ).autocomplete("option", "appendTo", "#newJobForm");
     });
     return false;
@@ -245,7 +248,7 @@ function popOverlap(job_id) {
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button id="jobModalCloseButton" type="button" class="close" data-dismiss="modal">&times;</button>
          <h4 class="modal-title" id="jobModalTitle"></h4>
       </div>
       <div class="modal-body" id="jobModalBody">
