@@ -25,7 +25,7 @@
 </pre>
 </div>
 
-<div class="col-md-3">
+<div class="col-md-3" align="center">
     {% set checked = false %}
     {% set last_reply = message.replies | last %}
     {% if last_reply %}
@@ -52,12 +52,14 @@
 {% if is_granted('edit', message) %}
     {% set emform = sakonnin_messages.getEditForm( message, true ) %}
     {% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
-    <div class="col-sm-2">
         <div class="dropdown">
           <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
           <span></span>
           </button>
         <ul class="dropdown-menu dropdown-menu-right">
+          <li>
+           <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');">Archive</a>
+          </li>
           <li>
             <a href="#" onClick='return grabEditMessageForm({{ message.id }});'>Edit</a>
 <div class="hidden">
@@ -91,4 +93,5 @@
     %}
 {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
 <a href="#" onClick='return createCheck("todocheck");' class="btn btn-sm btn-dark">Add another</a>
+<a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('messages_list', {'sort': 'DESC', 'access': 'ajax', 'states': ['ARCHIVED'], 'message_types':['TODO']  }) }}', 'Archive')">Archive</a>
 </div>

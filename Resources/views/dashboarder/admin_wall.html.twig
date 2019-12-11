@@ -11,12 +11,32 @@
     <pre wrap class="noteText col-sm-10">
     {{ message.body }}
     </pre>
-      <div class="col-sm-1">
-        <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');"><span class="glyphicon glyphicon-save-file"></span></a>
-        {% if is_granted('edit', message) %}
-        <a href="#" onClick='return grabEditMessageForm({{ message.id }});'><span class="glyphicon glyphicon-pencil"></span></a>
-        {% endif %}
+      <div class="col-sm-2" align="right">
+        <div class="dropdown">
+          <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
+          <span></span>
+          </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li>
+           <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');">Archive</a>
+          </li>
+          <li>
+        <a href="#" onClick='return grabEditMessageForm({{ message.id }});'>Edit</a>
+          </li>
+<div class="hidden">
+{% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
+<form method="POST" action="{{ path('message_delete', { 'id': message.id, 'access': 'web' }) }}">
+{{ form_start(mdelform) }}
+{{ form_rest(mdelform) }}
+<input id="deladminw_{{ message.id }}" type="submit">
+</form>
+</div>
+        <li>
+            <a href="#" onClick='return $("#deladminw_{{ message.id }}").click();'>Delete</a>
+        </li>
+        </ul>
       </div>
+     </div>
     </div>
  </div>
  {% endif %}
