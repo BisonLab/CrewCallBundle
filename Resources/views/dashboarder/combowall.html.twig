@@ -40,16 +40,23 @@
     }
 %}
 {% for message in sakonnin_messages.messages(criterias) %}
+ {% if is_granted('edit', message) %}
+  {% set emform = sakonnin_messages.getEditForm( message, true ) %}
+  {% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
+  {{ cmac.print_comboedit(emform, action, message.id, message.messagetype ) }}
+ {% endif %}
  {% if is_granted('show', message) %}
    <div id="sakonninmessage_{{ message.id}}">
-     <div class="row">
+     <div class="noteText row">
         <div class="col-md-11">
             <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
         </div>
      </div>
      <div class="noteText row">
-        <div class="col-md-3" align="right">
-        <br>
+<pre wrap class="noteText col-md-9">
+{{ message.body }}
+</pre>
+        <div class="col-md-3" align="center">
         {% if message.messagetype == "TODO" %}
             {# OK, are we checked or not? #}
             {% set checked = false %}
@@ -77,29 +84,36 @@
             {% endif %}
             <br>
         {% endif %}
-        </div>
-<pre wrap class="noteText col-md-7">
-{{ message.body }}
-</pre>
-        <div class="col-md-2" align="left">
-           <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');" ><span class="glyphicon glyphicon-save-file" title="Archive"></span></a>
+        <div class="dropdown">
+          <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
+          <span></span>
+          </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li>
+           <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');">Archive</a>
+          </li>
 
         {% if is_granted('edit', message) %}
-{% set emform = sakonnin_messages.getEditForm( message, true ) %}
-{% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
-{{ cmac.print_comboedit(emform, action, message.id, message.messagetype ) }}
-<a href="#" onClick='return editCombo({{ message.id }});'><span class="glyphicon glyphicon-pencil"></span></a>
+        <li>
+            <a href="#" onClick='return editCombo({{ message.id }});'>Edit</a>
+        </li>
+<div class="hidden">
 {% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
 <form method="POST" action="{{ path('message_delete', { 'id': message.id, 'access': 'web' }) }}">
 {{ form_start(mdelform) }}
 {{ form_rest(mdelform) }}
-<button type="submit" class="btn btn-link">
-<span class="glyphicon glyphicon-trash"></span>
-</button>
+<input id="delcombo_{{ message.id }}" type="submit">
 </form>
+</div>
+        <li>
+            <a href="#" onClick='return $("#delcombo_{{ message.id }}").click();'>Delete</a>
+        </li>
         {% endif %}
+        </ul>
+      </div>
      </div>
     </div>
+    <div class="row">&nbsp;</div> <!-- Cheating or lazyness? -->
    </div> <! -- sakonninmessage -->
  {% endif %}
 {% endfor %}
