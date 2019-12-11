@@ -29,7 +29,7 @@
 
 <div id="combowall">
 <div class="row">
-<div class="col-sm-10">
+<div class="col-sm-12">
 <h3>Admin Notes</h3>
 </div>
 </div>
@@ -84,19 +84,18 @@
             {% endif %}
             <br>
         {% endif %}
+        {% if is_granted('edit', message) %}
         <div class="dropdown">
-          <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
-          <span></span>
-          </button>
-        <ul class="dropdown-menu dropdown-menu-right">
+         <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
+         <span></span>
+         </button>
+         <ul class="dropdown-menu dropdown-menu-right">
           <li>
            <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');">Archive</a>
           </li>
-
-        {% if is_granted('edit', message) %}
-        <li>
+          <li>
             <a href="#" onClick='return editCombo({{ message.id }});'>Edit</a>
-        </li>
+          </li>
 <div class="hidden">
 {% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
 <form method="POST" action="{{ path('message_delete', { 'id': message.id, 'access': 'web' }) }}">
@@ -108,9 +107,9 @@
         <li>
             <a href="#" onClick='return $("#delcombo_{{ message.id }}").click();'>Delete</a>
         </li>
-        {% endif %}
         </ul>
-      </div>
+        </div>
+      {% endif %}
      </div>
     </div>
     <div class="row">&nbsp;</div> <!-- Cheating or lazyness? -->

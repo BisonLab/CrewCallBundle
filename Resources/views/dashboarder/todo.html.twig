@@ -9,61 +9,75 @@
 %}
 {% for message in sakonnin_messages.messages(criterias) %}
   {% if is_granted('show', message) %}
-  <div id="sakonninmessage_{{ message.id}}">
-        {% if message.subject is not empty %}
-            <strong>{{ message.subject }}</strong>
-        {% endif %}
-            <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
-     <div class="noteText row">
-        <div class="col-md-2" align="right">
-        <br>
-        {% if message.messagetype == "TODO" %}
-            {# OK, are we checked or not? #}
-            {% set checked = false %}
-            {% set last_reply = message.replies | last %}
-            {% if last_reply %}
-                {% if last_reply.state == "CHECKED" %}
-                    {% set checked = true %}
-                {% else %}
-                    {% set checked = false %}
-                {% endif %}
-            {% endif %}
+<div id="sakonninmessage_{{ message.id}}">
+  <div class="noteText row">
+    {% if message.subject is not empty %}
+        <strong>{{ message.subject }}</strong>
+    {% endif %}
+        <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
+  </div>
 
-            <label class="checkSwitch">
-              <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState('{{ message.messageid }}', 'TODO', this)" {% if checked %}checked{% endif %}/>
-            {% if checked %}
-                <span class="checkSlider round" title="{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}"></span>
-                </label>
-                <em style="font-size: 70%;">
-                {{ last_reply.createdAt | date('Y-m-d H:i') }}
-                {{ last_reply.createdBy }}
-                </em>
-            {% else %}
-                <span class="checkSlider round" title="Todo"></span>
-                </label>
-            {% endif %}
-            <br>
-        {% endif %}
-        </div>
-<pre wrap class="noteText col-md-8">
+<div class="noteText row">
+
+<div class="col-md-9">
+<pre wrap class="noteText">
 {{ message.body }}
 </pre>
+</div>
+
+<div class="col-md-3">
+    {% set checked = false %}
+    {% set last_reply = message.replies | last %}
+    {% if last_reply %}
+        {% if last_reply.state == "CHECKED" %}
+            {% set checked = true %}
+        {% else %}
+            {% set checked = false %}
+        {% endif %}
+    {% endif %}
+
+    <label class="checkSwitch">
+      <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState('{{ message.messageid }}', 'TODO', this)" {% if checked %}checked{% endif %}/>
+    {% if checked %}
+        <span class="checkSlider round" title="{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}"></span>
+        </label>
+        <em style="font-size: 70%;">
+        {{ last_reply.createdAt | date('Y-m-d H:i') }}
+        {{ last_reply.createdBy }}
+        </em>
+    {% else %}
+        <span class="checkSlider round" title="Todo"></span>
+        </label>
+    {% endif %}
 {% if is_granted('edit', message) %}
     {% set emform = sakonnin_messages.getEditForm( message, true ) %}
     {% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
-       <a href="#" onClick='return grabEditMessageForm({{ message.id }});'><span class="glyphicon glyphicon-pencil"></span></a>
-    {% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
-    <form method="POST" action="{{ path('message_delete', { 'id': message.id, 'access': 'web' }) }}">
-    {{ form_start(mdelform) }}
-    {{ form_rest(mdelform) }}
-    <button type="submit" class="btn btn-link">
-    <span class="glyphicon glyphicon-trash"></span>
-    </button>
-    </form>
+    <div class="col-sm-2">
+        <div class="dropdown">
+          <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown">
+          <span></span>
+          </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li>
+            <a href="#" onClick='return grabEditMessageForm({{ message.id }});'>Edit</a>
+<div class="hidden">
+{% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
+<form method="POST" action="{{ path('message_delete', { 'id': message.id, 'access': 'web' }) }}">
+{{ form_start(mdelform) }}
+{{ form_rest(mdelform) }}
+<input id="deltodo{{ message.id }}" type="submit">
+</form>
+</div>
+        <li>
+            <a href="#" onClick='return $("#deltodo{{ message.id }}").click();'>Delete</a>
+        </li>
+        </ul>
+      </div>
 {% endif %}
     </div>
   </div>
  {% endif %}
+<div class="row">&nbsp;</div> <!-- Cheating or lazyness? -->
 {% endfor %}
 </div>
 
