@@ -566,14 +566,6 @@ class Person extends BaseUser
             $bend = clone($newstate->getFromDate());
             $before->setToDate($bend->modify("-1 day"));
         }
-/*
-dump($before);
-dump($after);
-dump($curstate);
-dump($newstate);
-throw new Nei();
- */
-
         return $this;
     }
 
