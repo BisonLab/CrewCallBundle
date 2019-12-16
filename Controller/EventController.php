@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use CrewCallBundle\Entity\Event;
@@ -131,8 +132,11 @@ class EventController extends CommonController
         $em = $this->getDoctrine()->getManager();
 
         if ($request->get('printable')) {
+            $mailForm = $this->createSendMailForm($event);
             return $this->render('event/printable.html.twig', array(
                 'event' => $event,
+                'all' => true,
+                'mailform' => $mailForm->createView(),
                 'state' => $request->get('state'),
             ));
         }
@@ -467,7 +471,7 @@ class EventController extends CommonController
             'from' => $this->getParameter('system_emails_address'),
             'message_type' => $message_type,
             'to_type' => "INTERNAL",
-            'from_type' => "INTERNAL",
+            'from_type' => "EMAIL",
         ));
         return new Response("Sent: " . $body, Response::HTTP_OK);
     }
@@ -511,6 +515,53 @@ class EventController extends CommonController
     }
 
     /**
+     * Finds and displays a event entity.
+     *
+     * @Route("/{id}/show", name="event_send_as_mail", methods={"POST"})
+     */
+    public function sendMailAction(Request $request, Event $event)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $mailForm = $this->createSendMailForm($event);
+        $mailForm->handleRequest($request);
+        $fields = $request->get('fields');
+        $params = $fields;
+        $params['all'] = false;
+        $params['event'] = $event;
+        $params['state'] = $request->get('state');
+
+        if ($mailForm->isSubmitted() && $mailForm->isValid()) {
+            $resp = $this->render('event/_printable.html.twig', $params);
+            $fd = $mailForm->getData();
+            $html = $resp->getContent();
+            $body = "Here is the staff list for " . $event->getName();
+            $sm = $this->container->get('sakonnin.messages');
+            $sm->postMessage([
+                'subject' => $event->getName(),
+                'body' => $body,
+                'to' => $fd['email'],
+                'from' => $this->getParameter('system_emails_address'),
+                'message_type' => "List Sent",
+                'to_type' => "EMAIL",
+                'from_type' => "EMAIL",
+                'attach_content' => $html,
+                'attach_filename' => 'CrewList.html',
+                'attach_content_type' => 'text/html',
+                ],
+                [
+                    'system' => 'crewcall',
+                    'object_name' => 'event',
+                    'external_id' => $event->getId()
+                ]
+            );
+        }
+
+        $params['all'] = true;
+        $params['mailform'] = $mailForm->createView();
+        return $this->render('event/printable.html.twig', $params);
+    }
+
+    /**
      * Creates a form to delete a event entity.
      *
      * @param Event $event The event entity
@@ -540,6 +591,26 @@ class EventController extends CommonController
         // the event entity, yet. (Hmm, but the state handler..)
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('event_state', array('state' => "STATE", 'id' => $event->getId())))
+            ->setMethod('POST')
+            ->getForm()
+        ;
+    }
+    /**
+     * Creates a form to confirm
+     *
+     * @param Event $event The event entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createSendMailForm(Event $event)
+    {
+        // It looks like should add a state here, but I am going to act
+        // differently based on the state. And I am not ready to do that in
+        // the event entity, yet. (Hmm, but the state handler..)
+        return $this->createFormBuilder(null, array('allow_extra_fields' =>true))
+            ->add('email', EmailType::class, array('label' => "E-mail",
+                'required' => true))
+            ->setAction($this->generateUrl('event_send_as_mail', array('id' => $event->getId())))
             ->setMethod('POST')
             ->getForm()
         ;

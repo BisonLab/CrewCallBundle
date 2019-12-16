@@ -18,6 +18,12 @@ class SakonninFunctions implements \BisonLab\SakonninBundle\Lib\Sakonnin\Sakonni
             'attribute_spec' => null,
             'needs_attributes' => false,
         ),
+        'sendlistemail' => array(
+            'class' => 'CrewCallBundle\Lib\Sakonnin\SendListEmail',
+            'description' => "Send mail to specified email address and log to Event",
+            'attribute_spec' => null,
+            'needs_attributes' => false,
+        ),
     );
 
     public function __construct($container, $options = array())

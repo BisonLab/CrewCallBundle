@@ -112,7 +112,7 @@
         {% set mlogcontext = {
                     'system': 'crewcall',
                     'object_name': 'event',
-                    'message_type': 'Note',
+                    'message_types': ['Note','List Sent'],
                     'external_id': event.id
             }
         %}
@@ -121,7 +121,7 @@
             <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
             {{ form_start(mdelform) }}
             {{ form_rest(mdelform) }}
-            <strong>{{ note.subject }}</strong> ({{ note.messagetype }})
+            <strong>{{ note.subject }}</strong> ({{ note.messagetype }}{% if note.to is not empty %} to {{ note.to}}{% endif %}) {{ note.createdAt | date('Y-m-d') }} - {{ note.createdBy }}
             <button type="submit" class="btn btn-link"> <span class="remove_glyph" type="submit" name="submit" value="Delete"></span></button>
             </form>
             <pre>{{ note.body }}</pre>
@@ -226,10 +226,10 @@
     {% endif %}
         </li>
         <li>
-            <a href="#" onClick="return openPrintEventWindow({{ event.id }}, 'CONFIRMED');">Print</a>
+            <a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a>
         </li>
         <li>
-            <a href="{{ path('event_edit', { 'id': event.id }) }}">Edit</a>
+            <a href="#" onClick="return openPrintEventWindow({{ event.id }}, 'CONFIRMED');">Print / Mail list</a>
         </li>
         <li>
             <a tabindex="0" href="#" title="Log" id="popLogSummary_event_{{ event.id }}" onClick="return popLogSummary('event', {{ event.id }});">Changelog</a>

@@ -3,70 +3,31 @@
 {% block body %}
 {% include 'CrewCallBundle:event:handling.html.twig' %}
 <div id="unprintableContent">
-<a href="#" onClick="return printTableContent();" class="btn btn-sm btn-dark" id="printbutton">Print</a>
 
-{% for val in ['Mobile', 'Diets', 'Checks', 'Comments'] %}
-<input id="epcheck_{{ val }}" type="checkbox" onClick='return checkChecked("{{ val }}");' checked>{{ val }}</input>
-{% endfor %}
+{{ form_start(mailform) }}
+<div class="row">
+    <div class="col-md-4">
+        {% for val in ['Mobile', 'Diets', 'Checks', 'Comments'] %}
+        <input name="fields[{{val}}]" id="epcheck_{{ val }}" type="checkbox" onClick='return checkChecked("{{ val }}");' checked>{{ val }}</input>
+        {% endfor %}
+        <a href="#" onClick="return printTableContent();" class="btn btn-sm btn-dark" id="printbutton">Print</a>
+    </div>
+    <div class="col-md-2">
+        Send as mail to:
+    </div>
+    <div class="col-md-2">
+        {{ form_widget(mailform.email) }}
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-sm btn-dark" type="submit">Send</button>
+    </div>
+</div>
+{{ form_end(mailform) }}
+
 
 </div>
 <div class="printableContent">
-  <h1>{{ event }} {{ event.start | date("d.M.y") }}</h1>
-  <table id="printEventTable" style="width:100%" class="printable-table">
-
- {% for shift in event.shifts if shift.jobs | length > 0%}
-    <thead>
-  <tr>
-  <td colspan="3">
-    <h4>{{ shift.function.name }} {{ shift.start | date("H.i") }} -> {{ shift.end | date("H.i") }}</h4>
-  </td>
-  </tr>
-        <tr>
-            <th class="epName">Name</th>
-            <th class="epMobile">Mobile</th>
-            <th class="epComments">Comments</th>
-            <th class="epChecks">Checks</th>
-            <th class="epDiets">Diets</th>
-        </tr>
-    </thead>
-    <tbody>
-      {% for job in shift.jobs if state is empty or job.state == state %} 
-        <tr>
-            <td class="epName">{{ job.person.name }}</td>
-            <td class="epMobile">{{ job.person.mobilephonenumber }}</td>
-{% set jobcommcontext = {
-            'message_types': ['JobComment'],
-            'order': 'DESC',
-            'system': 'crewcall',
-            'object_name': 'job',
-            'external_id': job.id
-    }
-%}
-            <td class="epComments">
-{% for note in sakonnin_messages.MessagesForContext(jobcommcontext) %}
-    {{ note.body }}
-{% endfor %}
-            </td>
-{% set jobinfocontext = {
-            'message_types': ['InformCheck'],
-            'order': 'DESC',
-            'system': 'crewcall',
-            'object_name': 'job',
-            'external_id': job.id
-    }
-%}
-            <td class="epCheck">
-{% for note in sakonnin_messages.MessagesForContext(jobinfocontext) %}
-    {{ note.body }}
-{% endfor %}
-            </td>
-            <td class="epDiets">{{ job.person.dietslabels | join(", ")}}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  {% endfor %}
-   </table>
-
+{% include 'CrewCallBundle:event:_printable.html.twig' %}
 </div>
 
 {% endblock %}
