@@ -1,8 +1,10 @@
 {% include 'CrewCallBundle:dashboarder:handling.html.twig' %}
 {% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' with { 'reload_after_post': true, 'title': "Edit Admin Wall" } %}
 <div id="admin_wall">
+{% set something = false %}
 {% for message in sakonnin_messages.messagetype('Admin Wall').messages if message.state == "SHOW" or message.state == "UNREAD" %}
   {% if is_granted('show', message) %}
+  {% set something = true %}
   <div id="sakonninmessage_{{ message.id}}">
     {% if message.subject is not empty %}
         <h3>{{ message.subject }}</h3>
@@ -41,6 +43,9 @@
  </div>
  {% endif %}
 {% endfor %}
+{% if not something %}
+    <h3>Admin Wall</h3>
+{% endif %}
       {% set mconf = {'mconfig': {
               'formname': 'c_adminwall',
               'reload_after_post': true,
@@ -56,5 +61,6 @@
           }
       %}
 {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-<a href="#" onClick='return createMessage("c_adminwall");' class="btn btn-sm btn-dark">Add another</a>
+<a href="#" onClick='return createMessage("c_adminwall");' class="btn btn-sm btn-dark">New</a>
+<a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('messages_list', {'sort': 'DESC', 'access': 'ajax', 'states': ['ARCHIVED'], 'message_types':['Admin Wall']  }) }}', 'Archive')">Archive</a>
 </div>

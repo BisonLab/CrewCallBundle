@@ -92,6 +92,6 @@
         }
     %}
 {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
-<a href="#" onClick='return createCheck("todocheck");' class="btn btn-sm btn-dark">Add another</a>
+<a href="#" onClick='return createCheck("todocheck");' class="btn btn-sm btn-dark">New</a>
 <a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('messages_list', {'sort': 'DESC', 'access': 'ajax', 'states': ['ARCHIVED'], 'message_types':['TODO']  }) }}', 'Archive')">Archive</a>
 </div>
