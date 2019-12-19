@@ -107,7 +107,6 @@ class RoleController extends CommonController
     {
         $form = $this->createDeleteForm($Role);
         $form->handleRequest($request);
-        $role_type = $Role->getFunctionType();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
