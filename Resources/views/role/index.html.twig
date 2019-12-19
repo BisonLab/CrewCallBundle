@@ -21,23 +21,18 @@
                 <th>Name</th>
                 <th>Descriptions</th>
                 <th>People</th>
-                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for role in roles %}
-        <td><a href="{{ path('role_show', { 'id': role.id }) }}">{{ role.name }}</a></td>
-        <td>{{ role.description }}</td>
-        <td>
-        {% for state, amount in role.countpeople({ 'by_state': true }) %}
-        {{ state }}: {{ amount }}<br/>
-        {% endfor %}
-        </td>
-        <td>
-            <a href="{{ path('role_show', { 'id': role.id }) }}">show</a> - 
-            <a href="{{ path('role_edit', { 'id': role.id }) }}">edit</a> - 
-            <a href="{{ path('person_role', { 'role_id': role.id }) }}">people</a>
-        </td>
+        <tr>
+            <td><a href="{{ path('role_show', { 'id': role.id }) }}">{{ role.name }}</a></td>
+            <td>{{ role.description }}</td>
+            <td>
+            {% for state, amount in role.countpeople({ 'by_state': true }) %}
+            <a href="{{ path('person_role', { 'role_id': role.id }) }}">{{ state }}: {{ amount }}</a><br/>
+            {% endfor %}
+            </td>
         </tr>
         {% endfor %}
         </tbody>

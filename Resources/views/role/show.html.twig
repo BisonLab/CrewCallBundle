@@ -13,17 +13,16 @@
                 <th>Description</th>
                 <td>{{ role.description }}</td>
             </tr>
+            <tr>
+              <th>
+                <a href="{{ path('role_edit', { 'id': role.id }) }}"  class="btn btn-sm btn-dark">Edit</a>
+                <br>
+            {{ form_start(delete_form) }}
+                <input class="btn btn-sm btn-danger" type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+                <td>&nbsp;</td>
+              </th>
+            </tr>
         </tbody>
     </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('role_edit', { 'id': role.id }) }}"  class="btn btn-sm btn-dark">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
 {% endblock %}
