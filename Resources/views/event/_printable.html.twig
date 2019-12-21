@@ -22,6 +22,12 @@
 {% if all or Diets is defined %}
     <th class="epDiets">Diets</th>
 {% endif %}
+{% if all or Hours1 is defined %}
+    <th class="epHours1">Hours 1</th>
+{% endif %}
+{% if all or Hours2 is defined %}
+    <th class="epHours2">Hours 2</th>
+{% endif %}
   </tr>
 </thead>
 
@@ -64,6 +70,19 @@
 {% endif %}
 {% if all or Diets is defined %}
         <td class="epDiets">{{ job.person.dietslabels | join(", ")}}</td>
+{% endif %}
+{% if all or Hours1 is defined %}
+        <td class="epHours1">
+            In: <input type="text" size="5"/>
+            Out: <input type="text" size="5"/>
+            Break: <input type="text" size="5"/>
+        </td>
+{% endif %}
+{% if all or Hours2 is defined %}
+        <td class="epHours2">
+            In: <input type="text" size="5"/>
+            Out: <input type="text" size="5"/>
+        </td>
 {% endif %}
     </tr>
   {% endfor %}

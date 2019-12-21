@@ -6,8 +6,8 @@
 
 {{ form_start(mailform) }}
 <div class="row">
-    <div class="col-md-4">
-        {% for val in ['Mobile', 'Diets', 'Checks', 'Comments'] %}
+    <div class="col-md-5">
+        {% for val in ['Mobile', 'Diets', 'Checks', 'Comments', 'Hours1', 'Hours2'] %}
         <input name="fields[{{val}}]" id="epcheck_{{ val }}" type="checkbox" onClick='return checkChecked("{{ val }}");' checked>{{ val }}</input>
         {% endfor %}
         <a href="#" onClick="return printTableContent();" class="btn btn-sm btn-dark" id="printbutton">Print</a>
