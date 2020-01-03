@@ -69,13 +69,13 @@
   <a href="#eventstab" data-toggle="tab">Events</a>
   </li>
   <li>
-  <a href="#peopletab" data-toggle="tab">People</a>
-  </li>
-  <li>
   <a href="#notestab" data-toggle="tab">Notes</a>
   </li>
   <li>
   <a href="#filestab" data-toggle="tab">Files</a>
+  </li>
+  <li class="locationPeopleTab">
+  <a href="#peopletab" data-toggle="tab">People</a>
   </li>
   </ul>
 
@@ -83,45 +83,6 @@
     <div class="tab-pane active" id="eventstab">
     {% include 'CrewCallBundle:event:_index.html.twig' with { 'events': location.events('ASC'), 'sorted': true, 'past': true, 'upcoming': false } %}
     </div>
-
-  <div class="tab-pane" id="peopletab">
-    <br>
-    <div id="addExistingPerson" style="float: left">
-    <p>
-    <a href="#" onClick="return grabAddExistingPersonForm();" class="btn btn-sm btn-dark">Add person</a>
-    </div>
-    </p>
-
-    <table id="apTable" class="sortable_table table table-sm">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Role</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for person in location.people %}
-        <tr>
-        <td>
-            <a href="{{ path('person_show', { 'id': person.id }) }}">
-            {{ person }}
-            </a>
-        </td>
-        <td>{{ person.email }}</td>
-        <td>{{ person.mobilephonenumber }}</td>
-        <td>
-            {% for pro in person.personroles(location) %}
-            {{pro.role }}
-            <a href="{{ path('location_remove_person', { 'id':pro.id }) }}"><span class="remove_glyph"></span></a><br>
-            {% endfor %}
-        </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-  </table>
- </div>
 
     <div class="tab-pane" id="notestab">
 
@@ -214,6 +175,45 @@
     %}
     {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
   </div>
+
+  <div class="tab-pane locationPeopleTab" id="peopletab">
+    <br>
+    <div id="addExistingPerson" style="float: left">
+    <p>
+    <a href="#" onClick="return grabAddExistingPersonForm();" class="btn btn-sm btn-dark">Add person</a>
+    </div>
+    </p>
+
+    <table id="apTable" class="sortable_table table table-sm">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for person in location.people %}
+        <tr>
+        <td>
+            <a href="{{ path('person_show', { 'id': person.id }) }}">
+            {{ person }}
+            </a>
+        </td>
+        <td>{{ person.email }}</td>
+        <td>{{ person.mobilephonenumber }}</td>
+        <td>
+            {% for pro in person.personroles(location) %}
+            {{pro.role }}
+            <a href="{{ path('location_remove_person', { 'id':pro.id }) }}"><span class="remove_glyph"></span></a><br>
+            {% endfor %}
+        </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+ </div>
  </div>
 </div>
 

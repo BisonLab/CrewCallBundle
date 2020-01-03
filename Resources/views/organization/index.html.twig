@@ -20,7 +20,7 @@
                 <th>Office phone</th>
                 <th>Office email</th>
                 <th>Status</th>
-                <th>People</th>
+                <th class="organizationListPeopleCol">People</th>
             </tr>
         </thead>
         <tbody>
@@ -30,7 +30,7 @@
                 <td>{{ organization.officephonenumber }}</td>
                 <td>{{ organization.officeemail }}</td>
                 <td>{{ organization.statelabel }}</td>
-                <td>{{ organization.personroleorganizations.count }}</td>
+                <td class="organizationListPeopleCol">{{ organization.personroleorganizations.count }}</td>
             </tr>
         {% endfor %}
         </tbody>
