@@ -214,7 +214,7 @@ class EventController extends CommonController
             return new Response("Deleted", Response::HTTP_OK);
         }
 
-        if ($parent)
+        if ($parent instanceOf Event)
             return $this->redirectToRoute('event_show',
                 array('id' => $parent->getId()));
         else
