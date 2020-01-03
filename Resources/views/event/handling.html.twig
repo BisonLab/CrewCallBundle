@@ -95,7 +95,7 @@ function submitDeleteForm(event_id) {
         dataType: "text",
         async: true,
       }).done( function( cont, textStatus, xhr ) {
-            parent.location.reload();
+            window.location.href = "{{ path('event_index') }}";
       }).fail(function(xhr, status, error) {
             errmsg = "Delete failed\n";
             errmsg = errmsg + xhr.responseText + "\n";

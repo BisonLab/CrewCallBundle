@@ -210,15 +210,17 @@ class EventController extends CommonController
             $em->remove($event);
             $em->flush($event);
         }
+
         if ($this->isRest($access)) {
             return new Response("Deleted", Response::HTTP_OK);
         }
 
-        if ($parent instanceOf Event)
+        if ($parent instanceOf Event) {
             return $this->redirectToRoute('event_show',
                 array('id' => $parent->getId()));
-        else
-            return $this->redirectToRoute('event_index');
+        }
+
+        return $this->redirectToRoute('event_index');
     }
 
     /**
