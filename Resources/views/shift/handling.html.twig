@@ -20,7 +20,6 @@ function grabShiftList(event_id) {
         + "?event=" + event_id;
     $.get(url, function( data ) {
         $( "#shiftList_" + event_id).html(data);
-        $( "#shiftRow_" + event_id).scrollTop(0);
     }).done(function() {
         $( "#shiftList_" + event_id + " .jobList" ).each(function() {
             $(this).hide();

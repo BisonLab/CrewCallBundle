@@ -21,6 +21,7 @@ function grabJobList(shift_id) {
         $( "#plus_job_list_" + shift_id ).hide();
         $( "#minus_job_list_" + shift_id ).show();
         composeJobHash();
+        $( "#shiftRow_" + shift_id).scrollTop(0);
     });
     return false;
 }
@@ -56,14 +57,14 @@ function setStateOnJob(job_id, state, shift_id) {
     return false;
 }
 
-function grabNewJobForm(shift_id) {
+function grabNewJobForm(shift_id, already_added = false) {
     url = "{{ path('job_new', { 'access': 'ajax' }) }}";
     if (shift_id) {
         url = url + "?shift=" + shift_id;
     }
     $.get(url, function( data ) {
         $( "#jobModalBody" ).html(data);
-        $( "#jobModalTitle" ).html("Add Person on job");
+        $( "#jobModalTitle" ).html("Add Person to shift");
         $( "#newJobForm #crewcallbundle_job_shift").prev().hide();
         $( "#newJobForm #crewcallbundle_job_shift").hide();
         $( "#newJobForm").submit(function( event ) {
@@ -78,6 +79,9 @@ function grabNewJobForm(shift_id) {
             $( "#newJobForm #username" ).val(ui.item.username);
           }
          });
+        if (already_added != false) {
+            $( "#alreadyAdded" ).html(already_added);
+        }
         $( "#jobModal" ).modal('show');
 
         $( "#jobModalCloseButton" ).click(function(){ parent.location.reload(); });
@@ -90,6 +94,8 @@ function grabNewJobForm(shift_id) {
 function submitNewJobForm(shift_id, force = false) {
     var $btn = $(document.activeElement);
     username = $( "#newJobForm #username" ).val();
+    person = $( "#newJobForm #crewcallbundle_job_person" ).val();
+    already_added = $("#alreadyAdded").html();
     url = "{{ path('job_new', { 'access': 'ajax' }) }}";
     if (force) {
         url = url + "?force=true";
@@ -107,11 +113,14 @@ function submitNewJobForm(shift_id, force = false) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             if (xhr.status == 201) {
-                // Gotta reload. Easiest way to recount everything.
                 if ($btn.is('[id]') && $btn.attr("id") == "submitNewJobClose") {
+                    // Gotta reload. Easiest way to recount everything.
                     parent.location.reload();
                 } else {
-                    return grabNewJobForm(shift_id);
+                    aahtml = "<p><strong>Already added:</strong></p>";
+                    aahtml += already_added;
+                    aahtml += "<li>" + person + "</li>";
+                    grabNewJobForm(shift_id, aahtml);
                 }
             } else {
                 $( "#jobModalBody" ).html(xhr.responseText);
