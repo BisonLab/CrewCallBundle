@@ -1,7 +1,6 @@
 <script>
 
 function composeJobHash() {
-
     shifts = [];
     $( ".jobList" ).each(function() {
         shift_id = $(this).attr('id').replace('jobList_', '');
@@ -21,7 +20,12 @@ function grabJobList(shift_id) {
         $( "#plus_job_list_" + shift_id ).hide();
         $( "#minus_job_list_" + shift_id ).show();
         composeJobHash();
-        $( "#shiftRow_" + shift_id).scrollTop(0);
+        /* And then move to a better place */
+        var head_height = $('#crewcall-navbar-collapse').height();
+        var divPosition = $('#shiftRow_' + shift_id).offset();
+        var toTop = divPosition.top - head_height;
+        $('html, body').animate({scrollTop: toTop}, "fast");
+
     });
     return false;
 }
