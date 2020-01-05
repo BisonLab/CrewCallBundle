@@ -7,7 +7,7 @@
             'external_id': shift.id
     }
 %}
-    <tr>
+    <tr id="shiftRow_{{ shift.id }}">
         <td data-order="{{ shift.start | date('U')}}" >
             {{ shift.start|date('d M H:i') }}
             <span class="glyphicon glyphicon-arrow-right"></span> 
