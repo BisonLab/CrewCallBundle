@@ -28,7 +28,7 @@ class SmsHandler
         $message = $options['message'];
         $body = str_replace($codeword, "", strtolower($message->getBody()));
 
-        if (!preg_match("/\s(\w{6})\s*/", $body, $umatch))
+        if (!preg_match("/\s(\w{5,8})\s*/", $body, $umatch))
             return null;
         $ucode = $umatch[1];
 
