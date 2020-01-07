@@ -12,6 +12,7 @@
   </div>
 </div> <!-- / modal -->
 
+{% if no_message_modal is not defined or not no_message_modal %}
 <div class="modal fade" id="personMessageModal" role="dialog" tabindex='-1'>
   <div class="modal-dialog">
     <!-- Modal content-->
@@ -26,12 +27,13 @@
             <input type="radio" value="BULKSMS" name="message_type" CHECKED>SMS only</input><br>
             <input type="radio" value="BULKMAIL" name="message_type">Email only</input><br>
             <input type="radio" value="BULKALL" name="message_type">SMS and Email</input><br>
-            <input class="btn btn-sm btn-dark" id="sendmessage" type="submit" name="submit" value="Send">
+            <input class="btn btn-sm btn-dark" id="sendPersonMessage" type="submit" name="submit" value="Send">
             </form>
       </div>
     </div>
   </div>
 </div> <!-- / modal -->
+{% endif %}
 
 <script>
 
@@ -45,20 +47,22 @@ $(document).ready(function() {
         var $btn = $(document.activeElement);
         var form = this;
 
-        var rows_selected = selected_crewtable.column('.selectcol').checkboxes.selected();
+        if (selected_crewtable) {
+            var rows_selected = selected_crewtable.column('.selectcol').checkboxes.selected();
 
-      // Iterate over all selected checkboxes
-      $.each(rows_selected, function(index, rowId){
-         // Create a hidden element
-         $(form).append(
-             $('<input>')
-                .attr('type', 'hidden')
-                .attr('name', 'person_list[]')
-                .val(rowId)
-         );
-      });
-      var $btn = $(document.activeElement);
-        if ($btn.is('[id]') && $btn.attr("id") == "sendmessage") {
+            // Iterate over all selected checkboxes
+            $.each(rows_selected, function(index, rowId){
+               // Create a hidden element
+               $(form).append(
+                   $('<input>')
+                      .attr('type', 'hidden')
+                      .attr('name', 'person_list[]')
+                      .val(rowId)
+               );
+            });
+        }
+        var $btn = $(document.activeElement);
+        if ($btn.is('[id]') && $btn.attr("id") == "sendPersonMessage") {
             postdata = $("#person_message_form").serialize();
             $.ajax({
                 type: "POST",
