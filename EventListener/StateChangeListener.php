@@ -19,12 +19,16 @@ class StateChangeListener
     // This is the more or less preInsert.
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
-        return $this->state_handler->handleStateChange(
-            $eventArgs->getEntity(),
-            // Null or just empty string?
-            null,
-            $eventArgs->getEntity()->getState()
-            );
+        $entity = $eventArgs->getEntity();
+        if (method_exists($entity, 'getState')) {
+            return $this->state_handler->handleStateChange(
+                $entity,
+                // Null or just empty string?
+                null,
+                $eventArgs->getEntity()->getState()
+                );
+        }
+        return true;
     }
 
     public function onFlush(OnFlushEventArgs $eventArgs)
