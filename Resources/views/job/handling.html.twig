@@ -99,6 +99,7 @@ function submitNewJobForm(shift_id, force = false) {
     var $btn = $(document.activeElement);
     username = $( "#newJobForm #username" ).val();
     person = $( "#newJobForm #crewcallbundle_job_person" ).val();
+    state = $( "#newJobForm #crewcallbundle_job_state option:selected" ).text();
     already_added = $("#alreadyAdded").html();
     url = "{{ path('job_new', { 'access': 'ajax' }) }}";
     if (force) {
@@ -106,6 +107,8 @@ function submitNewJobForm(shift_id, force = false) {
     }
     $( "#newJobForm #crewcallbundle_job_person" ).val(username);
     newJobFormData = $( "#newJobForm" ).serialize();
+    // And back again, in case of conflict and rerunning this.
+    $( "#newJobForm #crewcallbundle_job_person" ).val(person);
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");
@@ -121,9 +124,12 @@ function submitNewJobForm(shift_id, force = false) {
                     // Gotta reload. Easiest way to recount everything.
                     parent.location.reload();
                 } else {
-                    aahtml = "<p><strong>Already added:</strong></p>";
+                    aahtml = "";
+                    if (already_added.search("Already") < 0) {
+                        aahtml += "<p><strong>Already added:</strong></p>";
+                    }
                     aahtml += already_added;
-                    aahtml += "<li>" + person + "</li>";
+                    aahtml += "<li>" + person + " (" + state + ")</li>";
                     grabNewJobForm(shift_id, aahtml);
                 }
             } else {
