@@ -129,7 +129,8 @@
             'external_id': job.id
     }
 %}
-    {% if sakonnin_messages.contexthasmessages(cjobcontext) %}
+    {% set jcmessages = sakonnin_messages.MessagesForContext(cjobcontext) %}
+    {% if jcmessages | length > 0 %}
        <a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': cjobcontext.system, 'object_name': cjobcontext.object_name, 'external_id': cjobcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
     {% else %}
         &nbsp;
