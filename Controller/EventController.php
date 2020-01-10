@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 use BisonLab\CommonBundle\Controller\CommonController as CommonController;
 use CrewCallBundle\Entity\Event;
@@ -132,7 +133,7 @@ class EventController extends CommonController
         $em = $this->getDoctrine()->getManager();
 
         if ($request->get('printable')) {
-            $mailForm = $this->createSendMailForm($event);
+            $mailForm = $this->createSendMailForm($event, $request->get('state'));
             return $this->render('event/printable.html.twig', array(
                 'event' => $event,
                 'all' => true,
@@ -530,11 +531,11 @@ class EventController extends CommonController
         $params = $fields;
         $params['all'] = false;
         $params['event'] = $event;
-        $params['state'] = $request->get('state');
 
         if ($mailForm->isSubmitted() && $mailForm->isValid()) {
-            $resp = $this->render('event/_printable.html.twig', $params);
             $fd = $mailForm->getData();
+            $params['state'] = $fd['state'];
+            $resp = $this->render('event/_printable.html.twig', $params);
             $html = $resp->getContent();
             $body = "Here is the staff list for " . $event->getName();
             $sm = $this->container->get('sakonnin.messages');
@@ -604,7 +605,7 @@ class EventController extends CommonController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createSendMailForm(Event $event)
+    private function createSendMailForm(Event $event, $state = '')
     {
         // It looks like should add a state here, but I am going to act
         // differently based on the state. And I am not ready to do that in
@@ -612,6 +613,8 @@ class EventController extends CommonController
         return $this->createFormBuilder(null, array('allow_extra_fields' =>true))
             ->add('email', EmailType::class, array('label' => "E-mail",
                 'required' => true))
+            ->add('state', HiddenType::class, array('data' => $state,
+                'required' => false))
             ->setAction($this->generateUrl('event_send_as_mail', array('id' => $event->getId())))
             ->setMethod('POST')
             ->getForm()
