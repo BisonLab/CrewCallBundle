@@ -45,7 +45,7 @@
             </td>
             <td class="jvEvent">
             <a tabindex="0" href="#" title="Event Summary" id="popSummary_event_{{ job.event.id }}" onClick="return popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
-                {{ job.event.name }}
+                {{ job.event }}
             </td>
             <td class="jvFunction">
                 {{ job.function.name }}
@@ -100,7 +100,7 @@
             </td>
             <td>
             <a tabindex="0" href="#" title="Event Summary" id="popSummary_event_{{ so.shift.event.id }}" onClick="return popSummary('event', {{ so.shift.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
-                {{ so.shift.event.name }}
+                {{ so.shift.event }}
             </td>
             <td class="jvFunction">
                 {{ so.shift.function.name }}
