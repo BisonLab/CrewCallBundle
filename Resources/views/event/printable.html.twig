@@ -2,13 +2,14 @@
 
 {% block body %}
 {% include 'CrewCallBundle:event:handling.html.twig' %}
+{% set prcols = {'Mobile': false , 'Diets': false, 'Checks': false, 'Comments': false, 'Hours1': false, 'Hours2': false} %}
 <div id="unprintableContent">
 
 {{ form_start(mailform) }}
 <div class="row">
     <div class="col-md-5">
-        {% for val in ['Mobile', 'Diets', 'Checks', 'Comments', 'Hours1', 'Hours2'] %}
-        <input name="fields[{{val}}]" id="epcheck_{{ val }}" type="checkbox" onClick='return checkChecked("{{ val }}");' checked>{{ val }}</input>
+        {% for check, checked in prcols %}
+        <input name="fields[{{ check }}]" id="epcheck_{{  check  }}" type="checkbox" onClick='return checkChecked("{{  check  }}");' {% if checked %}checked{% endif %}>{{  check  }}</input>
         {% endfor %}
         <a href="#" onClick="return printTableContent();" class="btn btn-sm btn-dark" id="printbutton">Print</a>
     </div>
@@ -29,5 +30,14 @@
 <div class="printableContent">
 {% include 'CrewCallBundle:event:_printable.html.twig' %}
 </div>
+
+<script>
+$(document).ready(function() {
+    {% for check, checked in prcols %}
+    checkChecked("{{ check }}");
+    {% endfor %}
+});
+</script>
+
 
 {% endblock %}

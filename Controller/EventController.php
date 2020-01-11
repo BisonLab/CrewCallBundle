@@ -537,6 +537,10 @@ class EventController extends CommonController
             $params['state'] = $fd['state'];
             $resp = $this->render('event/_printable.html.twig', $params);
             $html = $resp->getContent();
+            $mpdf = new \Mpdf\Mpdf();
+            $mpdf->WriteHTML($html);
+            $pdf = $mpdf->Output('', 'S');
+
             $body = "Here is the staff list for " . $event->getName();
             $sm = $this->container->get('sakonnin.messages');
             $sm->postMessage([
@@ -547,9 +551,9 @@ class EventController extends CommonController
                 'message_type' => "List Sent",
                 'to_type' => "EMAIL",
                 'from_type' => "EMAIL",
-                'attach_content' => $html,
-                'attach_filename' => 'CrewList.html',
-                'attach_content_type' => 'text/html',
+                'attach_content' => $pdf,
+                'attach_filename' => 'CrewList.pdf',
+                'attach_content_type' => 'application/pdf'
                 ],
                 [
                     'system' => 'crewcall',

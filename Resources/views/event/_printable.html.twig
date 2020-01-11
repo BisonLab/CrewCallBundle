@@ -16,11 +16,11 @@
 {% if all or Comments is defined %}
     <th class="epComments">Comments</th>
 {% endif %}
-{% if all or Checks is defined %}
-    <th class="epChecks">Checks</th>
-{% endif %}
 {% if all or Diets is defined %}
     <th class="epDiets">Diets</th>
+{% endif %}
+{% if all or Checks is defined %}
+    <th class="epChecks">Checks</th>
 {% endif %}
 {% if all or Hours1 is defined %}
     <th class="epHours1">Hours 1</th>
@@ -53,6 +53,9 @@
 {% endfor %}
         </td>
 {% endif %}
+{% if all or Diets is defined %}
+        <td  class="epDiets">{{ job.person.dietslabels | join(", ")}}</td>
+{% endif %}
 {% if all or Checks is defined %}
 {% set jobinfocontext = {
         'message_types': ['InformCheck'],
@@ -62,14 +65,11 @@
         'external_id': job.id
 }
 %}
-        <td class="epCheck">
+        <td class="epChecks">
 {% for note in sakonnin_messages.MessagesForContext(jobinfocontext) %}
 {{ note.body }}
 {% endfor %}
         </td>
-{% endif %}
-{% if all or Diets is defined %}
-        <td class="epDiets">{{ job.person.dietslabels | join(", ")}}</td>
 {% endif %}
 {% if all or Hours1 is defined %}
         <td class="epHours1">
