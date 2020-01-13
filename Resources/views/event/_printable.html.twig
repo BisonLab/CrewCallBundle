@@ -34,9 +34,9 @@
 <tbody>
   {% for job in shift.jobs if state is empty or job.state == state %} 
     <tr>
-        <td class="epName">{{ job.person.name }}</td>
+        <td nowrap="nowrap" class="epName">{{ job.person.name }}</td>
 {% if all or Mobile is defined %}
-        <td class="epMobile">{{ job.person.mobilephonenumber }}</td>
+        <td nowrap="nowrap" class="epMobile">{{ job.person.mobilephonenumber }}</td>
 {% endif %}
 {% if all or Comments is defined %}
 {% set jobcommcontext = {
@@ -47,14 +47,14 @@
         'external_id': job.id
 }
 %}
-        <td class="epComments">
+        <td nowrap="nowrap" class="epComments">
 {% for note in sakonnin_messages.MessagesForContext(jobcommcontext) %}
 {{ note.body }}
 {% endfor %}
         </td>
 {% endif %}
 {% if all or Diets is defined %}
-        <td  class="epDiets">{{ job.person.dietslabels | join(", ")}}</td>
+        <td nowrap="nowrap" class="epDiets">{{ job.person.dietslabels | join(", ")}}</td>
 {% endif %}
 {% if all or Checks is defined %}
 {% set jobinfocontext = {
@@ -65,21 +65,21 @@
         'external_id': job.id
 }
 %}
-        <td class="epChecks">
+        <td nowrap="nowrap" class="epChecks">
 {% for note in sakonnin_messages.MessagesForContext(jobinfocontext) %}
 {{ note.body }}
 {% endfor %}
         </td>
 {% endif %}
 {% if all or Hours1 is defined %}
-        <td class="epHours1">
+        <td nowrap="nowrap" class="epHours1">
             In: <input type="text" size="5"/>
             Out: <input type="text" size="5"/>
             Break: <input type="text" size="5"/>
         </td>
 {% endif %}
 {% if all or Hours2 is defined %}
-        <td class="epHours2">
+        <td nowrap="nowrap" class="epHours2">
             In: <input type="text" size="5"/>
             Out: <input type="text" size="5"/>
         </td>

@@ -539,6 +539,7 @@ class EventController extends CommonController
             $html = $resp->getContent();
             $tmpdir = sys_get_temp_dir() . "/mpdf";
             $mpdf = new \Mpdf\Mpdf(['tempDir' => $tmpdir]);
+            $mpdf->shrink_tables_to_fit = 1;
             $mpdf->WriteHTML($html);
             $pdf = $mpdf->Output('', 'S');
 
