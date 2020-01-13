@@ -537,7 +537,8 @@ class EventController extends CommonController
             $params['state'] = $fd['state'];
             $resp = $this->render('event/_printable.html.twig', $params);
             $html = $resp->getContent();
-            $mpdf = new \Mpdf\Mpdf();
+            $tmpdir = sys_get_temp_dir() . "/mpdf";
+            $mpdf = new \Mpdf\Mpdf(['tempDir' => $tmpdir]);
             $mpdf->WriteHTML($html);
             $pdf = $mpdf->Output('', 'S');
 
