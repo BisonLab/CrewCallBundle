@@ -1,32 +1,51 @@
+<style>
+
+table {
+    width:100%;
+}
+
+th, td {
+  padding-top: 10px;
+  text-align: left;
+  font-size: 10px;
+}
+
+h4 {
+  padding-bottom: 5px;
+  font-size: 20px;
+}
+
+</style>
+
 <h1>{{ event }} {{ event.start | date("d.M.y") }}</h1>
-<table id="printEventTable" style="width:100%" class="printable-table">
+<table id="printEventTable" class="printable-table">
 
 {% for shift in event.shifts if shift.jobs | length > 0%}
 <thead>
   <tr>
-    <td colspan="3">
+    <td colspan="4">
     <h4>{{ shift.function.name }} {{ shift.start | date("H.i") }} -> {{ shift.end | date("H.i") }}</h4>
     </td>
   </tr>
   <tr>
-    <th align="left" class="epName">Name</th>
+    <th class="epName">Name</th>
 {% if all or Mobile is defined %}
-    <th align="left" class="epMobile">Mobile</th>
-{% endif %}
-{% if all or Comments is defined %}
-    <th align="left" class="epComments">Comments</th>
+    <th class="epMobile">Mobile</th>
 {% endif %}
 {% if all or Diets is defined %}
-    <th align="left" class="epDiets">Diets</th>
+    <th class="epDiets">Diets</th>
+{% endif %}
+{% if all or Comments is defined %}
+    <th class="epComments">Comments</th>
 {% endif %}
 {% if all or Checks is defined %}
-    <th align="left" class="epChecks">Checks</th>
+    <th class="epChecks">Checks</th>
 {% endif %}
 {% if all or Hours1 is defined %}
-    <th align="left" class="epHours1">Hours 1</th>
+    <th class="epHours1">Hours 1</th>
 {% endif %}
 {% if all or Hours2 is defined %}
-    <th align="left" class="epHours2">Hours 2</th>
+    <th class="epHours2">Hours 2</th>
 {% endif %}
   </tr>
 </thead>
@@ -34,9 +53,12 @@
 <tbody>
   {% for job in shift.jobs if state is empty or job.state == state %} 
     <tr>
-        <td nowrap="nowrap" align="left" class="epName">{{ job.person.name }}</td>
+        <td nowrap="nowrap" class="epName">{{ job.person.name }}</td>
 {% if all or Mobile is defined %}
-        <td nowrap="nowrap" align="left" class="epMobile">{{ job.person.mobilephonenumber }}</td>
+        <td nowrap="nowrap" class="epMobile">{{ job.person.mobilephonenumber }}</td>
+{% endif %}
+{% if all or Diets is defined %}
+        <td nowrap="nowrap" class="epDiets">{{ job.person.dietslabels | join(", ")}}</td>
 {% endif %}
 {% if all or Comments is defined %}
 {% set jobcommcontext = {
@@ -47,14 +69,11 @@
         'external_id': job.id
 }
 %}
-        <td nowrap="nowrap" align="left" class="epComments">
+        <td nowrap="nowrap" class="epComments">
 {% for note in sakonnin_messages.MessagesForContext(jobcommcontext) %}
 {{ note.body }}
 {% endfor %}
         </td>
-{% endif %}
-{% if all or Diets is defined %}
-        <td nowrap="nowrap" align="left" class="epDiets">{{ job.person.dietslabels | join(", ")}}</td>
 {% endif %}
 {% if all or Checks is defined %}
 {% set jobinfocontext = {
@@ -65,28 +84,28 @@
         'external_id': job.id
 }
 %}
-        <td nowrap="nowrap" align="left" class="epChecks">
+        <td nowrap="nowrap" class="epChecks">
 {% for note in sakonnin_messages.MessagesForContext(jobinfocontext) %}
 {{ note.body }}
 {% endfor %}
         </td>
 {% endif %}
 {% if all or Hours1 is defined %}
-        <td nowrap="nowrap" align="left" class="epHours1">
+        <td nowrap="nowrap" class="epHours1">
             In: <input type="text" size="5"/>
             Out: <input type="text" size="5"/>
             Break: <input type="text" size="5"/>
         </td>
 {% endif %}
 {% if all or Hours2 is defined %}
-        <td nowrap="nowrap" align="left" class="epHours2">
+        <td nowrap="nowrap" class="epHours2">
             In: <input type="text" size="5"/>
             Out: <input type="text" size="5"/>
         </td>
 {% endif %}
     </tr>
   {% endfor %}
-</tbody>
+  </tbody>
 
 {% endfor %}
 </table>
