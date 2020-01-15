@@ -172,8 +172,10 @@ class UserFrontController extends CommonController
                 'message_type' => (string)$m->getMessageType(),
                 ];
             if (!$archive) {
-                $parr['archive_url'] = $this->generateUrl('uf_me_notes', [
-                    'archive' => true,
+                $parr['archive_url'] = $this->generateUrl('message_state', [
+                    'access' => 'ajax',
+                    'state' => 'ARCHIVED',
+                    'id' => $m->getId()
                     ],
                     UrlGeneratorInterface::ABSOLUTE_URL);
             }
@@ -220,8 +222,10 @@ class UserFrontController extends CommonController
                 'body' => $m->getBody(),
                 'date' => $m->getCreatedAt(),
                 'message_type' => (string)$m->getMessageType(),
-                'archive_url' => $this->generateUrl('uf_me_messages', [
-                    'archive' => true,
+                'archive_url' => $this->generateUrl('message_state', [
+                    'access' => 'ajax',
+                    'state' => 'ARCHIVED',
+                    'id' => $m->getId()
                     ],
                     UrlGeneratorInterface::ABSOLUTE_URL)
                 ];
