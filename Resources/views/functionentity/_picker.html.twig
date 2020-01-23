@@ -1,5 +1,6 @@
 <div id="functionPicker">
-    {{ form_start(update_form) }}
+{#    {{ form_start(update_form, {'attr': {'id': 'pickerForm', 'onSubmit': 'return submitPicker();'}}) }} #}
+    {{ form_start(update_form, {'attr': {'id': 'pickerForm'}}) }}
     <div class="col-xs-4">
         <h3>Picked</h3>
         <select name="has_functions[]" id="undo_redo" class="form-control" size="40" multiple="multiple">
@@ -33,4 +34,21 @@
 jQuery(document).ready(function($) {
     $('#undo_redo').multiselect();
 });
+
+/*
+ * Interfering the multiselect JS and makes a mess.
+ * Not bothered for now.
+function submitPicker()
+{
+    var form = $('#pickerForm');
+    $.ajax({
+        type: form.attr('method'),
+        url: form.attr('action'),
+        data: form.serialize()
+    });
+    $('.nav-tabs #functab').tab('show');
+    grabFunctionPickerTab();
+}
+ */
+
 </script>
