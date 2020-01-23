@@ -230,7 +230,7 @@ class Calendar
     {
         $c = $this->shiftToCal($job->getShift());
         $c['title'] = (string)$job->getShift();
-        if ($job->isBooked()) {
+        if ($job->getState() == "CONFIRMED") {
             $c['color'] = "green";
             $c['textColor'] = "white";
         } elseif ($job->getState() == "ASSIGNED") {
