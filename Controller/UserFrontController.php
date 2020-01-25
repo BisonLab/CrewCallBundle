@@ -168,6 +168,7 @@ class UserFrontController extends CommonController
             $parr = [
                 'subject' => $m->getSubject(),
                 'body' => $m->getBody(),
+                'state' => $m->getState(),
                 'date' => $m->getCreatedAt(),
                 'message_type' => (string)$m->getMessageType(),
                 ];
@@ -190,6 +191,7 @@ class UserFrontController extends CommonController
                 if (in_array($m->getState(), $states)) {
                     $gnotes[] = [
                         'subject' => $m->getSubject(),
+                        'state' => $m->getState(),
                         'body' => $m->getBody(),
                         'date' => $m->getCreatedAt(),
                     ];
