@@ -1,33 +1,102 @@
 <style>
 
-table {
-    width:100%;
+td, th {
+  padding: 3px;
 }
 
-th, td {
-  padding-top: 10px;
+.info-table th, .info-table td {
+  font-size: 17;
+  padding-left: 30px;
+}
+
+.printable-table {
+  width:100%;
+  margin-left: 20px;
+}
+
+.printable-table th, .printable-table td {
   text-align: left;
   font-size: 10px;
 }
 
 h4 {
-  padding-bottom: 5px;
+  margin-bottom: 5px;
   font-size: 20px;
+}
+
+h1 {
+  margin-left: 20px;
 }
 
 </style>
 
 <h1>{{ event }} {{ event.start | date("d.M.y") }}</h1>
+<table class="info-table">
+  <tbody>
+    <tr>
+        <th>Description</th>
+        <td>{{ event.description }}</td>
+    </tr>
+{% if event.organization is not null %}
+    <tr>
+        <th>Organization</th>
+        <td>
+            {{ event.organization.name }}
+        </td>
+    </tr>
+{% endif %}
+{% if event.location is not null %}
+    <tr>
+        <th>Location</th>
+        <td>
+            {{ event.location.name }}
+        </td>
+    </tr>
+{% endif %}
+{% set cicontext = {
+        'system': 'crewcall',
+        'object_name': 'event',
+        'message_type': 'Contact Info',
+        'external_id': event.id
+}
+%}
+{% set contact_infos = sakonnin_messages.contextHasMessages(cicontext, true) %}
+{% if contact_infos | length > 0 %}
+    <tr class="event_contactinfo">
+        <th>Contact Info</th>
+        <td>
+    {% for mcont in contact_infos %}
+        {% set note = mcont.owner %}
+        {% if note.messagetype == 'Contact Info' %}
+            <strong>{{ note.subject }}</strong>
+            <pre>{{ note.body }}</pre>
+        {% endif %}
+    {% endfor %}
+    </tr>
+{% endif %}
+{% if event.personroleevents() | length > 0 %}
+    <tr class="event_contacts">
+        <th>Contacts</th>
+        <td>
+    {% for pfe in event.personroleevents() %}
+       {{ pfe.person }}{% if pfe.person.mobilephonenumber %} - {{ pfe.person.mobilephonenumber }}{% endif %}
+        <br />
+    {% endfor %}
+        </td>
+    </tr>
+{% endif %}
+</table>
+
 <table id="printEventTable" class="printable-table">
 
 {% for shift in event.shifts if shift.jobs | length > 0%}
 <thead>
-  <tr>
+  <tr class="shifthead">
     <td colspan="4">
     <h4>{{ shift.function.name }} {{ shift.start | date("H.i") }} -> {{ shift.end | date("H.i") }}</h4>
     </td>
   </tr>
-  <tr>
+  <tr class="jobshead">
     <th class="epName">Name</th>
 {% if all or Mobile is defined %}
     <th class="epMobile">Mobile</th>
@@ -50,9 +119,9 @@ h4 {
   </tr>
 </thead>
 
-<tbody>
+<tbody class="jobsbody">
   {% for job in shift.jobs if state is empty or job.state == state %} 
-    <tr>
+    <tr class="jobs">
         <td nowrap="nowrap" class="epName">{{ job.person.name }}</td>
 {% if all or Mobile is defined %}
         <td nowrap="nowrap" class="epMobile">{{ job.person.mobilephonenumber }}</td>
