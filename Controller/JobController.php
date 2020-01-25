@@ -147,7 +147,6 @@ class JobController extends CommonController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($job);
 
             $conflicts = [];
             if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, ['same_day' => true, 'booked_only' => true, 'return_jobs' => true])) {
@@ -177,6 +176,7 @@ class JobController extends CommonController
             if (!$force && count($conflicts) > 0) {
                 return new Response(implode("\n", $conflicts), Response::HTTP_CONFLICT);
             }
+            $em->persist($job);
 
             try {
                 $em->flush($job);
