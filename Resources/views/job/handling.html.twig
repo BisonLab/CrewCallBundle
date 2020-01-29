@@ -38,10 +38,13 @@ function hideJobList(shift_id) {
     return false;
 }
 
-function setStateOnJob(job_id, state, shift_id) {
+function setStateOnJob(job_id, state, shift_id, force = false) {
     cheat_url = "{{ path('job_state', { 'id': 0, 'state': 'NONE', 'access': 'ajax' }) }}";
     c_url = cheat_url.replace("0", job_id);
     url = c_url.replace("NONE", state);
+    if (force) {
+        url = url + "?force=true";
+    }
     $.ajax({
         beforeSend: function(req) {
           req.setRequestHeader("Accept", "application/json");
@@ -53,10 +56,19 @@ function setStateOnJob(job_id, state, shift_id) {
         // Gotta recount
         parent.location.reload();
       }).fail(function(xhr, status, error) {
-            errmsg = "Warning!\n";
-            errmsg = errmsg + xhr.responseText + "\n";
-            alert(errmsg);
-            parent.location.reload();
+            if (xhr.status == 409) {
+                warning = "Warning!\n\n";
+                errmsg = warning + xhr.responseText + "\n\nDo you want to do this anyway?\n";
+                result = confirm(errmsg);
+                if (result) {
+                    setStateOnJob(job_id, state, shift_id, true);
+                }
+            } else {
+                errmsg = "Failed setting state!\n";
+                errmsg = errmsg + xhr.responseText + "\n";
+                alert(errmsg);
+                parent.location.reload();
+            }
     });
     return false;
 }
@@ -144,7 +156,7 @@ function submitNewJobForm(shift_id, force = false) {
                     submitNewJobForm(shift_id, true);
                 } else {
                     parent.location.reload();
-                } 
+                }
             } else {
                 errmsg = "Failed adding new job!\n";
                 errmsg = errmsg + xhr.responseText + "\n";

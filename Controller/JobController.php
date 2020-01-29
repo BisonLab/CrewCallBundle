@@ -65,18 +65,16 @@ class JobController extends CommonController
     public function stateAction(Request $request, Job $job, $state, $access)
     {
         $job->setState($state);
+        $force = $request->get('force');
         
         $em = $this->getDoctrine()->getManager();
-
-        $em->persist($job);
-        $em->flush($job);
 
         $conflicts = [];
         if ($job->isBooked() && $overlap = $em->getRepository('CrewCallBundle:Job')->checkOverlapForPerson($job, ['same_day' => true, 'booked_only' => true, 'return_jobs' => true])) {
             foreach ($overlap as $ojob) {
                 $overlapped = $ojob->getShift();
                 $conflicts[] = 
-                    "You have now double booked "
+                    "You are about to double book "
                     . (string)$job . " for "
                     . (string)$job->getPerson()
                     . " and the other job being "
@@ -85,9 +83,12 @@ class JobController extends CommonController
                     . " to " . $overlapped->getEnd()->format("H.i");
             }
         }
-        if (count($conflicts) > 0) {
+
+        if (!$force && count($conflicts) > 0) {
             return new Response(implode("\n", $conflicts), Response::HTTP_CONFLICT);
         }
+        $em->persist($job);
+        $em->flush($job);
 
         if ($this->isRest($access)) {
             return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
