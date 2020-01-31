@@ -1,13 +1,18 @@
 {% macro list_joblogs(jobloglist) %}
     <table class="table  table-sm">
-    <th>What</th><th>In</th><th>Out</th>
+    <thead>
+    <tr><th>What</th><th>In</th><th>Out</th><th>Break</th></tr>
+    </thead>
+    <tbody>
     {% for elem in jobloglist %}
     <tr>
     <td>{{ elem.shift }}</td>
     <td>{{ elem.in | date("Y-m-d H:i") }}</td>
     <td>{{ elem.out | date("Y-m-d H:i") }}</td>
+    <td>{{ elem.breakminutes }}</td>
     </tr>
     {% endfor %}
+    <tbody>
     </table>
 {% endmacro %}
 <table class="table  table-sm">
