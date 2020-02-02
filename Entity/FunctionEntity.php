@@ -79,21 +79,6 @@ class FunctionEntity
     private $person_functions;
 
     /**
-     * @ORM\OneToMany(targetEntity="PersonFunctionOrganization", mappedBy="function", cascade={"remove"})
-     */
-    private $person_function_organizations;
-
-    /**
-     * @ORM\OneToMany(targetEntity="PersonFunctionLocation", mappedBy="function", cascade={"remove"})
-     */
-    private $person_function_locations;
-
-    /**
-     * @ORM\OneToMany(targetEntity="PersonFunctionEvent", mappedBy="function", cascade={"remove"})
-     */
-    private $person_function_events;
-
-    /**
      * This is for the non-connected functions.
      * @ORM\OneToMany(targetEntity="Shift", mappedBy="function",
      * cascade={"remove"})
@@ -103,8 +88,6 @@ class FunctionEntity
     public function __construct($options = array())
     {
         $this->person_functions = new ArrayCollection();
-        $this->person_function_organizations = new ArrayCollection();
-        $this->person_function_events = new ArrayCollection();
         $this->shifts = new ArrayCollection();
     }
 
@@ -298,108 +281,6 @@ class FunctionEntity
     }
 
     /**
-     * Add personFunctionOrganization
-     *
-     * @param \CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization
-     *
-     * @return Person
-     */
-    public function addPersonFunctionOrganization(\CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization)
-    {
-        $this->person_function_organizations[] = $personFunctionOrganization;
-
-        return $this;
-    }
-
-    /**
-     * Remove personFunctionOrganization
-     *
-     * @param \CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization
-     */
-    public function removePersonFunctionOrganization(\CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization)
-    {
-        $this->person_function_organizations->removeElement($personFunctionOrganization);
-    }
-
-    /**
-     * Get personFunctionOrganizations
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPersonFunctionOrganizations()
-    {
-        return $this->person_function_organizations;
-    }
-
-    /**
-     * Add personFunctionLocation
-     *
-     * @param \CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation
-     *
-     * @return Person
-     */
-    public function addPersonFunctionLocation(\CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation)
-    {
-        $this->person_function_locations[] = $personFunctionLocation;
-
-        return $this;
-    }
-
-    /**
-     * Remove personFunctionLocation
-     *
-     * @param \CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation
-     */
-    public function removePersonFunctionLocation(\CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation)
-    {
-        $this->person_function_locations->removeElement($personFunctionLocation);
-    }
-
-    /**
-     * Get personFunctionLocations
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPersonFunctionLocations()
-    {
-        return $this->person_function_locations;
-    }
-
-    /**
-     * Add personFunctionEvent
-     *
-     * @param \CrewCallBundle\Entity\PersonFunctionEvent $personFunctionEvent
-     *
-     * @return Person
-     */
-    public function addPersonFunctionEvent(\CrewCallBundle\Entity\PersonFunctionEvent $personFunctionEvent)
-    {
-        $this->person_function_events[] = $personFunctionEvent;
-
-        return $this;
-    }
-
-    /**
-     * Remove personFunctionEvent
-     *
-     * @param \CrewCallBundle\Entity\PersonFunctionEvent $personFunctionEvent
-     */
-    public function removePersonFunctionEvent(\CrewCallBundle\Entity\PersonFunctionEvent $personFunctionEvent)
-    {
-        $this->person_function_events->removeElement($personFunctionEvent);
-    }
-
-    /**
-     * Get personFunctionEvents
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPersonFunctionEvents()
-    {
-        return $this->person_function_events;
-    }
-
-    /**
      * Add Shift
      *
      * @param \CrewCallBundle\Entity\Shift $shift
@@ -460,27 +341,6 @@ class FunctionEntity
             if (!$people->contains($pf->getPerson()))
                 $people->add($pf->getPerson());
         }
-        foreach ($this->person_function_organizations as $pfo) {
-            if ($active_only && !in_array($pfo->getPerson()->getState(),
-                    ExternalEntityConfig::getActiveStatesFor('Person')))
-                continue;
-            if (!$people->contains($pfo->getPerson()))
-                $people->add($pfo->getPerson());
-        }
-        foreach ($this->person_function_locations as $pfl) {
-            if ($active_only && !in_array($pfl->getPerson()->getState(),
-                    ExternalEntityConfig::getActiveStatesFor('Person')))
-                continue;
-            if (!$people->contains($pfl->getPerson()))
-                $people->add($pfl->getPerson());
-        }
-        foreach ($this->person_function_events as $pfe) {
-            if ($active_only && !in_array($pfe->getPerson()->getState(),
-                    ExternalEntityConfig::getActiveStatesFor('Person')))
-                continue;
-            if (!$people->contains($pfe->getPerson()))
-                $people->add($pfe->getPerson());
-        }
         return $people;
     }
 
@@ -498,8 +358,7 @@ class FunctionEntity
     {
         // The simplest one.
         if (empty($options))
-            return $this->personfunctions->count()
-                + $this->personfunctionorganizations->count();
+            return $this->personfunctions->count();
         if (isset($options['by_state'])) {
             $states = [];
             foreach ($this->getPeople(false) as $p) {

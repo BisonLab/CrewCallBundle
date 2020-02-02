@@ -122,28 +122,6 @@ class Person extends BaseUser
     /**
      * This is really functions, but since we have three (four) ways for a
      * function to be connected to this Person object we have to define each
-     * by the other end of the person_function_ connection.
-     * @ORM\OneToMany(targetEntity="PersonFunctionOrganization", mappedBy="person", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
-    private $person_function_organizations;
-
-    /**
-     * This is really functions, but since we have three (four) ways for a
-     * function to be connected to this Person object we have to define each
-     * by the other end of the person_function_ connection.
-     * @ORM\OneToMany(targetEntity="PersonFunctionEvent", mappedBy="person", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
-    private $person_function_events;
-
-    /**
-     * And again!
-     * @ORM\OneToMany(targetEntity="PersonFunctionLocation", mappedBy="person", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
-    private $person_function_locations;
-
-    /**
-     * This is really functions, but since we have three (four) ways for a
-     * function to be connected to this Person object we have to define each
      * by the other end of the person_role_ connection.
      * @ORM\OneToMany(targetEntity="PersonRoleOrganization", mappedBy="person", cascade={"persist", "remove"}, orphanRemoval=true)
      */
@@ -187,9 +165,6 @@ class Person extends BaseUser
     {
         parent::__construct();
         // your own logic
-        $this->person_function_organizations = new ArrayCollection();
-        $this->person_function_locations = new ArrayCollection();
-        $this->person_function_events = new ArrayCollection();
         $this->person_functions = new ArrayCollection();
         $this->person_role_organizations = new ArrayCollection();
         $this->person_role_locations = new ArrayCollection();
@@ -979,112 +954,6 @@ class Person extends BaseUser
         return $personroles;
     }
 
-    /*
-     * The old, too confising names and functionlality
-     */
-
-    /**
-     * Add personFunctionOrganization
-     *
-     * @param \CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization
-     *
-     * @return Person
-     */
-    public function addPersonFunctionOrganization(\CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization)
-    {
-        $this->person_function_organizations[] = $personFunctionOrganization;
-
-        return $this;
-    }
-
-    /**
-     * Remove personFunctionOrganization
-     *
-     * @param \CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization
-     */
-    public function removePersonFunctionOrganization(\CrewCallBundle\Entity\PersonFunctionOrganization $personFunctionOrganization)
-    {
-        $this->person_function_organizations->removeElement($personFunctionOrganization);
-    }
-
-    /**
-     * Get personFunctionOrganizations
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPersonFunctionOrganizations()
-    {
-        return $this->person_function_organizations;
-    }
-
-    /**
-     * Add personFunctionEvent
-     *
-     * @param \CrewCallBundle\Entity\PersonFunctionEvent $personFunctionEvent
-     *
-     * @return Person
-     */
-    public function addPersonFunctionEvent(\CrewCallBundle\Entity\PersonFunctionEvent $personFunctionEvent)
-    {
-        $this->person_function_events[] = $personFunctionEvent;
-
-        return $this;
-    }
-
-    /**
-     * Remove personFunctionEvent
-     *
-     * @param \CrewCallBundle\Entity\PersonFunctionEvent $personFunctionEvent
-     */
-    public function removePersonFunctionEvent(\CrewCallBundle\Entity\PersonFunctionEvent $personFunctionEvent)
-    {
-        $this->person_function_events->removeElement($personFunctionEvent);
-    }
-
-    /**
-     * Get personFunctionEvents
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPersonFunctionEvents()
-    {
-        return $this->person_function_events;
-    }
-
-    /**
-     * Add personFunctionLocation
-     *
-     * @param \CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation
-     *
-     * @return Person
-     */
-    public function addPersonFunctionLocation(\CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation)
-    {
-        $this->person_function_locations[] = $personFunctionLocation;
-
-        return $this;
-    }
-
-    /**
-     * Remove personFunctionLocation
-     *
-     * @param \CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation
-     */
-    public function removePersonFunctionLocation(\CrewCallBundle\Entity\PersonFunctionLocation $personFunctionLocation)
-    {
-        $this->person_function_locations->removeElement($personFunctionLocation);
-    }
-
-    /**
-     * Get personFunctionLocations
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPersonFunctionLocations()
-    {
-        return $this->person_function_locations;
-    }
-
     /**
      * Get all distinct functions the person has
      *
@@ -1095,27 +964,6 @@ class Person extends BaseUser
         $functions = new ArrayCollection();
         foreach ($this->getPersonFunctions() as $pf) {
             $f = $pf->getFunction();
-            if ($function_type && $f->getFunctionType() != $function_type)
-                continue;
-            if (!$functions->contains($f))
-                $functions->add($f);
-        }
-        foreach ($this->getPersonFunctionEvents() as $pfe) {
-            $f = $pfe->getFunction();
-            if ($function_type && $f->getFunctionType() != $function_type)
-                continue;
-            if (!$functions->contains($f))
-                $functions->add($f);
-        }
-        foreach ($this->getPersonFunctionLocations() as $pfl) {
-            $f = $pfl->getFunction();
-            if ($function_type && $f->getFunctionType() != $function_type)
-                continue;
-            if (!$functions->contains($f))
-                $functions->add($f);
-        }
-        foreach ($this->getPersonFunctionOrganizations() as $pfo) {
-            $f = $pfo->getFunction();
             if ($function_type && $f->getFunctionType() != $function_type)
                 continue;
             if (!$functions->contains($f))
