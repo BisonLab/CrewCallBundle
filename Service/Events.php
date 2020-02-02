@@ -21,6 +21,8 @@ class Events
         $diff = $orig->getStart()->diff($clone->getStart());
         $nend = clone($orig->getEnd());
         $clone->setEnd($nend->add($diff));
+        if (!$clone->getState())
+            $clone->setState(Event::getStatesList()[0]);
         
         foreach ($orig->getShifts() as $shift) {
             $ns = new Shift();
@@ -30,7 +32,11 @@ class Events
             $ns->setStart($nsstart->add($diff));
             $nsend = clone($shift->getEnd());
             $ns->setEnd($nsend->add($diff));
+            $ns->setState(Shift::getStatesList()[0]);
+            // Cascade persist should have fixed this. But I have to use
+            // prePersist for state change handling. (As far as I have found)
             $clone->addShift($ns);
+            $this->em->persist($ns);
         }
 
         foreach ($orig->getChildren() as $child) {
@@ -45,7 +51,7 @@ class Events
             $nc = $this->cloneEvent($child, $new_child);
             $clone->addChild($nc);
         }
-        // $this->em->persist($clone);
+        $this->em->persist($clone);
         // $this->em->flush($clone);
         
         return $clone;

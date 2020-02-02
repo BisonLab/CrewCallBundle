@@ -3,7 +3,8 @@
 namespace CrewCallBundle\Lib\StateHandlers;
 
 /*
- * In case of having to handle events.
+ * For now this handles the trickle down of states on the shifts based on the
+ * (main) event.
  */
 class Event
 {
@@ -18,44 +19,58 @@ class Event
 
     public function handle(\CrewCallBundle\Entity\Event $event, $from, $to)
     {
-        // Sigh, not working. This way to handle states is too limiting.
         if ($to == "READY") {
             $uow = $this->em->getUnitOfWork();
             foreach ($event->getShifts() as $shift) {
+                if ($shift->getState() == "CLOSED")
+                    continue;
                 $shift->setState("CLOSED");
-                $meta = $this->em->getClassMetadata(get_class($shift));
-                $uow->computeChangeSet($meta, $shift);
-                $uow->computeChangeSets();
-                $uow->recomputeSingleEntityChangeSet($meta, $shift);
+                if ($uow->isEntityScheduled($shift)) {
+                    $meta = $this->em->getClassMetadata(get_class($shift));
+                    $uow->computeChangeSet($meta, $shift);
+                    $uow->computeChangeSets();
+                    $uow->recomputeSingleEntityChangeSet($meta, $shift);
+                }
             }
         }
 
         if ($to == "CONFIRMED") {
             $uow = $this->em->getUnitOfWork();
             foreach ($event->getChildren() as $child) {
+                if ($child->getState() == "CONFIRMED")
+                    continue;
                 $child->setState('CONFIRMED');
-                $meta = $this->em->getClassMetadata(get_class($child));
-                $uow->computeChangeSet($meta, $child);
-                $uow->computeChangeSets();
-                $uow->recomputeSingleEntityChangeSet($meta, $child);
+                if ($uow->isEntityScheduled($child)) {
+                    $meta = $this->em->getClassMetadata(get_class($child));
+                    $uow->computeChangeSet($meta, $child);
+                    $uow->computeChangeSets();
+                    $uow->recomputeSingleEntityChangeSet($meta, $child);
+                }
             }
             foreach ($event->getShifts() as $shift) {
+                if ($shift->getState() == "OPEN")
+                    continue;
                 $shift->setState('OPEN');
-                $meta = $this->em->getClassMetadata(get_class($shift));
-                $uow->computeChangeSet($meta, $shift);
-                $uow->computeChangeSets();
-                $uow->recomputeSingleEntityChangeSet($meta, $shift);
+                if ($uow->isEntityScheduled($shift)) {
+                    $meta = $this->em->getClassMetadata(get_class($shift));
+                    $uow->computeChangeSet($meta, $shift);
+                    $uow->computeChangeSets();
+                    $uow->recomputeSingleEntityChangeSet($meta, $shift);
+                }
             }
         }
 
         if ($to == "COMPLETED") {
             $uow = $this->em->getUnitOfWork();
             foreach ($event->getShifts() as $shift) {
+                if ($shift->getState() == "CLOSED")
+                    continue;
                 $shift->setState("CLOSED");
                 $meta = $this->em->getClassMetadata(get_class($shift));
                 $uow->computeChangeSet($meta, $shift);
                 $uow->computeChangeSets();
-                $uow->recomputeSingleEntityChangeSet($meta, $shift);
+                if ($uow->isEntityScheduled($shift))
+                    $uow->recomputeSingleEntityChangeSet($meta, $shift);
             }
         }
     }

@@ -57,7 +57,7 @@ class Shift
      * @Gedmo\Versioned
      * @Assert\Choice(callback = "getStatesList")
      */
-    private $state = "REGISTERED";
+    private $state;
 
     /**
      * @ORM\ManyToOne(targetEntity="FunctionEntity", inversedBy="shifts")
