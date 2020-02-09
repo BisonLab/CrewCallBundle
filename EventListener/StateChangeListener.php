@@ -16,21 +16,29 @@ class StateChangeListener
         $this->state_handler = $state_handler;
     }
 
-    // This is the more or less preInsert.
+    /*
+     * This is preInsert!
+     * Using false as old value is done to let the state handler know that this
+     * is an insert and that it does not have to mess with UnitOfWork.
+     * If I mess with that on insert I'll end up in tears, or rather a 500.
+     */
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();
         if (method_exists($entity, 'getState')) {
             return $this->state_handler->handleStateChange(
                 $entity,
-                // Null or just empty string?
-                null,
+                false,
                 $eventArgs->getEntity()->getState()
                 );
         }
         return true;
     }
 
+    /*
+     * So, why not preUpdate?
+     * Not enough access to the UnitOfWork API they say.
+     */
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
         $em = $eventArgs->getEntityManager();
