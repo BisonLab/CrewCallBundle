@@ -1,6 +1,7 @@
 <table id="crew_table" class="table table-hover table-sm" data-order='[[ 0, "asc" ]]'>
 <thead>
     <tr>
+        <th>Username</th>
         <th>Name</th>
         <th>Functions</th>
         <th>Mobile</th>
@@ -12,6 +13,7 @@
 <tbody>
 {% for person in people %}
     <tr>
+        <td style="white-space:nowrap;" data-order="{{ person.username }}"><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.username }}</a></td>
         <td style="white-space:nowrap;" data-order="{{ person.lastname }}"><a href="{{ path('person_show', { 'id': person.id }) }}">{{ person.fullname }}</a></td>
         <td>
             {% for f in person.functions(function_type) %} {{ f.name }},{% endfor %}</td>
