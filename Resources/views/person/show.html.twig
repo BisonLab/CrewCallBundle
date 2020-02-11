@@ -109,17 +109,6 @@
                 </ul>
                 </td>
             </tr>
-{% if person.personfunctionevents | length > 0 %}
-            <tr>
-                <th>Events</th>
-                <td>
-                {% for pfe in person.personfunctionevents %}
-                {{ pfe.event }} ({{ pfe.function }})<br>
-                {% endfor %}
-                </ul>
-                </td>
-            </tr>
-{% endif %}
             <tr>
                 <th>Functions</th>
                 <td>
