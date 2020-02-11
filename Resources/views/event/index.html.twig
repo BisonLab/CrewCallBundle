@@ -46,7 +46,12 @@ function checkReadyCheckbox(elem) {
     if (elem.checked) {
         $(".READY_state").hide();
     } else {
-        $(".READY_state").show();
+        // Just showing them agan could basically work, but the problem is that
+        // most of'em should have been hidden anyway since they are child
+        // events not expanded.
+        // $(".READY_state").show();
+        // This is the cheap and lazy fix.
+        parent.location.reload();
     }
 }
 </script>
