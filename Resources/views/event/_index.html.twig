@@ -6,7 +6,7 @@
     {% endif %}
         <td>
             {% if expandable and event.children | length > 0 %}
-            <a href="#" id="expand_subs_{{ event.id }}" onClick="return expandSubs({{ event.id }});"><span id=expand_subs_{{ event.id }}_span" class="glyphicon glyphicon-plus"></span></a>
+            <a href="#" class="expand_subs" id="expand_subs_{{ event.id }}" onClick="return expandSubs({{ event.id }});"><span id=expand_subs_{{ event.id }}_span" class="glyphicon glyphicon-plus"></span></a>
             <a href="#" class="collapse_subs" id="collapse_subs_{{ event.id }}" onClick="return collapseSubs({{ event.id }});"><span id=collapse_subs_{{ event.id }}_span" class="glyphicon glyphicon-minus"></span></a>
             {% else %}
             &nbsp;
@@ -29,7 +29,7 @@
             {% endif %}
         </td>
         <td>
-        <a href="{{ path('event_show', { 'id': event.id }) }}">{{ event.name }}</a>
+        <a href="{{ path('event_show', { 'id': event.id }) }}">{{ event }}</a>
         </td>
         <td>{{ event.location }}</td>
         <td>{{ event.statelabel }}</td>

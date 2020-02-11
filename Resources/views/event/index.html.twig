@@ -27,7 +27,7 @@
     {% endif %}
  </div>
  <div class="col-sm-3" style="margin-top: 20px;">
-    <input id="readycheckbox" type="checkbox" onChange="checkReadyCheckbox(this)">Hide ready events
+    <input id="readycheckbox" type="checkbox" onChange="checkReadyCheckbox(this)">Hide ready events</input>
  </div>
 
  <div class="col-sm-2" style="margin-top: 20px;">
@@ -46,12 +46,11 @@ function checkReadyCheckbox(elem) {
     if (elem.checked) {
         $(".READY_state").hide();
     } else {
-        // Just showing them agan could basically work, but the problem is that
-        // most of'em should have been hidden anyway since they are child
-        // events not expanded.
-        // $(".READY_state").show();
-        // This is the cheap and lazy fix.
-        parent.location.reload();
+        // Not ideal, but beats parent.reload()
+        $(".READY_state").not(".event_child").show();
+        $(".event_child").hide();
+        $(".collapse_subs").hide();
+        $(".expand_subs").show();
     }
 }
 </script>
