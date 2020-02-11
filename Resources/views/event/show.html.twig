@@ -45,7 +45,7 @@
                     {{ event.statelabel }}
                     {% if event.state == "READY" %}
                         <span class="glyphicon glyphicon-ok"></span>
-                    {% elseif event.open and event.shifts | length > 0 %}
+                    {% else %}
                         <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</span></a>
                     {% endif %}
                 </td>
