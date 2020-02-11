@@ -89,4 +89,24 @@ function openMessageModal(person_id = null) {
 
     return false;
 }
+
+function sendResetEmail(person_id = null) {
+    cheat_url = "{{ path('person_reset_password', { 'id': 0, 'access': 'ajax' }) }}";
+    c_url = cheat_url.replace("0", person_id);
+
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: c_url,
+        type: "POST",
+        async: true,
+    }).done( function( cont, textStatus, xhr ) {
+        $( "#personModalTitle" ).html("Password reset");
+        $( "#personModalBody" ).html("<p>Password reset email sent</p>");
+        $( "#personModal" ).modal();
+    });
+
+    return false;
+}
 </script>

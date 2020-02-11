@@ -129,7 +129,7 @@
                     <br>
                     <a href="{{ path('person_edit', { 'id': person.id }) }}" class="btn btn-sm btn-dark">Edit</a>
                     <br>
-                    <a href="{{ path('person_reset_password', { 'id': person.id }) }}" class="btn btn-sm btn-dark">Send Password reset mail</a>
+                    <a href="#" onClick="return sendResetEmail({{ person.id }});" class="btn btn-sm btn-dark">Send Password reset mail</a>
                     <br>
 {% if person.deleteable %}
                     {{ form_start(delete_form, {'attr': {'onSubmit': 'return confirm("Are you sure you want to delete this person?");'}}) }}

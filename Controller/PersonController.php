@@ -564,7 +564,7 @@ class PersonController extends CommonController
      * @param UserInterface $user
      * @Route("/{id}/reset_password", name="person_reset_password")
      */
-    public function resetPasswordAction(Person $person)
+    public function resetPasswordAction(Person $person, $access)
     {
         if (null === $person->getConfirmationToken()) {
             $tokenGenerator = $this->get('fos_user.util.token_generator');
@@ -579,6 +579,10 @@ class PersonController extends CommonController
         $person->setPasswordRequestedAt(new \DateTime());
         $userManager = $this->get('fos_user.user_manager');
         $userManager->updateUser($person);
+        if ($this->isRest($access)) {
+            // Format for autocomplete.
+            return new Response('OK', 200);
+        }
         return $this->redirectToRoute('person_show', array('id' => $person->getId()));
     }
 
