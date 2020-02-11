@@ -1,4 +1,4 @@
-<p><strong>{{ job.shift }}</strong></p>
+<p><strong>{{ job.shift }} {{ job.start | date("d.m.Y H:i") }} -> {{ job.end | date("H:i") }}</strong></p>
 {% form_theme form 'form_div_layout.html.twig' %}
 {{ form_start(form, {action:path('job_new', {'access': 'ajax'}), 'attr': {'id':'newJobForm', 'class': 'ccCompactForm'}}) }}
 <fieldset>
