@@ -75,6 +75,14 @@ $(document).ready(function() {
                     document.getElementById("person_message_form").reset();
                     selected_crewtable.column('.selectcol').checkboxes.deselect();
                     $( ".person_list" ).remove();
+                },
+                error: function(data)
+                {
+                    alert("Failed sending SMS");
+                    $("#personMessageModal").modal("hide");
+                    document.getElementById("person_message_form").reset();
+                    selected_crewtable.column('.selectcol').checkboxes.deselect();
+                    $( ".person_list" ).remove();
                 }
             });
         }

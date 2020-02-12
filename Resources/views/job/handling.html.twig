@@ -251,7 +251,13 @@ function openMessageToJobsModal(shift_id) {
                     $( "#jobModalBody" ).html("");
                     $(".job_list_message_form_plist").remove();
                     document.getElementById("job_list_message_form").reset();
-                    selected_crewtable.column('.selectcol').checkboxes.deselect();
+                },
+                error: function(data)
+                {
+                    alert("Failed sending SMS");
+                    $("#personMessageModal").modal("hide");
+                    $(".job_list_message_form_plist").remove();
+                    document.getElementById("job_list_message_form").reset();
                 }
             });
         }
