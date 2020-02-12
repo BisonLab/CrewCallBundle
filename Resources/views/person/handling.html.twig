@@ -54,7 +54,7 @@ $(document).ready(function() {
             $.each(rows_selected, function(index, rowId){
                // Create a hidden element
                $(form).append(
-                   $('<input>')
+                   $('<input class="person_list">')
                       .attr('type', 'hidden')
                       .attr('name', 'person_list[]')
                       .val(rowId)
@@ -73,6 +73,8 @@ $(document).ready(function() {
                     alert(data);
                     $("#personMessageModal").modal("hide");
                     document.getElementById("person_message_form").reset();
+                    selected_crewtable.column('.selectcol').checkboxes.deselect();
+                    $( ".person_list" ).remove();
                 }
             });
         }
