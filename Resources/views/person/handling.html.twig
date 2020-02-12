@@ -71,7 +71,8 @@ $(document).ready(function() {
                 success: function(data)
                 {
                     alert(data);
-                    $( "#personMessageModal" ).modal("hide");
+                    $("#personMessageModal").modal("hide");
+                    document.getElementById("person_message_form").reset();
                 }
             });
         }

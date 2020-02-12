@@ -29,6 +29,7 @@ function openMessageToEventModal(object, object_id) {
                 $( "#eventModal" ).modal("hide");
                 $( "#eventModalTitle" ).html("");
                 $( "#eventModalBody" ).html("");
+                document.getElementById("eventMessageForm").reset();
             }
         });
         event.preventDefault();
