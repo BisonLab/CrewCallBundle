@@ -88,10 +88,24 @@
                 <th>Address</th>
                 <td>{{ cc_addressing.compose(person.address, 'html') | raw }}</td>
             </tr>
-{% if person.postaladdress is empty %}
+{% if person.postaladdress is not empty %}
             <tr>
                 <th>Postal Address</th>
                 <td>{{ cc_addressing.compose(person.postaladdress, 'html') | raw }}</td>
+            </tr>
+{% endif %}
+{% if person.contexts | length > 0 %}
+            <tr>
+                <th>External pointers</th>
+                <td>
+                {% for context in person.contexts %}
+                    {% if context.url is not empty %}
+                        <a href="{{ context.url }}">{{ context.label }}</a>: {{ context.externalid }}<br>
+                    {% else %}
+                        {{ context.label }}: {{ context.externalid }}<br>
+                    {% endif %}
+                {% endfor %}
+                </td>
             </tr>
 {% endif %}
             <tr>
