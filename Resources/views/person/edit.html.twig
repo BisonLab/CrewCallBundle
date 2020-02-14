@@ -5,6 +5,10 @@
 
     {{ form_start(edit_form) }}
         {{ form_widget(edit_form) }}
+        <strong>External info</strong>
+        <ul>
+        {% include '@BisonLabCommon/context_forms.html.twig' with { 'context_forms': context_forms } %}
+        </ul>
         <input class="btn btn-sm btn-dark" type="submit" value="Save" />
     {{ form_end(edit_form) }}
     <a href="{{ path('person_show', { 'id': person.id }) }}" class="btn btn-sm btn-dark">Cancel</a><br>

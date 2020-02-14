@@ -366,7 +366,12 @@ class PersonController extends CommonController
         // $addressing->addToForm($editForm, $person);
         $editForm->handleRequest($request);
 
+        $contexts      = $person->getContexts();
+        $context_forms = $this->createContextForms('CrewCallBundle:Person', $contexts);
+
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->updateContextForms($request,'CrewCallBundle:Person', "\CrewCallBundle\Entity\\PersonContext", $person);
+
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('person_show', array('id' => $person->getId()));
@@ -375,6 +380,7 @@ class PersonController extends CommonController
         return $this->render('person/edit.html.twig', array(
             'person' => $person,
             'edit_form' => $editForm->createView(),
+            'context_forms' => $context_forms,
         ));
     }
 
