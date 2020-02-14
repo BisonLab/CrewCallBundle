@@ -413,18 +413,29 @@ class PersonController extends CommonController
         $sm = $this->get('sakonnin.messages');
         $body = $request->request->get('body');
         $subject = $request->request->get('subject') ?? "Message from CrewCall";
-        $persons = $request->request->get('person_list');
         $message_type = $request->request->get('message_type');
-        $sm->postMessage(array(
-            'subject' => $subject,
-            'body' => $body,
-            'to' => implode(",", $persons),
-            'from' => $this->getParameter('system_emails_address'),
-            'message_type' => $message_type,
-            'to_type' => "INTERNAL",
-            'from_type' => "INTERNAL",
-        ));
-        return new Response("Sent: " . $body, Response::HTTP_OK);
+
+        $person_contexts = [];
+        foreach ($request->request->get('person_list') as $pid) {
+            $person_contexts[] = [
+                'system' => 'crewcall',
+                'object_name' => 'person',
+                'external_id' => $pid
+            ];
+        }
+        if (!empty($person_contexts)) {
+            $sm->postMessage(array(
+                'subject' => $subject,
+                'body' => $body,
+                'from' => $this->getParameter('system_emails_address'),
+                'message_type' => $message_type,
+                'to_type' => "INTERNAL",
+                'from_type' => "INTERNAL",
+            ), $person_contexts);
+            return new Response("Sent: " . $body, Response::HTTP_OK);
+        }
+        // It's kinda still a 200/OK
+        return new Response("Did not send any  message, no one to send it to.", Response::HTTP_OK);
     }
 
     /**

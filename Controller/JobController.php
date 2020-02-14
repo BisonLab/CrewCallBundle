@@ -291,15 +291,22 @@ class JobController extends CommonController
         $message_type = $request->request->get('message_type');
         if ($person_ids->count() == 0)
             return new Response("No one to send to.", Response::HTTP_OK);
+        $person_contexts = [];
+        foreach ($person_ids as $pid) {
+            $person_contexts[] = [
+                'system' => 'crewcall',
+                'object_name' => 'person',
+                'external_id' => $pid
+            ];
+        }
         $sm->postMessage(array(
             'subject' => $subject,
             'body' => $body,
-            'to' => implode(",", $person_ids->toArray()),
             'from' => $this->getParameter('system_emails_address'),
             'message_type' => $message_type,
             'to_type' => "INTERNAL",
             'from_type' => "INTERNAL",
-        ));
+        ), $person_contexts);
         return new Response("Sent: " . $body, Response::HTTP_OK);
     }
 }

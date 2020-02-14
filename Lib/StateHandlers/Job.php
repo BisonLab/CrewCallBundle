@@ -28,15 +28,19 @@ class Job
                 $template = 'confirm-sms';
             if ($to == "ASSIGNED")
                 $template = 'assigned-sms';
-            $this->sm->postMessage(array(
+            $this->sm->postMessage([
                 'template' => $template,
                 'template_data' => $data,
                 'subject' => "Confirmation",
                 'to_type' => "INTERNAL",
                 'from_type' => "INTERNAL",
-                'to' => $job->getPerson()->getId(),
                 'message_type' => "PM"
-            ));
+            ],
+            [
+                'system' => 'crewcall',
+                'object_name' => 'person',
+                'external_id' => $job->getPerson()->getId(),
+            ]);
         }
     }
 }

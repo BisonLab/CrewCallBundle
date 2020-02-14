@@ -167,7 +167,10 @@
     <a href="#caltab" data-toggle="tab">Calendar</a>
     </li>
     <li>
-    <a href="#notestab" data-toggle="tab">Notes / Messages</a>
+    <a href="#notestab" data-toggle="tab">Notes</a>
+    </li>
+    <li>
+    <a href="#messagestab" data-toggle="tab">Messages</a>
     </li>
     <li>
     <a href="#filestab" data-toggle="tab">Files</a>
@@ -339,6 +342,11 @@
     </form>
 {% endfor %}
 
+  </div><!-- notestab -->
+
+  <div class="tab-pane" id="messagestab">
+    <br>
+
 {% set bulkcriterias = {
             'message_group': 'Messages',
             'order': 'DESC',
@@ -348,11 +356,13 @@
     }
 %}
 {% for note in sakonnin_messages.MessagesForContext(bulkcriterias) %}
+ <p>
     <strong>{{ note.subject }}</strong> ({{ note.state | capitalize }} {{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}) {% if note.expireat %}Expires {{ note.expireat | date('Y-m-d') }}{% endif %}
     <pre>{{ note.body }}</pre>
+ </p>
 {% endfor %}
 
-  </div>
+  </div><!-- messagestab -->
 
   <div class="tab-pane" id="filestab">
     <p>
