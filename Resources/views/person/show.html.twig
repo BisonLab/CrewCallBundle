@@ -37,7 +37,7 @@
           <a href="#" onClick="return uploadFile('profile_upload');">Add profile picture</a><br />
 {% endif %}
     <h1>
-    <a href="#" id="message_modal_link" onClick="return openMessageModal({{ person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
+    <a href="#" id="message_modal_link" onClick="return openMessageModal({{ person.id }}, 'PM');"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
     {{ person.fullname }}
     </h1>
     <h4>{{ person.statelabel }}</h4>
@@ -338,6 +338,20 @@
     </button>
     </form>
 {% endfor %}
+
+{% set bulkcriterias = {
+            'message_group': 'Messages',
+            'order': 'DESC',
+            'system': 'crewcall',
+            'object_name': 'person',
+            'external_id': person.id
+    }
+%}
+{% for note in sakonnin_messages.MessagesForContext(bulkcriterias) %}
+    <strong>{{ note.subject }}</strong> ({{ note.state | capitalize }} {{ note.messagetype }} by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}) {% if note.expireat %}Expires {{ note.expireat | date('Y-m-d') }}{% endif %}
+    <pre>{{ note.body }}</pre>
+{% endfor %}
+
   </div>
 
   <div class="tab-pane" id="filestab">

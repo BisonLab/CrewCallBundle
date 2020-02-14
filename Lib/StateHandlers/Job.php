@@ -35,7 +35,7 @@ class Job
                 'to_type' => "INTERNAL",
                 'from_type' => "INTERNAL",
                 'to' => $job->getPerson()->getId(),
-                'message_type' => "PMSMS"
+                'message_type' => "PM"
             ));
         }
     }

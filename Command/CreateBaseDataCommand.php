@@ -46,12 +46,12 @@ class CreateBaseDataCommand extends ContainerAwareCommand
             'base_type' => 'NOTE',
             'security_model' => 'ADMIN_ONLY',
             'description' => "Note only admins can read"),
-        'PMSMS' => array(
+        'PM' => array(
             'parent' => 'Messages',
             'base_type' => 'MESSAGE',
             'security_model' => 'PRIVATE',
             'forward_function' => 'smscopy',
-            'description' => "PM with SMS copy"),
+            'description' => "PM with eventual SMS copy"),
         'SMS' => array(
             'parent' => 'Messages',
             'base_type' => 'MESSAGE',

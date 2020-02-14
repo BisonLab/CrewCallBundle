@@ -24,9 +24,10 @@
       <div id="personmessage_modal" class="modal-body">
             <form id="person_message_form" method="POST">
             <textarea name="body" cols="40" rows="4"></textarea><br>
-            <input type="radio" value="BULKSMS" name="message_type" CHECKED>SMS only</input><br>
-            <input type="radio" value="BULKMAIL" name="message_type">Email only</input><br>
-            <input type="radio" value="BULKALL" name="message_type">SMS and Email</input><br>
+            <div class="bulkmessageradio"><input type="radio" value="BULKSMS" name="message_type" CHECKED>SMS only</input><br></div>
+            <div class="bulkmessageradio"><input type="radio" value="BULKMAIL" name="message_type">Email only</input><br></div>
+            <div class="bulkmessageradio"><input type="radio" value="BULKALL" name="message_type">SMS and Email</input><br></div>
+
             <input class="btn btn-sm btn-dark" id="sendPersonMessage" type="submit" name="submit" value="Send">
             </form>
       </div>
@@ -91,11 +92,15 @@ $(document).ready(function() {
     });
 });
 
-function openMessageModal(person_id = null) {
+function openMessageModal(person_id = null, message_type = null) {
 
     $( "#personMessageModal" ).modal();
     if (person_id) {
         $("#person_message_form").append('<input class="person_list_form_plist" type="hidden" name="person_list[]" value="'+person_id+'">');
+    }
+    if (message_type) {
+        $("#person_message_form").append('<input class="messagetype" type="hidden" name="message_type" value="'+message_type+'">');
+        $( ".bulkmessageradio" ).remove();
     }
 
     return false;

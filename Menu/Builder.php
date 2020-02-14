@@ -119,7 +119,7 @@ class Builder implements ContainerAwareInterface
             $usermenu = $this->sakonnin_builder->messageMenu($factory, $options);
             if ($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
                 $pmmenu = $usermenu['Messages']->addChild('Write PM and send SMS', array('uri' => '#'));
-                $pmmenu->setLinkAttribute('onclick', 'createPmMessage("PMSMS")');
+                $pmmenu->setLinkAttribute('onclick', 'createPmMessage("PM")');
             } else {
                 $usermenu['Messages']->removeChild('Message History');
             }
