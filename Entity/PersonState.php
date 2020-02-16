@@ -206,4 +206,9 @@ class PersonState
         $seconds = $ttime - $ftime;
         return floor($seconds / 86400) + 1;
     }
+
+    public function __toString()
+    {
+        return $this->getState();
+    } 
 }

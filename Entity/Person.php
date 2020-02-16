@@ -585,9 +585,14 @@ class Person extends BaseUser
      *
      * @return string 
      */
-    public function getStateLabel($state = null)
+    public function getStateLabel($state_or_date = null)
     {
-        $state = $state ?: $this->getState();
+        // Pretty simple check, but should just be enough. 
+        if ($state_or_date instanceof \DateTime || preg_match('/^\d/', $state_or_date)) {
+            $state = (string)$this->getStateOnDate($state_or_date);
+        } else {
+            $state = $state_or_date ?: $this->getState();
+        }
         return ExternalEntityConfig::getStatesFor('Person')[$state]['label'];
     }
 

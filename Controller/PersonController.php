@@ -728,13 +728,16 @@ class PersonController extends CommonController
             if ($select_grouping == "no_crew" && $p->isCrew()) {
                 continue;
             }
+            if ($select_grouping == "all") {
+                if (!$filtered->contains($p))
+                    $filtered->add($p);
+            }
             if ($on_date) {
-                // Basically all active
-                if ($select_grouping == 'all_active') {
-                    if (!in_array($p->getStateOnDate($on_date),
-                            ExternalEntityConfig::getActiveStatesFor('Person')))
-                        continue;
-                }
+                // If this is about a date, we are always talking about active
+                // people. Which means "Not active on that date" disqualifies.
+                if (!in_array((string)$p->getStateOnDate($on_date),
+                        ExternalEntityConfig::getActiveStatesFor('Person')))
+                    continue;
                 $jobs = $job_repo->findJobsForPerson($p, [
                         'from' => $on_date,
                         'to' => $on_date,
