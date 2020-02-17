@@ -241,24 +241,27 @@ class ShiftController extends CommonController
         if ($state = $request->request->get('state'))
             $filter['states'] = [$state];
 
-        $persons = new ArrayCollection();
+        $people = new ArrayCollection();
         foreach ($shift->getJobs($filter) as $j) {
-            if (!$persons->contains($j->getPerson()))
-                $persons->add($j->getPerson());
+            if (!$people->contains($j->getPerson()))
+                $people->add($j->getPerson());
         }
-        $person_ids = array_map(function($person) {
-                return $person->getId();
-            }, $persons->toArray());
+        $person_contexts = array_map(function($person) {
+            return [
+                'system' => 'crewcall',
+                'object_name' => 'person',
+                'external_id' => $person->getId()
+            ];
+            }, $people->toArray());
         $message_type = $request->request->get('message_type');
         $sm->postMessage(array(
             'subject' => $subject,
             'body' => $body,
-            'to' => implode(",", $person_ids),
             'from' => $this->getParameter('system_emails_address'),
             'message_type' => $message_type,
             'to_type' => "INTERNAL",
             'from_type' => "INTERNAL",
-        ));
+        ), $person_contexts);
         return new Response("Sent: " . $body, Response::HTTP_OK);
     }
 

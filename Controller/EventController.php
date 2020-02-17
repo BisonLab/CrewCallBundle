@@ -463,19 +463,23 @@ class EventController extends CommonController
             if (!$people->contains($j->getPerson()))
                 $people->add($j->getPerson());
         }
-        $person_ids = array_map(function($person) {
-                return $person->getId();
+
+        $person_contexts = array_map(function($person) {
+            return [
+                'system' => 'crewcall',
+                'object_name' => 'person',
+                'external_id' => $person->getId()
+            ];
             }, $people->toArray());
         $message_type = $request->request->get('message_type');
         $sm->postMessage(array(
             'subject' => $subject,
             'body' => $body,
-            'to' => implode(",", $person_ids),
             'from' => $this->getParameter('system_emails_address'),
             'message_type' => $message_type,
             'to_type' => "INTERNAL",
             'from_type' => "EMAIL",
-        ));
+        ), $person_contexts);
         return new Response("Sent: " . $body, Response::HTTP_OK);
     }
 
