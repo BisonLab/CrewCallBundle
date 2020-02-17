@@ -480,7 +480,8 @@ class EventController extends CommonController
             'to_type' => "INTERNAL",
             'from_type' => "EMAIL",
         ), $person_contexts);
-        return new Response("Sent: " . $body, Response::HTTP_OK);
+        $status_text = "Sent '".$body."' to " . count($person_contexts) . " persons.";
+        return new Response($status_text, Response::HTTP_OK);
     }
 
     /**

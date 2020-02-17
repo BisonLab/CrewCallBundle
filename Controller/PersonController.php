@@ -432,7 +432,8 @@ class PersonController extends CommonController
                 'to_type' => "INTERNAL",
                 'from_type' => "INTERNAL",
             ), $person_contexts);
-            return new Response("Sent: " . $body, Response::HTTP_OK);
+            $status_text = "Sent '".$body."' to " . count($person_contexts) . " persons.";
+            return new Response($status_text, Response::HTTP_OK);
         }
         // It's kinda still a 200/OK
         return new Response("Did not send any  message, no one to send it to.", Response::HTTP_OK);
