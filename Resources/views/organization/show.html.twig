@@ -37,6 +37,20 @@
                 <th>Status</th>
                 <td>{{ organization.state }}</td>
             </tr>
+{% if organization.contexts | length > 0 %}
+            <tr>
+                <th>External pointers</th>
+                <td>
+                {% for context in organization.contexts %}
+                    {% if context.url is not empty %}
+                        <a href="{{ context.url }}">{{ context.label }}</a>: {{ context.externalid }}<br>
+                    {% else %}
+                        {{ context.label }}: {{ context.externalid }}<br>
+                    {% endif %}
+                {% endfor %}
+                </td>
+            </tr>
+{% endif %}
         <tr>
           <th>
             <a tabindex="0" href="#" title="Logs" id="popLogSummary_organization_{{ organization.id }}" onClick="return popLogSummary('organization', {{ organization.id }});" class="btn btn-sm btn-dark">Changelog</a>

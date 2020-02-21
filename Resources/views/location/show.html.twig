@@ -39,6 +39,20 @@
                 </td>
             </tr>
             {% endif %}
+{% if location.contexts | length > 0 %}
+            <tr>
+                <th>External pointers</th>
+                <td>
+                {% for context in location.contexts %}
+                    {% if context.url is not empty %}
+                        <a href="{{ context.url }}">{{ context.label }}</a>: {{ context.externalid }}<br>
+                    {% else %}
+                        {{ context.label }}: {{ context.externalid }}<br>
+                    {% endif %}
+                {% endfor %}
+                </td>
+            </tr>
+{% endif %}
         {% if not location.parent %}
         <tr>
         </tr>
