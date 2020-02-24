@@ -102,8 +102,10 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
                     $to = $options['to'];
                 else
                     $to = new \DateTime($options['to']);
-                $qb->andWhere('s.start <= :to')
-                   ->setParameter('to', $to);
+                // And since it's "Include to", add one day and use less than
+                // and it'll include any time the day we wanted.
+                $qb->andWhere('s.start < :to')
+                   ->setParameter('to', $to->modify("+1 day"));
             }
         }
         // Either the default or what's set above.
@@ -224,8 +226,8 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
                     $to = $options['to'];
                 else
                     $to = new \DateTime($options['to']);
-                $qb->andWhere('s.end <= :to')
-                   ->setParameter('to', $to);
+                $qb->andWhere('s.start < :to')
+                   ->setParameter('to', $to->modify("+1 day"));
             }
         }
         $qb->orderBy('s.end', 'DESC');

@@ -94,8 +94,8 @@ class ShiftOrganizationRepository extends \Doctrine\ORM\EntityRepository
                     $to = $options['to'];
                 else
                     $to = new \DateTime($options['to']);
-                $qb->andWhere('s.start <= :to')
-                   ->setParameter('to', $to);
+                $qb->andWhere('s.start < :to')
+                   ->setParameter('to', $to->modify("+1 day");
             }
         }
         // Either the default or what's set above.
