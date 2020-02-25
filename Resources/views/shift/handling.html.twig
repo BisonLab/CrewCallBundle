@@ -40,8 +40,7 @@ function submitNewShiftForm(event_id) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             if (xhr.status == 201) {
-                grabShiftList(event_id);
-                $( "#shiftModal" ).modal('hide');
+                parent.location.reload();
             } else {
                 $( "#shiftModalBody" ).html(xhr.responseText);
                 $( "#shiftModalTitle" ).html("Add Shift");
