@@ -218,10 +218,10 @@ function openAddContactInfo(event_id) {
 {% if state_form is defined %}
     <div class="hidden">
     <form id="stateEventForm" method="POST">
-    {{ form_widget(state_form) }}
+    {{ form_widget(state_form._token, {'id': state_form._token.vars.id ~ '_setstateevent' }) }}
     {{ form_end(state_form) }}
     <form id="deleteEventForm" method="DELETE">
-    {{ form_widget(delete_form) }}
+    {{ form_widget(delete_form._token, {'id': delete_form._token.vars.id ~ '_deletestateevent' }) }}
     {{ form_end(delete_form) }}
     </div>
 {% endif %}
