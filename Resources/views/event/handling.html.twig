@@ -45,7 +45,7 @@ function openMessageToEventModal(object, object_id) {
     return false;
 }
 
-function openAddContactInfo(event_id) {
+function openAddContact(event_id) {
 
     /* Yet another way to do this. Gotta standardize some day. */
     $( "#addContactInfoForm" ).submit(function( event ) {
@@ -173,8 +173,35 @@ function openAddContactInfo(event_id) {
         $( "#eventModalTitle" ).html('Add Contact Info');
         $( "#eventModalBody" ).html(content);
         $( "#eventModal" ).modal();
-    });
 
+        $( "#eventModalBody form" ).each(function() {
+            var url = this.action;
+            var form_id = this.id;
+            $( "#"+form_id ).submit(function( event ) {
+                // Actually, there is nothing to serialize, but in case.
+                postdata = $( "#"+form_id ).serialize();
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    data: postdata,
+                    url: url,
+                    success: function(data)
+                    {
+                        parent.location.reload();
+                    },
+                    error: function(data)
+                    {
+                        alert("Failed Adding contact");
+                        $( "#eventModal" ).modal("hide");
+                        $( "#eventModalTitle" ).html("");
+                        $( "#eventModalBody" ).html("");
+                    }
+                });
+                event.preventDefault();
+            });
+        });
+    });
+    event.preventDefault();
     return false;
 }
 </script>

@@ -1,5 +1,5 @@
 {% macro ci_form(cinfo, event_id) %}
-<form method="POST" action="{{ path('message_add_context', { 'access': 'web', 'id': cinfo.id, 'system': 'crewcall', 'object_name': 'event', 'external_id': event_id }) }}">
+<form id="pick_contact_info_{{cinfo.id}}" method="POST" action="{{ path('message_add_context', { 'access': 'web', 'id': cinfo.id, 'system': 'crewcall', 'object_name': 'event', 'external_id': event_id }) }}">
 <div class="row">
   <div class="col-sm-8">
     <strong>{{ cinfo.subject }}</strong>
