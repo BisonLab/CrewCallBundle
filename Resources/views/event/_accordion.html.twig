@@ -12,15 +12,14 @@
                 {% set collapse = false %}
             {% endif %}
         {% endfor %}
+            <a class="accordion-toggle {% if collapse %}collapsed{% endif %}" role="button" data-toggle="collapse" data-parent="#eventaccordion" href="#eventacc_{{ event.id }}" aria-expanded="{% if collapse %}false{% else %}true{% endif %}" aria-controls="eventacc_{{ event.id }}">
           <div class="panel-heading" role="tab" id="heading{{ event.id }}">
            <h4 class="panel-title">
-            <a class="accordion-toggle {% if collapse %}collapsed{% endif %}" role="button" data-toggle="collapse" data-parent="#eventaccordion" href="#eventacc_{{ event.id }}" aria-expanded="{% if collapse %}false{% else %}true{% endif %}" aria-controls="eventacc_{{ event.id }}">
                 {% if event.parent %}
                     {{ event.parent.name }} <span class="glyphicon glyphicon-arrow-right"></span> {{ event.name }}
                 {% else %}
                     {{ event.name }} (Main Event)
                 {% endif %}
-            </a>
            </h4>
             {{ event.start|date('d M H:i') }}
             <span class="glyphicon glyphicon-arrow-right"></span> 
@@ -36,6 +35,7 @@
                 {{ event.statelabel }}
             </div>
           </div> <!-- / panel-heading -->
+            </a>
           <div id="eventacc_{{ event.id }}" class="panel-collapse collapse {% if not collapse %}in{% endif %}" role="tabpanel" aria-labelledby="heading{{ event.id }}">
             <div class="panel-body">
             {% include 'CrewCallBundle:event:_sub_event.html.twig' with { 'event': event}  %}
