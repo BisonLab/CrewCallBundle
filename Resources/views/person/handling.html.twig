@@ -79,7 +79,8 @@ $(document).ready(function() {
                 },
                 error: function(data)
                 {
-                    alert("Failed sending SMS");
+                    console.log(data);
+                    alert("Failed sending SMS.\n" + data.responseText);
                     $("#personMessageModal").modal("hide");
                     document.getElementById("person_message_form").reset();
                     selected_crewtable.column('.selectcol').checkboxes.deselect();

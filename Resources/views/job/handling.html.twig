@@ -254,7 +254,7 @@ function openMessageToJobsModal(shift_id) {
                 },
                 error: function(data)
                 {
-                    alert("Failed sending SMS");
+                    alert("Failed sending SMS.\n" + data.responseText);
                     $("#personMessageModal").modal("hide");
                     $(".job_list_message_form_plist").remove();
                     document.getElementById("job_list_message_form").reset();

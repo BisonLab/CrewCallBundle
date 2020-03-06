@@ -33,7 +33,7 @@ function openMessageToEventModal(object, object_id) {
             },
             error: function(data)
             {
-                alert("Failed sending SMS");
+                alert("Failed sending SMS.\n" + data.responseText);
                 $( "#eventModal" ).modal("hide");
                 $( "#eventModalTitle" ).html("");
                 $( "#eventModalBody" ).html("");
@@ -191,7 +191,7 @@ function openAddContactInfo(event_id) {
                     },
                     error: function(data)
                     {
-                        alert("Failed Adding contact");
+                        alert("Failed Adding contact.\n" + data.responseText);
                         $( "#eventModal" ).modal("hide");
                         $( "#eventModalTitle" ).html("");
                         $( "#eventModalBody" ).html("");
