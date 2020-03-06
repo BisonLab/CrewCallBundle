@@ -739,6 +739,10 @@ class PersonController extends CommonController
                 if (!in_array((string)$p->getStateOnDate($on_date),
                         ExternalEntityConfig::getActiveStatesFor('Person')))
                     continue;
+                if ($select_grouping == 'all_active') {
+                    if (!$filtered->contains($p))
+                        $filtered->add($p);
+                }
                 $jobs = $job_repo->findJobsForPerson($p, [
                         'from' => $on_date,
                         'to' => $on_date,
