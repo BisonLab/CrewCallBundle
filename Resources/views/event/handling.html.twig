@@ -1,5 +1,19 @@
 <script>
 
+$(document).ready(function() {
+
+    var hidehash = document.location.hash;
+
+    if (hidehash.match("hideready")) {
+        hidebox = $( "#hidereadycheckbox" );
+        hidebox.prop("checked", true);
+        hidebox.checked = true;
+        checkReadyCheckbox(hidebox);
+        console.log("Hode ready");
+    }
+
+});
+
 /*
  * Yeah, and shift.
  */
@@ -203,6 +217,20 @@ function openAddContactInfo(event_id) {
     });
     event.preventDefault();
     return false;
+}
+
+function checkReadyCheckbox(elem) {
+    if (elem.checked) {
+        $(".READY_state").hide();
+        window.location.hash = "#hideready";
+    } else {
+        // Not ideal, but beats parent.reload()
+        $(".READY_state").not(".event_child").show();
+        $(".event_child").hide();
+        $(".collapse_subs").hide();
+        $(".expand_subs").show();
+        window.location.hash = "";
+    }
 }
 </script>
 
