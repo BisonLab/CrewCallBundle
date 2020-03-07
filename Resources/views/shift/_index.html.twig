@@ -7,6 +7,11 @@
             'external_id': shift.id
     }
 %}
+{#
+{% if shift.registeredamount > 0 %}
+    <tr class="joblist_closed" id="shiftRow_{{ shift.id }}" onClick="return toggleJobList({{ shift.id }});">
+{% endif %}
+ #}
     <tr id="shiftRow_{{ shift.id }}">
         <td data-order="{{ shift.start | date('U')}}" >
             {{ shift.start|date('d M H:i') }}
@@ -39,11 +44,11 @@
 <!-- TODO: Probably remove this one
         <span title="All shifts booked" class="glyphicon glyphicon-ok" {% if shift.amount - amounts.CONFIRMED != 0 %}style="opacity: 0;"{% endif %}"></span>&nbsp;
 -->
-        <span title="Total needed" class="ccAmount left ccTotal">{{ shift.amount }}</span>
-        <span title="Still needing" class="ccAmount ccNeeded">{{ shift.amount - shift.bookedamount }}</span>
-        <span  title="Amount Confirmed" class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
-        <span title="Amount Assigned" class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
-        <span title="Amount Interested" class="ccAmount right ccInterested">{{ amounts.INTERESTED }}</span>
+        <span id="shift_counter_amount_{{ shift.id }}" title="Total needing" class="ccAmount left ccTotal">{{ shift.amount }}</span>
+        <span id="shift_counter_needing_{{ shift.id }}" title="Still needing" class="ccAmount ccNeeded">{{ shift.amount - shift.bookedamount }}</span>
+        <span id="shift_counter_CONFIRMED_{{ shift.id }}"  title="Amount Confirmed" class="ccAmount ccConfirmed">{{ amounts.CONFIRMED }}</span>
+        <span id="shift_counter_ASSIGNED_{{ shift.id }}" title="Amount Assigned" class="ccAmount ccAssigned">{{ amounts.ASSIGNED }}</span>
+        <span id="shift_counter_INTERESTED_{{ shift.id }}" title="Amount Interested" class="ccAmount right ccInterested">{{ amounts.INTERESTED }}</span>
         </td>
         <td align="right">
         {% if shift.registeredamount > 0 %}

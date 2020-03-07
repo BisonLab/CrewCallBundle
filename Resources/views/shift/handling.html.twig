@@ -187,6 +187,27 @@ function deleteShift(shift_id) {
     return false;
 }
 
+function recountShift(shift_id) {
+    orgurl = "{{ path('shift_amounts', { 'access': 'ajax' }) }}";
+    url = orgurl.replace("0", shift_id);
+    $.ajax({
+        beforeSend: function(req) {
+          req.setRequestHeader("Accept", "application/json");
+        },
+        url: url,
+        type: "GET",
+        async: true,
+        dataType: 'json',
+      }).done( function( cont, textStatus, xhr ) {
+        sa = cont.shiftamounts;
+        for(var key in sa) {
+            counter_id = "#shift_counter_" + key + "_" + shift_id;
+            $( counter_id ).text(sa[key]);
+        };
+    });
+    return false;
+}
+
 </script>
 <div id="editShift">
 </div>

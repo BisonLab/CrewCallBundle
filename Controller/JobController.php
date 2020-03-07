@@ -91,7 +91,14 @@ class JobController extends CommonController
         $em->flush($job);
 
         if ($this->isRest($access)) {
-            return new JsonResponse(array("status" => "OK"), Response::HTTP_CREATED);
+            $shiftamounts = $job->getShift()->getJobsAmountByState();
+            $shiftamounts['amount'] = $job->getShift()->getAmount();
+            $shiftamounts['booked'] = $job->getShift()->getBookedAmount();
+            $shiftamounts['needing'] = $job->getShift()->getBookedAmount() - $job->getShift()->getBookedAmount();
+            return new JsonResponse([
+                "status" => "OK",
+                "shiftamounts" => $shiftamounts
+                ], Response::HTTP_CREATED);
         } else { 
             return $this->redirectToRoute('shift_show', array('id' => $job->getShift()->getId()));
         }

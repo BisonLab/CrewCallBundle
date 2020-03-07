@@ -150,15 +150,9 @@
             {% endif %}
             </td>
             <td id="buttons_{{ job.id }}" align="right">
-            {% if job.state == "CONFIRMED" %}
-              <a role="button" class="btn-sm btn-danger" href="#" onClick="return setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
-            {% elseif job.state == "ASSIGNED" %}
-              <a role="button" class="btn-sm ccConfirmed" href="#" onClick="return setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
-              <a role="button" class="btn-sm btn-danger" href="#" onClick="return setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
-            {% else %}
-              <a role="button" class="btn-sm ccConfirmed" href="#" onClick="return setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
-              <a role="button" class="btn-sm ccAssigned" href="#" onClick="return setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
-            {% endif %}
+              <a id="job_toggle_CONFIRMED_{{ job.id }}" role="button" class="btn-sm ccConfirmed" {% if job.state == "CONFIRMED" %}style="display: none;"{% endif %}" href="#" onClick="return setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
+              <a id="job_toggle_ASSIGNED_{{ job.id }}" role="button" class="btn-sm ccAssigned" {% if job.state == "ASSIGNED" %}style="display: none;"{% endif %}" href="#" onClick="return setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
+              <a id="job_toggle_INTERESTED_{{ job.id }}" role="button" class="btn-sm btn-danger" {% if job.state == "INTERESTED" %}style="display: none;"{% endif %}" href="#" onClick="return setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
             </td>
         </tr>
     {% endfor %}

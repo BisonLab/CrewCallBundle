@@ -227,6 +227,24 @@ class ShiftController extends CommonController
     }
 
     /**
+     * Very simple, but useful.
+     *
+     * @Route("/{id}/amounts", name="shift_amounts", defaults={"id" = 0}, methods={"GET"})
+     */
+    public function amountsAction(Shift $shift)
+    {
+        $shiftamounts            = $shift->getJobsAmountByState();
+        $shiftamounts['amount']  = $shift->getAmount();
+        $shiftamounts['booked']  = $shift->getBookedAmount();
+        $shiftamounts['needing'] = $shift->getBookedAmount() - $shift->getBookedAmount();
+
+        return new JsonResponse([
+            "status" => "OK",
+            "shiftamounts" => $shiftamounts
+            ], Response::HTTP_CREATED);
+    }
+
+    /**
      * Sends messages to a batch of persons.
      *
      * @Route("/{id}/send_message", name="shift_send_message", methods={"POST"})

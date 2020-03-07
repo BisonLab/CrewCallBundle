@@ -79,7 +79,6 @@ $(document).ready(function() {
                 },
                 error: function(data)
                 {
-                    console.log(data);
                     alert("Failed sending SMS.\n" + data.responseText);
                     $("#personMessageModal").modal("hide");
                     document.getElementById("person_message_form").reset();

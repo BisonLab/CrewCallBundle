@@ -38,6 +38,17 @@ function hideJobList(shift_id) {
     return false;
 }
 
+function toggleJobButtons(job_id, to_state) {
+    ['CONFIRMED', 'ASSIGNED', 'INTERESTED'].forEach(function (state) {
+        button_id = "#job_toggle_" + state + "_" + job_id;
+        if (state == to_state) {
+            $( button_id ).hide();
+        } else {
+            $( button_id ).show();
+        }
+    });
+}
+
 function setStateOnJob(job_id, state, shift_id, force = false) {
     cheat_url = "{{ path('job_state', { 'id': 0, 'state': 'NONE', 'access': 'ajax' }) }}";
     c_url = cheat_url.replace("0", job_id);
@@ -52,9 +63,11 @@ function setStateOnJob(job_id, state, shift_id, force = false) {
         url: url,
         type: "POST",
         async: true,
+        dataType: 'json',
       }).done( function( cont, textStatus, xhr ) {
-        // Gotta recount
-        parent.location.reload();
+        recountShift(shift_id);
+        toggleJobButtons(job_id, state);
+        return false;
       }).fail(function(xhr, status, error) {
             if (xhr.status == 409) {
                 warning = "Warning!\n\n";
@@ -67,7 +80,7 @@ function setStateOnJob(job_id, state, shift_id, force = false) {
                 errmsg = "Failed setting state!\n";
                 errmsg = errmsg + xhr.responseText + "\n";
                 alert(errmsg);
-                parent.location.reload();
+                return false;
             }
     });
     return false;
@@ -100,7 +113,9 @@ function grabNewJobForm(shift_id, already_added = false) {
         }
         $( "#jobModal" ).modal('show');
 
-        $( "#jobModalCloseButton" ).click(function(){ parent.location.reload(); });
+        {# Trying to do without 
+            $( "#jobModalCloseButton" ).click(function(){ parent.location.reload(); });
+        #}
 
         $( "#newJobForm #crewcallbundle_job_person" ).autocomplete("option", "appendTo", "#newJobForm");
     });
@@ -133,8 +148,10 @@ function submitNewJobForm(shift_id, force = false) {
       }).done( function( cont, textStatus, xhr ) {
             if (xhr.status == 201) {
                 if ($btn.is('[id]') && $btn.attr("id") == "submitNewJobClose") {
-                    // Gotta reload. Easiest way to recount everything.
-                    parent.location.reload();
+                    grabJobList(shift_id);
+                    recountShift(shift_id);
+                    $( "#jobModal" ).modal('hide');
+                    return false; 
                 } else {
                     aahtml = "";
                     if (already_added.search("Already") < 0) {
@@ -155,7 +172,8 @@ function submitNewJobForm(shift_id, force = false) {
                 if (result) {
                     submitNewJobForm(shift_id, true);
                 } else {
-                    parent.location.reload();
+                    $( "#jobModalBody" ).hide();
+                    return false;
                 }
             } else {
                 errmsg = "Failed adding new job!\n";
