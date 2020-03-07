@@ -320,7 +320,7 @@ class UserFrontController extends CommonController
         if (!$state || $state == 'CONFIRMED') {
             $retarr['confirmed'] = $this->jobsForPersonAsArray($user, [
                 'from' => $from, 'to' => $to,
-                'booked' => true]);
+                'state' => 'CONFIRMED']);
             $retarr['confirmed_count'] = count($retarr['confirmed']);
         }
 
