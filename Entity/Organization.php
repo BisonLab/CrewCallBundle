@@ -377,6 +377,7 @@ class Organization
         if ($sort_order == "ASC") {
             $iterator = $this->events->getIterator();
             $iterator->uasort(function ($a, $b) {
+                if ($a->getStart()->format("U") == $b->getStart()->format("U")) return 0;
                 return ($a->getStart()->format("U") < $b->getStart()->format("U")) ? -1 : 1;
             });
             return new ArrayCollection(iterator_to_array($iterator));
@@ -384,6 +385,7 @@ class Organization
         if ($sort_order == "DESC") {
             $iterator = $this->events->getIterator();
             $iterator->uasort(function ($a, $b) {
+                if ($a->getStart()->format("U") == $b->getStart()->format("U")) return 0;
                 return ($a->getStart()->format("U") > $b->getStart()->format("U")) ? -1 : 1;
             });
             return new ArrayCollection(iterator_to_array($iterator));

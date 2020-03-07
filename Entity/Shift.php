@@ -317,6 +317,26 @@ class Shift
                 continue;
             $jobs->add($job);
         }
+
+        if (isset($filter['sort_by'])) {
+            $iterator = $jobs->getIterator();
+            $iterator->uasort(function ($a, $b) use ($filter) {
+                if ($filter['sort_by'] == 'last_name') {
+                    return strcasecmp($a->getPerson()->getLastName(), $b->getPerson()->getLastName());
+                }
+                if ($filter['sort_by'] == 'first_name') {
+                    return strcasecmp($a->getPerson()->getFirstName(), $b->getPerson()->getFirstName());
+                }
+                if ($filter['sort_by'] == 'name') {
+                    return strcasecmp($a->getPerson()->getName(), $b->getPerson()->getName());
+                }
+                if ($filter['sort_by'] == 'username') {
+                    return strcasecmp($a->getPerson()->getUserName(), $b->getPerson()->getUserName());
+                }
+            });
+            return new ArrayCollection(iterator_to_array($iterator));
+        }
+
         return $jobs;
     }
 
