@@ -62,9 +62,8 @@ function openMessageToEventModal(object, object_id) {
 function openAddContact(event_id) {
 
     /* Yet another way to do this. Gotta standardize some day. */
-    $( "#addContactInfoForm" ).submit(function( event ) {
+    $( "#addContactForm" ).submit(function( event ) {
         event.preventDefault();
-        parent.location.reload();
         url = "{{ path('event_add_contact', {'access': 'ajax', 'id': "XXX" }) }}".replace("XXX", event_id);
         addContactFormData = $( "#addContactForm" ).serialize();
         $.ajax({

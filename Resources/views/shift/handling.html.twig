@@ -177,7 +177,14 @@ function deleteShift(shift_id) {
         async: true,
       }).done( function( cont, textStatus, xhr ) {
             if (xhr.status == 200) {
-                parent.location.reload();
+                srid = "#shiftRow_" + shift_id;
+                if ( $( srid ).length) {
+                    $( srid).remove();
+                    $( "#jobList_" + shift_id).remove();
+                    return false;
+                } else {
+                    parent.location.reload();
+                }
             }
       }).fail(function(xhr, status, error) {
             errmsg = "Deleting the shift failed\n";
