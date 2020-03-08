@@ -25,7 +25,6 @@
 </div>
 {{ form_end(mailform) }}
 
-
 </div>
 <div class="printableContent">
 {% include 'CrewCallBundle:event:_printable.html.twig' %}
@@ -36,6 +35,9 @@ $(document).ready(function() {
     {% for check, checked in prcols %}
     checkChecked("{{ check }}");
     {% endfor %}
+    {% if message is defined %}
+    alert("{{ message }}");
+    {% endif %}
 });
 </script>
 

@@ -525,7 +525,7 @@ class EventController extends CommonController
     /**
      * Finds and displays a event entity.
      *
-     * @Route("/{id}/show", name="event_send_as_mail", methods={"POST"})
+     * @Route("/{id}/send_mail", name="event_send_as_mail", methods={"POST"})
      */
     public function sendMailAction(Request $request, Event $event)
     {
@@ -568,6 +568,7 @@ class EventController extends CommonController
                     'external_id' => $event->getId()
                 ]
             );
+            $params['message'] = "Mail sendt to " . $fd['email'];
         }
 
         $params['all'] = true;
