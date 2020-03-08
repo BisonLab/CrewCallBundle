@@ -159,40 +159,41 @@
 <div class="col-sm-8" id="personRight">
 
 <div class="tabbable" id="rightTabMenu">
-    <ul class="nav nav-tabs">
-    <li class="active">
+  <ul class="nav nav-tabs">
+    <li class="active personJobsTab">
     <a href="#jobstab" data-toggle="tab">Jobs</a>
     </li>
-    <li>
+    <li class="personCalendarTab">
     <a href="#caltab" data-toggle="tab">Calendar</a>
     </li>
-    <li>
+    <li class="personNotesTab">
     <a href="#notestab" data-toggle="tab">Notes</a>
     </li>
-    <li>
+    <li class="personMessagesTab">
     <a href="#messagestab" data-toggle="tab">Messages</a>
     </li>
-    <li>
+    <li class="personFilesTab">
     <a href="#filestab" data-toggle="tab">Files</a>
     </li>
-    <li>
+    <li class="personFunctionsTab">
     <a href="#functab" data-toggle="tab" onClick="return grabFunctionPickerTab();">Manage functions</a>
     </li>
-<!--
-    <li>
+{#
+    <li class="personOrganizationsTab">
     <a href="#orgstab" data-toggle="tab"  onClick="return grabOrganizationPickerTab();">Manage organizations</a>
     </li>
--->
-    <li>
+#}
+    <li class="personHoursTab">
     <a href="#hourstab" data-toggle="tab"  onClick="return grabJobLogSummary();">Hours</a>
     </li>
-    <li>
-    <a href="#absencetab" data-toggle="tab"  onClick="return grabJobLogSummary();">Absence</a>
+    <li class="personAbsenceTab">
+    <a href="#absencetab" data-toggle="tab">Absence</a>
     </li>
-    </ul>
+{% include 'CustomBundle:person:_custom_navtabs.html.twig' ignore missing %}
+  </ul>
 
 <div class="tab-content ">
-  <div class="tab-pane active" id="jobstab">
+  <div class="tab-pane personJobsTab active" id="jobstab">
 {% set jobs = cc_jobs.jobsforperson(person, {'all': true, 'from': 'now'}) %}
     <table class="table table-striped  table-sm">
     <thead class="thead-inverse">
@@ -255,16 +256,16 @@
     {% endfor %}
     </tbody>
     </table>
-  </div>
+  </div><!-- jobstab -->
 
   <!-- TODO: Make this click-loadable as with the functab -->
-  <div class="tab-pane" id="caltab">
+  <div class="tab-pane personCalendarTab" id="caltab">
     <br>
 {% set calendar_load_url = path('person_calendar', {'id': person.id, 'access': 'ajax'}) %}
 {% include 'CrewCallBundle::_calendar.html.twig' with { 'calendar_load_url': calendar_load_url}  %}
-  </div>
+  </div><!-- caltab -->
 
-  <div class="tab-pane" id="notestab">
+  <div class="tab-pane personNotesTab" id="notestab">
     <div class="adminpersonnote">
     <p>
     {% set mconf = {'mconfig': {
@@ -344,7 +345,7 @@
 
   </div><!-- notestab -->
 
-  <div class="tab-pane" id="messagestab">
+  <div class="tab-pane personMessagesTab" id="messagestab">
     <br>
 
 {% set bulkcriterias = {
@@ -364,7 +365,7 @@
 
   </div><!-- messagestab -->
 
-  <div class="tab-pane" id="filestab">
+  <div class="tab-pane personFilesTab" id="filestab">
     <p>
     {% set sfconf = {'sfconfig': {
             'file_type': "AUTO",
@@ -387,21 +388,21 @@
         'external_id': person.id
       } %}
     {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
-  </div>
+  </div><!-- filestab -->
 
-  <div class="tab-pane" id="functab">
-  </div>
+  <div class="tab-pane personFunctionsTab" id="functab">
+  </div><!-- functab -->
 
-<!--
-  <div class="tab-pane" id="orgstab">
+{#
+  <div class="tab-pane personOrganizationsTab" id="orgstab">
     <p>To be done</p>
-  </div>
--->
+  </div><!-- orgstab -->
+ #}
 
-  <div class="tab-pane" id="hourstab">
-  </div>
+  <div class="tab-pane personHoursTab" id="hourstab">
+  </div><!-- hourstab -->
 
-  <div class="tab-pane" id="absencetab">
+  <div class="tab-pane personAbsenceTab" id="absencetab">
     <p>
     <div id="change_state_popover" class="hidden">
     <a href="#" id="stateChangeLink" onClick="return openStateChange();" class="btn btn-sm btn-dark">Add</a><br>
@@ -423,10 +424,13 @@
     <h3>Add</h3>
     {{ form(state_form) }}
 
-   </div>
+  </div><!-- absencetab -->
 
-  </div>
-</div>
+{% include 'CustomBundle:person:_custom_tabcontent.html.twig' ignore missing %}
+
+ </div><!-- tab-content -->
+
+</div><!-- Tabbable -->
 
 <!--
 
@@ -448,6 +452,7 @@ function grabFunctionPickerTab() {
     return false;
 }
 
+{#
 function grabOrganizationPickerTab() {
     return false;
 
@@ -463,6 +468,7 @@ function grabOrganizationPickerTab() {
     });
     return false;
 }
+#}
 
 function grabJobLogSummary() {
     if ($( "#hourstab div" ).length > 1) {

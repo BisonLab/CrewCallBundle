@@ -79,13 +79,13 @@
 
 <div class="col-sm-9 tabbable" id="eventRight">
   <ul id="tabRight" class="nav nav-tabs">
-  <li class="active">
+  <li class="active locationEventsTab">
   <a href="#eventstab" data-toggle="tab">Events</a>
   </li>
-  <li>
+  <li class="locationNotesTab">
   <a href="#notestab" data-toggle="tab">Notes</a>
   </li>
-  <li>
+  <li class="locationFilesTab">
   <a href="#filestab" data-toggle="tab">Files</a>
   </li>
   <li class="locationPeopleTab">
@@ -94,11 +94,11 @@
   </ul>
 
 <div class="tab-content">
-    <div class="tab-pane active" id="eventstab">
+    <div class="tab-pane active locationEventsTab" id="eventstab">
     {% include 'CrewCallBundle:event:_index.html.twig' with { 'events': location.events('ASC'), 'sorted': true, 'past': true, 'upcoming': false } %}
     </div>
 
-    <div class="tab-pane" id="notestab">
+    <div class="tab-pane locationNotesTab" id="notestab">
 
      <div class="loc_contactinfo">
       <p>
@@ -164,7 +164,7 @@
     {% endfor %}
   </div>
 
-  <div class="tab-pane" id="filestab">
+  <div class="tab-pane locationFilesTab" id="filestab">
     <br>
     {% set sfconf = {'sfconfig': {
             'file_type': "AUTO",
@@ -228,8 +228,11 @@
     </tbody>
   </table>
  </div>
- </div>
-</div>
+{% include 'CustomBundle:location:_custom_tabcontent.html.twig' ignore missing %}
+
+ </div><!-- tab-content -->
+
+</div><!-- Tabbable -->
 
 
 {% endblock %}
