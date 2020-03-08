@@ -42,7 +42,7 @@ class JobController extends CommonController
         if (!$shift)
             return $this->returnNotFound($request, 'No shift to tie the jobs to');
 
-        $jobs = $shift->getJobs();
+        $jobs = $shift->getJobs(['sort_by' => 'last_name']);
         $sos = $shift->getShiftOrganizations();
         if ($this->isRest($access)) {
             return $this->render('job/_index.html.twig', array(
