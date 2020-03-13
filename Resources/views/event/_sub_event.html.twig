@@ -121,7 +121,7 @@
             <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
             {{ form_start(mdelform) }}
             {{ form_rest(mdelform) }}
-            <strong>{{ note.subject }}</strong> ({{ note.messagetype }}{% if note.to is not empty %} to {{ note.to}}{% endif %}) {{ note.createdAt | date('Y-m-d') }} - {{ note.createdBy }}
+        <strong>{{ note.subject }}</strong> (<a href="#" title="{{ note.messagetype.description }}">{{ note.messagetype }}</a>{% if note.to is not empty %} to {{ note.to}}{% endif %}) {{ note.createdAt | date('Y-m-d') }} - {{ note.createdBy }}
             <button type="submit" class="btn btn-link"> <span class="remove_glyph" type="submit" name="submit" value="Delete"></span></button>
             </form>
             <pre>{{ note.body }}</pre>
@@ -176,7 +176,7 @@
             <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
             {{ form_start(mdelform) }}
             {{ form_rest(mdelform) }}
-            {{ note.messagetype }}
+            <a href="#" title="{{ note.messagetype.description }}">{{ note.messagetype }}</a>
             <button type="submit" class="btn btn-link"> <span class="remove_glyph" type="submit" name="submit" value="Delete"></span></button>
             </form>
             <ul>
