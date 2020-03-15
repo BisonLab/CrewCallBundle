@@ -150,17 +150,19 @@
         }
     %}
     {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
-        <strong>{{ note.subject }}</strong><br>
+    <div id="sakonninmessage_{{ note.id }}">
+        {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
+        <form id="deletemessageform_{{ note.id }}" onSubmit="return deleteMessage({{ note.id }});">
+        {{ form_start(mdelform) }}
+        {{ form_rest(mdelform) }}
+        <strong>{{ note.subject }}</strong> (<a href="#" title="{{ note.messagetype.description }}">{{ note.messagetype }}</a>{% if note.to is not empty %} to {{ note.to}}{% endif %}) {{ note.createdAt | date('Y-m-d') }} - {{ note.createdBy }}
+        <a href="#" onClick="return grabEditMessageForm({{ note.id }});"><span class="glyphicon glyphicon-pencil"></span></a>
+        <button type="submit" class="btn btn-link">
+        <span class="remove_glyph"></span>
+        </button>
+        </form>
         <pre>{{ note.body }}</pre>
-    {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
-    <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
-    <a href="#" onClick="return grabEditMessageForm({{ note.id }});"><span class="glyphicon glyphicon-pencil"></span></a>
-    {{ form_start(mdelform) }}
-    {{ form_rest(mdelform) }}
-    <button type="submit" class="btn btn-link">
-    <span class="glyphicon glyphicon-trash"></span>
-    </button>
-    </form>
+    </div>
     {% endfor %}
   </div>
 

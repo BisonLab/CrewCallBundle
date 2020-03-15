@@ -73,13 +73,26 @@
             <a tabindex="0" href="#" title="Person Summary" id="popSummary_person_{{ job.person.id }}{{ job.id}}" onClick="return popSummary('person', {{ job.person.id }},{{ job.id}});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
             <a tabindex="0" href="#" title="Jobs" id="popSummary_person_jobs_{{ job.person.id }}{{ job.id }}" onClick="return popPersonJobs({{ job.person.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
     {% set mlogcontext = {
+                'message_group': 'Messages',
                 'system': 'crewcall',
                 'object_name': 'person',
                 'external_id': job.person.id
         }
     %}
-    {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-            <a href="#" title="Messages and Notes" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-envelope"></span></a>
+    {% set mlmessages = sakonnin_messages.MessagesForContext(mlogcontext) %}
+    {% if mlmessages | length > 0 %}
+            <a href="#" title="Person Notes" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id, 'criterias': {'message_group': 'Messages' }}) }}', 'Messages for {{ job.person }}')"><span style="font-size: 15px" class="glyphicon glyphicon-envelope"></span></a>
+    {% endif %}
+    {% set pncontext = {
+                'message_group': 'Notes',
+                'system': 'crewcall',
+                'object_name': 'person',
+                'external_id': job.person.id
+        }
+    %}
+    {% set jnotes = sakonnin_messages.MessagesForContext(pncontext) %}
+    {% if jnotes | length > 0 %}
+            <a href="#" title="Job Notes" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': pncontext.system, 'object_name': pncontext.object_name, 'external_id': pncontext.external_id, 'criterias': {'message_group': 'Notes' }}) }}', 'Notes about {{ job.person }}')"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
     {% endif %}
           </td>
             {% set reason = job.person.occupied({'reasons': true}) %}
@@ -121,20 +134,37 @@
  </td>
 {% endfor %}
             <td id="jobCommentTable_{{ job.id }}">
-{% set cjobcontext = {
-            'message_types': ['JobComment'],
-            'order': 'DESC',
+    {% set cjobcontext = {
+            'message_group': 'Notes',
             'system': 'crewcall',
             'object_name': 'job',
             'external_id': job.id
-    }
-%}
+            }
+    %}
     {% set jcmessages = sakonnin_messages.MessagesForContext(cjobcontext) %}
     {% if jcmessages | length > 0 %}
-       <a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': cjobcontext.system, 'object_name': cjobcontext.object_name, 'external_id': cjobcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
+       <a href="#" title="Person Notes" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': cjobcontext.system, 'object_name': cjobcontext.object_name, 'external_id': cjobcontext.external_id, 'criterias': {'message_group': 'Notes' }}) }}', 'Notes')"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
     {% else %}
         &nbsp;
     {% endif %}
+        {% set jnconfig = {'mconfig': {
+                'formname': 'jobnote_' ~ job.id,
+                'reload_after_post': false,
+                'subject': "",
+                'to_type': "NONE",
+                'from_type': "NONE",
+                'message_type': 'AdminNote',
+                'submit': 'Save',
+                'context': {
+                    'system': 'crewcall',
+                    'object_name': 'job',
+                    'external_id': job.id
+                    }
+                }
+            }
+        %}
+        {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with jnconfig %}
+        <a href="#" onClick='return createMessage("jobnote_{{ job.id }}");' title="Add an Admin Note"><span class="glyphicon glyphicon-pencil"></span></a>
             </td>
             <td id="jobLogTable_{{ job.id }}" align="right">
             {% if job.shift.start < date() %}

@@ -40,13 +40,13 @@
     }
 %}
 {% for message in sakonnin_messages.messages(criterias) %}
+ <div id="sakonninmessage_{{ message.id}}">
  {% if is_granted('edit', message) %}
   {% set emform = sakonnin_messages.getEditForm( message, true ) %}
   {% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
   {{ cmac.print_comboedit(emform, action, message.id, message.messagetype ) }}
  {% endif %}
  {% if is_granted('show', message) %}
-   <div id="sakonninmessage_{{ message.id}}">
      <div class="noteText row">
         <div class="col-md-11">
             <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
@@ -98,7 +98,7 @@
           </li>
 <div class="hidden">
 {% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
-<form method="POST" action="{{ path('message_delete', { 'id': message.id, 'access': 'web' }) }}">
+<form id="deletemessageform_{{ message.id }}" onSubmit="return deleteMessage({{ message.id }});">
 {{ form_start(mdelform) }}
 {{ form_rest(mdelform) }}
 <input id="delcombo_{{ message.id }}" type="submit">

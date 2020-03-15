@@ -37,7 +37,7 @@
           </li>
 <div class="hidden">
 {% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
-<form method="POST" action="{{ path('message_delete', { 'id': message.id, 'access': 'web' }) }}">
+<form id="deletemessageform_{{ message.id }}" onSubmit="return deleteMessage({{ message.id }});">
 {{ form_start(mdelform) }}
 {{ form_rest(mdelform) }}
 <input id="delannounce_{{ message.id }}" type="submit">

@@ -25,7 +25,6 @@
             <tr class="event_contactinfo">
                 <th>Contact Info</th>
                 <td>
-        <p>
         {% set cicontext = {
                     'system': 'crewcall',
                     'object_name': 'event',
@@ -38,13 +37,12 @@
         {% if note.messagetype == 'Contact Info' %}
             <form method="POST" action="{{ path('message_remove_context', { 'id': mcont.id, 'access': 'web' }) }}">
             <strong>{{ note.subject }}</strong>
-            <button type="submit" class="btn btn-link"> <span class="remove_glyph" type="submit" name="submit" value="Delete"></span></button>
+            <button type="submit" class="btn btn-link"><span class="remove_glyph" type="submit" name="submit" value="Delete"></span></button>
             </form>
             <pre>{{ note.body }}</pre>
         {% endif %}
         {% endfor %}
-        </p>
-    <a href="#" id="addContactLink" onClick="return openAddContactInfo({{ event.id }});">Add Contact Info</a>
+                <a href="#" id="addContactLink" onClick="return openAddContactInfo({{ event.id }});">Add Contact Info</a>
                 </td>
             </tr>
             <tr class="event_contacts">
@@ -117,14 +115,16 @@
             }
         %}
         {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+        <div id="sakonninmessage_{{ note.id }}">
             {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
-            <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
+            <form id="deletemessageform_{{ note.id }}" onSubmit="return deleteMessage({{ note.id }});">
             {{ form_start(mdelform) }}
             {{ form_rest(mdelform) }}
-        <strong>{{ note.subject }}</strong> (<a href="#" title="{{ note.messagetype.description }}">{{ note.messagetype }}</a>{% if note.to is not empty %} to {{ note.to}}{% endif %}) {{ note.createdAt | date('Y-m-d') }} - {{ note.createdBy }}
+            <strong>{{ note.subject }}</strong> (<a href="#" title="{{ note.messagetype.description }}">{{ note.messagetype }}</a>{% if note.to is not empty %} to {{ note.to}}{% endif %}) {{ note.createdAt | date('Y-m-d') }} - {{ note.createdBy }}
             <button type="submit" class="btn btn-link"> <span class="remove_glyph" type="submit" name="submit" value="Delete"></span></button>
             </form>
             <pre>{{ note.body }}</pre>
+        </div>
         {% endfor %}
         </p>
       </div>
@@ -172,8 +172,9 @@
             }
         %}
         {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+        <div id="sakonninmessage_{{ note.id }}">
             {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
-            <form method="POST" action="{{ path('message_delete', { 'id': note.id, 'access': 'web' }) }}">
+            <form id="deletemessageform_{{ note.id }}" onSubmit="return deleteMessage({{ note.id }});">
             {{ form_start(mdelform) }}
             {{ form_rest(mdelform) }}
             <a href="#" title="{{ note.messagetype.description }}">{{ note.messagetype }}</a>
@@ -182,6 +183,7 @@
             <ul>
             <li><strong>{{ note.body }}</strong></li>
             </ul>
+        </div>
         {% endfor %}
         <br>
       </div>
