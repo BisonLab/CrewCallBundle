@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}{{ organization }}{% endblock %}
 {% block body %}
-{% include 'CrewCallBundle:organization:handling.html.twig' %}
-<div class="col-sm-3" id="orgLeft">
+{% include '@CrewCall/organization/handling.html.twig' %}
+<div class="row">
+  <div class="col-sm-4" id="orgLeft">
     <h1>{{ organization.name }}</h1>
 
     <table class="showTable">
@@ -53,13 +54,13 @@
 {% endif %}
         <tr>
           <th>
-            <a tabindex="0" href="#" title="Logs" id="popLogSummary_organization_{{ organization.id }}" onClick="return popLogSummary('organization', {{ organization.id }});" class="btn btn-sm btn-dark">Changelog</a>
+            <a tabindex="0" href="#" title="Logs" id="popLogSummary_organization_{{ organization.id }}" onClick="return popLogSummary('organization', {{ organization.id }});" class="btn-sm btn-dark">Changelog</a>
             <br>
-            <a href="{{ path('organization_edit', { 'id': organization.id }) }}" class="btn btn-sm btn-dark">Edit</a>
+            <a href="{{ path('organization_edit', { 'id': organization.id }) }}" class="btn-sm btn-dark">Edit</a>
             <br>
 {% if organization.deleteable %}
             {{ form_start(delete_form) }}
-                <input type="submit"  class="btn btn-sm btn-danger" value="Delete">
+                <input type="submit"  class="btn-sm btn-danger" value="Delete">
             {{ form_end(delete_form) }}
 {% endif %}
          </th>
@@ -70,30 +71,33 @@
 
 </div>
 
-<div class="col-sm-9 tabbable" id="eventRight">
+<div class="col-sm-8 tabbable" id="orgRight">
   <ul class="nav nav-tabs">
 
-  <li class="active organizationEventsTab">
-  <a href="#eventstab" data-toggle="tab">Events</a>
+  <li class="nav-item active organizationEventsTab">
+  <a class="nav-link" href="#eventstab" data-toggle="tab">Events</a>
   </li>
-  <li class="organizationNotesTab">
-  <a href="#notestab" data-toggle="tab">Notes</a>
+  <li class="nav-item organizationContactInfoTab">
+  <a class="nav-link" href="#contactinfotab" data-toggle="tab">Contact Info</a>
   </li>
-  <li class="organizationFilesTab">
-  <a href="#filestab" data-toggle="tab">Files</a>
+  <li class="nav-item organizationNotesTab">
+  <a class="nav-link" href="#notestab" data-toggle="tab">Notes</a>
   </li>
-  <li class="organizationPeopleTab">
-  <a href="#peopletab" data-toggle="tab">People</a>
+  <li class="nav-item organizationFilesTab">
+  <a class="nav-link" class="nav-link" href="#filestab" data-toggle="tab">Files</a>
+  </li>
+  <li class="nav-item organizationPeopleTab">
+  <a class="nav-link" href="#peopletab" data-toggle="tab">People</a>
   </li>
   </ul>
 
-<div class="tab-content ">
+  <div class="tab-content ">
 
     <div class="tab-pane active organizationEventsTab" id="eventstab">
-    {% include 'CrewCallBundle:event:_index.html.twig' with { 'events': organization.events('ASC'), 'sorted': true, 'past': true, 'upcoming': false } %}
+    {% include '@CrewCall/event/_index.html.twig' with { 'events': organization.events('ASC'), 'sorted': true, 'past': true, 'upcoming': false } %}
     </div>
 
-   <div class="tab-pane organizationNotesTab" id="notestab">
+   <div class="tab-pane organizationContactInfoTab" id="contactinfotab">
      <div class="org_contactinfo">
         <p>
         {% set ciconf = { 'mconfig': {
@@ -111,10 +115,23 @@
                 }
             }
         %}
-        {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with ciconf %}
-        <a href="#" onClick='return createMessage("org_contactinfo_form");'>Add Contact Info</a><br />
+        {% include '@BisonLabSakonnin/Message/_create_popup.html.twig' with ciconf %}
+        <a href="#" onClick='return createSakonninMessage("org_contactinfo_form");'>Add Contact Info</a><br />
         </p>
      </div>
+        {% set mlogcontext = {
+                    'system': 'crewcall',
+                    'object_name': 'organization',
+                    'message_type': 'Contact Info',
+                    'external_id': organization.id
+            }
+        %}
+        {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
+            {% include '@CrewCall/_note.html.twig' %}
+        {% endfor %}
+  </div><!-- End Contact Info Tab -->
+
+   <div class="tab-pane organizationNotesTab" id="notestab">
      <div class="org_adminnote">
         <p>
         {% set mconf = { 'mconfig': {
@@ -132,31 +149,19 @@
                 }
             }
         %}
-        {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <a href="#" onClick='return createMessage("organizationnote");'>Add a note for admins</a><br />
+        {% include '@BisonLabSakonnin/Message/_create_popup.html.twig' with mconf %}
+        <a href="#" onClick='return createSakonninMessage("organizationnote");'>Add a note for admins</a><br />
         </p>
      </div>
         {% set mlogcontext = {
                     'system': 'crewcall',
                     'object_name': 'organization',
-                    'message_group': 'Notes',
+                    'message_type': 'AdminNote',
                     'external_id': organization.id
             }
         %}
         {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
-        <div id="sakonninmessage_{{ note.id }}">
-            {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
-            <form id="deletemessageform_{{ note.id }}" onSubmit="return deleteMessage({{ note.id }});">
-            {{ form_start(mdelform) }}
-            {{ form_rest(mdelform) }}
-            <strong>{{ note.subject }}</strong> (<a href="#" title="{{ note.messagetype.description }}">{{ note.messagetype }}</a>{% if note.to is not empty %} to {{ note.to}}{% endif %}) {{ note.createdAt | date('Y-m-d') }} - {{ note.createdBy }}
-            <a href="#" onClick="return grabEditMessageForm({{ note.id }});"><span class="glyphicon glyphicon-pencil"></span></a>
-            <button type="submit" class="btn btn-link">
-            <span class="remove_glyph"></span>
-            </button>
-            </form>
-            <pre>{{ note.body }}</pre>
-        </div>
+            {% include '@CrewCall/_note.html.twig' %}
         {% endfor %}
     </div>
 
@@ -173,8 +178,8 @@
                 }
             }
         %}
-        {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-          <a href="#" onClick="return uploadFile();">Add a file</a><br />
+        {% include '@BisonLabSakonnin/SakonninFile/_create_popup.html.twig' with sfconf %}
+          <a href="#" onClick="return uploadSakonninFile();">Add a file</a><br />
         </p>
         {% set filecontext = {
                 'system': 'crewcall',
@@ -182,13 +187,13 @@
                 'external_id': organization.id
             }
         %}
-        {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
+        {% include '@CrewCall/_files.html.twig' with filecontext %}
     </div>
 
     <div class="tab-pane organizationPeopleTab" id="peopletab">
       <p>
       <div id="addExistingPerson" style="float: left">
-      <a href="#" onClick="return grabAddExistingPersonForm();" class="btn btn-sm btn-dark">Add person</a>
+      <a href="#" onClick="return grabAddExistingPersonForm();" class="btn-sm btn-dark">Add person</a>
       </div>
       </p>
     
@@ -222,10 +227,8 @@
     </tbody>
   </table>
   </div>
-{% include 'CustomBundle:organization:_custom_tabcontent.html.twig' ignore missing %}
-
- </div><!-- tab-content -->
-
-</div><!-- Tabbable -->
-
+{% include '@Custom/organization/_custom_tabcontent.html.twig' ignore missing %}
+  </div><!-- tab-content -->
+ </div><!-- Tabbable -->
+</div><!-- End Row -->
 {% endblock %}

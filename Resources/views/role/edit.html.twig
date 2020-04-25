@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}Edit {{ role }}{% endblock %}
 {% block body %}
     <h1>Edit {{ role.name }}</h1>
 
@@ -8,7 +8,7 @@
         <input type="submit" value="Save" />
     {{ form_end(edit_form) }}
 
-    <a href="{{ path('role_show', {'id': role.id}) }}" class="btn btn-sm btn-dark">Cancel</a>
+    <a href="{{ path('role_show', {'id': role.id}) }}" class="btn-sm btn-dark">Cancel</a>
     {{ form_start(delete_form) }}
         <input type="submit" value="Delete">
     {{ form_end(delete_form) }}

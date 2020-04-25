@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}Functions{% endblock %}
-
 {% block body %}
-
     <div class="row">
     <div class="col-sm-6">
 {% if function_type_plural is defined %}
@@ -12,13 +10,13 @@
 {% endif %}
 
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
     </div>
-    <div class="col-sm-1" style="margin-top: 10px;">
+    <div class="col-sm-2 ml-auto">
 {% if function_type is defined %}
-    <a href="{{ path('function_new', {'function_type': function_type}) }}" class="btn btn-sm btn-dark">New {{ function_type_label }}</a>
+    <a href="{{ path('function_new', {'function_type': function_type}) }}" class="btn-sm btn-dark">New {{ function_type_label }}</a>
 {% else %}
-    <a href="{{ path('function_new') }}" class="btn btn-sm btn-dark">New Function</a>
+    <a href="{{ path('function_new') }}" class="btn-sm btn-dark">New Function</a>
 {% endif %}
     </div>
     </div>

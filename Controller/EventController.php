@@ -235,9 +235,11 @@ class EventController extends CommonController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $event->setState($state);
+dump($event);
             $em = $this->getDoctrine()->getManager();
             $em->flush();
         }
+throw new Nei();
         if ($this->isRest($access)) {
             return new Response("OK", Response::HTTP_OK);
         }

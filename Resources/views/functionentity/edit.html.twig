@@ -1,14 +1,14 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}Edit {{ functionEntity }}{% endblock %}
 {% block body %}
     <h1>Edit {{ functionEntity.name }}</h1>
 
     {{ form_start(edit_form) }}
         {{ form_widget(edit_form) }}
-        <input class="btn btn-sm btn-dark" type="submit" value="Save" />
+        <input class="btn-sm btn-dark" type="submit" value="Save" />
     {{ form_end(edit_form) }}
 
-    <a href="{{ path('function_show', {'id': functionEntity.id}) }}" class="btn btn-sm btn-dark">Cancel</a>
+    <a href="{{ path('function_show', {'id': functionEntity.id}) }}" class="btn-sm btn-dark">Cancel</a>
     {{ form_start(delete_form) }}
         <input class="btn-sm btn-danger" type="submit" value="Delete">
     {{ form_end(delete_form) }}

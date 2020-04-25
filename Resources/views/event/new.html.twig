@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}New Event{% endif %}
 {% block body %}
 <script>
 $(document).ready(function() {
@@ -32,7 +33,7 @@ $(document).ready(function() {
     {{ form_start(form) }}
 {% endif %}
         {{ form_widget(form) }}
-        <input class="btn btn-sm btn-dark" type="submit" value="Create"/>
+        <input class="btn-sm btn-dark" type="submit" value="Create"/>
     {{ form_end(form) }}
-    <a href="{{ path('event_index') }}" class="btn btn-sm btn-dark">Cancel</a>
+    <a href="{{ path('event_index') }}" class="btn-sm btn-dark">Cancel</a>
 {% endblock %}

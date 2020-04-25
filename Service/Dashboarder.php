@@ -56,6 +56,15 @@ class Dashboarder
             } else {
                 continue;
             }
+            /*
+             * Cheap and ugly trick.
+             */
+            if ($dash['cols'] == 0) {
+                $last = array_pop($dashboards);
+                $last['no_end'] = true;
+                $dashboards[] = $last;
+                $dash['no_start'] = true;
+            }
             $dashboards[] = $dash;
         }
         return $dashboards;

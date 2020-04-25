@@ -1,31 +1,5 @@
 <script>
 
-/*
- * This is for notes without a subject.
- * It uses the submit and modal from sakonnin.
- */
-function grabEditNoteForm(message_id, title = "Edit Note", reload_after_post = false) {
-    orgurl = "{{ path('message_edit', {'id': 0, 'access': 'ajax' }) }}";
-    url = orgurl.replace("0", message_id);
-    $.get(url, function( data ) {
-        $( "#editMessageModalBody" ).html(data);
-        $( "#editMessageModalTitle" ).html(title);
-        $( "#editMessageForm #message_data_state").prev().hide();
-        $( "#editMessageForm #message_data_state").hide();
-        $( "#editMessageForm #message_data_subject").prev().hide();
-        $( "#editMessageForm #message_data_subject").hide();
-        $( "#editMessageForm #message_data_expire_at").prev().hide();
-        $( "#editMessageForm #message_data_expire_at").hide();
-
-        $( "#editMessageModal" ).modal();
-        $( "#editMessageForm" ).submit(function( event ) {
-            event.preventDefault();
-            submitEditMessageForm(message_id, reload_after_post);
-        });
-    });
-    return false;
-}
-
 function addCheckReply(message_id, message_type, state) {
     message_data = { 
         'in_reply_to': message_id,

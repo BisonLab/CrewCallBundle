@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}{{ functionEntity }}{% endblock %}
 {% block body %}
     <h1>{{ functionEntity }}</h1>
 
-<div class="col-sm-4">
+<div class="row">
+  <div class="col-sm-4">
     <table class="showTable">
         <tbody>
             <tr>
@@ -20,10 +21,10 @@
             </tr>
             <tr>
              <th>
-                <a href="{{ path('function_edit', { 'id': functionEntity.id }) }}"  class="btn btn-sm btn-dark">Edit</a>
+                <a href="{{ path('function_edit', { 'id': functionEntity.id }) }}"  class="btn-sm btn-dark">Edit</a>
                 <br>
                 {{ form_start(delete_form) }}
-                    <input class="btn btn-sm btn-danger" type="submit" value="Delete">
+                    <input class="btn-sm btn-danger" type="submit" value="Delete">
                 {{ form_end(delete_form) }}
              </th>
              <td>&nbsp</td>
@@ -33,9 +34,10 @@
 </div>
 
 <div class="col-sm-8 tabbable" id="eventRight">
+
   <ul id="tabRight" class="nav nav-tabs">
-  <li class="active">
-  <a href="#peopletab" data-toggle="tab">People</a>
+  <li class="nav-item">
+  <a class="nav-link" href="#peopletab" data-toggle="tab">People</a>
   </li>
   </ul>
 
@@ -65,5 +67,6 @@
     </table>
     </div>
   </div>
-</div>
+ </div>
+</div><!-- End Row -->
 {% endblock %}

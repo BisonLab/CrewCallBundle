@@ -5,14 +5,8 @@ $(document).ready(function() {
     $( ".jobList" ).each(function() {
         $(this).hide();
     });
-    // Then, do we have any wishes about open job lists?
-    var jobhash = document.location.hash;
-    if (jobhash.match("jobList")) {
-        shifts = jobhash.replace("#jobList_", "").split(",");
-        shifts.forEach(function(shift_id){
-            grabJobList(shift_id);
-        });
-    }
+    // Had a "Grab job lists" function here, but it should be enough
+    // having this in event/handling ready ( handleJobLists() ) 
 });
 
 function grabShiftList(event_id) {
@@ -224,8 +218,8 @@ function recountShift(shift_id) {
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
+        <h4 class="modal-title" id="shiftModalTitle"></h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-         <h4 class="modal-title" id="shiftModalTitle"></h4>
       </div>
       <div class="modal-body" id="shiftModalBody">
       </div>

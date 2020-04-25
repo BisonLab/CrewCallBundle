@@ -3,8 +3,8 @@
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
+        <h4 class="modal-title" id="personModalTitle"></h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>               
-         <h4 class="modal-title" id="personModalTitle"></h4>
       </div>    
       <div class="modal-body" id="personModalBody">
       </div>
@@ -18,8 +18,8 @@
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>               
         <h4 class="modal-title" id="personMessageModalTitle">Send Message</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>               
       </div>    
       <div id="personmessage_modal" class="modal-body">
             <form id="person_message_form" method="POST">
@@ -28,7 +28,7 @@
             <div class="bulkmessageradio"><input type="radio" value="BULKMAIL" name="message_type">Email only</input><br></div>
             <div class="bulkmessageradio"><input type="radio" value="BULKALL" name="message_type">SMS and Email</input><br></div>
 
-            <input class="btn btn-sm btn-dark" id="sendPersonMessage" type="submit" name="submit" value="Send">
+            <input class="btn-sm btn-dark" id="sendPersonMessage" type="submit" name="submit" value="Send">
             </form>
       </div>
     </div>

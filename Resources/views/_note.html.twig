@@ -1,0 +1,14 @@
+  <div id="sakonninmessage_{{ note.id }}">
+    {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
+    <form id="deletemessageform_{{ note.id }}" onSubmit="return deleteSakonninMessage({{ note.id }});">
+    <strong id="sakonninmessagesubject_{{ note.id }}">{{ note.subject }}</strong>
+    (<a href="#" title="{{ note.messagetype.description }}">{{ note.messagetype }}</a> by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}) {% if note.expireat %}Expires {{ note.expireat | date('Y-m-d') }}{% endif %})
+    {{ form_start(mdelform) }}
+    {{ form_rest(mdelform) }}
+    <button type="submit" class="btn btn-link">
+    <span class="remove_glyph"></span>
+    </button>
+    <a href="#" onClick="return grabEditSakonninMessageForm({{ note.id }});"><span class="glyphicon glyphicon-pencil"></span></a>
+    </form>
+    <pre class="noteText" id="sakonninmessagebody_{{ note.id }}">{{ note.body }}</pre>
+  </div>

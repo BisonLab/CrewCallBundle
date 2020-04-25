@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}{{ role }}{% endblock %}
 {% block body %}
     <h1>{{ role }}</h1>
 
@@ -15,10 +15,10 @@
             </tr>
             <tr>
               <th>
-                <a href="{{ path('role_edit', { 'id': role.id }) }}"  class="btn btn-sm btn-dark">Edit</a>
+                <a href="{{ path('role_edit', { 'id': role.id }) }}"  class="btn-sm btn-dark">Edit</a>
                 <br>
             {{ form_start(delete_form) }}
-                <input class="btn btn-sm btn-danger" type="submit" value="Delete">
+                <input class="btn-sm btn-danger" type="submit" value="Delete">
             {{ form_end(delete_form) }}
                 <td>&nbsp;</td>
               </th>

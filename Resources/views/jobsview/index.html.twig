@@ -15,8 +15,8 @@
 {% import _self as fmacros %}
 
 {% block body %}
-{% include 'CrewCallBundle:jobsview:handling.html.twig' %}
-{% include 'CrewCallBundle:job:handling.html.twig' %}
+{% include '@CrewCall/jobsview/handling.html.twig' %}
+{% include '@CrewCall/job/handling.html.twig' %}
 
 <div id="jvfilters">
 <h3>Filters</h3>
@@ -88,13 +88,13 @@
 <input type="date" value="{{ date() | date("Y-m-d") }}" name="to_date"/>
 
 </form>
-<a href="#" onClick="return grabJobsViewList();"><button class="btn btn-sm btn-dark">Grab</button> </a>
+<a href="#" onClick="return grabJobsViewList();"><button class="btn-sm btn-dark">Grab</button> </a>
 {# 
 
  Handled by DataTables for now. Somehow I should hack the TODO mentioned here.
 
  TODO: Replace this with a configuration option with all the available tabe columns and show/hide/false to decide if the colums shall be available at all, shown by default or hidden.
-<a href="#" onClick="return printTableContent();"><button class="btn btn-sm btn-dark" id="printbutton">Print</button></a>
+<a href="#" onClick="return printTableContent();"><button class="btn-sm btn-dark" id="printbutton">Print</button></a>
 {% for val in ['Person', 'Mobile', 'Time', 'Event', 'Function', 'Status', 'Comments', 'Hours', 'Move', 'Select'] %}
 <input id="jvcheck_{{ val }}" type="checkbox" onClick='return checkChecked("{{ val }}");' checked>{{ val }}</input>
 {% endfor %}

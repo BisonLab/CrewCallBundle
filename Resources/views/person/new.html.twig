@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}New Person{% endblock %}
 {% block body %}
     <h1>Person creation</h1>
 
     {{ form_start(form) }}
         {{ form_widget(form) }}
-        <input class="btn btn-sm btn-dark" type="submit" value="Create" />
+        <input class="btn-sm btn-dark" type="submit" value="Create" />
     {{ form_end(form) }}
-    <a href="{{ path('person_index') }}" class="btn btn-sm btn-dark">Cancel</a><br>
+    <a href="{{ path('person_index') }}" class="btn-sm btn-dark">Cancel</a><br>
 {% endblock %}

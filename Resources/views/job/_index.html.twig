@@ -8,7 +8,7 @@
     <td>{{ elem.breakminutes }}</td>
     <td>{{ elem.workedtime }}</td>
     <td>
-    <a href="#!" id="editJobLog_{{ elem.id }}" data-html="true" onClick="return grabEditJobLogForm({{ elem.id }}, {{ elem.job.shift.id }});"><span class="glyphicon glyphicon-pencil"></span></a>
+    <a href="#!" id="editJobLog_{{ elem.id }}" data-html="true" onClick="return grabEditJobLogForm({{ elem.id }}, {{ elem.job.shift.id }});"><span class="glyphicon glyphicon-hourglass"></span></a>
     <a href="#!" id="deleteJobLog_{{ elem.id }}" data-html="true" onClick="return deleteJobLog({{ elem.id }}, {{ elem.job.shift.id }});"><span class="remove_glyph"></span></a>
     </td>
     </tr>
@@ -29,7 +29,7 @@
 {% import _self as jlmacros %}
 
 {% if jobs.count > 0 %}
-<table id="jobTableTable_{{ shift.id }}" class="table table-striped table-sm">
+<table id="jobTableTable_{{ shift.id }}" class="table table-striped-inverted table-sm">
     <thead class="thead-inverse">
         <tr>
             <th class="no-sort">
@@ -52,25 +52,9 @@
     <tbody>
     {% for job in jobs %}
         <tr>
-        {% set overjobs = cc_jobs.checkoverlapforperson(job, {'same_day': true, 'booked_only': true, 'return_jobs': true }) %}
-        {% if overjobs | length > 0 %}
-<div id="overlap_popover_content_{{ job.id }}" class="hidden">
-{% for ojob in overjobs %}
-{{ ojob.shift }} ({{ ojob.statelabel }} {{ ojob.shift.start|date('H:i') }} -> {{ ojob.shift.end|date('H:i') }})<br>
-{% endfor %}
-</div>
-            {% if job.booked %}
-            <td class="ccError" data-order="{{ shift.start | date('U')}}" >
-            {% else %}
-            <td class="ccWarn" data-order="{{ shift.start | date('U')}}" >
-            {% endif %}
-            <input class="job_list_checkbox_{{ shift.event.id }}" type="checkbox" name="job_list" value="{{ job.id }},{{ job.person.id }}">
-            <a tabindex="0" href="#" title="Overlapping Jobs" id="overlap_popover_{{ job.id }}" onClick="return popOverlap({{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-warning-sign"></span></a>
-        {% else %}
             <td>
             <input class="job_list_checkbox_{{ shift.event.id }}" type="checkbox" name="job_list" value="{{ job.id }},{{ job.person.id }}">
-        {% endif %}
-            <a tabindex="0" href="#" title="Person Summary" id="popSummary_person_{{ job.person.id }}{{ job.id}}" onClick="return popSummary('person', {{ job.person.id }},{{ job.id}});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a tabindex="0" href="#" id="popSummary_person_{{ job.person.id }}{{ job.id}}" onClick="return popSummary('person', {{ job.person.id }},{{ job.id}});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
             <a tabindex="0" href="#" title="Jobs" id="popSummary_person_jobs_{{ job.person.id }}{{ job.id }}" onClick="return popPersonJobs({{ job.person.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
     {% set mlogcontext = {
                 'message_group': 'Messages',
@@ -81,7 +65,7 @@
     %}
     {% set mlmessages = sakonnin_messages.MessagesForContext(mlogcontext) %}
     {% if mlmessages | length > 0 %}
-            <a href="#" title="Person Notes" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id, 'criterias': {'message_group': 'Messages' }}) }}', 'Messages for {{ job.person }}')"><span style="font-size: 15px" class="glyphicon glyphicon-envelope"></span></a>
+            <a href="#" title="Person Notes" onClick="return openSakonninMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id, 'criterias': {'message_group': 'Messages' }}) }}', 'Messages for {{ job.person }}')"><span style="font-size: 15px" class="glyphicon glyphicon-envelope"></span></a>
     {% endif %}
     {% set pncontext = {
                 'message_group': 'Notes',
@@ -92,8 +76,18 @@
     %}
     {% set jnotes = sakonnin_messages.MessagesForContext(pncontext) %}
     {% if jnotes | length > 0 %}
-            <a href="#" title="Job Notes" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': pncontext.system, 'object_name': pncontext.object_name, 'external_id': pncontext.external_id, 'criterias': {'message_group': 'Notes' }}) }}', 'Notes about {{ job.person }}')"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
+            <a href="#" title="Job Notes" onClick="return openSakonninMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': pncontext.system, 'object_name': pncontext.object_name, 'external_id': pncontext.external_id, 'criterias': {'message_group': 'Notes' }}) }}', 'Notes about {{ job.person }}')"><span style="font-size: 15px" class="glyphicon glyphicon-file"></span></a>
     {% endif %}
+        {% set overjobs = cc_jobs.checkoverlapforperson(job, {'same_day': true, 'booked_only': true, 'return_jobs': true }) %}
+        {% if overjobs | length > 0 %}
+<div id="overlap_popover_content_{{ job.id }}" class="d-none">
+{% for ojob in overjobs %}
+{{ ojob.shift }} ({{ ojob.statelabel }} {{ ojob.shift.start|date('H:i') }} -> {{ ojob.shift.end|date('H:i') }})<br>
+{% endfor %}
+</div>
+            <a tabindex="0" href="#" title="Overlapping Jobs" id="overlap_popover_{{ job.id }}" onClick="return popOverlap({{ job.id }});"><span style="font-size: 15px; float: right; color: {% if job.booked %}red{% else %}orange{% endif %};" class="glyphicon glyphicon-warning-sign"></span></a>
+        {% endif %}
+    
           </td>
             {% set reason = job.person.occupied({'reasons': true}) %}
             <td {% if reason %}class="ccWarn"{% endif %} data-order="{{ job.person.lastname }}">
@@ -103,7 +97,7 @@
     {% endif %}
             </td>
             <td>
-            <a tabindex="0" href="#" title="Log Summary" id="popLogSummary_job_{{ job.id }}" onClick="return popLogSummary('job', {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
+            <a tabindex="0" href="#" title="Log Summary" id="popLogSummary_job_{{ job.id }}" onClick="return popLogSummary('job', {{ job.id }});"><span class="glyphicon glyphicon-list-alt"></span></a>
                 {{ job.statelabel }}
 {# Better be a selectbox or just not at jobs at all, just event or shift.
             {% if job.shift.start < date() %}
@@ -134,19 +128,6 @@
  </td>
 {% endfor %}
             <td id="jobCommentTable_{{ job.id }}">
-    {% set cjobcontext = {
-            'message_group': 'Notes',
-            'system': 'crewcall',
-            'object_name': 'job',
-            'external_id': job.id
-            }
-    %}
-    {% set jcmessages = sakonnin_messages.MessagesForContext(cjobcontext) %}
-    {% if jcmessages | length > 0 %}
-       <a href="#" title="Person Notes" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': cjobcontext.system, 'object_name': cjobcontext.object_name, 'external_id': cjobcontext.external_id, 'criterias': {'message_group': 'Notes' }}) }}', 'Notes')"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
-    {% else %}
-        &nbsp;
-    {% endif %}
         {% set jnconfig = {'mconfig': {
                 'formname': 'jobnote_' ~ job.id,
                 'reload_after_post': false,
@@ -163,8 +144,21 @@
                 }
             }
         %}
-        {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with jnconfig %}
-        <a href="#" onClick='return createMessage("jobnote_{{ job.id }}");' title="Add an Admin Note"><span class="glyphicon glyphicon-pencil"></span></a>
+        {% include '@BisonLabSakonnin/Message/_create_popup.html.twig' with jnconfig %}
+        <a href="#" onClick='return createSakonninMessage("jobnote_{{ job.id }}");' title="Add an Admin Note"><span class="glyphicon glyphicon-pencil"></span></a>
+        {% set cjobcontext = {
+                'message_group': 'Notes',
+                'system': 'crewcall',
+                'object_name': 'job',
+                'external_id': job.id
+                }
+        %}
+        {% set jcmessages = sakonnin_messages.MessagesForContext(cjobcontext) %}
+        {% if jcmessages | length > 0 %}
+           <a href="#" title="Person Notes" onClick="return openSakonninMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': cjobcontext.system, 'object_name': cjobcontext.object_name, 'external_id': cjobcontext.external_id, 'criterias': {'message_group': 'Notes' }}) }}', 'Notes')"><span style="font-size: 15px" class="glyphicon glyphicon-file"></span></a>
+        {% else %}
+            &nbsp;
+        {% endif %}
             </td>
             <td id="jobLogTable_{{ job.id }}" align="right">
             {% if job.shift.start < date() %}
@@ -180,9 +174,21 @@
             {% endif %}
             </td>
             <td id="buttons_{{ job.id }}" align="right">
-              <a id="job_toggle_CONFIRMED_{{ job.id }}" role="button" class="btn-sm ccConfirmed" {% if job.state == "CONFIRMED" %}style="display: none;"{% endif %}" href="#" onClick="return setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">Confirm</a>
-              <a id="job_toggle_ASSIGNED_{{ job.id }}" role="button" class="btn-sm ccAssigned" {% if job.state == "ASSIGNED" %}style="display: none;"{% endif %}" href="#" onClick="return setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">Assign</a>
-              <a id="job_toggle_INTERESTED_{{ job.id }}" role="button" class="btn-sm btn-danger" {% if job.state == "INTERESTED" %}style="display: none;"{% endif %}" href="#" onClick="return setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});">Unassign</a>
+              <a id="job_toggle_CONFIRMED_{{ job.id }}" role="button" href="#" onClick="return setStateOnJob({{job.id}}, 'CONFIRMED', {{ job.shift.id }});">
+                <span class="ccButtonSmall ccConfirmed" {% if job.state == "CONFIRMED" %}style="display: none;"{% endif %}>
+                    Confirm
+              </a>
+                </span>
+              <a id="job_toggle_INTERESTED_{{ job.id }}" role="button" href="#" onClick="return setStateOnJob({{job.id}}, 'INTERESTED', {{ job.shift.id }});" {% if job.state == "INTERESTED" %}style="display: none;"{% endif %}>
+                <span class="ccButtonSmall ccInterested">
+                    Unassign
+                </span>
+              </a>
+              <a id="job_toggle_ASSIGNED_{{ job.id }}" role="button" href="#" onClick="return setStateOnJob({{job.id}}, 'ASSIGNED', {{ job.shift.id }});">
+                <span class="ccButtonSmall ccAssigned" {% if job.state == "ASSIGNED" %}style="display: none;"{% endif %}>
+                    Assign
+                </span>
+              </a>
             </td>
         </tr>
     {% endfor %}
@@ -190,7 +196,7 @@
  </table>
 {#
 <div align="left">
-<button class="btn btn-sm btn-dark" id="message_modal_link" onClick="return openMessageToJobsModal({{ shift.id }});">Send a message</button>
+<button class="btn-sm btn-dark" id="message_modal_link" onClick="return openMessageToJobsModal({{ shift.id }});">Send a message</button>
 
 </div>
 #}

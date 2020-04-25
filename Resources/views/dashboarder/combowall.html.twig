@@ -4,13 +4,13 @@
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Edit</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
         <form id="comboform_{{ message_id }}" action="{{ action }}" method="POST" onSubmit="return submitComboForm('{{ action }}', '{{message_id}}');">
         {{ form_row(mform.body)}} 
-<span class="hidden">
+<span class="d-none">
         {{ form_row(mform.state)}} 
         {{ form_row(mform.message_type)}} 
 </span>
@@ -25,14 +25,14 @@
 {% endmacro %}
 {% import _self as cmac %}
 
-{% include 'CrewCallBundle:dashboarder:handling.html.twig' %}
+{% include '@CrewCall/dashboarder/handling.html.twig' %}
 
 <div id="combowall">
-<div class="row">
-<div class="col-sm-12">
-<h3>Admin Notes</h3>
-</div>
-</div>
+  <div class="row">
+    <div class="col-sm-12">
+    <h3>Admin Wall and Todos</h3>
+    </div>
+  </div>
 
 {% set criterias = {
     'message_types': ['Admin Wall', 'TODO'],
@@ -40,40 +40,63 @@
     }
 %}
 {% for message in sakonnin_messages.messages(criterias) %}
- <div id="sakonninmessage_{{ message.id}}">
  {% if is_granted('edit', message) %}
   {% set emform = sakonnin_messages.getEditForm( message, true ) %}
   {% set action = path('message_edit', { 'id': message.id, 'access': 'ajax' }) %}
   {{ cmac.print_comboedit(emform, action, message.id, message.messagetype ) }}
  {% endif %}
  {% if is_granted('show', message) %}
+   <div id="sakonninmessage_{{ message.id}}">
      <div class="noteText row">
-        <div class="col-md-11">
+        <div class="col-sm-9">
             <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
         </div>
+      {% if is_granted('edit', message) %}
+<div class="d-none">
+{% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
+<form id="deletemessageform_{{ message.id }}" onSubmit="return deleteSakonninMessage({{ message.id }});">
+{{ form_rest(mdelform) }}
+<input id="delcombo_{{ message.id }}" type="submit">
+</form>
+</div>
+        <div class="col-sm-3">
+          <div class="dropdown">
+             <button class="glyphicon glyphicon-menu-hamburger" type="button" data-toggle="dropdown">
+             <span></span>
+             </button>
+             <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="#" onClick="return setStateOnSakonninMessage({{ message.id }}, 'ARCHIVED');">Archive</a>
+                <a class="dropdown-item" href="#" onClick='return editCombo({{ message.id }});'>Edit</a>
+                <a class="dropdown-item" href="#" onClick='return $("#delcombo_{{ message.id }}").click();'>Delete</a>
+            </div>
+          </div>
+        </div>
+      {% endif %}
      </div>
      <div class="noteText row">
-<pre wrap class="noteText col-md-9">
+<div class="col-sm-9">
+<pre wrap id="sakonninmessagebody_{{ message.id }}">
 {{ message.body }}
 </pre>
-        <div class="col-md-3" align="center">
-        {% if message.messagetype == "TODO" %}
-            {# OK, are we checked or not? #}
-            {% set checked = false %}
-            {% set last_reply = message.replies | last %}
-            {% if last_reply %}
-                {% if last_reply.state == "CHECKED" %}
-                    {% set checked = true %}
-                {% else %}
-                    {% set checked = false %}
-                {% endif %}
-            {% endif %}
+</div>
+    <div class="col-sm-3 align-bottom">
+      {% if message.messagetype == "TODO" %}
+          {# OK, are we checked or not? #}
+          {% set checked = false %}
+          {% set last_reply = message.replies | last %}
+          {% if last_reply %}
+              {% if last_reply.state == "CHECKED" %}
+                  {% set checked = true %}
+              {% else %}
+                  {% set checked = false %}
+              {% endif %}
+          {% endif %}
 
-            <label class="checkSwitch">
-              <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState('{{ message.messageid }}', 'TODO', this)" {% if checked %}checked{% endif %}/>
+          <label class="checkSwitch">
+            <input type="checkbox" id="todocheck_{{ message.id }}" onChange="setCheckboxState('{{ message.messageid }}', 'TODO', this)" {% if checked %}checked{% endif %}/>
             {% if checked %}
                 <span class="checkSlider round" title="{{ last_reply.createdAt | date('Y-m-d H:i') }} - {{ last_reply.createdBy }}"></span>
-                </label>
+                </label><br>
                 <em style="font-size: 70%;">
                 {{ last_reply.createdAt | date('Y-m-d H:i') }}
                 {{ last_reply.createdBy }}
@@ -82,48 +105,28 @@
                 <span class="checkSlider round" title="Todo"></span>
                 </label>
             {% endif %}
-            <br>
         {% endif %}
-        {% if is_granted('edit', message) %}
-        <div class="dropdown">
-         <button class="glyphicon glyphicon-menu-hamburger" id='combowallactionburger' type="button" data-toggle="dropdown">
-         <span></span>
-         </button>
-         <ul class="dropdown-menu dropdown-menu-right">
-          <li>
-           <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');">Archive</a>
-          </li>
-          <li>
-            <a href="#" onClick='return editCombo({{ message.id }});'>Edit</a>
-          </li>
-<div class="hidden">
-{% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
-<form id="deletemessageform_{{ message.id }}" onSubmit="return deleteMessage({{ message.id }});">
-{{ form_start(mdelform) }}
-{{ form_rest(mdelform) }}
-<input id="delcombo_{{ message.id }}" type="submit">
-</form>
-</div>
-        <li>
-            <a href="#" onClick='return $("#delcombo_{{ message.id }}").click();'>Delete</a>
-        </li>
-        </ul>
-        </div>
-      {% endif %}
      </div>
     </div>
-    <div class="row">&nbsp;</div> <!-- Cheating or lazyness? -->
-   </div> <!--sakonninmessage -->
+ </div> <!--sakonninmessage -->
  {% endif %}
 {% endfor %}
+<div class="row">
+  <div class="col-2" style="margin-left: 20px; padding: 7px;">
+   <a href="#" onClick='return createCombo();' class="btn-dash btn-dark">New</a>
+  </div>
+  <div class="col-2" style="padding: 7px;">
+   <a href="#" class="btn-dash btn-light" title="Admin Wall and Todos" onClick="return openSakonninMessageLogBox('{{ path('messages_list', {'sort': 'DESC', 'access': 'ajax', 'states': ['ARCHIVED'], 'message_types':['Admin Wall', 'TODO']  }) }}', 'Archive')">Archive</a>
+  </div>
+</div>
 
  <div class="modal fade" id="createcombo" role="dialog">
   <div class="modal-dialog">
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Add todo or wall message</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
         <input type="checkbox" id="mtypecheck" onChange="setMessageType(this)"> <strong>Todo</strong></input>
@@ -134,7 +137,7 @@
  }) %}
         <form id="createcomboform" action="{{ path('message_create', { 'access': 'ajax' }) }}" method="POST" onSubmit="return submitCreateComboForm();">
         {{ form_row(ccmform.body)}} 
-        <span class="hidden">
+        <span class="d-none">
         {{ form_row(ccmform.state)}} 
         {{ form_row(ccmform.message_type)}} 
         </span>
@@ -146,8 +149,6 @@
     </div>
   </div>
  </div>
- <a href="#" onClick='return createCombo();' class="btn btn-dark">New</a>
- <a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('messages_list', {'sort': 'DESC', 'access': 'ajax', 'states': ['ARCHIVED'], 'message_types':['Admin Wall', 'TODO']  }) }}', 'Archive')">Archive</a>
 
 </div> <!-- end combowall -->
 

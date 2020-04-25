@@ -1,17 +1,6 @@
 <script>
 
-function composeJobHash() {
-    shifts = [];
-    $( ".jobList" ).each(function() {
-        shift_id = $(this).attr('id').replace('jobList_', '');
-        if ($(this).is(':visible')) {
-            shifts.push(shift_id);
-        }
-    });
-    window.location.hash = "#jobList_" + shifts.join(',');
-}
-
-function grabJobList(shift_id) {
+function grabJobList(shift_id, dont_store = false) {
     url = "{{ path('job_index', {'access': 'ajax' }) }}" 
         + "?shift=" + shift_id;
     $.get(url, function( data ) {
@@ -19,14 +8,24 @@ function grabJobList(shift_id) {
         $( "#jobList_" + shift_id ).show();
         $( "#plus_job_list_" + shift_id ).hide();
         $( "#minus_job_list_" + shift_id ).show();
-        composeJobHash();
         /* And then move to a better place */
-        var head_height = $('#crewcall-navbar-collapse').height();
+        var head_height = $('#crewcall-header').height();
         var divPosition = $('#shiftRow_' + shift_id).offset();
         var toTop = divPosition.top - head_height;
         $('html, body').animate({scrollTop: toTop}, "fast");
-
     });
+
+    if (dont_store || typeof(Storage) === "undefined") {
+        return false;
+    }
+    var evjoblists = {};
+    if (localStorage.evjoblists) {
+        evjoblists = JSON.parse(localStorage.evjoblists);
+    }
+    var timestamp = Date.now() / 1000;
+    evjoblists[shift_id] = { 'timestamp': timestamp, 'state': 'show' };
+    localStorage.evjoblists = JSON.stringify(evjoblists);
+
     return false;
 }
 
@@ -34,7 +33,14 @@ function hideJobList(shift_id) {
     $( "#jobList_" + shift_id ).hide();
     $( "#plus_job_list_" + shift_id ).show();
     $( "#minus_job_list_" + shift_id ).hide();
-    composeJobHash();
+    var evjoblists = {};
+    if (localStorage.evjoblists) {
+        evjoblists = JSON.parse(localStorage.evjoblists);
+    }
+    var timestamp = Date.now() / 1000;
+    evjoblists[shift_id] = { 'timestamp': timestamp, 'state': 'hide' };
+    localStorage.evjoblists = JSON.stringify(evjoblists);
+console.log(evjoblists);
     return false;
 }
 
@@ -189,6 +195,17 @@ function popPersonJobs(person_id, job_id) {
     var popelement = "#popSummary_person_jobs_" + person_id + job_id;
     poptitle = 'Jobs <a href="#" class="close" data-dismiss="alert"><span style="font-size: 15px" class="glyphicon glyphicon-remove-circle"></span></a>';
 
+    /*
+     * I'll rather do this than sanitize: false, which is too wide.
+     */
+    $.fn.popover.Constructor.Default.whiteList.table = [];
+    $.fn.popover.Constructor.Default.whiteList.tr = [];
+    $.fn.popover.Constructor.Default.whiteList.td = [];
+    $.fn.popover.Constructor.Default.whiteList.th = [];
+    $.fn.popover.Constructor.Default.whiteList.div = [];
+    $.fn.popover.Constructor.Default.whiteList.tbody = [];
+    $.fn.popover.Constructor.Default.whiteList.thead = [];
+
     res = $.ajax({
             url: url,
             type: 'GET',
@@ -197,7 +214,7 @@ function popPersonJobs(person_id, job_id) {
         $( popelement ).popover({
             delay: 500,
             html: true,
-            placement: "auto top",
+            placement: "auto",
             trigger: "focus",
             content: contenthtml,
         });
@@ -287,10 +304,21 @@ function popOverlap(job_id) {
 
     popcontent = $("#overlap_popover_content_" + job_id).html();
     var popelement = "#overlap_popover_" + job_id;
+    /*
+     * I'll rather do this than the option "sanitize: false", which is too wide.
+     */
+    $.fn.popover.Constructor.Default.whiteList.table = [];
+    $.fn.popover.Constructor.Default.whiteList.tr = [];
+    $.fn.popover.Constructor.Default.whiteList.td = [];
+    $.fn.popover.Constructor.Default.whiteList.th = [];
+    $.fn.popover.Constructor.Default.whiteList.div = [];
+    $.fn.popover.Constructor.Default.whiteList.tbody = [];
+    $.fn.popover.Constructor.Default.whiteList.thead = [];
+
     $( popelement ).popover({
         delay: 500,
         html: true,
-        placement: "auto top",
+        placement: "auto",
         content: popcontent,
         trigger: "focus",
     });
@@ -305,8 +333,8 @@ function popOverlap(job_id) {
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
+        <h4 class="modal-title" id="jobModalTitle"></h4>
         <button id="jobModalCloseButton" type="button" class="close" data-dismiss="modal">&times;</button>
-         <h4 class="modal-title" id="jobModalTitle"></h4>
       </div>
       <div class="modal-body" id="jobModalBody">
       </div>
@@ -314,11 +342,11 @@ function popOverlap(job_id) {
   </div>
 </div> <!-- / modal -->
 
-<div id="jobmessage_modal" class="hidden">
+<div id="jobmessage_modal" class="d-none">
     <form id="job_list_message_form" method="POST">
     <textarea name="body" cols="40" rows="4"></textarea><br>
     <input type="radio" value="BULKSMS" name="message_type" CHECKED>SMS only</input>
     <input type="radio" value="BULKALL" name="message_type">SMS and  Email</input><br>
-    <input class="btn btn-sm btn-dark" id="sendmessage" type="submit" name="submit" value="Send">
+    <input class="btn-sm btn-dark" id="sendmessage" type="submit" name="submit" value="Send">
     </form>
 </div>

@@ -1,4 +1,4 @@
-<table id="shiftTable" class="table table-striped table-sm">
+<table id="shiftTable" class="table shiftTable table-sm">
 <tbody>
 {% for shift in event.shifts %}
 {% set mlogcontext = {
@@ -23,11 +23,11 @@
             {% endif %}
         <td>
 {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-        <a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}', 'Notes')">
-        <span style="font-size: 15px" class="glyphicon glyphicon-comment"></span>
+        <a href="#" title="Notes" onClick="return openSakonninMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}', 'Notes')">
+        <span style="font-size: 15px" class="glyphicon glyphicon-file"></span>
         </a>
 {% endif %}
-        <a tabindex="0" href="#" title="Event Summary" id="popSummary_event_{{ shift.event.id }}{{ shift.id }}" onClick="return popSummary('event', {{ shift.event.id }}, {{ shift.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+        <a tabindex="0" href="#" id="popSummary_event_{{ shift.event.id }}{{ shift.id }}" onClick="return popSummary('event', {{ shift.event.id }}, {{ shift.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
         {{ shift.function }}
         </td>
         <td align="right">
@@ -61,47 +61,28 @@
         </td>
         <td align="right">
         <div class="dropdown">
-          <button class="glyphicon glyphicon-menu-hamburger" id='shift_{{ shift.id }}_actionburger' type="button" data-toggle="dropdown">
+          <button class="glyphicon glyphicon-menu-hamburger" id='shift_{{ shift.id }}_actionburger' type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span></span>
           </button>
-        <ul class="dropdown-menu dropdown-menu-right">
-          <li>
-            <a href="#" onClick="return openMessageToEventModal('shift', {{ shift.id }});">Send a message</a>
-          </li>
-          <li>
-            <a href="#" onClick="return grabNewJobForm({{shift.id}});">Add person</a>
-          </li>
-          <li>
-            <a href="#" onClick="return grabNewShiftOrganizationForm({{shift.id}});">Add crew from an organization</a>
-          </li>
+        <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="#" onClick="return openMessageToEventModal('shift', {{ shift.id }});">Send a message</a>
+            <a class="dropdown-item" href="#" onClick="return grabNewJobForm({{shift.id}});">Add person</a>
+            <a class="dropdown-item" href="#" onClick="return grabNewShiftOrganizationForm({{shift.id}});">Add crew from an organization</a>
 {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-         <li><a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a></li>
+            <a class="dropdown-item" href="#" onClick="return openSakonninMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')">Notes</a>
 {% endif %}
-        <li>
-            <a href="#" onClick='return createMessage("shiftnote_{{ shift.id }}");'>Add information</a>
-        </li>
-        <li>
-            <a href="#" onClick='return createCheck("shiftinformcheck_{{ shift.id }}");'>Add an information checkbox</a>
-        </li>
-        <li>
-            <a href="#" onClick='return createCheck("shiftconfirmcheck_{{ shift.id }}");'>Add a confirm checkbox</a>
-        </li>
-
-        <li>
-            <a tabindex="0" href="#" title="Log Summary" id="popLogSummary_shift_{{ shift.id }}" onClick="return popLogSummary('shift', {{ shift.id }});">Changelog</a>
-       </li>
-        <li>
-            <a href="#" onClick="return grabEditShiftForm({{ shift.id }}, {{ shift.event.id }});">Edit</a>
-        </li>
-        <li>
-            <a href="#" onClick="return deleteShift({{ shift.id }});">Delete</a>
-        </li>
-      </ul>
+            <a class="dropdown-item" href="#" onClick='return createSakonninMessage("shiftnote_{{ shift.id }}");'>Add information</a>
+            <a class="dropdown-item" href="#" onClick='return createSakonninCheck("shiftinformcheck_{{ shift.id }}");'>Add an information checkbox</a>
+            <a class="dropdown-item" href="#" onClick='return createSakonninCheck("shiftconfirmcheck_{{ shift.id }}");'>Add a confirm checkbox</a>
+            <a tabindex="0" class="dropdown-item" href="#" title="Log Summary" id="popLogSummary_shift_{{ shift.id }}" onClick="return popLogSummary('shift', {{ shift.id }});">Changelog</a>
+            <a class="dropdown-item" href="#" onClick="return grabEditShiftForm({{ shift.id }}, {{ shift.event.id }});">Edit</a>
+            <a class="dropdown-item" href="#" onClick="return deleteShift({{ shift.id }});">Delete</a>
+      </div>
       </div>
      </td>
     </tr>
     <tr class="jobList" id="jobList_{{ shift.id }}">
-    <td colspan="6">
+    <td class="jobListTd" colspan="7">
     <div id="jobTable_{{ shift.id }}">
     </div>
     </td>
@@ -124,7 +105,7 @@
         }
     }
 %}
-{% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+{% include '@BisonLabSakonnin/Message/_create_popup.html.twig' with mconf %}
 {% set mconf = {'mconfig': {
         'formname': 'shiftconfirmcheck_' ~ shift.id,
         'reload_after_post': true,
@@ -138,7 +119,7 @@
         }
     }
 %}
-{% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
+{% include '@BisonLabSakonnin/Message/_create_check.html.twig' with mconf %}
 {% set mconf = {'mconfig': {
         'formname': 'shiftinformcheck_' ~ shift.id,
         'reload_after_post': true,
@@ -152,7 +133,7 @@
         }
     }
 %}
-{% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
+{% include '@BisonLabSakonnin/Message/_create_check.html.twig' with mconf %}
 {% endfor %}
 </tbody>
 </table>

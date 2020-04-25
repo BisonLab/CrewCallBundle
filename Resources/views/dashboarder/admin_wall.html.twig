@@ -1,51 +1,48 @@
-{% include 'CrewCallBundle:dashboarder:handling.html.twig' %}
-{% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' with { 'reload_after_post': true, 'title': "Edit Admin Wall" } %}
+{% include '@CrewCall/dashboarder/handling.html.twig' %}
+
+<h3>Admin Wall</h3>
 <div id="admin_wall">
-{% set something = false %}
-{% for message in sakonnin_messages.messagetype('Admin Wall').messages if message.state == "SHOW" or message.state == "UNREAD" %}
-  {% if is_granted('show', message) %}
-  {% set something = true %}
-  <div id="sakonninmessage_{{ message.id}}">
-    {% if message.subject is not empty %}
-        <h3>{{ message.subject }}</h3>
-    {% endif %}
-    <div class="row">
-    <pre wrap class="noteText col-sm-10">
-    {{ message.body }}
-    </pre>
+{% for message in sakonnin_messages.messagetype('Admin Wall').messages %}
+  {% if (message.state == "SHOW" or message.state == "UNREAD") and is_granted('show', message) %}
+   <div id="sakonninmessage_{{ message.id}}">
+    <div class="d-none">
+        {% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
+        <form id="deletemessageform_{{ message.id }}" onSubmit="return deleteSakonninMessage({{ message.id }});">
+        {{ form_rest(mdelform) }}
+        <input id="deladminw_{{ message.id }}" type="submit">
+        </form>
+    </div>
+    <div class="row noteText">
+     <div class="col-sm-10">
+        <h3 id="sakonninmessagesubject_{{ message.id }}">{{ message.subject }}</h3>
+        <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
+      </div>
       <div class="col-sm-2" align="right">
         <div class="dropdown">
-          <button class="glyphicon glyphicon-menu-hamburger" id='admin_wallactionburger' type="button" data-toggle="dropdown">
+          <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span></span>
           </button>
-        <ul class="dropdown-menu dropdown-menu-right">
-          <li>
-           <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');">Archive</a>
-          </li>
-          <li>
-        <a href="#" onClick='return grabEditMessageForm({{ message.id }});'>Edit</a>
-          </li>
-<div class="hidden">
-{% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
-<form id="deletemessageform_{{ message.id }}" onSubmit="return deleteMessage({{ message.id }});">
-{{ form_start(mdelform) }}
-{{ form_rest(mdelform) }}
-<input id="deladminw_{{ message.id }}" type="submit">
-</form>
-</div>
-        <li>
-            <a href="#" onClick='return $("#deladminw_{{ message.id }}").click();'>Delete</a>
-        </li>
-        </ul>
-      </div>
-     </div>
-    </div>
- </div>
+          <div class="dropdown-menu dropdown-menu-right">
+           <a class="dropdown-item" href="#" onClick="return setStateOnSakonninMessage({{ message.id }}, 'ARCHIVED');">Archive</a>
+           <a class="dropdown-item" href="#" onClick='return grabEditSakonninMessageForm({{ message.id }});'>Edit</a>
+            <a class="dropdown-item" href="#" onClick='return $("#deladminw_{{ message.id }}").click();'>Delete</a>
+          </div><!-- dropdown-menu -->
+        </div><!-- dropdown -->
+     </div><!-- col-sm-2 -->
+    </div><!-- row -->
+    <div class="row noteText">
+<pre wrap class="col-sm-10" id="sakonninmessagebody_{{ message.id }}">
+{{ message.body }}
+</pre>
+    </div><!-- row -->
+ </div><!-- sakonninmessage_{{ message.id}} -->
  {% endif %}
 {% endfor %}
-{% if not something %}
-    <h3>Admin Wall</h3>
-{% endif %}
+<div class="row">
+  <div class="col-10" style="margin-left: 20px; padding: 7px;">
+    <a href="#" onClick='return createSakonninMessage("c_adminwall");' class="btn-dash btn-dark">Add an Admin Wall post</a>
+  </div>
+</div>
       {% set mconf = {'mconfig': {
               'formname': 'c_adminwall',
               'reload_after_post': true,
@@ -60,7 +57,5 @@
               }
           }
       %}
-{% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-<a href="#" onClick='return createMessage("c_adminwall");' class="btn btn-sm btn-dark">New</a>
-<a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('messages_list', {'sort': 'DESC', 'access': 'ajax', 'states': ['ARCHIVED'], 'message_types':['Admin Wall']  }) }}', 'Archive')">Archive</a>
-</div>
+{% include '@BisonLabSakonnin/Message/_create_popup.html.twig' with mconf %}
+</div><!-- admin-wall -->

@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}Shift Organizations{% endblock %}
 {% block body %}
     <h1>Shiftorganizations list</h1>
-{% include 'CrewCallBundle:shiftorganization:_index.html.twig' with { 'shiftOrganizations': shiftOrganizations}  %}
+{% include '@CrewCall/shiftorganization/_index.html.twig' with { 'shiftOrganizations': shiftOrganizations}  %}
     <ul>
         <li>
-            <a href="{{ path('shiftorganization_new') }}" class="btn btn-sm btn-dark">Create a new shiftOrganization</a>
+            <a href="{{ path('shiftorganization_new') }}" class="btn-sm btn-dark">Create a new shiftOrganization</a>
         </li>
     </ul>
 {% endblock %}

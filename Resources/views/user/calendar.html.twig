@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% block title %}My Calendar{% endblock %}
 
 {% block body %}
 
@@ -6,6 +7,6 @@
 {% set calendar_load_url = path('user_me_calendar', {'access': 'ajax', 'summary': true }) %}
 #}
 {% set calendar_load_url = path('user_me_calendar', {'access': 'ajax' }) %}
-{% include 'CrewCallBundle::_calendar.html.twig' with { 'calendar_load_url': calendar_load_url}  %}
+{% include '@CrewCall/_calendar.html.twig' with { 'calendar_load_url': calendar_load_url}  %}
 
 {% endblock %}

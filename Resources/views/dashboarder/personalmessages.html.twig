@@ -1,32 +1,45 @@
-{% include 'CrewCallBundle:dashboarder:handling.html.twig' %}
+{% include '@CrewCall/dashboarder/handling.html.twig' %}
 {% set mlogcontext = {
-            'system': 'crewcall',
+            'system': 'dabaru',
             'object_name': 'person',
-            'message_types': ['PersonNote', 'PM'],
+            'message_types': ['PersonNote', 'PM', 'PMSMS'],
             'states': ['UNREAD','SENT'],
             'external_id': app.user.id
     }
 %}
 <div id="personalmessages">
-<h3>Messages to you</h3>
-{% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
-{% if is_granted('show', note) %}
-<div id="sakonninmessage_{{ note.id}}">
-<strong>{{ note.subject }}</strong>
+  <div class="row">
+    <div class="col-sm-12">
+    <h3>Messages to you</h3>
+    </div>
+  </div>
+{% set messages = sakonnin_messages.MessagesForContext(mlogcontext) %}
+{% set messages = messages | merge(sakonnin_messages.MessagesForUser(app.user, {'state': 'UNREAD'})) %}
+{% for message in messages %}
+{% if is_granted('show', message) %}
+<div id="sakonninmessage_{{ message.id}}">
+ <div class="noteText row">
+    <div class="col-6">
+        {# While we wait for a message type label. 
+        <strong>{% if message.subject is not empty %}{{ message.subject }}{% else %}{{ message.messagetype }}{% endif %}</strong>
+        #}
+        <strong>{{ message.subject }}</strong>
+    </div>
+    <div class="col-6 ml-auto">
+        <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
+    </div>
+ </div>
+ <div class="noteText row">
+  <div class="col-sm-8">
 <pre wrap class="noteText">
-{{ note.body }}
+{{ message.body }}
 </pre>
-<a href="#" onClick="return setStateOnMessage({{ note.id }}, 'ARCHIVED');" class="btn btn-sm btn-success">Read it!</a>
+ </div>
+  <div class="col-4">
+    <a href="#" onClick="return setStateOnSakonninMessage({{ message.id }}, 'ARCHIVED');" class="btn-dash btn-success">Read it!</a>
+  </div>
 </div>
+</div> <!--sakonninmessage -->
 {% endif %}
 {% endfor %}
-{% for note in sakonnin_messages.MessagesForUser(app.user, {'state': 'UNREAD'}) %}
-<div id="sakonninmessage_{{ note.id}}">
-<strong>{{ note.subject }}</strong>
-<pre wrap>
-{{ note.body }}
-</pre>
-<a href="#" onClick="return setStateOnMessage({{ note.id }}, 'ARCHIVED');" class="btn btn-sm btn-dark">Read it!</a>
-</div>
-{% endfor %}
-</div>
+</div><!-- personalmessages -->

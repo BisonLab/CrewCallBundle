@@ -10,6 +10,7 @@ use CrewCallBundle\Lib\ExternalEntityConfig;
 
 class Builder implements ContainerAwareInterface
 {
+    use \BisonLab\CommonBundle\Menu\StylingTrait;
     use ContainerAwareTrait;
 
     private $custom_builder = null;
@@ -94,7 +95,7 @@ class Builder implements ContainerAwareInterface
                 && method_exists($this->custom_builder, "mainMenu"))
             $menu = $this->custom_builder->mainMenu($factory, $options);
 
-        // Temporary, but have to be able to go to the existing CRUD.
+        $menu = $this->styleMenuBootstrap($menu, $options);
         return $menu;
     }
 
@@ -129,6 +130,7 @@ class Builder implements ContainerAwareInterface
         if ($this->custom_builder
                 && method_exists($this->custom_builder, "userMenu"))
             $menu = $this->custom_builder->userMenu($factory, $options);
+        $menu = $this->styleMenuBootstrap($menu, $options);
         return $menu;
     }
 }

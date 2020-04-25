@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Edit {% if event.parent %}{{ event.parent }} -> {% endif %}{{ event.name }}{% endblock %}
 {% block body %}
 <script>
 $(document).ready(function()
@@ -16,7 +17,7 @@ $(document).ready(function()
     <h1>Event edit</h1>
     {{ form_start(edit_form) }}
         {{ form_widget(edit_form) }}
-        <input class="btn btn-sm btn-dark" type="submit" value="Save" />
+        <input class="btn-sm btn-dark" type="submit" value="Save" />
     {{ form_end(edit_form) }}
-    <a href="{{ path('event_index') }}" class="btn btn-sm btn-dark">Cancel</a><br>
+    <a href="{{ path('event_index') }}" class="btn-sm btn-dark">Cancel</a><br>
 {% endblock %}

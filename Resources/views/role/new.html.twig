@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}New Role{% endblock %}
 {% block body %}
     <h1>New Role</h1>
 
@@ -7,6 +7,6 @@
         {{ form_widget(form) }}
         <input type="submit" value="Create" />
     {{ form_end(form) }}
-    <a href="{{ path('role_index') }}" class="btn btn-sm btn-dark">Cancel</a>
+    <a href="{{ path('role_index') }}" class="btn-sm btn-dark">Cancel</a>
 
 {% endblock %}

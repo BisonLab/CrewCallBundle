@@ -1,10 +1,14 @@
-<div class="row"> 
-  <div class="col-sm-4"> 
+<div class="row subEventInfo"> 
+  <div class="col-4"> 
     <table class="showTable">
         <tbody>
             <tr>
                 <th>Description</th>
                 <td>{{ event.description }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ event.statelabel }}</td>
             </tr>
 {% if event.organization is not null %}
             <tr>
@@ -37,7 +41,9 @@
         {% if note.messagetype == 'Contact Info' %}
             <form method="POST" action="{{ path('message_remove_context', { 'id': mcont.id, 'access': 'web' }) }}">
             <strong>{{ note.subject }}</strong>
-            <button type="submit" class="btn btn-link"><span class="remove_glyph" type="submit" name="submit" value="Delete"></span></button>
+            <button class="btn btn-link" type="submit">
+                <span class="remove_glyph"></span>
+            </button>
             </form>
             <pre>{{ note.body }}</pre>
         {% endif %}
@@ -45,6 +51,8 @@
                 <a href="#" id="addContactLink" onClick="return openAddContactInfo({{ event.id }});">Add Contact Info</a>
                 </td>
             </tr>
+{# If there is no add contact form, there should be no contacts to show #}
+{% if add_contact_form is not null %}
             <tr class="event_contacts">
                 <th>Contacts</th>
                 <td>
@@ -53,33 +61,37 @@
    <a href="{{ path('event_remove_contact', { 'id': pfe.id }) }}"><span class="remove_glyph"></span></a>
 <br />
 {% endfor %}
-{% if add_contact_form is not null %}
     <a href="#" id="addContactLink" onClick="return openAddContact({{ event.id }});">Add</a>
+                </td>
+            </tr>
 {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>&nbsp;</th>
-                <td>
-                </td>
-            </tr>
-            <tr>
-                <th>&nbsp;</th>
-            </tr>
         </tbody>
     </table>
   </div>
-  <div class="col-sm-4 tabbable"> 
+{% set lscontext = {
+            'system': 'crewcall',
+            'object_name': 'event',
+            'message_types': ['List Sent'],
+            'external_id': event.id
+    }
+%}
+{% set listsentnotes = sakonnin_messages.MessagesForContext(lscontext) %}
+  <div class="col-5 tabbable"> 
       <ul class="nav nav-tabs">
-      <li class="active">
-      <a href="#notestab_{{ event.id }}" data-toggle="tab">Notes</a>
-      </li>
-      <li>
-      <a href="#checkstab_{{ event.id }}" data-toggle="tab">Checks</a>
-      </li>
-      <li>
-      <a href="#filestab_{{ event.id }}" data-toggle="tab">Files</a>
-      </li>
+          <li class="nav-item">
+          <a class="nav-link active" href="#notestab_{{ event.id }}" data-toggle="tab">Notes</a>
+          </li>
+          <li class="nav-item">
+          <a class="nav-link" href="#checkstab_{{ event.id }}" data-toggle="tab">Checks</a>
+          </li>
+          <li class="nav-item">
+          <a class="nav-link" href="#filestab_{{ event.id }}" data-toggle="tab">Files</a>
+          </li>
+{% if listsentnotes | length > 0 %}
+          <li class="nav-item">
+          <a class="nav-link" href="#lsnotestab_{{ event.id }}" data-toggle="tab">Lists sent</a>
+          </li>
+{% endif %}
       </ul>
 
       <div class="tab-content ">
@@ -102,29 +114,20 @@
                 }
             }
         %}
-        {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
+        {% include '@BisonLabSakonnin/Message/_create_popup.html.twig' with mconf %}
         <p>
-        <a href="#" onClick='return createMessage("eventnote_{{ event.id }}");'>Add information</a>
+        <a href="#" onClick='return createSakonninMessage("eventnote_{{ event.id }}");'>Add information</a>
         </p>
         <p>
         {% set mlogcontext = {
                     'system': 'crewcall',
                     'object_name': 'event',
-                    'message_types': ['Note','List Sent'],
+                    'message_types': ['Note'],
                     'external_id': event.id
             }
         %}
         {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
-        <div id="sakonninmessage_{{ note.id }}">
-            {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
-            <form id="deletemessageform_{{ note.id }}" onSubmit="return deleteMessage({{ note.id }});">
-            {{ form_start(mdelform) }}
-            {{ form_rest(mdelform) }}
-            <strong>{{ note.subject }}</strong> (<a href="#" title="{{ note.messagetype.description }}">{{ note.messagetype }}</a>{% if note.to is not empty %} to {{ note.to}}{% endif %}) {{ note.createdAt | date('Y-m-d') }} - {{ note.createdBy }}
-            <button type="submit" class="btn btn-link"> <span class="remove_glyph" type="submit" name="submit" value="Delete"></span></button>
-            </form>
-            <pre>{{ note.body }}</pre>
-        </div>
+            {% include '@CrewCall/_note.html.twig' %}
         {% endfor %}
         </p>
       </div>
@@ -143,9 +146,9 @@
                 }
             }
         %}
-        {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
+        {% include '@BisonLabSakonnin/Message/_create_check.html.twig' with mconf %}
        <p>
-        <a href="#" onClick='return createCheck("eventinformheck_{{ event.id }}");'>Add an information checkbox</a><br />
+        <a href="#" onClick='return createSakonninCheck("eventinformheck_{{ event.id }}");'>Add an information checkbox</a><br />
         </p>
         {% set mconf = {'mconfig': {
                 'formname': 'eventconfirmcheck_' ~ event.id,
@@ -160,9 +163,9 @@
                 }
             }
         %}
-        {% include 'BisonLabSakonninBundle:Message:_create_check.html.twig' with mconf %}
+        {% include '@BisonLabSakonnin/Message/_create_check.html.twig' with mconf %}
        <p>
-        <a href="#" onClick='return createCheck("eventconfirmcheck_{{ event.id }}");'>Add a confirm checkbox</a><br />
+        <a href="#" onClick='return createSakonninCheck("eventconfirmcheck_{{ event.id }}");'>Add a confirm checkbox</a><br />
         </p>
         {% set mlogcontext = {
                     'system': 'crewcall',
@@ -174,11 +177,13 @@
         {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
         <div id="sakonninmessage_{{ note.id }}">
             {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
-            <form id="deletemessageform_{{ note.id }}" onSubmit="return deleteMessage({{ note.id }});">
+            <form id="deletemessageform_{{ note.id }}" onSubmit="return deleteSakonninMessage({{ note.id }});">
             {{ form_start(mdelform) }}
             {{ form_rest(mdelform) }}
             <a href="#" title="{{ note.messagetype.description }}">{{ note.messagetype }}</a>
-            <button type="submit" class="btn btn-link"> <span class="remove_glyph" type="submit" name="submit" value="Delete"></span></button>
+            <button type="submit" class="btn btn-link">
+                <span class="remove_glyph"></span>
+            </button>
             </form>
             <ul>
             <li><strong>{{ note.body }}</strong></li>
@@ -202,9 +207,9 @@
                 }
             }
         %}
-        {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
+        {% include '@BisonLabSakonnin/SakonninFile/_create_popup.html.twig' with sfconf %}
         <p>
-          <a href="#" onClick="return uploadFile('eventfiles_{{ event.id }}');">Add a file</a><br />
+          <a href="#" onClick="return uploadSakonninFile('eventfiles_{{ event.id }}');">Add a file</a><br />
         </p>
         {% set filecontext = {
                     'system': 'crewcall',
@@ -212,12 +217,19 @@
                     'external_id': event.id
             }
         %}
-        {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
+        {% include '@CrewCall/_files.html.twig' with filecontext %}
       </div>
+{% if listsentnotes | length > 0 %}
+      <div class="tab-pane" id="lsnotestab_{{ event.id }}">
+        {% for note in listsentnotes %}
+        {% include '@CrewCall/_note.html.twig' %}
+        {% endfor %}
+      </div>
+{% endif %}
   </div>
 
   </div>
-  <div class="col-sm-4" align="right"> 
+  <div class="col-3" align="right"> 
     <ul>
         <li>
     {% if event.shifts | length > 0 %}
@@ -240,8 +252,14 @@
             <a href="#" onClick="return openMessageToEventModal('event', {{ event.id }});">Send a message</a>
         </li>
     {% if not event.done %}
+{# 
+ # This seemed like a good idea, but does not work.
+ # The reason is that the state change listener is only triggered when there is
+ # a change, which this is not. And on top of that I am still pondering if it
+ # should affect the children event or not. Which the state change listener is,
+ # when it's triggered.
        <li>
-        <a href="#" onClick="return submitStateForm({{ event.id}}, 'CONFIRMED');">
+        <a href="#" onClick="return submitEventStateForm({{ event.id}}, 'CONFIRMED');">
         {% set shiftsclosed = false %}
         {% for sh in event.shifts %}
             {% if not sh.open %}
@@ -257,13 +275,22 @@
         {% endif %}
         </a>
        </li>
+ #}
+        {# This is the replacement for the code above #}
+        {% if not event.open and event.shifts | length > 0 %}
+       <li>
+        <a href="#" onClick="return submitEventStateForm({{ event.id}}, 'CONFIRMED');">
+            Confirm and open event for registration
+        </a>
+       </li>
+        {% endif %}
         {% if event.end < date() %}
         <li>
-            <a href="#" onClick="return submitStateForm({{ event.id }}, 'COMPLETED');">Set Completed</a>
+            <a href="#" onClick="return submitEventStateForm({{ event.id }}, 'COMPLETED');">Set Completed</a>
         </li>
        {% elseif event.open and event.shifts | length > 0 %}
         <li>
-            <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</a>
+            <a href="#" onClick="return submitEventStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</a>
         </li>
        {% endif %}
     {% endif %}
@@ -278,17 +305,24 @@
         </li>
     </ul>
 
-   </div> <!-- col-sm-2 -->
+   </div> <!-- col-2 -->
 </div> <!-- / row -->
 
-<strong>Select all:  </strong><input onClick="return select_all_jobs({{ event.id }}, this);" class="select_all_persons_checkbox" type="checkbox" name="select_all">
+{% if event.shifts | length > 0 %}
+<div id="subEventSelect_{{ event.id }}" class="row subEventInfo">
+  <div class="col-5">
+    <strong>Select all:  </strong><input onClick="return select_all_jobs({{ event.id }}, this);" class="select_all_persons_checkbox" type="checkbox" name="select_all">
+    {# Really undecided
+    <a href="#" id="message_modal_link" class="btn-sm btn-dark" onClick="return openMessageToJobsModal({{ event.id }});">Send a message to selected</a>
+    #}
+    <a href="#" id="message_modal_link" onClick="return openMessageToJobsModal({{ event.id }});">Send a message to selected</a>
+   </div> <!-- col-5 -->
+</div> <!-- / row -->
+
 <div id="shiftList_{{ event.id}}">
-  {% include 'CrewCallBundle:shift:_index.html.twig' with { 'event': event}  %}
+  {% include '@CrewCall/shift/_index.html.twig' with { 'event': event}  %}
 </div>
-
-<button class="btn btn-sm btn-dark" id="message_modal_link" onClick="return openMessageToJobsModal({{ event.id }});">Send a message to selected</button>
-
-<div id="function_select_{{ event.id }}" class="hidden">
+<div id="function_select_{{ event.id }}" class="d-none">
 <label>Function</label>
 <select name="function_id">
   <option value="" selected>All</option>
@@ -297,3 +331,4 @@
 {% endfor %}
 </select>
 </div>
+{% endif %}

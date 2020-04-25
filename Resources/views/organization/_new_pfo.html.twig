@@ -3,7 +3,7 @@
     {{ form_start(exists_form, {action:path('organization_add_person', {'access': 'ajax', 'id': organization.id }), 'attr': {'id':'addExistingPersonForm'}}) }}
         {{ form_widget(exists_form) }}
         <input type="hidden" name="username" id="username">
-        <input class="btn btn-sm btn-dark" id="submitAddExistingPerson" type="submit" value="Add" />
+        <input class="btn-sm btn-dark" id="submitAddExistingPerson" type="submit" value="Add" />
     {{ form_end(exists_form) }}
     </div>
 
@@ -11,7 +11,7 @@
         <strong>No results found, add a new person</strong>
         {{ form_start(new_form, {action:path('organization_add_person', {'id': organization.id }), 'attr': {'id':'addNewPersonForm'}}) }}
             {{ form_widget(new_form) }}
-            <input class="btn btn-sm btn-dark" id="submitAddNewPerson" type="submit" value="Create and add" />
+            <input class="btn-sm btn-dark" id="submitAddNewPerson" type="submit" value="Create and add" />
         {{ form_end(new_form) }}
     </div>
 </div>

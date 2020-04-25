@@ -1,11 +1,12 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}{% if event.parent %}{{ event.parent }} -> {% endif %}{{ event.name }}{% endblock %}
 {% block body %}
-{% include 'CrewCallBundle:event:handling.html.twig' %}
-{% include 'CrewCallBundle:shift:handling.html.twig' %}
-{% include 'CrewCallBundle:job:handling.html.twig' %}
-{% include 'CrewCallBundle:joblog:handling.html.twig' %}
-{% include 'CrewCallBundle:shiftorganization:handling.html.twig' %}
+{% include '@CrewCall/event/handling.html.twig' %}
+{% include '@CrewCall/shift/handling.html.twig' %}
+{% include '@CrewCall/job/handling.html.twig' %}
+{% include '@CrewCall/joblog/handling.html.twig' %}
+{% include '@CrewCall/shiftorganization/handling.html.twig' %}
 
 <div class="row">
   <div class="col-sm-6">
@@ -19,53 +20,52 @@
   </div>
   <div class="col-sm-6" align="right">
     {% if not event.parent %}
-        <a href="{{ path('event_new', {'parent': event.id}) }}" class="btn btn-sm btn-dark">New sub event</a>
-        <a href="{{ path('event_clone', {'event': event.id}) }}" class="btn btn-sm btn-dark">Create a copy with new start date</a>
+        <a href="{{ path('event_new', {'parent': event.id}) }}" class="btn-sm btn-dark">New sub event</a>
+        <a href="{{ path('event_clone', {'event': event.id}) }}" class="btn-sm btn-dark">Create a copy with new start date</a>
     {% endif %}
   </div>
 </div> <!-- / row -->
 
-{# No need to do accordion if there is no sub events #}
-{#
-{% if event.children | length == 0 %}
-#}
-    <table class="showTable">
-        <tbody>
-            <tr>
-                <th>Start</th>
-                <td>{% if event.start %}{{ event.start|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>End</th>
-                <td>{% if event.end %}{{ event.end|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>
-                    {{ event.statelabel }}
-                    {% if event.state == "READY" %}
-                        <span class="glyphicon glyphicon-ok"></span>
-                    {% else %}
-                        <a href="#" onClick="return submitStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</span></a>
-                    {% endif %}
-                </td>
-            </tr>
-        </tbody>
-        </table>
-        {% include 'CrewCallBundle:event:_sub_event.html.twig' with { 'event': event}  %}
-{#
-{% else %}
-    <div class="panel-group" id="eventaccordion" role="tablist" aria-multiselectable="true">
-        {% include 'CrewCallBundle:event:_accordion.html.twig' with { 'event': event}  %}
-#}
+  <table class="showTable">
+    <tbody>
+        <tr>
+            <th>Start</th>
+            <td>{% if event.start %}{{ event.start|date('Y-m-d H:i:s') }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th>End</th>
+            <td>{% if event.end %}{{ event.end|date('Y-m-d H:i:s') }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>
+                {{ event.statelabel }}
+                {% if event.state == "READY" %}
+                    <span class="glyphicon glyphicon-ok"></span>
+                {% else %}
+                    <a href="#" onClick="return submitEventStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</span></a>
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+  </table>
 
-        {% for child in event.children %}
-            {% include 'CrewCallBundle:event:_accordion.html.twig' with { 'event': child}  %}
-        {% endfor %}
-    </div>
-{#
+{% if event.children | length > 0 %}
+  <!-- Group them all -->
+  <div class="accordion">
+  {% include '@CrewCall/event/_accordion.html.twig' with { 'event': event}  %}
+{% else %}
+<div class="card-body">
+    {% include '@CrewCall/event/_sub_event.html.twig' with { 'event': event}  %}
+</div>
+  <!-- Group them all, including main event. -->
+  <div class="accordion">
 {% endif %}
-#}
+        {% for child in event.children %}
+            {% include '@CrewCall/event/_accordion.html.twig' with { 'event': child}  %}
+        {% endfor %}
+    </div><!-- End accordion -->
+</div>
 
 {% if add_contact_form is not null %}
 <div class="modal fade" id="addContactModal" role="dialog" tabindex='-1'>
@@ -73,14 +73,14 @@
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
+        <h4 class="modal-title">Add contact</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-         <h4 class="modal-title">Add contact</h4>
       </div>
       <div class="modal-body" id="addContactModalBody">
         <div id="add_contact_popover_content">
             {{ form_start(add_contact_form, { 'action': path('event_add_contact', {'id': "XXX" }), 'attr': {'id':'addContactForm'}}) }}
             {{ form_widget(add_contact_form.person) }}
-            <div class="hidden">
+            <div class="d-none">
             {{ form_widget(add_contact_form.role) }}
             </div>
             <input type="hidden" name="username" id="username">

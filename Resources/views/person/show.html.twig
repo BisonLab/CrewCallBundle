@@ -2,11 +2,11 @@
 {% block title %}{{ person.fullname }}{% endblock %}
 {% block body %}
 
-{% include 'CrewCallBundle:job:handling.html.twig' %}
-{% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' with { 'reload_after_post': true } %}
-{% include 'CrewCallBundle:person:handling.html.twig' %}
+{% include '@CrewCall/job/handling.html.twig' %}
+{% include '@CrewCall/person/handling.html.twig' %}
 
-<div class="col-sm-4" id="personLeft">
+<div class="row">
+  <div class="col-sm-4" id="personLeft">
     {% set ppcontext = {
                 'file_type': 'ProfilePicture',
                 'system': 'crewcall',
@@ -31,10 +31,10 @@
             }
         }
     %}
-    {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-          <a href="#" onClick="return uploadFile('profile_upload');">Replace profile picture</a><br />
+    {% include '@BisonLabSakonnin/SakonninFile/_create_popup.html.twig' with sfconf %}
+          <a href="#" onClick="return uploadSakonninFile('profile_upload');">Replace profile picture</a><br />
 {% else %}
-          <a href="#" onClick="return uploadFile('profile_upload');">Add profile picture</a><br />
+          <a href="#" onClick="return uploadSakonninFile('profile_upload');">Add profile picture</a><br />
 {% endif %}
     <h1>
     <a href="#" id="message_modal_link" onClick="return openMessageModal({{ person.id }}, 'PM');"><span style="font-size: 15px" class="glyphicon glyphicon-comment"></span></a>
@@ -139,15 +139,15 @@
 {% endif %}
             <tr>
                 <th>
-                    <a tabindex="0" href="#" title="Logs" id="popLogSummary_person_{{ person.id }}" onClick="return popLogSummary('person', {{ person.id }});" class="btn btn-sm btn-dark">Changelog</a>
+                    <a tabindex="0" href="#" title="Logs" id="popLogSummary_person_{{ person.id }}" onClick="return popLogSummary('person', {{ person.id }});" class="btn-sm btn-dark">Changelog</a>
                     <br>
-                    <a href="{{ path('person_edit', { 'id': person.id }) }}" class="btn btn-sm btn-dark">Edit</a>
+                    <a href="{{ path('person_edit', { 'id': person.id }) }}" class="btn-sm btn-dark">Edit</a>
                     <br>
-                    <a href="#" onClick="return sendResetEmail({{ person.id }});" class="btn btn-sm btn-dark">Send Password reset mail</a>
+                    <a href="#" onClick="return sendResetEmail({{ person.id }});" class="btn-sm btn-dark">Send Password reset mail</a>
                     <br>
 {% if person.deleteable %}
                     {{ form_start(delete_form, {'attr': {'onSubmit': 'return confirm("Are you sure you want to delete this person?");'}}) }}
-                    <input  class="btn btn-sm btn-danger" type="submit" value="Delete">
+                    <input  class="btn-sm btn-danger" type="submit" value="Delete">
                     <br>
                     {{ form_end(delete_form) }}
 {% endif %}
@@ -160,36 +160,36 @@
 
 <div class="tabbable" id="rightTabMenu">
   <ul class="nav nav-tabs">
-    <li class="active personJobsTab">
-    <a href="#jobstab" data-toggle="tab">Jobs</a>
+    <li class="nav-item personJobsTab">
+    <a class="nav-link active" href="#jobstab" data-toggle="tab">Jobs</a>
     </li>
-    <li class="personCalendarTab">
-    <a href="#caltab" data-toggle="tab">Calendar</a>
+    <li class="nav-item personCalendarTab">
+    <a class="nav-link" href="#caltab" data-toggle="tab">Calendar</a>
     </li>
-    <li class="personNotesTab">
-    <a href="#notestab" data-toggle="tab">Notes</a>
+    <li class="nav-item personNotesTab">
+    <a class="nav-link" href="#notestab" data-toggle="tab">Notes</a>
     </li>
-    <li class="personMessagesTab">
-    <a href="#messagestab" data-toggle="tab">Messages</a>
+    <li class="nav-item personMessagesTab">
+    <a class="nav-link" href="#messagestab" data-toggle="tab">Messages</a>
     </li>
-    <li class="personFilesTab">
-    <a href="#filestab" data-toggle="tab">Files</a>
+    <li class="nav-item personFilesTab">
+    <a class="nav-link" href="#filestab" data-toggle="tab">Files</a>
     </li>
-    <li class="personFunctionsTab">
-    <a href="#functab" data-toggle="tab" onClick="return grabFunctionPickerTab();">Manage functions</a>
+    <li class="nav-item personFunctionsTab">
+    <a class="nav-link" href="#functab" data-toggle="tab" onClick="return grabFunctionPickerTab();">Manage functions</a>
     </li>
 {#
     <li class="personOrganizationsTab">
     <a href="#orgstab" data-toggle="tab"  onClick="return grabOrganizationPickerTab();">Manage organizations</a>
     </li>
 #}
-    <li class="personHoursTab">
-    <a href="#hourstab" data-toggle="tab"  onClick="return grabJobLogSummary();">Hours</a>
+    <li class="nav-item personHoursTab">
+    <a class="nav-link" href="#hourstab" data-toggle="tab"  onClick="return grabJobLogSummary();">Hours</a>
     </li>
-    <li class="personAbsenceTab">
-    <a href="#absencetab" data-toggle="tab">Absence</a>
+    <li class="nav-item personAbsenceTab">
+    <a class="nav-link" class="nav-link" href="#absencetab" data-toggle="tab">Absence</a>
     </li>
-{% include 'CustomBundle:person:_custom_navtabs.html.twig' ignore missing %}
+{% include '@Custom/person/_custom_navtabs.html.twig' ignore missing %}
   </ul>
 
 <div class="tab-content ">
@@ -209,12 +209,12 @@
         {% set shift = job.shift %}
         <tr>
             <td>
-            <a tabindex="0" href="#" title="Event Summary" id="popSummary_event_{{ job.event.id }}" onClick="return popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a tabindex="0" href="#" id="popSummary_event_{{ job.event.id }}{{ job.id }}" onClick="return popSummary('event', {{ job.event.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
             {{ shift.event }}
             </td>
         {% set overjobs = cc_jobs.checkoverlapforperson(job, {'same_day': true, 'booked_only': true, 'return_jobs': true }) %}
         {% if overjobs | length > 0 %}
-<div id="overlap_popover_content_{{ job.id }}" class="hidden">
+<div id="overlap_popover_content_{{ job.id }}" class="d-none">
 {% for ojob in overjobs %}
 {{ ojob.shift }} ({{ ojob.statelabel }} {{ ojob.shift.start|date('H:i') }} -> {{ ojob.shift.end|date('H:i') }})<br>
 {% endfor %}
@@ -262,7 +262,7 @@
   <div class="tab-pane personCalendarTab" id="caltab">
     <br>
 {% set calendar_load_url = path('person_calendar', {'id': person.id, 'access': 'ajax'}) %}
-{% include 'CrewCallBundle::_calendar.html.twig' with { 'calendar_load_url': calendar_load_url}  %}
+{% include '@CrewCall/_calendar.html.twig' with { 'calendar_load_url': calendar_load_url}  %}
   </div><!-- caltab -->
 
   <div class="tab-pane personNotesTab" id="notestab">
@@ -285,8 +285,8 @@
             }
         }
     %}
-    {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <a href="#" onClick='return createMessage("adminpersonnote");'>Add a note to the crew member (PersonNote)</a><br />
+    {% include '@BisonLabSakonnin/Message/_create_popup.html.twig' with mconf %}
+        <a href="#" onClick='return createSakonninMessage("adminpersonnote");'>Add a note to the crew member (PersonNote)</a><br />
     </p>
     </div>
 {% set mlogcontext = {
@@ -317,8 +317,8 @@
             }
         }
     %}
-    {% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-        <a href="#" onClick='return createMessage("adminadminnote");'>Add a note for Admins only (AdminNote)</a><br />
+    {% include '@BisonLabSakonnin/Message/_create_popup.html.twig' with mconf %}
+        <a href="#" onClick='return createSakonninMessage("adminadminnote");'>Add a note for Admins only (AdminNote)</a><br />
     </p>
     </div>
 {% set mlogcontext = {
@@ -330,19 +330,7 @@
     }
 %}
 {% for note in sakonnin_messages.MessagesForContext(mlogcontext) %}
-  <div id="sakonninmessage_{{ note.id }}">
-    <strong>{{ note.subject }}</strong> ({{ note.state | capitalize }} <a href="#" title="{{ note.messagetype.description }}">{{ note.messagetype }}</a> by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}) {% if note.expireat %}Expires {{ note.expireat | date('Y-m-d') }}{% endif %}
-    <pre>{{ note.body }}</pre>
-    {% set mdelform = sakonnin_messages.getCreateDeleteForm(note, true) %}
-    <form id="deletemessageform_{{ note.id }}" onSubmit="return deleteMessage({{ note.id }});">
-    <a href="#" onClick="return grabEditMessageForm({{ note.id }});"><span class="glyphicon glyphicon-pencil"></span></a>
-    {{ form_start(mdelform) }}
-    {{ form_rest(mdelform) }}
-    <button type="submit" class="btn btn-link">
-    <span class="remove_glyph"></span>
-    </button>
-    </form>
-  </div>
+    {% include '@CrewCall/_note.html.twig' %}
 {% endfor %}
 
   </div><!-- notestab -->
@@ -358,11 +346,8 @@
             'external_id': person.id
     }
 %}
-{% for note in sakonnin_messages.MessagesForContext(bulkcriterias) %}
- <p>
-    <strong>{{ note.subject }}</strong> ({{ note.state | capitalize }} <a href="#" title="{{ note.messagetype.description }}">{{ note.messagetype }}</a> by {{ note.createdBy }} at {{ note.createdAt | date('Y-m-d') }}) {% if note.expireat %}Expires {{ note.expireat | date('Y-m-d') }}{% endif %}
-    <pre>{{ note.body }}</pre>
- </p>
+{% for message in sakonnin_messages.MessagesForContext(bulkcriterias) %}
+    {% include '@CrewCall/_message.html.twig' %}
 {% endfor %}
 
   </div><!-- messagestab -->
@@ -381,15 +366,15 @@
             }
         }
     %}
-    {% include 'BisonLabSakonninBundle:SakonninFile:_create_popup.html.twig' with sfconf %}
-      <a href="#" onClick="return uploadFile('file_upload');">Add a file</a><br />
+    {% include '@BisonLabSakonnin/SakonninFile/_create_popup.html.twig' with sfconf %}
+      <a href="#" onClick="return uploadSakonninFile('file_upload');">Add a file</a><br />
     </p>
     {% set filecontext = {
         'system': 'crewcall',
         'object_name': 'person',
         'external_id': person.id
       } %}
-    {% include 'CrewCallBundle::_files.html.twig' with filecontext %}
+    {% include '@CrewCall/_files.html.twig' with filecontext %}
   </div><!-- filestab -->
 
   <div class="tab-pane personFunctionsTab" id="functab">
@@ -406,8 +391,8 @@
 
   <div class="tab-pane personAbsenceTab" id="absencetab">
     <p>
-    <div id="change_state_popover" class="hidden">
-    <a href="#" id="stateChangeLink" onClick="return openStateChange();" class="btn btn-sm btn-dark">Add</a><br>
+    <div id="change_state_popover" class="d-none">
+    <a href="#" id="stateChangeLink" onClick="return openStateChange();" class="btn-sm btn-dark">Add</a><br>
     </div>
     </p>
 
@@ -428,11 +413,10 @@
 
   </div><!-- absencetab -->
 
-{% include 'CustomBundle:person:_custom_tabcontent.html.twig' ignore missing %}
-
- </div><!-- tab-content -->
-
-</div><!-- Tabbable -->
+{% include '@Custom/person:_custom_tab/ontent.html.twig' ignore missing %}
+  </div><!-- tab-content -->
+ </div><!-- Tabbable -->
+</div><!-- End Row -->
 
 <!--
 

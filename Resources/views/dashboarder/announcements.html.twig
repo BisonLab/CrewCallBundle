@@ -1,59 +1,61 @@
-{% include 'BisonLabSakonninBundle:Message:_edit_popup.html.twig' with { 'reload_after_post': true } %}
-{% include 'CrewCallBundle:dashboarder:handling.html.twig' %}
-<div id="announcements">
-<div class="row">
+<div id="announcementsdash">
+  <div class="row">
     <div class="col-sm-12">
     <h3>General Announcements</h3>
     </div>
-</div>
-{% for message in sakonnin_messages.messagetype('Front page logged in').messages if message.state == "SHOW" or message.state == "UNREAD" %}
- {% if is_granted('show', message) %}
-<div id="sakonninmessage_{{ message.id}}">
-  <div class="row noteText">
-{% if is_granted('edit', message) %}
-    <div class="col-sm-10">
-{% else %}
-    <div class="col-sm-12">
-{% endif %}
-<em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
-<pre wrap class="noteText">
-{{ message.body }}
-</pre>
-</div>
-{% endif %}
+  </div><!-- End row -->
+{% for message in sakonnin_messages.messagetype('Front page logged in').messages %}
 
-{% if is_granted('edit', message) %}
-    <div class="col-sm-2">
+{% if (message.state == "SHOW" or message.state == "UNREAD") and is_granted('show', message) %}
+ <div id="sakonninmessage_{{ message.id}}">
+  <div class="row noteText">
+
+  {% if is_granted('edit', message) %}
+    <div class="col-sm-9">
+        <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
+    </div>
+    <div class="d-none">
+    {% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
+    <form id="deletemessageform_{{ message.id }}" onSubmit="return deleteSakonninMessage({{ message.id }});">
+    {{ form_rest(mdelform) }}
+    <input id="delannounce_{{ message.id }}" type="submit">
+    </form>
+    </div>
+    <div class="col-sm-2" align="right">
         <div class="dropdown">
-          <button class="glyphicon glyphicon-menu-hamburger" id='announcementsactionburger' type="button" data-toggle="dropdown">
+          <button class="glyphicon glyphicon-menu-hamburger" id='actionburger' type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span></span>
           </button>
-        <ul class="dropdown-menu dropdown-menu-right">
-          <li>
-           <a href="#" onClick="return setStateOnMessage({{ message.id }}, 'ARCHIVED');">Archive</a>
-          </li>
-          <li>
-            <a href="#" onClick="return grabEditNoteForm({{ message.id }}, 'General Annoucement', true);">Edit</a>
-          </li>
-<div class="hidden">
-{% set mdelform = sakonnin_messages.getCreateDeleteForm(message, true) %}
-<form id="deletemessageform_{{ message.id }}" onSubmit="return deleteMessage({{ message.id }});">
-{{ form_start(mdelform) }}
-{{ form_rest(mdelform) }}
-<input id="delannounce_{{ message.id }}" type="submit">
-</form>
-</div>
-        <li>
-            <a href="#" onClick='return $("#delannounce_{{ message.id }}").click();'>Delete</a>
-        </li>
-        </ul>
+        <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="#" onClick="return setStateOnSakonninMessage({{ message.id }}, 'ARCHIVED');">Archive</a>
+            <a class="dropdown-item" href="#" onClick="return grabEditSakonninMessageForm({{ message.id }}, {'title':'General Annoucement', 'no_subject': true});">Edit</a>
+            <a class="dropdown-item" href="#" onClick='return $("#delannounce_{{ message.id }}").click();'>Delete</a>
+        </div>
       </div>
-  </div>
+    </div>
+  {% else %}
+    <div class="col-sm-12">
+        <em>{{ message.createdAt | date('Y-m-d') }} - {{ message.createdBy }}</em>
+    </div>
   {% endif %}
- </div>
-</div>
-<div class="row">&nbsp;</div> <!-- Cheating or lazyness? -->
+  </div><!-- end row -->
+  <div class="row noteText">
+   <div class="col-sm-10">
+<pre wrap id="sakonninmessagebody_{{ message.id }}">
+{{ message.body }}
+</pre>
+   </div>
+  </div><!-- end row -->
+ </div><!-- End sakkonninmessage -->
+{% endif %}
 {% endfor %}
+<div class="row">
+  <div class="col-2" style="margin-left: 20px; padding: 7px;">
+    <a href="#" onClick='return createSakonninMessage("c_anouncements");' class="btn-dash btn-dark">New</a>
+  </div>
+  <div class="col-2" style="padding: 7px;">
+    <a href="#" class="btn-dash btn-light" title="Notes" onClick="return openSakonninMessageLogBox('{{ path('messages_list', {'sort': 'DESC', 'access': 'ajax', 'states': ['ARCHIVED'], 'message_types':['Front page logged in']  }) }}', 'Archive')">Archive</a>
+  </div>
 </div>
       {% set mconf = {'mconfig': {
               'formname': 'c_anouncements',
@@ -70,6 +72,5 @@
               }
           }
       %}
-{% include 'BisonLabSakonninBundle:Message:_create_popup.html.twig' with mconf %}
-<a href="#" onClick='return createMessage("c_anouncements");' class="btn btn-sm btn-dark">New</a>
-<a href="#" title="Notes" onClick="return openMessageLogBox('{{ path('messages_list', {'sort': 'DESC', 'access': 'ajax', 'states': ['ARCHIVED'], 'message_types':['Front page logged in']  }) }}', 'Archive')">Archive</a>
+  {% include '@BisonLabSakonnin/Message/_create_popup.html.twig' with mconf %}
+</div><!-- End annountcementsdash -->

@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}Edit {{ person.fullname }}{% endblock %}
 {% block body %}
     <h1>Person edit</h1>
 
@@ -9,7 +9,7 @@
         <ul>
         {% include '@BisonLabCommon/context_forms.html.twig' with { 'context_forms': context_forms } %}
         </ul>
-        <input class="btn btn-sm btn-dark" type="submit" value="Save" />
+        <input class="btn-sm btn-dark" type="submit" value="Save" />
     {{ form_end(edit_form) }}
-    <a href="{{ path('person_show', { 'id': person.id }) }}" class="btn btn-sm btn-dark">Cancel</a><br>
+    <a href="{{ path('person_show', { 'id': person.id }) }}" class="btn-sm btn-dark">Cancel</a><br>
 {% endblock %}

@@ -5,18 +5,20 @@
 
 {% set colcount = 0 %}
 <div class="row">
-{% for dash in dashboarder.dashboards(app.user) %}
-    {% set colcount = colcount + dash.cols %}
-    {% if colcount > 12 %}
-        {% set colcount = dash.cols %}
-        </div> <!-- endrow -->
-        <div class="row">
-    {% endif %}
-    <div class="col-md-{{ dash.cols }}">
-    {{ dash.content | raw }}
-    </div>
-{% endfor %}
-
+  {% for dash in dashboarder.dashboards(app.user) %}
+      {% set colcount = colcount + dash.cols %}
+      {% if colcount > 12 %}
+          {% set colcount = dash.cols %}
+          </div> <!-- endrow -->
+          <div class="row">
+      {% endif %}
+      {% if dash.no_start is not defined %}
+      <div class="col-md-{{ dash.cols }} {{ dash.dashie }}">
+      {% endif %}
+      {{ dash.content | raw }}
+      {% if dash.no_end is not defined %}
+      </div><!-- End {{ dash.dashie }} Dashie {{ dash.cols }} cols -->
+      {% endif %}
+  {% endfor %}
 </div> <!-- no new rows -->
-
 {% endblock %}

@@ -1,26 +1,19 @@
-
-    <div id="event_shift_list_{{ event.id }}">
-      <div class="panel panel-default">
-        {% if event.state == "READY" %}
-            {% set collapse = true %}
-        {% else %}
+    {% if event.state == "READY" %}
+        {% set collapse = true %}
+    {% else %}
+        {% set collapse = false %}
+    {% endif %}
+    {# Unless we have an open shift, no collapse #}
+    {% for sh in event.shifts %}
+        {% if sh.open %}
             {% set collapse = false %}
         {% endif %}
-        {# Unless we have an open shift, no collapse #}
-        {% for sh in event.shifts %}
-            {% if sh.open %}
-                {% set collapse = false %}
-            {% endif %}
-        {% endfor %}
-            <a class="accordion-toggle {% if collapse %}collapsed{% endif %}" role="button" data-toggle="collapse" data-parent="#eventaccordion" href="#eventacc_{{ event.id }}" aria-expanded="{% if collapse %}false{% else %}true{% endif %}" aria-controls="eventacc_{{ event.id }}">
-          <div class="panel-heading" role="tab" id="heading{{ event.id }}">
-           <h4 class="panel-title">
-                {% if event.parent %}
-                    {{ event.parent.name }} <span class="glyphicon glyphicon-arrow-right"></span> {{ event.name }}
-                {% else %}
-                    {{ event.name }} (Main Event)
-                {% endif %}
-           </h4>
+    {% endfor %}
+    <div id="event_shift_list_{{ event.id }}" class="eventShiftList">
+      <div class="card">
+        <div class="card-header">
+          <a class="d-block accordion-toggle {% if collapse %}collapsed{% endif %}" data-toggle="collapse" href="#eventacc_{{ event.id }}" aria-expanded="{% if collapse %}false{% else %}true{% endif %}" aria-controls="eventacc_{{ event.id }}">
+           <h4>
             {{ event.start|date('d M H:i') }}
             <span class="glyphicon glyphicon-arrow-right"></span> 
             {%  if event.end | date('Y-m-d') == event.start | date('Y-m-d') %}
@@ -28,19 +21,25 @@
             {% else %}
                 {{ event.end | date('d M H:i') }}
             {% endif %}
-            <div class="state">
-                {% if event.state == "READY" %}
-                    <span class="glyphicon glyphicon-ok"></span>
-                {% endif %}
-                {{ event.statelabel }}
-            </div>
-          </div> <!-- / panel-heading -->
-            </a>
-          <div id="eventacc_{{ event.id }}" class="panel-collapse collapse {% if not collapse %}in{% endif %}" role="tabpanel" aria-labelledby="heading{{ event.id }}">
-            <div class="panel-body">
-            {% include 'CrewCallBundle:event:_sub_event.html.twig' with { 'event': event}  %}
-           </div>
-          </div>
-         </div> <!-- / Panel -->
-        </div> <!-- / event_shift -->
+            <span class="card-centerish">
+            {% if event.parent %}
+                {{ event.parent.name }} <span class="glyphicon glyphicon-arrow-right"></span> {{ event.name }}
+            {% else %}
+                {{ event.name }} (Main Event)
+            {% endif %}
+            </span>
+            <span class="cardplusminus card-right"></span>
+            {% if event.state == "READY" %}
+            <span class="card-right ok_glyph"></span>
+            {% endif %}
+           </h4>
+          </a>
+       </div>
 
+          <div id="eventacc_{{ event.id }}" class="eventacc_content collapse {% if not collapse %}show{% endif %}">
+            <div class="card-body">
+            {% include '@CrewCall/event/_sub_event.html.twig' with { 'event': event}  %}
+            </div>
+          </div>
+      </div> <!-- / Card -->
+    </div> <!-- / event_shift_list -->

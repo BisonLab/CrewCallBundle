@@ -2,17 +2,110 @@
 
 $(document).ready(function() {
 
-    var hidehash = document.location.hash;
-
-    if (hidehash.match("hideready")) {
+    if (typeof(Storage) !== "undefined"
+            && localStorage.hidereadyevents == "true") {
         hidebox = $( "#hidereadycheckbox" );
+        // Yes, I do need both. For some odd reason I am not bothered to find.
         hidebox.prop("checked", true);
         hidebox.checked = true;
         checkReadyCheckbox(hidebox);
-        console.log("Hode ready");
     }
 
+    handleEventAccStatus();
+
+    $(".eventacc_content").on('hidden.bs.collapse', function () {
+        setEventAccStatus();
+    });
+    $(".eventacc_content").on('shown.bs.collapse', function () {
+        setEventAccStatus();
+    });
+
+    // And initially, if not set.
+    setEventAccStatus();
+    handleJobLists();
 });
+
+function handleEventAccStatus() {
+    if (typeof(Storage) === "undefined") {
+        return;
+    }
+    if (localStorage.evaccordions) {
+        evaccordions = JSON.parse(localStorage.evaccordions);
+    } else {
+        return;
+    }
+    // TODO; or ponder about: Refresh the timestamp so it won't be "GC"ed out.
+    // (Maybe end up like the shift/job list way?)
+    // var timestamp = Date.now() / 1000;
+    $(".eventacc_content").each(function () {
+        eid = $(this).attr("id");
+        if (evaccordions[eid]) {
+            $("#" + eid).collapse(evaccordions[eid]['state']);
+        }
+    });
+}
+
+function setEventAccStatus() {
+    if (typeof(Storage) === "undefined") {
+        return;
+    }
+    // Do I need a more unique id? Not as I could find.
+    var evaccordions = {};
+    if (localStorage.evaccordions) {
+        evaccordions = JSON.parse(localStorage.evaccordions);
+    }
+    var timestamp = Date.now() / 1000;
+    $(".eventacc_content").each(function () {
+        eid = $(this).attr("id");
+        classes = $(this).attr("class");
+        if (classes.search("show") < 1) {
+            evaccordions[eid] = { 'timestamp': timestamp, 'state': 'hide'};
+        } else {
+            evaccordions[eid] = { 'timestamp': timestamp, 'state': 'show'};
+        }
+    });
+    localStorage.evaccordions = JSON.stringify(evaccordions);
+}
+
+/*
+ * This replaces the URL based job list expanding.
+ * Using localStorage as with the event accordion thingies.
+ * This looks (and may be) stupid since it iterates all entries in storage and
+ * not just finds the useful entries with the job ID as key or multi
+ * dimensional with the event as main key.
+ * But since localStorage does not have any expiration of old data I am doung
+ * simple garbage collecting at the same time here.
+ * Can't really use the event as key either, since it not always known when
+ * this is run.
+ * (Why do two similar things the same way, you ask?)
+ */
+function handleJobLists() {
+    if (typeof(Storage) === "undefined") {
+        return;
+    }
+    if (localStorage.evjoblists) {
+        evjoblists = JSON.parse(localStorage.evjoblists);
+    } else {
+        return;
+    }
+    var newlist = {};
+    var timestamp = Date.now() / 1000;
+    for (var shift_id in evjoblists) {
+        shiftdata = evjoblists[shift_id];
+        if ($( "#jobList_" + shift_id ).length) {
+            if (shiftdata['state'] == 'show') {
+                grabJobList(shift_id, true);
+            }
+            // Reset counter.
+            shiftdata['timestamp'] = timestamp;
+        }
+        // "Garbage collection" If older than a month'ish, ditch it.
+        if (timestamp - shiftdata['timestamp'] < 2419200) {
+            newlist[shift_id] = shiftdata;
+        }
+    }
+    localStorage.evjoblists = JSON.stringify(newlist);
+}
 
 /*
  * Yeah, and shift.
@@ -126,7 +219,7 @@ function submitDeleteForm(event_id) {
     return false;
 }
 
-function submitStateForm(event_id, state) {
+function submitEventStateForm(event_id, state) {
     stateEventFormData = $( "#stateEventForm" ).serialize();
     url = "{{ path('event_state', { 'access': 'ajax', 'state': 'STATE', 'id': 'XXX' }) }}";
     url = url.replace('XXX', event_id);
@@ -219,16 +312,20 @@ function openAddContactInfo(event_id) {
 }
 
 function checkReadyCheckbox(elem) {
+    // localStorage has an issue with booleans.
+    hideready = "false";
     if (elem.checked) {
         $(".READY_state").hide();
-        window.location.hash = "#hideready";
+        hideready = "true";
     } else {
         // Not ideal, but beats parent.reload()
         $(".READY_state").not(".event_child").show();
         $(".event_child").hide();
         $(".collapse_subs").hide();
         $(".expand_subs").show();
-        window.location.hash = "";
+    }
+    if (typeof(Storage) !== "undefined") {
+        localStorage.hidereadyevents = hideready;
     }
 }
 </script>
@@ -238,8 +335,8 @@ function checkReadyCheckbox(elem) {
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
+        <h4 class="modal-title" id="eventModalTitle"></h4>
         <button id="eventModalCloseButton" type="button" class="close" data-dismiss="modal">&times;</button>
-         <h4 class="modal-title" id="eventModalTitle"></h4>
       </div>
       <div class="modal-body" id="eventModalBody">
       </div>
@@ -247,7 +344,7 @@ function checkReadyCheckbox(elem) {
   </div>
 </div> <!-- / modal -->
 
-<div id="eventmessage_modal" class="hidden">
+<div id="eventmessage_modal" class="d-none">
     <form name="eventmessage_form" id="eventMessageForm" method="POST">
       <div class="row">
        <div class="col-sm-6">
@@ -263,14 +360,14 @@ function checkReadyCheckbox(elem) {
        <div class="col-sm-3">
             <input type="radio" value="BULKSMS" name="message_type" CHECKED>SMS only</input><br>
             <input type="radio" value="BULKALL" name="message_type">SMS and  Email</input>
-        <input class="btn btn-sm btn-dark" id="evsendmessage" type="submit" name="submit" value="Send">
+        <input class="btn-sm btn-dark" id="evsendmessage" type="submit" name="submit" value="Send">
        </div>
       </div>
     </form>
 </div>
 
 {% if state_form is defined %}
-    <div class="hidden">
+    <div class="d-none">
     <form id="stateEventForm" method="POST">
     {{ form_widget(state_form._token, {'id': state_form._token.vars.id ~ '_setstateevent' }) }}
     {{ form_end(state_form) }}

@@ -1,10 +1,8 @@
 {% extends 'base.html.twig' %}
-{% block title %}
-People
-{% endblock %}
+{% block title %}People{% endblock %}
 
 {% block body %}
-{% include 'CrewCallBundle:person:handling.html.twig' %}
+{% include '@CrewCall/person/handling.html.twig' %}
 
 {% if role is defined and role is not null %}
 <h1>People with {{ role }}</h1>
@@ -26,7 +24,7 @@ People
         <option value="all">All</option>
         <option value="no_crew">All, exclude crewmembers </option>
     </select>
-    <button class="btn btn-sm btn-dark" type="submit">Show</button>
+    <button class="btn-sm btn-dark" type="submit">Show</button>
     </form>
 </div>
 <div class="col-sm-2">

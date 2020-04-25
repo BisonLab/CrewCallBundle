@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}New Shift Organization{% endblock %}
 {% block body %}
     <h1>Shiftorganization creation</h1>
-{% include 'CrewCallBundle:shiftorganization:_new.html.twig' with { 'form': form}  %}
+{% include '@CrewCall/shiftorganization/_new.html.twig' with { 'form': form}  %}
 
     <ul>
         <li>

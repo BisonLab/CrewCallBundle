@@ -1,10 +1,7 @@
 {% extends 'base.html.twig' %}
-{% block title %}
-People
-{% endblock %}
-
+{% block title %}People{% endblock %}
 {% block body %}
-{% include 'CrewCallBundle:person:handling.html.twig' %}
+{% include '@CrewCall/person/handling.html.twig' %}
 
     {% if function_type_plural is defined %}
         <h1>People with {{ function_type_plural }}</h1>
@@ -40,7 +37,7 @@ People
 {% if simplified %}
     <input type="hidden" name="simplified" value="true">
 {% endif %}
-    <button class="btn btn-sm btn-dark" type="submit">Show</button>
+    <button class="btn-sm btn-dark" type="submit">Show</button>
     </form>
 {% endif %}
 </div>
@@ -48,12 +45,12 @@ People
 </div>
 
 {% if simplified %}
-{% include 'CrewCallBundle:person:_simplified_index.html.twig' %}
+{% include '@CrewCall/person/_simplified_index.html.twig' %}
 {% else %}
-{% include 'CrewCallBundle:person:_index.html.twig' %}
+{% include '@CrewCall/person/_index.html.twig' %}
 {% endif %}
 
 <div align="right">
-    <button class="btn btn-sm btn-dark" id="message_modal_link" onClick="return openMessageModal();">Send a message</button>
+    <button class="btn-sm btn-dark" id="message_modal_link" onClick="return openMessageModal();">Send a message</button>
 </div>
 {% endblock %}

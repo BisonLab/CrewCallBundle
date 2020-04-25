@@ -22,7 +22,8 @@
             {% set reason = job.person.occupied({'reasons': true}) %}
             <td class="jvPerson{% if reason %} ccWarn{% endif %}">
             <a tabindex="0" href="#" title="Jobs" id="popSummary_person_jobs_{{ job.person.id }}{{ job.id }}" onClick="return popPersonJobs({{ job.person.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
-            <a tabindex="0" href="#" title="Person Summary" id="popSummary_person_{{ job.person.id }}" onClick="return popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a tabindex="0" href="#" id="popSummary_person_{{ job.person.id }}" onClick="return popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+
     {% set mlogcontext = {
                 'system': 'crewcall',
                 'object_name': 'person',
@@ -30,7 +31,7 @@
         }
     %}
     {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
-                <a href="#" onClick="return openMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-envelope"></span></a>
+                <a href="#" onClick="return openSakonninMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}')"><span style="font-size: 15px" class="glyphicon glyphicon-envelope"></span></a>
     {% endif %}
             {{ job.person }}
     {% if reason %}
@@ -44,7 +45,7 @@
                 {{ job.start | date("H:i") }} -> {{ job.end | date("H:i") }}
             </td>
             <td class="jvEvent">
-            <a tabindex="0" href="#" title="Event Summary" id="popSummary_event_{{ job.event.id }}" onClick="return popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a tabindex="0" href="#" id="popSummary_event_{{ job.event.id }}" onClick="return popSummary('event', {{ job.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
                 {{ job.event }}
             </td>
             <td class="jvFunction">
@@ -79,7 +80,7 @@
             </td>
             <td class="jvHours">
 <div id="jv_joblogs_{{ job.id }}">
-{% include 'CrewCallBundle:jobsview:_joblogs.html.twig' with { 'job': job } %}
+{% include '@CrewCall/jobsview/_joblogs.html.twig' with { 'job': job } %}
 </div>
             </td>
             <td class="jvSelect">
@@ -99,7 +100,7 @@
                 {{ so.shift.start | date("H:i") }} -> {{ so.shift.end | date("H:i") }}
             </td>
             <td>
-            <a tabindex="0" href="#" title="Event Summary" id="popSummary_event_{{ so.shift.event.id }}" onClick="return popSummary('event', {{ so.shift.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
+            <a tabindex="0" href="#" id="popSummary_event_{{ so.shift.event.id }}" onClick="return popSummary('event', {{ so.shift.event.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
                 {{ so.shift.event }}
             </td>
             <td class="jvFunction">

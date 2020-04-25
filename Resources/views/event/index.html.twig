@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Events{% endblock %}
 {% block body %}
     
-{% include 'CrewCallBundle:event:handling.html.twig' %}
+{% include '@CrewCall/event/handling.html.twig' %}
     
 <div class="row">
 
@@ -18,27 +19,22 @@
 
  <div class="col-sm-1" style="margin-top: 10px;">
     {% if not upcoming %}
-   <a href="{{ path('event_index', {'upcoming': true }) }}" class="btn btn-light">Upcoming</a>
+   <a href="{{ path('event_index', {'upcoming': true }) }}" class="btn-sm btn-light">Upcoming</a>
     {% endif %}
- </div>
- <div class="col-sm-1" style="margin-top: 10px;">
     {% if not past %}
-    <a href="{{ path('event_index', {'past': true }) }}" class="btn btn-light">Past</a>
+    <a href="{{ path('event_index', {'past': true }) }}" class="btn-sm btn-light">Past</a>
     {% endif %}
  </div>
  <div class="col-sm-3" style="margin-top: 20px;">
     <input id="hidereadycheckbox" type="checkbox" onChange="checkReadyCheckbox(this)">Hide ready events</input>
  </div>
 
- <div class="col-sm-2" style="margin-top: 20px;">
- </div>
-
- <div class="col-sm-1" style="margin-top: 10px;">
-   <a href="{{ path('event_new') }}" class="btn btn-dark">New Event</a>
+ <div class="col-sm-2 ml-auto" style="margin-top: 10px;">
+   <a href="{{ path('event_new') }}" class="btn-sm btn-dark">New Event</a>
  </div>
 
 </div>
 
-{% include 'CrewCallBundle:event:_index.html.twig' %}
+{% include '@CrewCall/event/_index.html.twig' %}
 
 {% endblock %}
