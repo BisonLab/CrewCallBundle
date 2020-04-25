@@ -222,6 +222,7 @@ function popPersonJobs(person_id, job_id) {
         $( popelement ).popover("show");
         $(document).on("click", ".popover .close" , function(){
             $(this).parents(".popover").popover('hide');
+            return false;
         });
       }).fail( function( ) {
         alert("Error grabbing summary");

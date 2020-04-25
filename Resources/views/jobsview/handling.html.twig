@@ -253,6 +253,7 @@ function jvGrabNewJobLogForm(job_id) {
         });
         $(document).on("click", ".popover .close" , function(){
             $(this).parents(".popover").popover('hide');
+            return false;
         });
     });
     return false;

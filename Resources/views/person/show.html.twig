@@ -212,6 +212,8 @@
             <a tabindex="0" href="#" id="popSummary_event_{{ job.event.id }}{{ job.id }}" onClick="return popSummary('event', {{ job.event.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
             {{ shift.event }}
             </td>
+            <td data-order="{{ shift.start | date('U')}}" >
+
         {% set overjobs = cc_jobs.checkoverlapforperson(job, {'same_day': true, 'booked_only': true, 'return_jobs': true }) %}
         {% if overjobs | length > 0 %}
 <div id="overlap_popover_content_{{ job.id }}" class="d-none">
@@ -219,15 +221,9 @@
 {{ ojob.shift }} ({{ ojob.statelabel }} {{ ojob.shift.start|date('H:i') }} -> {{ ojob.shift.end|date('H:i') }})<br>
 {% endfor %}
 </div>
-            {% if job.booked %}
-            <td class="ccError" data-order="{{ shift.start | date('U')}}" >
-            {% else %}
-            <td class="ccWarn" data-order="{{ shift.start | date('U')}}" >
-            {% endif %}
-            <a tabindex="0" href="#" title="Overlapping Jobs" id="overlap_popover_{{ job.id }}" onClick="return popOverlap({{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-warning-sign"></span></a>
-        {% else %}
-            <td data-order="{{ shift.start | date('U')}}" >
+            <a tabindex="0" href="#" title="Overlapping Jobs" id="overlap_popover_{{ job.id }}" onClick="return popOverlap({{ job.id }});"><span style="font-size: 15px; color: {% if job.booked %}red{% else %}orange{% endif %};" class="glyphicon glyphicon-warning-sign"></span></a>
         {% endif %}
+
                 {{ shift.start|date('d M H:i') }}
                 <span class="glyphicon glyphicon-arrow-right"></span> 
                 {%  if shift.end | date('Y-m-d') == shift.start | date('Y-m-d') %}
@@ -511,6 +507,7 @@ function openStateChange() {
     $( "#stateChangeLink" ).popover("show");
     $(document).on("click", ".popover .close" , function(){
         $(this).parents(".popover").popover('hide');
+        return false;
     });
 }
 

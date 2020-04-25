@@ -29,6 +29,7 @@ function grabNewJobLogForm(job_id, shift_id) {
         });
         $(document).on("click", ".popover .close" , function(){
             $(this).parents(".popover").popover('hide');
+            return false;
         });
     });
     return false;
@@ -53,6 +54,7 @@ function grabEditJobLogForm(joblog_id, shift_id) {
         });
         $(document).on("click", ".popover .close" , function(){
             $(this).parents(".popover").popover('hide');
+            return false;
         });
     });
     return false;
