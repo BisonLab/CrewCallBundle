@@ -715,13 +715,15 @@ class Person extends BaseUser
     public function isOccupied($options = [])
     {
         $occupied = false;
-        $reasons = [];
+        $reason = [];
         // Find a date.
         $time = new \DateTime();
-        if (isset($options['date']))
-            $time = new \DateTime($options['date']);
-        if (isset($options['datetime']))
+        if (isset($options['datetime']) && $options['datetime'] instanceof \DateTime)
+            $time = $options['datetime'];
+        elseif (isset($options['datetime']))
             $time = new \DateTime($options['datetime']);
+        elseif (isset($options['date']))
+            $time = new \DateTime($options['date']);
 
         /*
          * Check state. I'll default to the uncertain
@@ -732,9 +734,9 @@ class Person extends BaseUser
         if (!in_array($state,
                 ExternalEntityConfig::getActiveStatesFor('Person'))) {
             $occupied = true;
-            $reasons['stateobj'] = $stateobj;
-            $reasons['state'] = $state;
-            $reasons['statelabel'] = $stateobj->getStateLabel();
+            $reason['stateobj'] = $stateobj;
+            $reason['state'] = $state;
+            $reason['statelabel'] = $stateobj->getStateLabel();
         }
 
         /*
@@ -745,8 +747,8 @@ class Person extends BaseUser
         /*
          * Return something.
          */
-        if ($occupied && isset($options['reasons']))
-            return $reasons;
+        if ($occupied && isset($options['reason']))
+            return $reason;
         else
             return $occupied;
     }

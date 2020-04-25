@@ -1,5 +1,5 @@
 {% macro list_joblogs(job) %}
-    <table class="table  table-sm">
+    <table class="table table-sm">
     <th>In</th><th>Out</th><th>Break</th><th>Time</th><th>&nbsp;</th>
     {% for elem in job.joblogs %}
     <tr>
@@ -89,11 +89,11 @@
         {% endif %}
     
           </td>
-            {% set reason = job.person.occupied({'reasons': true}) %}
+            {% set reason = job.person.occupied({'datetime': job.start, 'reason': true}) %}
             <td {% if reason %}class="ccWarn"{% endif %} data-order="{{ job.person.lastname }}">
             {{ job.person }}
     {% if reason %}
-        <br>{{ reason.0.statelabel }}
+        <br>{{ reason.statelabel }}
     {% endif %}
             </td>
             <td>
@@ -202,32 +202,43 @@
 #}
 {% endif %}
 {% if sos.count > 0 %}
-<table id="shiftOrgTable" class="table  table-sm">
-        <thead>
-            <tr>
-                <th>Organization</th>
-                <th>Amount</th>
-                <th>State</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for so in sos %}
-          <tr>
-            <td>{{ so.organization }}</td>
-            <td>{{ so.amount }}</td>
-            <td>{{ so.statelabel }}
+  <table id="shiftOrgTable" class="table table-striped-inverted table-sm">
+    <thead class="thead-inverse">
+        <tr>
+            <th>&nbsp; yyyy</th>
+            <th>Organization</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th align="right">&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for so in sos %}
+      <tr>
+        <td>&nbsp;</td>
+        <td>{{ so.organization }}</td>
+        <td>{{ so.amount }}</td>
+        <td>
             <a tabindex="0" href="#" title="Logs" id="popLogSummary_shiftorganization_{{ so.id }}" onClick="return popLogSummary('shiftorganization', {{ so.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-list-alt"></span></a>
-            </td>
-            <td>
-              <a role="button" class="btn-sm btn-danger" href="#" onClick="return deleteShiftOrganization({{so.id}});">Delete</a>
-              <a role="button" class="btn-sm btn-success" href="#" onClick="return grabEditShiftOrganizationForm({{ so.id }});">Edit</a>
-            </td>
-          </tr>
-        {% endfor %}
-    {% endif %}
+            {{ so.statelabel }}
+        </td>
+        <td align="right">
+          <a role="button" href="#" onClick="return deleteShiftOrganization({{so.id}});">
+            <span class="ccButtonSmall ccInterested">
+                Delete
+            </span>
+          </a>
+          <a role="button" href="#" onClick="return grabEditShiftOrganizationForm({{ so.id }});">
+            <span class="ccButtonSmall ccAssigned">
+                Edit
+            </span>
+          </a>
+        </td>
+      </tr>
+    {% endfor %}
     </tbody>
-</table>
+  </table>
+{% endif %}
 
 <script>
 $(document).ready(function() {

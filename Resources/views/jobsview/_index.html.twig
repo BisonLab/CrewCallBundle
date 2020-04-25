@@ -19,7 +19,7 @@
     <tbody>
     {% for job in jobs %}
         <tr id=jobRow_{{ job.id }}>
-            {% set reason = job.person.occupied({'reasons': true}) %}
+            {% set reason = job.person.occupied({'datetime': job.start, 'reason': true}) %}
             <td class="jvPerson{% if reason %} ccWarn{% endif %}">
             <a tabindex="0" href="#" title="Jobs" id="popSummary_person_jobs_{{ job.person.id }}{{ job.id }}" onClick="return popPersonJobs({{ job.person.id }}, {{ job.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-dashboard"></span></a>
             <a tabindex="0" href="#" id="popSummary_person_{{ job.person.id }}" onClick="return popSummary('person', {{ job.person.id }});"><span style="font-size: 15px" class="glyphicon glyphicon-info-sign"></span></a>
