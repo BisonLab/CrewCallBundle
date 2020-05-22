@@ -40,11 +40,6 @@
             <th>Status</th>
             <td>
                 {{ event.statelabel }}
-                {% if event.state == "READY" %}
-                    <span class="glyphicon glyphicon-ok"></span>
-                {% else %}
-                    <a href="#" onClick="return submitEventStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</span></a>
-                {% endif %}
             </td>
         </tr>
     </tbody>

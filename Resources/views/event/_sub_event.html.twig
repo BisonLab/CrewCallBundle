@@ -291,7 +291,11 @@
         </li>
        {% elseif event.open and event.shifts | length > 0 %}
         <li>
-            <a href="#" onClick="return submitEventStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</a>
+            {% if event.children | length > 0 %}
+                <a href="#" onClick="return submitEventStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts and subevents</a>
+            {% else %}
+                <a href="#" onClick="return submitEventStateForm({{ event.id }}, 'READY');">Set Ready and close all shifts</a>
+            {% endif %}
         </li>
        {% endif %}
     {% endif %}

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Event{% endif %}
+{% block title %}{% if clone is defined %}Clone Event{% else %}New Event{% endif %} {% endblock %}
 {% block body %}
 <script>
 $(document).ready(function() {
@@ -21,7 +21,7 @@ $(document).ready(function() {
 </script>
 {% if clone is defined %}
 
-    <h1>Make a copy of {{ clone.name }}</h1>
+    <h1>Make a copy of {{ clone }}</h1>
     <form method="POST" action="{{ path('event_clone', { 'event': clone.id }) }}">
 {% else %}
 {% if event.parent %}

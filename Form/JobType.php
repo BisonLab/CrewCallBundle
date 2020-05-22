@@ -19,7 +19,7 @@ class JobType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('person', UsernameFormType::class, array('label' => "Person", 'required' => true))
+            ->add('person', UsernameFormType::class, array('label' => "Person", 'required' => true, 'attr' => ['class' => 'ui-front']))
             ->add('state', ChoiceType::class, array(
                 'label' => 'Status',
                 'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Job')))

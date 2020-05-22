@@ -1,17 +1,6 @@
-<table id="shiftTable" class="table shiftTable table-sm">
+<table id="shiftTable_{{ event.id }}" class="table shiftTable table-sm">
 <tbody>
 {% for shift in event.shifts %}
-{% set mlogcontext = {
-            'system': 'crewcall',
-            'object_name': 'shift',
-            'external_id': shift.id
-    }
-%}
-{#
-{% if shift.registeredamount > 0 %}
-    <tr class="joblist_closed" id="shiftRow_{{ shift.id }}" onClick="return toggleJobList({{ shift.id }});">
-{% endif %}
- #}
     <tr id="shiftRow_{{ shift.id }}">
         <td data-order="{{ shift.start | date('U')}}" >
             {{ shift.start|date('d M H:i') }}
@@ -22,6 +11,12 @@
                 {{ shift.end | date('d M H:i') }}
             {% endif %}
         <td>
+{% set mlogcontext = {
+            'system': 'crewcall',
+            'object_name': 'shift',
+            'external_id': shift.id
+    }
+%}
 {% if sakonnin_messages.contexthasmessages(mlogcontext) %}
         <a href="#" title="Notes" onClick="return openSakonninMessageLogBox('{{ path('message_context_search', {'access': 'ajax', 'system': mlogcontext.system, 'object_name': mlogcontext.object_name, 'external_id': mlogcontext.external_id }) }}', 'Notes')">
         <span style="font-size: 15px" class="glyphicon glyphicon-file"></span>
