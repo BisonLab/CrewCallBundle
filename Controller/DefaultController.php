@@ -3,15 +3,16 @@
 namespace CrewCallBundle\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
     /**
      * @Route("/admin/frontplay", name="frontplay")
+     * Yes, /admin/ should be secured by the firewall.
      */
     public function playAction(Request $request)
     {
@@ -23,9 +24,13 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+// error_log("User:" . $this->getUser()->getName());
         // Plain user? Send to the (newer) userfront.
-        if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN'))
-            return $this->redirect("/public/userfront/");
+        if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            // Do we have a user front or just plain login?
+            $login_url = $this->getParameter('login_url');
+            return $this->redirect($login_url);
+        }
         // Plain cheating and alternative to mess with symfony.
         foreach ($request->getAcceptableContentTypes() as $accept) {
             if ($accept == 'application/json')

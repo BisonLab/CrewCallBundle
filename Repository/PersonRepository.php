@@ -9,6 +9,22 @@ class PersonRepository extends \Doctrine\ORM\EntityRepository
 {
     use \BisonLab\CommonBundle\Entity\ContextRepositoryTrait;
 
+    /**
+     * Used to upgrade (rehash) the user's password automatically over time.
+     */
+    public function upgradePassword(UserInterface $user, string $newEncodedPassword): void
+    {
+        if (!$user instanceof Person) {
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+        }
+
+        $user->setPassword($newEncodedPassword);
+        // We might have a salt leftover, let's just delete it.
+        $user->setSalt(null);
+        $this->_em->persist($user);
+        $this->_em->flush();
+    }
+
     public function findByFunctionType($function_type)
     {
         $found = new \Doctrine\Common\Collections\ArrayCollection();

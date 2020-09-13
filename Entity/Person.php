@@ -3,8 +3,9 @@
 namespace CrewCallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 use Doctrine\Common\Collections\ArrayCollection;
-use FOS\UserBundle\Model\User as BaseUser;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -21,22 +22,9 @@ use CrewCallBundle\Lib\ExternalEntityConfig;
  * @UniqueEntity("username")
  * @Gedmo\Loggable
  */
-class Person extends BaseUser
+class Person implements UserInterface
 {
     use \BisonLab\CommonBundle\Entity\AttributesTrait;
-
-    /**
-     * Override FOSUserBundle User base class default role.
-     *
-     * Yes, this is what I call "System Role", not the "Person Role" which is
-     * connected to Organization, Location and Event.
-     *
-     * Later you will notice that ROLE_USER is default on creation.
-     * But if I have that default here it will always be added and that makes
-     * it impossible to have ROLE_PERSON which is a lot more restricted than
-     * ROLE_USER
-     */
-    const ROLE_DEFAULT = 'ROLE_PERSON';
 
     /**
      * @ORM\Id
@@ -44,6 +32,23 @@ class Person extends BaseUser
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    /**
+     * @ORM\Column(type="string", length=180, unique=true)
+     */
+    private $username;
+
+    /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     */
+    private $password;
+
+    /**
+     * @var string The salt. This is a BC from fosuserbundle.
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $salt;
 
     /**
      * @var string
@@ -76,6 +81,13 @@ class Person extends BaseUser
      * @Gedmo\Versioned
      */
     private $date_of_birth;
+
+    /**
+     * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\NotBlank
+     * @Assert\Email
+     */
+    private $email;
 
     /**
      * Another odd one, but it's an increasingly hot topic.
@@ -112,6 +124,12 @@ class Person extends BaseUser
      * @ORM\Embedded(class="EmbeddableAddress")
      **/
     private $postal_address;
+
+    /**
+     * System roles (Like ROLE_PERSON and ROLE_ADMIN)
+     * @ORM\Column(type="array")
+     */
+    private $roles = [];
 
     /**
      * This is for the non-connected functions. (Skills)
@@ -174,6 +192,76 @@ class Person extends BaseUser
         $this->person_states  = new ArrayCollection();
         $this->address = new EmbeddableAddress();
         $this->postal_address = new EmbeddableAddress();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUsername(): string
+    {
+        return (string) $this->username;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getPassword(): string
+    {
+        return (string) $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+    /**
+     * @see UserInterface
+     */
+    public function getSalt(): string
+    {
+        return (string) $this->salt;
+    }
+
+    public function setSalt($salt): self
+    {
+        $this->salt = $salt;
+
+        return $this;
     }
 
     /**
@@ -1077,7 +1165,7 @@ class Person extends BaseUser
      */
     public function setSystemRole($systemRole)
     {
-        $this->setRoles([$systemRole]);
+        $this->setSystemRoles([$systemRole]);
         return $this;
     }
 
@@ -1093,7 +1181,11 @@ class Person extends BaseUser
 
     public function setSystemRoles($systemRoles)
     {
-        return $this->getRoles($systemRoles);
+        foreach ($systemRoles as $role) {
+            if (!in_array($role, ExternalEntityConfig::getSystemRoles()))
+                throw new \InvalidArgumentException(sprintf('The "%s" role is not a valid role.', $role));
+        }
+        return $this->setRoles($systemRoles);
     }
 
     /**
@@ -1109,5 +1201,14 @@ class Person extends BaseUser
     public function __toString()
     {
         return $this->getFullName();
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 }

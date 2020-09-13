@@ -29,17 +29,6 @@ class PersonType extends AbstractType
             ->add('mobile_phone_number')
             ->add('home_phone_number')
             ->add('state', ChoiceType::class, array('label' => 'Status', 'choices' => ExternalEntityConfig::getStatesAsChoicesFor('Person')))
-
-/* Not really working. TODO: Try again.
-            ->add('system_role', ChoiceType::class,
-                array(
-                    'expanded'  => true,
-                    'multiple' =>  false,
-                    'choices' => ExternalEntityConfig::getSystemRolesAsChoices(),
-                    'preferred_choices' => 'ROLE_USER'
-                )
-            )
-*/
            ->add('system_roles', ChoiceType::class,
                 array(
                     'label' =>  'User type',
