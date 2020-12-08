@@ -13,7 +13,7 @@
           <div class="row">
       {% endif %}
       {% if dash.no_start is not defined %}
-      <div class="col-md-{{ dash.cols }} {{ dash.dashie }}">
+      <div class="col-{{ dash.cols }} {{ dash.dashie }} {% if dash.divclass is defined %}{{ dash.divclass }}{% endif %}">
       {% endif %}
       {{ dash.content | raw }}
       {% if dash.no_end is not defined %}
