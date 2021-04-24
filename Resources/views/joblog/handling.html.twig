@@ -22,8 +22,10 @@ function grabNewJobLogForm(job_id, shift_id) {
         $( popat ).popover("show");
         $( "#crewcallbundle_joblog_job").hide();
         $( "#crewcallbundle_joblog_job").prev().hide();
+        $( 'label[for="crewcallbundle_joblog_job"]').hide();
         $( "#crewcallbundle_joblog_shift").hide();
         $( "#crewcallbundle_joblog_shift").prev().hide();
+        $( 'label[for="crewcallbundle_joblog_shift"]').hide();
         $( "#newJobLogForm" ).submit(function( event ) {
             event.preventDefault();
             submitNewJobLogForm(shift_id);
