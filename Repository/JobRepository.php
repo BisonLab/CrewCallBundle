@@ -257,7 +257,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
          * It's more understandable than the other way round with som "Exact"
          * or better option name.
          */
-        if (isset($options['same_day'])) {
+        if ($options['same_day'] ?? false) {
             $from_day = clone($from);
             // This just looks so wrong.
             $qb
@@ -275,7 +275,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             ;
         }
 
-        if (isset($options['booked_only'])) {
+        if ($options['booked_only'] ?? false) {
             $states = ExternalEntityConfig::getBookedStatesFor('Job');
             $qb->andWhere('j.state in (:states)')
                 ->setParameter('states', $states);
@@ -291,13 +291,13 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
                     $one_booked = true;
             }
         }
-        if (isset($options['any_overlap'])) {
+        if ($options['any_overlap'] ?? false) {
             if (isset($options['return_jobs'])) {
                 return $a;
             }
             return count($a) > 0;
         }
-        if (isset($options['return_jobs'])) {
+        if ($options['return_jobs'] ?? false) {
             if ($one_booked)
                 return $a;
             else
