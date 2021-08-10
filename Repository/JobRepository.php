@@ -108,8 +108,13 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
                    ->setParameter('to', $to->modify("+1 day"));
             }
         }
-        // Either the default or what's set above.
-        $qb->andWhere('s.end >= :from')->setParameter('from', $from);
+
+        // This makes the result not include jobs started the day before but
+        // ending the from-day.
+        if ($options['without_rollover'] ?? false)
+            $qb->andWhere('s.start >= :from')->setParameter('from', $from);
+        else
+            $qb->andWhere('s.end >= :from')->setParameter('from', $from);
         $qb->orderBy('s.start', 'ASC');
         return $qb->getQuery()->getResult();
     }
@@ -292,7 +297,7 @@ class JobRepository extends \Doctrine\ORM\EntityRepository
             }
         }
         if ($options['any_overlap'] ?? false) {
-            if (isset($options['return_jobs'])) {
+            if ($options['return_jobs'] ?? false) {
                 return $a;
             }
             return count($a) > 0;

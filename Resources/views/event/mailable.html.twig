@@ -1,0 +1,9 @@
+{% if event.jobs | length > 0 %}
+    {% include '/event/_printable.html.twig' %}
+{% endif %}
+{% for child in event.children %}
+    {% set event = child %}
+    {% if event.jobs | length > 0 %}
+        {% include '/event/_printable.html.twig' %}
+    {% endif %}
+{% endfor %}

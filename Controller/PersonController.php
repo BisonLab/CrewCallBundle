@@ -32,6 +32,7 @@ use CrewCallBundle\Lib\ExternalEntityConfig;
  */
 class PersonController extends CommonController
 {
+    use CommonControllerFunctions;
     /**
      * Lists absolutely all person entities.
      *
@@ -78,14 +79,14 @@ class PersonController extends CommonController
             if ($select_grouping == 'all') {
                 $people = $functionEntity->getPeople(false);
             } else {
-                $people = $this->_filterPeople($functionEntity->getPeople(false), [
+                $people = $this->filterPeople($functionEntity->getPeople(false), [
                     'crew_only' => true,
                     'select_grouping' => $select_grouping,
                     'on_date' => $on_date,
                 ]);
             }
         } else {
-                $people = $this->_filterPeople($em->getRepository('CrewCallBundle:Person')->findAll(),[
+                $people = $this->filterPeople($em->getRepository('CrewCallBundle:Person')->findAll(),[
                     'crew_only' => true,
                     'select_grouping' => $select_grouping,
                     'on_date' => $on_date,
@@ -125,7 +126,7 @@ class PersonController extends CommonController
         if ($select_grouping == 'all') {
             $people = $functionEntity->getPeople(false);
         } else {
-            $people = $this->_filterPeople($functionEntity->getPeople(false), [
+            $people = $this->filterPeople($functionEntity->getPeople(false), [
                 'select_grouping' => $select_grouping,
                 'on_date' => $on_date,
             ]);
@@ -163,12 +164,12 @@ class PersonController extends CommonController
             if (!$functionEntity = $fe_repo->find($fid))
                 return $this->returnNotFound($request, 'No function to filter');
             $people = $functionEntity->getPeople(false);
-            $people = $this->_filterPeople($functionEntity->getPeople(false), [
+            $people = $this->filterPeople($functionEntity->getPeople(false), [
                 'select_grouping' => $select_grouping,
                 'on_date' => $on_date,
             ]);
         } else {
-            $people = $this->_filterPeople($em->getRepository('CrewCallBundle:Person')->findByFunctionType($function_type), [
+            $people = $this->filterPeople($em->getRepository('CrewCallBundle:Person')->findByFunctionType($function_type), [
                 'select_grouping' => $select_grouping,
                 'on_date' => $on_date,
             ]);
@@ -215,7 +216,7 @@ class PersonController extends CommonController
         }
 
         if ($select_grouping = $request->get('select_grouping')) {
-            $people = $this->_filterPeople($people, [
+            $people = $this->filterPeople($people, [
                 'select_grouping' => $select_grouping,
                 'on_date' => null,
             ]);
@@ -702,99 +703,5 @@ class PersonController extends CommonController
         );
         return $this->render('BisonLabCommonBundle:User:index.html.twig',
             $params);
-    }
-
-    /*
-     * In case of more filters, send request.
-     */
-    private function _filterPeople($people, $options)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $job_repo = $em->getRepository('CrewCallBundle:Job');
-
-        $select_grouping = $options['select_grouping'] ?? null;
-        $crew_only = $options['crew_only'] ?? false;
-        $on_date = $options['on_date'] ?? null;
-
-        // If all, return all.
-        if (!$crew_only && $select_grouping == 'all') {
-            return $people;
-        }
-
-        $filtered = new \Doctrine\Common\Collections\ArrayCollection();
-        foreach ($people as $p) {
-            if ($crew_only && !$p->isCrew()) {
-                continue;
-            }
-            if ($select_grouping == "no_crew" && $p->isCrew()) {
-                continue;
-            }
-            if ($select_grouping == "all") {
-                if (!$filtered->contains($p))
-                    $filtered->add($p);
-            }
-            if ($on_date) {
-                // If this is about a date, we are always talking about active
-                // people. Which means "Not active on that date" disqualifies.
-                if (!in_array((string)$p->getStateOnDate($on_date),
-                        ExternalEntityConfig::getActiveStatesFor('Person')))
-                    continue;
-                if ($select_grouping == 'all_active') {
-                    if (!$filtered->contains($p))
-                        $filtered->add($p);
-                }
-                $jobs = $job_repo->findJobsForPerson($p, [
-                        'from' => $on_date,
-                        'to' => $on_date,
-                        ]);
-                if ($select_grouping == 'nothing' && count($jobs) == 0) {
-                    if (!$filtered->contains($p))
-                        $filtered->add($p);
-                    continue;
-                }
-                // Now filter based on select_group
-                $add_person = false;
-                foreach ($jobs as $j) {
-                    switch($select_grouping) {
-                        case 'booked':
-                        case 'available':
-                            if (in_array($j->getState(),
-                                ExternalEntityConfig::getBookedStatesFor('Job')))
-                                    $add_person = true;
-                            break;
-                        case 'interested':
-                            if ($j->getState() == "INTERESTED")
-                                $add_person = true;
-                            break;
-                        case 'assigned':
-                            if ($j->getState() == "ASSIGNED")
-                                $add_person = true;
-                            break;
-                        case 'confirmed':
-                            if ($j->getState() == "CONFIRMED")
-                                $add_person = true;
-                            break;
-                    }
-                }
-                if ($select_grouping == 'available') {
-                    if (!$add_person && !$filtered->contains($p))
-                        $filtered->add($p);
-                    continue;
-                }
-                if ($add_person)
-                    if (!$filtered->contains($p))
-                        $filtered->add($p);
-            // And if no on_date set:
-            } else {
-                if ($select_grouping == 'all_active') {
-                    if (!in_array($p->getState(),
-                            ExternalEntityConfig::getActiveStatesFor('Person')))
-                        continue;
-                }
-                if (!$filtered->contains($p))
-                    $filtered->add($p);
-            }
-        }
-        return $filtered;
     }
 }

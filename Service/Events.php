@@ -9,10 +9,12 @@ use CrewCallBundle\Entity\Shift;
 class Events
 {
     private $em;
+    private $sakonnin;
 
-    public function __construct($em)
+    public function __construct($em, $sakonnin)
     {
         $this->em = $em;
+        $this->sakonnin = $sakonnin;
     }
 
     public function cloneEvent(Event $orig, Event $clone)
@@ -37,6 +39,7 @@ class Events
             // prePersist for state change handling. (As far as I have found)
             $clone->addShift($ns);
             $this->em->persist($ns);
+            $this->_cloneMessages($shift, $ns);
         }
 
         foreach ($orig->getChildren() as $child) {
@@ -52,8 +55,43 @@ class Events
             $clone->addChild($nc);
         }
         $this->em->persist($clone);
-        // $this->em->flush($clone);
+        $this->_cloneMessages($orig, $clone);
         
         return $clone;
+    }
+
+    // Clone (almost) all checks, notes and info.
+    private function _cloneMessages($orig, $clone)
+    {
+        $object_name = "shift";
+        if ($orig instanceOf Event)
+            $object_name = "event";
+
+        $orig_context = [
+                'system' => 'crewcall',
+                'object_name' => $object_name,
+                'external_id' => $orig->getId()
+        ];
+        $clone_context = [
+                'system' => 'crewcall',
+                'object_name' => $object_name,
+                'external_id' => $clone->getId()
+        ];
+        foreach ($this->sakonnin->getMessagesForContext($orig_context) as $orig_msg) {
+            // TODO: See if we want a white or black -list. Starting
+            // with a blacklist/exclude.
+            if ($orig_msg->getMessageType()->getName() == "List Sent")
+                continue;
+            $clone_msg = [
+                'subject' => $orig_msg->getSubject(),
+                'body' => $orig_msg->getBody(),
+                'header' => $orig_msg->getHeader(),
+                'message_type' => $orig_msg->getMessageType()->getName(),
+                'to_type' => $orig_msg->getToType(),
+                'from_type' => $orig_msg->getFromType(),
+                'content_type' => $orig_msg->getContentType(),
+            ];
+            $this->sakonnin->postMessage($clone_msg, $clone_context);
+        }
     }
 }

@@ -40,7 +40,6 @@ function hideJobList(shift_id) {
     var timestamp = Date.now() / 1000;
     evjoblists[shift_id] = { 'timestamp': timestamp, 'state': 'hide' };
     localStorage.evjoblists = JSON.stringify(evjoblists);
-console.log(evjoblists);
     return false;
 }
 

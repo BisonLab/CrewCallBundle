@@ -28,7 +28,7 @@
             <div class="bulkmessageradio"><input type="radio" value="BULKMAIL" name="message_type">Email only</input><br></div>
             <div class="bulkmessageradio"><input type="radio" value="BULKALL" name="message_type">SMS and Email</input><br></div>
 
-            <input class="btn-sm btn-dark" id="sendPersonMessage" type="submit" name="submit" value="Send">
+            <input class="btn-sm btn-dark" id="sendPersonMessage" type="submit" value="Send">
             </form>
       </div>
     </div>
@@ -44,8 +44,8 @@ $(document).ready(function() {
 
     // Scope rules makes me have to put this here and not just a part of
     // openMessageModal.
-    $("#person_message_form").on('submit', function(eventObj) {
-        var $btn = $(document.activeElement);
+    $("#person_message_form").submit(function(eventObj) {
+        var btn = $(eventObj.target);
         var form = this;
 
         if (selected_crewtable) {
@@ -62,8 +62,9 @@ $(document).ready(function() {
                );
             });
         }
-        var $btn = $(document.activeElement);
-        if ($btn.is('[id]') && $btn.attr("id") == "sendPersonMessage") {
+/*
+        if (btn.is('[id]') && btn.attr("id") == "sendPersonMessage") {
+ */
             postdata = $("#person_message_form").serialize();
             $.ajax({
                 type: "POST",
@@ -86,7 +87,9 @@ $(document).ready(function() {
                     $( ".person_list" ).remove();
                 }
             });
+/*
         }
+ */
         eventObj.preventDefault();
         return false;
     });

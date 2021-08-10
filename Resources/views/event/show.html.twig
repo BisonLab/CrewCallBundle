@@ -26,40 +26,17 @@
   </div>
 </div> <!-- / row -->
 
-  <table class="showTable">
-    <tbody>
-        <tr>
-            <th>Start</th>
-            <td>{% if event.start %}{{ event.start|date('Y-m-d H:i:s') }}{% endif %}</td>
-        </tr>
-        <tr>
-            <th>End</th>
-            <td>{% if event.end %}{{ event.end|date('Y-m-d H:i:s') }}{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Status</th>
-            <td>
-                {{ event.statelabel }}
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-{% if event.children | length > 0 %}
-  <!-- Group them all -->
-  <div class="accordion">
-  {% include '@CrewCall/event/_accordion.html.twig' with { 'event': event}  %}
-{% else %}
 <div class="card-body">
-    {% include '@CrewCall/event/_sub_event.html.twig' with { 'event': event}  %}
+    {% include '/event/_sub_event.html.twig' with { 'event': event}  %}
 </div>
-  <!-- Group them all, including main event. -->
+{% if event.children | length > 0 %}
+  <!-- Start the accordion bonanza.. -->
   <div class="accordion">
-{% endif %}
         {% for child in event.children %}
-            {% include '@CrewCall/event/_accordion.html.twig' with { 'event': child}  %}
+            {% include '/event/_accordion.html.twig' with { 'event': child}  %}
         {% endfor %}
     </div><!-- End accordion -->
+{% endif %}
 </div>
 
 {% if add_contact_form is not null %}

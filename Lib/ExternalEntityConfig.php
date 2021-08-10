@@ -100,6 +100,11 @@ class ExternalEntityConfig
         return isset(self::$states[$thingie]) ? self::$states[$thingie]['active_states'] : self::$states['default']['active_states'];
     }
 
+    public static function getAvailableStatesFor($thingie)
+    {
+        return self::$states[$thingie]['available_states'] ?? self::$states['default']['available_states'];
+    }
+
     public static function getWishlistStatesFor($thingie)
     {
         return isset(self::$states[$thingie]) ? self::$states[$thingie]['wishlist_states'] : self::$states['default']['wishlist_states'];

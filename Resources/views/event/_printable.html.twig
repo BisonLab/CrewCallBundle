@@ -1,10 +1,12 @@
 <h1>{{ event }} {{ event.start | date("d.M.y") }}</h1>
 <table class="info-table">
   <tbody>
+{% if event.description is not null %}
     <tr>
         <th>Description</th>
         <td>{{ event.description }}</td>
     </tr>
+{% endif %}
 {% if event.organization is not null %}
     <tr>
         <th>Organization</th>
@@ -24,17 +26,22 @@
 {% set cicontext = {
         'system': 'crewcall',
         'object_name': 'event',
-        'message_type': 'Contact Info',
         'external_id': event.id
 }
 %}
-{% set contact_infos = sakonnin_messages.contextHasMessages(cicontext, true) %}
+{% set cicontext_result = sakonnin_messages.contextHasMessages(cicontext, true) %}
+{# The function I use does not have a filter, so I'll hack it here. #}
+{% set contact_infos = [] %}
+{% for cir in cicontext_result %}
+    {% if cir.owner.messagetype == 'Contact Info' %}
+        {% set contact_infos = contact_infos|merge([cir.owner]) %}
+    {% endif %}
+{% endfor %}
 {% if contact_infos | length > 0 %}
     <tr class="event_contactinfo">
         <th>Contact Info</th>
         <td>
-    {% for mcont in contact_infos %}
-        {% set note = mcont.owner %}
+    {% for note in contact_infos %}
         {% if note.messagetype == 'Contact Info' %}
             <strong>{{ note.subject }}</strong>
             <pre>{{ note.body }}</pre>

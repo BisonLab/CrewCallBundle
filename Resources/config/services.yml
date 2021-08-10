@@ -2,7 +2,7 @@ services:
     crewcall.events:
         class: CrewCallBundle\Service\Events
         public: true
-        arguments: ["@doctrine.orm.entity_manager"]
+        arguments: ["@doctrine.orm.entity_manager", "@sakonnin.messages"]
 
     crewcall.jobs:
         class: CrewCallBundle\Service\Jobs

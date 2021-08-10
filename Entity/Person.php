@@ -4,6 +4,8 @@ namespace CrewCallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Expr\Comparison;
 use FOS\UserBundle\Model\User as BaseUser;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -722,8 +724,10 @@ class Person extends BaseUser
             $time = $options['datetime'];
         elseif (isset($options['datetime']))
             $time = new \DateTime($options['datetime']);
-        elseif (isset($options['date']))
+        elseif (isset($options['date'])) {
             $time = new \DateTime($options['date']);
+            $time->setTime(6,0);
+        }
 
         /*
          * Check state. I'll default to the uncertain
@@ -732,17 +736,34 @@ class Person extends BaseUser
 
         $state = $stateobj->getState();
         if (!in_array($state,
-                ExternalEntityConfig::getActiveStatesFor('Person'))) {
+                ExternalEntityConfig::getAvailableStatesFor('Person'))) {
             $occupied = true;
             $reason['stateobj'] = $stateobj;
             $reason['state'] = $state;
             $reason['statelabel'] = $stateobj->getStateLabel();
         }
+        /*
+         * No need to go on here, occupied is occupied.
+         */
+        if ($occupied) {
+            if ($options['reason'] ?? false)
+                return $reason;
+            return $occupied;
+        }
 
         /*
-         * Check jobs.
-         * TODO: Maybe do it, probaly not. Better handled by job handler.
+         * Check jobs. Gotta do it.
          */
+        foreach ($this->getJobs(['booked' => true]) as $job) {
+            if (($job->getStart() >= $time) && ($job->getEnd() <= $time)) {
+                $reason['stateobj'] = $stateobj;
+                $reason['state'] = $state;
+                $reason['statelabel'] = $stateobj->getStateLabel();
+                if ($options['reason'] ?? false)
+                    return $reason;
+                return true;
+            }
+        }
 
         /*
          * Return something.
@@ -752,6 +773,12 @@ class Person extends BaseUser
         else
             return $occupied;
     }
+
+    public function isAvailable($options = [])
+    {
+        return $this->isOccupied($options);
+    }
+
 
     /*
      * The big "Does this work or not" is wether this getter should include
@@ -1013,8 +1040,14 @@ class Person extends BaseUser
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getJobs()
+    public function getJobs($criterias = [])
     {
+        if ($criterias['booked'] ?? false) {
+            $expr = new Comparison('state', Comparison::IN, ExternalEntityConfig::getBookedStatesFor('Job'));
+            $criteria = Criteria::create()
+                ->where($expr);
+            return $this->jobs->matching($criteria);
+        }
         return $this->jobs;
     }
 
