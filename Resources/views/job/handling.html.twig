@@ -70,8 +70,7 @@ function setStateOnJob(job_id, state, shift_id, force = false) {
         async: true,
         dataType: 'json',
       }).done( function( cont, textStatus, xhr ) {
-        recountShift(shift_id);
-        toggleJobButtons(job_id, state);
+        grabJobList(shift_id);
         return false;
       }).fail(function(xhr, status, error) {
             if (xhr.status == 409) {
@@ -154,7 +153,6 @@ function submitNewJobForm(shift_id, force = false) {
             if (xhr.status == 201) {
                 if ($btn.is('[id]') && $btn.attr("id") == "submitNewJobClose") {
                     grabJobList(shift_id);
-                    recountShift(shift_id);
                     $( "#jobModal" ).modal('hide');
                     return false; 
                 } else {

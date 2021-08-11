@@ -41,11 +41,16 @@ class JobController extends CommonController
          */
         if (!$shift)
             return $this->returnNotFound($request, 'No shift to tie the jobs to');
+        $shiftamounts            = $shift->getJobsAmountByState();
+        $shiftamounts['amount']  = $shift->getAmount();
+        $shiftamounts['booked']  = $shift->getBookedAmount();
+        $shiftamounts['needing'] = $shift->getBookedAmount() - $shift->getBookedAmount();
 
         $jobs = $shift->getJobs(['sort_by' => 'last_name']);
         $sos = $shift->getShiftOrganizations();
         if ($this->isRest($access)) {
             return $this->render('job/_index.html.twig', array(
+                'shiftamounts' => $shiftamounts,
                 'shift' => $shift,
                 'jobs'  => $jobs,
                 'sos'   => $sos
@@ -53,6 +58,8 @@ class JobController extends CommonController
         }
 
         return $this->render('job/index.html.twig', array(
+            'shiftamounts' => $shiftamounts,
+            'shift' => $shift,
             'jobs' => $jobs,
             'sos'  => $sos
         ));
